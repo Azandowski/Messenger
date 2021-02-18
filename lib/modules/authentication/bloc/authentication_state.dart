@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:messenger_mobile/modules/authentication/domain/entity/auth_enums.dart';
 
 abstract class AuthenticationState extends Equatable {
   @override
@@ -10,12 +11,18 @@ class Uninitialized extends AuthenticationState {}
 
 class Authenticated extends AuthenticationState {}
 
-class Unauthenticated extends AuthenticationState {}
+class Unauthenticated extends AuthenticationState {
+  final LoginScreenMode loginMode;
 
-class Error extends AuthenticationState {
+  Unauthenticated({
+    this.loginMode = LoginScreenMode.enterPhone
+  });
+}
+
+class AuthenticationError extends AuthenticationState {
   final String message;
 
-  Error({@required this.message});
+  AuthenticationError({@required this.message});
 
   @override
   List<Object> get props => [message];
