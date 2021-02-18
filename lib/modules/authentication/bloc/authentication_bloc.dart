@@ -1,6 +1,5 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/core/error/failures.dart';
 import 'package:messenger_mobile/core/usecases/usecase.dart';
 import 'package:messenger_mobile/modules/authentication/domain/usecases/get_token.dart';
 import '../../../core/config/storage.dart';
@@ -19,10 +18,11 @@ class AuthenticationBloc
   Stream<AuthenticationState> mapEventToState(
     AuthenticationEvent event,
   ) async* {
+    
     // app start
     if (event is AppStarted) {
       var token = await getToken(NoParams());
-      token.fold((failure) => Error(message: _mapFailureToMessage(failure)),
+      token.fold((failure) => Error(message: failure.message),
           (token) async* {
         if (token != '') {
           Storage().token = token;
@@ -44,14 +44,5 @@ class AuthenticationBloc
     //   await _deleteToken();
     //   yield Unauthenticated();
     // }
-  }
-
-  String _mapFailureToMessage(Failure failure) {
-    switch (failure.runtimeType) {
-      case ServerFailure:
-        return 'SERVER_FAILURE_MESSAGE';
-      default:
-        return 'Unexpected error';
-    }
   }
 }

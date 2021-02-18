@@ -1,5 +1,4 @@
 import 'package:dartz/dartz.dart';
-import 'package:messenger_mobile/core/error/exceptions.dart';
 import 'package:messenger_mobile/core/network/network_info.dart';
 import 'package:messenger_mobile/modules/authentication/data/datasources/local_authentication_datasource.dart';
 import 'package:messenger_mobile/modules/authentication/data/datasources/remote_authentication_datasource.dart';
@@ -30,8 +29,10 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
     try {
       final token = await localDataSource.getToken();
       return Right(token);
-    } on CacheException {
-      return Left(CacheFailure());
+    } catch (e) {
+      if (e is StorageFailure) {
+        return Left(e);
+      }
     }
   }
 }

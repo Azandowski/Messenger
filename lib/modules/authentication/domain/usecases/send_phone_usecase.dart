@@ -5,21 +5,21 @@ import 'package:messenger_mobile/core/usecases/usecase.dart';
 import 'package:messenger_mobile/modules/authentication/domain/repositories/authentication_repository.dart';
 import 'package:meta/meta.dart';
 
-class SendPhone implements UseCase<String, Params> {
+class SendPhone implements UseCase<String, PhoneParams> {
   final AuthenticationRepository repository;
 
   SendPhone(this.repository);
 
   @override
-  Future<Either<Failure, String>> call(Params params) async {
+  Future<Either<Failure, String>> call(PhoneParams params) async {
     return await repository.sendPhone(params.phoneNumber);
   }
 }
 
-class Params extends Equatable {
+class PhoneParams extends Equatable {
   final String phoneNumber;
 
-  Params({@required this.phoneNumber});
+  PhoneParams({@required this.phoneNumber});
 
   @override
   List<Object> get props => [phoneNumber];
