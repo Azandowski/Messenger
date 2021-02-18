@@ -20,8 +20,6 @@ class ServerFailure extends Failure {
 }
 
 class StorageFailure extends Failure {
-  StorageFailure({
-    @required message
-  }) : super(message: message);
+  StorageFailure() : super(message: null);
 }
 

@@ -27,7 +27,7 @@ class AuthenticationLocalDataSourceImpl
     if (token != null) {
       return Future.value(token);
     } else {
-      throw StorageFailure(message: 'TOKEN_NULL');
+      throw StorageFailure();
     }
   }
 
