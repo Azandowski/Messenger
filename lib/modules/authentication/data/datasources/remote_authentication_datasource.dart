@@ -1,20 +1,18 @@
-import 'dart:convert';
-
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:dartz/dartz.dart';
+import 'package:messenger_mobile/core/error/failures.dart';
+import 'package:messenger_mobile/modules/authentication/domain/entities/code_entity.dart';
 
 abstract class AuthenticationRemoteDataSource {
-  Future<String> sendPhone(int number);
+  Future<Either<Failure,CodeEntity>> createCode(int number);
 }
 
 class AuthenticationRemoteDataSourceImpl
     implements AuthenticationRemoteDataSource {
-  final http.Client client;
+ 
 
-  AuthenticationRemoteDataSourceImpl({@required this.client});
 
   @override
-  Future<String> sendPhone(int number) {
+  Future<Either<Failure,CodeEntity>> createCode(int number) {
     // TODO: implement sendPhone
     throw UnimplementedError();
   }
