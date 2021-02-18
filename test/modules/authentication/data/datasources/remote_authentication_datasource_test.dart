@@ -20,7 +20,7 @@ main() {
     final CodeEntity codeEntity =
         CodeEntity(id: 12, phone: phone, code: '1122', attempts: 0);
     when(remoteDataSource.createCode(any))
-        .thenAnswer((_) async => Right(codeEntity));
+        .thenAnswer((_) async => codeEntity);
     //act
     final result = await remoteDataSource.createCode(phone);
     //verify

@@ -24,7 +24,7 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
   Future<Either<Failure, CodeEntity>> createCode(PhoneParams params) async {
     try {
       final codeEntity = await remoteDataSource.createCode(params.phoneNumber);
-      return codeEntity;
+      return Right(codeEntity);
     } catch (e) {}
   }
 

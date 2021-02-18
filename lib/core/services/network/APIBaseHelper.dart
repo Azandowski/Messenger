@@ -1,17 +1,25 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:messenger_mobile/core/error/failures.dart';
 import './Endpoints.dart';
 
 class ApiBaseHelper {
+  
+  final http.Client apiHttpClient;
+
+  ApiBaseHelper({
+    @required this.apiHttpClient
+  });
+
   Future<dynamic> get(
     Endpoints endpoint, {
     Map<String, dynamic> queryParams,
     String token,
   }) async {
-    return http.get(
+    return apiHttpClient.get(
       endpoint.buildURL(queryParameters: queryParams),
       headers: endpoint.getHeaders(token: token),
     ).then((value) {
@@ -26,7 +34,7 @@ class ApiBaseHelper {
   }
 
   Future<dynamic> post(Endpoints endpoint, {String token, Map params}) async {
-    return http.post(
+    return apiHttpClient.post(
       endpoint.buildURL(),
       headers: endpoint.getHeaders(token: token),
       body: params,
