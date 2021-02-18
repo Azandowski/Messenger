@@ -9,9 +9,8 @@ abstract class AuthenticationRemoteDataSource {
 
 class AuthenticationRemoteDataSourceImpl
     implements AuthenticationRemoteDataSource {
-  final http.Client client;
 
-  AuthenticationRemoteDataSourceImpl({@required this.client});
+  AuthenticationRemoteDataSourceImpl();
 
   @override
   Future<String> sendPhone(int number) {

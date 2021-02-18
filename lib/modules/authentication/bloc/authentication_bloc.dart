@@ -8,6 +8,7 @@ import 'authentication_state.dart';
 
 class AuthenticationBloc
     extends Bloc<AuthenticationEvent, AuthenticationState> {
+  
   final GetToken getToken;
 
   AuthenticationBloc({
