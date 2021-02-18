@@ -25,7 +25,9 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
     try {
       final codeEntity = await remoteDataSource.createCode(params.phoneNumber);
       return Right(codeEntity);
-    } catch (e) {}
+    } catch (e) {
+      return Left(e);
+    }
   }
 
   @override

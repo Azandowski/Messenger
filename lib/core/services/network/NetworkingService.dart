@@ -24,8 +24,10 @@ class NetworkingService {
     try {
       var response = await _apiProvider
           .post(Endpoints.createCode, params: {"phone": phone});
+      print(response);
       onSuccess(CodeModel.fromJson(response));
     } catch (e) {
+      print(e);
       onError(e);
     }
   }
