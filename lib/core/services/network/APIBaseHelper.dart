@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
-import 'package:messenger_mobile/core/services/network/NetworkExceptions.dart';
+import 'package:messenger_mobile/core/error/failures.dart';
 import './Endpoints.dart';
 
 class ApiBaseHelper {
@@ -18,7 +18,7 @@ class ApiBaseHelper {
       return _returnResponse(value, endpoints: endpoint);
     }).catchError((error) {
       if (error is SocketException) {
-        throw CustomError("no_internet");
+        throw ServerFailure(message: "no_internet");
       } else {
         throw error;
       }
@@ -34,11 +34,11 @@ class ApiBaseHelper {
       if (value.statusCode >= 200 && value.statusCode <= 299) {
         return _returnResponse(value, endpoints: endpoint);
       } else {
-        throw CustomError(value.body.toString());
+        throw ServerFailure(message: value.body.toString());
       }
     }).catchError((e) {
       if (e is SocketException) {
-        throw CustomError("no_internet");
+        throw ServerFailure(message: "no_internet");
       } else {
         throw e;
       }
@@ -50,7 +50,7 @@ class ApiBaseHelper {
       var returnResponse = json.decode(response.body.toString());
       return returnResponse;
     } else {
-      throw CustomError(response.body.toString());
+      throw ServerFailure(message: response.body.toString());
     }
   }
 }
