@@ -5,10 +5,8 @@ import 'locator.dart' as serviceLocator;
 final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
 
 void main() async {
-  await serviceLocator.init();
-
   WidgetsFlutterBinding.ensureInitialized();
-
+  await serviceLocator.init();
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
@@ -16,16 +14,12 @@ void main() async {
 
   SystemChrome.setEnabledSystemUIOverlays([]);
 
-  // TODO: Put here BLOC
-  runApp(Container());
+  runApp(MainApp());
 }
 
 class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        // TODO: Put here Splash screen
-        home: Container(),
-        navigatorKey: navigatorKey);
+    return MaterialApp(home: Container(), navigatorKey: navigatorKey);
   }
 }
