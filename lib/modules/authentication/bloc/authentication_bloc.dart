@@ -18,12 +18,10 @@ class AuthenticationBloc
   Stream<AuthenticationState> mapEventToState(
     AuthenticationEvent event,
   ) async* {
-    
     // app start
     if (event is AppStarted) {
       var token = await getToken(NoParams());
-      token.fold((failure) => Error(message: failure.message),
-          (token) async* {
+      token.fold((failure) => Error(message: failure.message), (token) async* {
         if (token != '') {
           Storage().token = token;
           yield Authenticated();

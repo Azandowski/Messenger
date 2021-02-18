@@ -2,6 +2,11 @@ import 'package:messenger_mobile/core/config/storage.dart';
 import 'package:messenger_mobile/core/error/failures.dart';
 
 abstract class AuthenticationLocalDataSource {
+  /// Gets the cached [NumberTriviaModel] which was gotten the last time
+  /// the user had an internet connection.
+  ///
+  /// Throws [CacheException] if no cached data is present.
+  ///
   Future<void> saveToken(String token);
 
   /// read to keystore/keychain
@@ -15,7 +20,6 @@ const ACCESS_TOKEN = 'access_token';
 
 class AuthenticationLocalDataSourceImpl
     implements AuthenticationLocalDataSource {
-  
   @override
   Future<void> deleteToken() async {
     await Storage().secureStorage.delete(key: ACCESS_TOKEN);
@@ -33,6 +37,6 @@ class AuthenticationLocalDataSourceImpl
 
   @override
   Future<void> saveToken(String token) async {
-    await Storage().secureStorage.write(key: 'access_token', value: token);
+    await Storage().secureStorage.write(key: ACCESS_TOKEN, value: token);
   }
 }

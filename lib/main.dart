@@ -4,7 +4,7 @@ import 'locator.dart' as serviceLocator;
 
 final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
 
-void main() async { 
+void main() async {
   await serviceLocator.init();
 
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,15 +20,12 @@ void main() async {
   runApp(Container());
 }
 
-class MainApp extends StatelessWidget { 
-  
+class MainApp extends StatelessWidget {
   @override
-  Widget build(BuildContext context) { 
-    
+  Widget build(BuildContext context) {
     return MaterialApp(
-      // TODO: Put here Splash screen
-      home: Container(),
-      navigatorKey: navigatorKey
-    );
+        // TODO: Put here Splash screen
+        home: Container(),
+        navigatorKey: navigatorKey);
   }
 }
