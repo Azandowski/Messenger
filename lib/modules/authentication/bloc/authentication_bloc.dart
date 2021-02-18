@@ -1,5 +1,4 @@
 import 'package:bloc/bloc.dart';
-import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 import 'package:messenger_mobile/core/error/failures.dart';
 import 'package:messenger_mobile/core/usecases/usecase.dart';

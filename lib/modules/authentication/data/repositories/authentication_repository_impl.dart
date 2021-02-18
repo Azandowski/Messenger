@@ -23,4 +23,10 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
     // TODO: implement sendPhone
     throw UnimplementedError();
   }
+
+  @override
+  Future<Either<Failure, String>> getToken() {
+    // TODO: implement getToken
+    throw UnimplementedError();
+  }
 }
