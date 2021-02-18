@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/core/usecases/usecase.dart';
-import 'package:messenger_mobile/modules/authentication/domain/usecases/get_token.dart';
+import '../../../core/usecases/usecase.dart';
+import '../domain/usecases/get_token.dart';
 import '../../../core/config/storage.dart';
 import 'authentication_event.dart';
 import 'authentication_state.dart';

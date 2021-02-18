@@ -1,9 +1,9 @@
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
-import 'package:messenger_mobile/core/error/failures.dart';
-import 'package:messenger_mobile/core/usecases/usecase.dart';
-import 'package:messenger_mobile/modules/authentication/domain/entities/code_entity.dart';
-import 'package:messenger_mobile/modules/authentication/domain/repositories/authentication_repository.dart';
+import '../../../../core/error/failures.dart';
+import '../../../../core/usecases/usecase.dart';
+import '../entities/code_entity.dart';
+import '../repositories/authentication_repository.dart';
 import 'package:meta/meta.dart';
 
 class CreateCode implements UseCase<CodeEntity, PhoneParams> {

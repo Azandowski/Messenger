@@ -1,5 +1,5 @@
-import 'package:messenger_mobile/core/config/storage.dart';
-import 'package:messenger_mobile/core/error/failures.dart';
+import '../../../../core/config/storage.dart';
+import '../../../../core/error/failures.dart';
 
 abstract class AuthenticationLocalDataSource {
   /// Gets the cached [NumberTriviaModel] which was gotten the last time
