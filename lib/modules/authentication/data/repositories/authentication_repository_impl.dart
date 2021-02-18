@@ -1,8 +1,10 @@
 import 'package:dartz/dartz.dart';
-import 'package:messenger_mobile/core/network/network_info.dart';
+import 'package:messenger_mobile/core/services/network/network_info.dart';
 import 'package:messenger_mobile/modules/authentication/data/datasources/local_authentication_datasource.dart';
 import 'package:messenger_mobile/modules/authentication/data/datasources/remote_authentication_datasource.dart';
+import 'package:messenger_mobile/modules/authentication/domain/entities/code_entity.dart';
 import 'package:messenger_mobile/modules/authentication/domain/repositories/authentication_repository.dart';
+import 'package:messenger_mobile/modules/authentication/domain/usecases/create_code.dart';
 import 'package:meta/meta.dart';
 
 import '../../../../core/error/failures.dart';
@@ -19,9 +21,11 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
   });
 
   @override
-  Future<Either<Failure, String>> sendPhone(String phoneNumber) async {
-    // TODO: implement sendPhone
-    throw UnimplementedError();
+  Future<Either<Failure, CodeEntity>> createCode(PhoneParams params) async {
+    try {
+      final codeEntity = await remoteDataSource.createCode(params.phoneNumber);
+      return codeEntity;
+    } catch (e) {}
   }
 
   @override

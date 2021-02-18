@@ -1,24 +1,30 @@
+import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:messenger_mobile/modules/authentication/data/datasources/local_authentication_datasource.dart';
 import 'package:messenger_mobile/modules/authentication/data/datasources/remote_authentication_datasource.dart';
+import 'package:messenger_mobile/modules/authentication/domain/entities/code_entity.dart';
+import 'package:messenger_mobile/modules/authentication/domain/repositories/authentication_repository.dart';
 import 'package:mockito/mockito.dart';
 
 main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  AuthenticationRemoteDataSourceImpl localDataSource;
+  AuthenticationRemoteDataSourceImpl remoteDataSource;
+
   setUp(() {
-    localDataSource = AuthenticationRemoteDataSourceImpl();
+    remoteDataSource = AuthenticationRemoteDataSourceImpl();
   });
 
-  test('should get token when there is token', () async {
+  test('should get code entity if successs', () async {
     //arrange
-    final token = 'fnsjfkds';
-    // when(await localDataSource.getToken().then((value) => token));
+    final phone = '+77055946560';
+    final CodeEntity codeEntity =
+        CodeEntity(id: 12, phone: phone, code: '1122', attempts: 0);
+    when(remoteDataSource.createCode(any))
+        .thenAnswer((_) async => Right(codeEntity));
     //act
-    // final result = await localDataSource.getToken();
+    final result = await remoteDataSource.createCode(phone);
     //verify
-    // verify(localDataSource.getToken());
-    // expect(result, token);
+    verify(remoteDataSource.createCode(phone));
+    // expect(result, Right(codeEntity));
   });
 }

@@ -1,12 +1,12 @@
 import 'package:messenger_mobile/core/services/network/config.dart';
 
-enum Endpoints { 
+enum Endpoints {
   // Authentication
   createCode,
   login,
 }
 
-extension EndpointsExtension on Endpoints { 
+extension EndpointsExtension on Endpoints {
   String get scheme {
     return Config.baseScheme.value;
   }
@@ -22,7 +22,7 @@ extension EndpointsExtension on Endpoints {
     });
   }
 
-  String get path { 
+  String get path {
     switch (this) {
       case Endpoints.createCode:
         return "${Config.baseAPIpath.value}/createCode";
@@ -33,9 +33,9 @@ extension EndpointsExtension on Endpoints {
 
   Uri buildURL({Map<String, dynamic> queryParameters}) {
     return Uri(
-      scheme: this.scheme,
-      host: this.hostName,
-      path: this.path,
-      queryParameters: queryParameters ?? {});
+        scheme: this.scheme,
+        host: this.hostName,
+        path: this.path,
+        queryParameters: queryParameters ?? {});
   }
 }
