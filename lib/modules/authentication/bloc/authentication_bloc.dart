@@ -1,13 +1,15 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
-import '../../../core/usecases/usecase.dart';
-import '../domain/usecases/get_token.dart';
+import 'package:messenger_mobile/core/usecases/usecase.dart';
+import 'package:messenger_mobile/modules/authentication/bloc/index.dart';
+import 'package:messenger_mobile/modules/authentication/domain/usecases/get_token.dart';
 import '../../../core/config/storage.dart';
 import 'authentication_event.dart';
 import 'authentication_state.dart';
 
 class AuthenticationBloc
     extends Bloc<AuthenticationEvent, AuthenticationState> {
+  
   final GetToken getToken;
 
   AuthenticationBloc({
@@ -19,9 +21,10 @@ class AuthenticationBloc
     AuthenticationEvent event,
   ) async* {
     // app start
+    
     if (event is AppStarted) {
       var token = await getToken(NoParams());
-      token.fold((failure) => Error(message: failure.message), (token) async* {
+      token.fold((failure) => AuthenticationError(message: failure.message), (token) async* {
         if (token != '') {
           Storage().token = token;
           yield Authenticated();
@@ -29,8 +32,9 @@ class AuthenticationBloc
           yield Unauthenticated();
         }
       });
+    } else if (event is ChangeLoginMode) {
+      yield Unauthenticated(loginMode: event.currentMode);
     }
-
     // if (event is LoggedIn) {
     //   Storage().token = event.token;
     //   await _saveToken(event.token);
