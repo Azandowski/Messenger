@@ -1,4 +1,4 @@
-import 'package:messenger_mobile/core/services/network/config.dart';
+import 'config.dart';
 
 enum Endpoints {
   // Authentication
