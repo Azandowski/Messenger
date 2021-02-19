@@ -1,24 +1,32 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
-import 'package:messenger_mobile/core/services/network/NetworkExceptions.dart';
+import 'package:messenger_mobile/core/error/failures.dart';
 import './Endpoints.dart';
 
 class ApiBaseHelper {
+  
+  final http.Client apiHttpClient;
+
+  ApiBaseHelper({
+    @required this.apiHttpClient
+  });
+
   Future<dynamic> get(
     Endpoints endpoint, {
     Map<String, dynamic> queryParams,
     String token,
   }) async {
-    return http.get(
+    return apiHttpClient.get(
       endpoint.buildURL(queryParameters: queryParams),
       headers: endpoint.getHeaders(token: token),
     ).then((value) {
       return _returnResponse(value, endpoints: endpoint);
     }).catchError((error) {
       if (error is SocketException) {
-        throw CustomError("no_internet");
+        throw ServerFailure(message: "no_internet");
       } else {
         throw error;
       }
@@ -26,7 +34,7 @@ class ApiBaseHelper {
   }
 
   Future<dynamic> post(Endpoints endpoint, {String token, Map params}) async {
-    return http.post(
+    return apiHttpClient.post(
       endpoint.buildURL(),
       headers: endpoint.getHeaders(token: token),
       body: params,
@@ -34,11 +42,11 @@ class ApiBaseHelper {
       if (value.statusCode >= 200 && value.statusCode <= 299) {
         return _returnResponse(value, endpoints: endpoint);
       } else {
-        throw CustomError(value.body.toString());
+        throw ServerFailure(message: value.body.toString());
       }
     }).catchError((e) {
       if (e is SocketException) {
-        throw CustomError("no_internet");
+        throw ServerFailure(message: "no_internet");
       } else {
         throw e;
       }
@@ -50,7 +58,7 @@ class ApiBaseHelper {
       var returnResponse = json.decode(response.body.toString());
       return returnResponse;
     } else {
-      throw CustomError(response.body.toString());
+      throw ServerFailure(message: response.body.toString());
     }
   }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:messenger_mobile/core/network/network_info.dart';
+import 'package:messenger_mobile/core/services/network/network_info.dart';
 import 'package:messenger_mobile/locator.dart';
 import 'package:messenger_mobile/modules/authentication/data/datasources/local_authentication_datasource.dart';
 import 'package:messenger_mobile/modules/authentication/data/datasources/remote_authentication_datasource.dart';
@@ -14,10 +14,8 @@ import 'modules/authentication/bloc/index.dart';
 final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
 
 void main() async {
-  await serviceLocator.init();
-
   WidgetsFlutterBinding.ensureInitialized();
-
+  await serviceLocator.init();
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,

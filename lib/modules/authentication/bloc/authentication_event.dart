@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:messenger_mobile/modules/authentication/domain/entities/auth_enums.dart';
 
 abstract class AuthenticationEvent extends Equatable {
   @override
@@ -18,4 +19,11 @@ class LoggedIn extends AuthenticationEvent {
 
 class LoggedOut extends AuthenticationEvent {}
 
+class ChangeLoginMode extends AuthenticationEvent {
+  final LoginScreenMode currentMode;
+  
+  ChangeLoginMode(this.currentMode);
 
+  @override
+  List<Object> get props => [currentMode];
+}

@@ -1,20 +1,21 @@
-import 'dart:convert';
+import 'package:messenger_mobile/core/services/network/NetworkingService.dart';
+import 'package:messenger_mobile/modules/authentication/domain/entities/code_entity.dart';
 
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import '../../../../locator.dart';
 
 abstract class AuthenticationRemoteDataSource {
-  Future<String> sendPhone(int number);
+  Future<CodeEntity> createCode(String number);
 }
 
 class AuthenticationRemoteDataSourceImpl
     implements AuthenticationRemoteDataSource {
-
-  AuthenticationRemoteDataSourceImpl();
-
+  
   @override
-  Future<String> sendPhone(int number) {
-    // TODO: implement sendPhone
-    throw UnimplementedError();
+  Future<CodeEntity> createCode(String number) async {
+    sl<NetworkingService>().createCode(number, (codeModel) {
+      return codeModel;
+    }, (error) {
+      throw error;
+    });
   }
 }

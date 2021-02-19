@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:messenger_mobile/core/usecases/usecase.dart';
+import 'package:messenger_mobile/modules/authentication/bloc/index.dart';
 import 'package:messenger_mobile/modules/authentication/domain/usecases/get_token.dart';
 import '../../../core/config/storage.dart';
 import 'authentication_event.dart';
@@ -31,8 +32,9 @@ class AuthenticationBloc
           yield Unauthenticated();
         }
       });
+    } else if (event is ChangeLoginMode) {
+      yield Unauthenticated(loginMode: event.currentMode);
     }
-
     // if (event is LoggedIn) {
     //   Storage().token = event.token;
     //   await _saveToken(event.token);
