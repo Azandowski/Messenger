@@ -4,6 +4,9 @@ enum Endpoints {
   // Authentication
   createCode,
   login,
+
+  // Profile
+  getCurrentUser
 }
 
 extension EndpointsExtension on Endpoints {
@@ -28,6 +31,8 @@ extension EndpointsExtension on Endpoints {
         return "${Config.baseAPIpath.value}/createCode";
       case Endpoints.login:
         return "${Config.baseAPIpath.value}/login";
+      case Endpoints.getCurrentUser:
+        return "${Config.baseAPIpath.value}/getCurrentUser";
     }
   }
 

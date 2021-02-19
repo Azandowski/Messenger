@@ -17,12 +17,10 @@ class ApiBaseHelper {
     Map<String, dynamic> queryParams,
     String token,
   }) async {
-    return apiHttpClient
-        .get(
+    return apiHttpClient.get(
       endpoint.buildURL(queryParameters: queryParams),
       headers: endpoint.getHeaders(token: token),
-    )
-        .then((value) {
+    ).then((value) {
       return _returnResponse(value, endpoints: endpoint);
     }).catchError((error) {
       if (error is SocketException) {
@@ -34,13 +32,11 @@ class ApiBaseHelper {
   }
 
   Future<dynamic> post(Endpoints endpoint, {String token, Map params}) async {
-    return apiHttpClient
-        .post(
+    return apiHttpClient.post(
       endpoint.buildURL(),
       headers: endpoint.getHeaders(token: token),
       body: params,
-    )
-        .then((value) {
+    ).then((value) {
       if (value.statusCode >= 200 && value.statusCode <= 299) {
         return _returnResponse(value, endpoints: endpoint);
       } else {
