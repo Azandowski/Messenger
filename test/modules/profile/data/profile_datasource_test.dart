@@ -9,12 +9,12 @@ import 'package:http/http.dart' as http;
 
 class MockHttpClient extends Mock implements http.Client {}
 
-main() { 
+main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   ProfileDataSourceImpl profileDataSourceImpl;
   MockHttpClient httpClient;
 
-  setUp(() async { 
+  setUp(() async {
     httpClient = MockHttpClient();
     profileDataSourceImpl = ProfileDataSourceImpl(client: httpClient);
   });
@@ -22,35 +22,23 @@ main() {
   // MARK: - Local Props
 
   final token = '1853|z0H7WZomuJ9MhLZ2yZI0VkZuD7f1SYzNh38BhpxT';
-  final endpoint = Endpoints.getCurrentUser;
-  final user = UserModel(
-    name: 'Yerkebulan',
-    phoneNumber: '+77470726323'
-  );
+  final user = UserModel(name: 'Yerkebulan', phoneNumber: '+77470726323');
 
-  test('Should load Profile', () async { 
-    when(httpClient.post(
-      endpoint.buildURL(),
-      headers: endpoint.getHeaders(token: token),
-      body: jsonEncode({
-        'application_id': '1' 
-      }),
-    )).thenAnswer((_) async => http.Response(json.encode(user.toJson()), 200));
-    
+  test('Should load Profile', () async {
+    when(httpClient.post(any,
+            headers: anyNamed('headers'), body: anyNamed('body')))
+        .thenAnswer(
+            (_) async => http.Response(json.encode(user.toJson()), 200));
+
     final result = await profileDataSourceImpl.getCurrentUser(token);
 
     expect(result, equals(user));
   });
 
   test('Shoule return Failure when status is wrong', () async {
-    
-    when(httpClient.post(
-      endpoint.buildURL(),
-      headers: endpoint.getHeaders(token: token),
-      body: jsonEncode({
-        'application_id': '1' 
-      }),
-    )).thenAnswer((_) async {
+    when(httpClient.post(any,
+            headers: anyNamed('headers'), body: anyNamed('body')))
+        .thenAnswer((_) async {
       print("called");
       return http.Response('ERROR OCCURED', 404);
     });

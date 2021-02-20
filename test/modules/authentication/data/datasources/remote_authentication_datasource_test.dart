@@ -2,9 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:messenger_mobile/core/error/failures.dart';
-import 'package:messenger_mobile/core/services/network/Endpoints.dart';
 import 'package:messenger_mobile/modules/authentication/data/datasources/remote_authentication_datasource.dart';
 import 'package:messenger_mobile/modules/authentication/data/models/code_response.dart';
+import 'package:messenger_mobile/modules/authentication/data/models/token_model.dart';
 import 'package:mockito/mockito.dart';
 import 'package:http/http.dart' as http;
 
@@ -15,7 +15,7 @@ main() {
 
   AuthenticationRemoteDataSourceImpl remoteDataSource;
   MockHttpClient httpClient;
-  
+
   setUp(() async {
     httpClient = MockHttpClient();
     remoteDataSource = AuthenticationRemoteDataSourceImpl(client: httpClient);
@@ -24,37 +24,70 @@ main() {
   // MARK: - Local Data
 
   final phone = '+77055946560';
-  final CodeModel codeEntity = CodeModel(id: 12, phone: phone, code: '1122', attempts: 0);
-  final endpoint = Endpoints.createCode;
+  final CodeModel codeEntity =
+      CodeModel(id: 12, phone: phone, code: '1122', attempts: 0);
 
-  test('should get code entity if successs', () async {
-    // arrange
-    
-    when(httpClient.post(
-      endpoint.buildURL(),
-      headers: anyNamed('headers'),
-      body: ''
-    )).thenAnswer((_) async => http.Response(json.encode(codeEntity.toJson()), 200));
-    
-    // act
-    final result = await remoteDataSource.createCode(phone);
-  
-    expect(result, equals(codeEntity));
+  group('createCode', () {
+    test('should get code entity if successs', () async {
+      // arrange
+      when(httpClient.post(any,
+              headers: anyNamed('headers'), body: anyNamed('body')))
+          .thenAnswer((_) async =>
+              http.Response(json.encode(codeEntity.toJson()), 200));
+
+      // act
+      final result = await remoteDataSource.createCode(phone);
+      //verify
+      expect(result, equals(codeEntity));
+    });
+
+    test('should throw error if status is 400', () async {
+      // arrange
+      when(httpClient.post(any,
+              headers: anyNamed('headers'), body: anyNamed('body')))
+          .thenAnswer((_) async {
+        print('i was called');
+        return http.Response('error', 400);
+      });
+
+      //act
+      final call = remoteDataSource.createCode;
+
+      //verify
+      expect(() => call(phone), throwsA(isA<ServerFailure>()));
+    });
   });
 
-  test('should throw error if status is 400', () async {
-    // arrange
-    
-    when(httpClient.post(
-      endpoint.buildURL(),
-      body: '',
-      headers: endpoint.getHeaders(),
-    )).thenAnswer((_) async => http.Response('mal sotri', 400));
-    
-    //act
-    final call = remoteDataSource.createCode;
-    
-    //verify
-    expect(() => call(phone), throwsA(isA<ServerFailure>()));
+  group('login', () {
+    TokenModel tTokenModel = TokenModel(token: 'sometoken');
+    final code = '1122';
+    test('should get token entity if successs', () async {
+      // arrange
+
+      when(httpClient.post(any,
+              headers: anyNamed('headers'), body: anyNamed('body')))
+          .thenAnswer((_) async =>
+              http.Response(json.encode(tTokenModel.toJson()), 200));
+
+      // act
+      final result = await remoteDataSource.login(phone, code);
+
+      //verify
+      expect(result, equals(tTokenModel));
+    });
+
+    test('should throw error if status is 400', () async {
+      // arrange
+
+      when(httpClient.post(any,
+              headers: anyNamed('headers'), body: anyNamed('body')))
+          .thenAnswer((_) async => http.Response('invalid number', 400));
+
+      //act
+      final call = remoteDataSource.login;
+
+      //verify
+      expect(() => call(phone, code), throwsA(isA<ServerFailure>()));
+    });
   });
 }
