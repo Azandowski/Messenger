@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:messenger_mobile/core/error/failures.dart';
 import 'package:messenger_mobile/modules/authentication/data/datasources/remote_authentication_datasource.dart';
 import 'package:messenger_mobile/modules/authentication/data/models/code_response.dart';
 import 'package:mockito/mockito.dart';
@@ -33,5 +34,18 @@ main() {
     //verify
     verify(await remoteDataSource.createCode(phone));
     expect(result, equals(codeEntity));
+  });
+
+  test('should throw error if status is 400', () async {
+    //arrange
+    when(httpClient.post(
+      any,
+      headers: anyNamed('headers'),
+    )).thenAnswer((_) async => http.Response('mal sotri', 400));
+    //act
+    final call = remoteDataSource.createCode;
+    //verify
+    expect(() => call(phone), throwsA(isA<ServerFailure>()));
+    verify(await remoteDataSource.createCode(phone));
   });
 }
