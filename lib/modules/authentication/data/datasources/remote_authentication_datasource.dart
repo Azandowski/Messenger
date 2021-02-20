@@ -1,24 +1,37 @@
-import 'package:messenger_mobile/modules/authentication/domain/usecases/create_code.dart';
+import 'dart:convert';
 
+import 'package:flutter/material.dart';
+import 'package:messenger_mobile/core/services/network/APIBaseHelper.dart';
+import 'package:messenger_mobile/locator.dart';
+import 'package:messenger_mobile/modules/authentication/data/models/token_response.dart';
+import 'package:http/http.dart' as http;
 import '../../../../core/services/network/NetworkingService.dart';
 import '../models/code_response.dart';
 
-import '../../../../locator.dart';
-
 abstract class AuthenticationRemoteDataSource {
   Future<CodeModel> createCode(String number);
+  Future<TokenModel> sendCode(String code, String number);
 }
 
 class AuthenticationRemoteDataSourceImpl
     implements AuthenticationRemoteDataSource {
+  final NetworkingService networkingService;
+
+  AuthenticationRemoteDataSourceImpl({@required this.networkingService});
+
   @override
   Future<CodeModel> createCode(String number) async {
-    var codeModel;
-    await sl<NetworkingService>().createCode(number, (code) async {
-      codeModel = code;
-    }, (error) {
-      throw error;
+    return await networkingService.createCode(number,
+        (http.Response response) async {
+      if (response.statusCode == 200) {
+        return CodeModel.fromJson(json.decode(response.body));
+      }
     });
-    return codeModel;
+  }
+
+  @override
+  Future<TokenModel> sendCode(String code, String number) {
+    // TODO: implement sendCode
+    throw UnimplementedError();
   }
 }

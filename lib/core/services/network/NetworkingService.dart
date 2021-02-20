@@ -1,8 +1,6 @@
-import 'package:flutter/foundation.dart';
-import '../../error/failures.dart';
+import 'package:flutter/material.dart';
 import 'APIBaseHelper.dart';
 import 'Endpoints.dart';
-import '../../../modules/authentication/data/models/code_response.dart';
 import 'package:http/http.dart' as http;
 
 class NetworkingService {
@@ -13,16 +11,9 @@ class NetworkingService {
     _apiProvider = ApiBaseHelper(apiHttpClient: httpClient);
   }
 
-  createCode(String phone, Function(CodeModel) onSuccess,
-      Function(Failure) onError) async {
-    try {
-      Map<String, dynamic> response = await _apiProvider
-          .post(Endpoints.createCode, params: {"phone": phone});
-      onSuccess(CodeModel.fromJson(response));
-    } catch (e) {
-      if (e is Failure) {
-        onError(e);
-      }
-    }
+  createCode(String phone, Function(http.Response) onFinished) async {
+    http.Response response =
+        await _apiProvider.post(Endpoints.createCode, params: {"phone": phone});
+    onFinished(response);
   }
 }
