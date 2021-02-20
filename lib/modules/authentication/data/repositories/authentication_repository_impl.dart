@@ -36,9 +36,7 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
       final token = await localDataSource.getToken();
       return Right(token);
     } catch (e) {
-      if (e is StorageFailure) {
-        return Left(e);
-      }
+      return Left(e);
     }
   }
 }

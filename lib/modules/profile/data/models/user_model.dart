@@ -4,7 +4,6 @@ class UserModel extends User {
   final String name;
   final String phoneNumber;
   final String profileImage;
-  User user;
 
   UserModel({
     this.name, 
@@ -19,7 +18,7 @@ class UserModel extends User {
   factory UserModel.fromJson(Map<String, dynamic> json) { 
     return UserModel(
       name: json['name'],
-      phoneNumber: json['number'],
+      phoneNumber: json['phone'],
       profileImage: json['profile_image']
     );
   }
@@ -27,7 +26,7 @@ class UserModel extends User {
   Map<String, dynamic> toJson () {
     return {
       'name': name,
-      'number': phoneNumber,
+      'phone': phoneNumber,
       'profile_image': profileImage
     };
   }

@@ -19,20 +19,21 @@ extension EndpointsExtension on Endpoints {
   }
 
   Map<String, String> getHeaders({token: String, Map defaultHeaders}) {
-    return new Map<String, String>.from({
-      if (defaultHeaders != null) ...defaultHeaders,
+    return {
+      if (defaultHeaders != null) ...defaultHeaders, 
       if (token != null && token != "") ...{"Authorization": "Bearer $token"},
-    });
+      if (defaultHeaders == null) ...{'Content-Type' : 'application/json; charset=utf-8'}
+    };
   }
 
   String get path {
     switch (this) {
       case Endpoints.createCode:
-        return "${Config.baseAPIpath.value}/createCode";
+        return "${Config.baseAPIpath.value}/user/createCode";
       case Endpoints.login:
-        return "${Config.baseAPIpath.value}/login";
+        return "${Config.baseAPIpath.value}/user/login";
       case Endpoints.getCurrentUser:
-        return "${Config.baseAPIpath.value}/getCurrentUser";
+        return "${Config.baseAPIpath.value}/user/getCurrentUser";
     }
   }
 

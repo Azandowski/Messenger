@@ -27,12 +27,7 @@ class AuthenticationLocalDataSourceImpl
 
   @override
   Future<String> getToken() async {
-    final token = await Storage().secureStorage.read(key: ACCESS_TOKEN);
-    if (token != null) {
-      return Future.value(token);
-    } else {
-      throw StorageFailure();
-    }
+    return await Storage().secureStorage.read(key: ACCESS_TOKEN);
   }
 
   @override

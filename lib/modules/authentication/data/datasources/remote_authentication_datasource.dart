@@ -12,10 +12,6 @@ class AuthenticationRemoteDataSourceImpl
   
   @override
   Future<CodeEntity> createCode(String number) async {
-    sl<NetworkingService>().createCode(number, (codeModel) {
-      return codeModel;
-    }, (error) {
-      throw error;
-    });
+    return await sl<NetworkingService>().createCode(phone: number);
   }
 }
