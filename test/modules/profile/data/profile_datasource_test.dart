@@ -2,8 +2,6 @@ import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:messenger_mobile/core/error/failures.dart';
 import 'package:messenger_mobile/core/services/network/Endpoints.dart';
-import 'package:messenger_mobile/core/services/network/NetworkingService.dart';
-import 'package:messenger_mobile/locator.dart';
 import 'package:messenger_mobile/modules/profile/data/datasources/profile_datasource.dart';
 import 'package:messenger_mobile/modules/profile/data/models/user_model.dart';
 import 'package:mockito/mockito.dart';
@@ -18,11 +16,7 @@ main() {
 
   setUp(() async { 
     httpClient = MockHttpClient();
-    if (!sl.isRegistered<NetworkingService>()) {
-      sl.registerLazySingleton(() => NetworkingService(httpClient: httpClient));
-    }
-
-    profileDataSourceImpl = ProfileDataSourceImpl();
+    profileDataSourceImpl = ProfileDataSourceImpl(client: httpClient);
   });
 
   // MARK: - Local Props
@@ -33,7 +27,6 @@ main() {
     name: 'Yerkebulan',
     phoneNumber: '+77470726323'
   );
-
 
   test('Should load Profile', () async { 
     when(httpClient.post(
@@ -50,8 +43,7 @@ main() {
   });
 
   test('Shoule return Failure when status is wrong', () async {
-    print("STARTING___SECOND___TEST");
-
+    
     when(httpClient.post(
       endpoint.buildURL(),
       headers: endpoint.getHeaders(token: token),
@@ -59,8 +51,12 @@ main() {
         'application_id': '1' 
       }),
     )).thenAnswer((_) async {
-      print("Why is not called");
+      print("called");
       return http.Response('ERROR OCCURED', 404);
     });
+
+    final call = profileDataSourceImpl.getCurrentUser;
+
+    expect(() => call(token), throwsA(isA<ServerFailure>()));
   });
 }

@@ -2,7 +2,6 @@ import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:get_it/get_it.dart';
 import 'package:messenger_mobile/core/config/auth_config.dart';
 import 'package:messenger_mobile/core/services/network/network_info.dart';
-import 'core/services/network/NetworkingService.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
@@ -21,7 +20,4 @@ Future<void> init() async {
   sl.registerLazySingleton(() => AuthConfig());
 
   sl.registerLazySingleton(() => http.Client());
-
-  // Networking Service
-  sl.registerLazySingleton(() => NetworkingService(httpClient: sl()));
 }

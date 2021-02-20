@@ -1,21 +1,29 @@
+import 'package:flutter/foundation.dart';
 import 'package:messenger_mobile/core/error/failures.dart';
-import 'package:messenger_mobile/core/services/network/NetworkingService.dart';
-import 'package:messenger_mobile/locator.dart';
+import 'package:messenger_mobile/core/services/network/Endpoints.dart';
 import 'package:messenger_mobile/modules/profile/data/models/user_model.dart';
 import 'package:messenger_mobile/modules/profile/domain/entities/user.dart';
-import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'dart:io';
+import 'package:http/http.dart' as http;
 
 abstract class ProfileDataSource {
   Future<User> getCurrentUser(String token);
 }
 
 class ProfileDataSourceImpl implements ProfileDataSource {
+  final http.Client client;
+
+  ProfileDataSourceImpl({
+    @required this.client
+  });
   
   @override
   Future<User> getCurrentUser(String token) async {
-    http.Response response = await sl<NetworkingService>().getCurrentUser(token: token);
+    http.Response response = await client.post(
+      Endpoints.getCurrentUser.buildURL(), 
+      headers: Endpoints.getCurrentUser.getHeaders(token: token),
+      body: json.encode({ 'application_id': '1' })
+    );
 
     if (response.statusCode >= 200 && response.statusCode <= 299) {
       return UserModel.fromJson(json.decode(response.body));

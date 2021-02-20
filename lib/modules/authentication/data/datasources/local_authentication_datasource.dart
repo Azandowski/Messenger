@@ -2,11 +2,7 @@ import '../../../../core/config/storage.dart';
 import '../../../../core/error/failures.dart';
 
 abstract class AuthenticationLocalDataSource {
-  /// Gets the cached [NumberTriviaModel] which was gotten the last time
-  /// the user had an internet connection.
-  ///
-  /// Throws [CacheException] if no cached data is present.
-  ///
+
   Future<void> saveToken(String token);
 
   /// read to keystore/keychain

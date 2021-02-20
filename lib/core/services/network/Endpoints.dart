@@ -29,9 +29,9 @@ extension EndpointsExtension on Endpoints {
   String get path {
     switch (this) {
       case Endpoints.createCode:
-        return "${Config.baseAPIpath.value}/user/createCode";
+        return "${Config.baseAPIpath.value}/auth/createCode";
       case Endpoints.login:
-        return "${Config.baseAPIpath.value}/user/login";
+        return "${Config.baseAPIpath.value}/auth/login";
       case Endpoints.getCurrentUser:
         return "${Config.baseAPIpath.value}/user/getCurrentUser";
     }
