@@ -3,6 +3,7 @@ import 'package:messenger_mobile/core/services/network/network_info.dart';
 import 'package:messenger_mobile/modules/authentication/data/datasources/local_authentication_datasource.dart';
 import 'package:messenger_mobile/modules/authentication/data/datasources/remote_authentication_datasource.dart';
 import 'package:messenger_mobile/modules/authentication/domain/entities/code_entity.dart';
+import 'package:messenger_mobile/modules/authentication/domain/entities/token_entity.dart';
 import 'package:messenger_mobile/modules/authentication/domain/repositories/authentication_repository.dart';
 import 'package:messenger_mobile/modules/authentication/domain/usecases/create_code.dart';
 import 'package:meta/meta.dart';
@@ -22,11 +23,16 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
 
   @override
   Future<Either<Failure, CodeEntity>> createCode(PhoneParams params) async {
-    try {
-      final codeEntity = await remoteDataSource.createCode(params.phoneNumber);
-      return Right(codeEntity);
-    } catch (e) {
-      return Left(e);
+    if (await networkInfo.isConnected) {
+      try {
+        final codeEntity =
+            await remoteDataSource.createCode(params.phoneNumber);
+        return Right(codeEntity);
+      } catch (e) {
+        return Left(e);
+      }
+    } else {
+      throw ServerFailure(message: 'no_internet');
     }
   }
 
@@ -37,6 +43,17 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
       return Right(token);
     } catch (e) {
       return Left(e);
+    }
+  }
+
+  @override
+  Future<Either<Failure, TokenEntity>> login(params) async {
+    try {
+      final token =
+          await remoteDataSource.login(params.phoneNumber, params.code);
+      return Right(token);
+    } on ServerFailure {
+      return Left(ServerFailure(message: 'null'));
     }
   }
 }
