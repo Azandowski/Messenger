@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 
 class NetworkingService {
   
-  final http.Client httpClient;
+  http.Client httpClient;
   
   ApiBaseHelper _apiProvider;
 
@@ -20,10 +20,10 @@ class NetworkingService {
     return await _apiProvider.post(Endpoints.createCode, params: {"phone": phone});
   }
 
-  Future getCurrentUser ({
+  Future<http.Response> getCurrentUser ({
     @required String token
   }) async {
-    return await _apiProvider.post(
+    return _apiProvider.post(
       Endpoints.getCurrentUser, token: token, params: {
         'application_id': '1'
       }

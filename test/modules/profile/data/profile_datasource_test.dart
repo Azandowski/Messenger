@@ -1,6 +1,6 @@
 import 'dart:convert';
-
 import 'package:flutter_test/flutter_test.dart';
+import 'package:messenger_mobile/core/error/failures.dart';
 import 'package:messenger_mobile/core/services/network/Endpoints.dart';
 import 'package:messenger_mobile/core/services/network/NetworkingService.dart';
 import 'package:messenger_mobile/locator.dart';
@@ -18,18 +18,24 @@ main() {
 
   setUp(() async { 
     httpClient = MockHttpClient();
-    sl.registerLazySingleton(() => NetworkingService(httpClient: httpClient));
+    if (!sl.isRegistered<NetworkingService>()) {
+      sl.registerLazySingleton(() => NetworkingService(httpClient: httpClient));
+    }
+
     profileDataSourceImpl = ProfileDataSourceImpl();
   });
 
-  test('Should load Profile', () async { 
-    final token = '1853|z0H7WZomuJ9MhLZ2yZI0VkZuD7f1SYzNh38BhpxT';
-    final endpoint = Endpoints.getCurrentUser;
-    final user = UserModel(
-      name: 'Yerkebulan',
-      phoneNumber: '+77470726323'
-    );
+  // MARK: - Local Props
 
+  final token = '1853|z0H7WZomuJ9MhLZ2yZI0VkZuD7f1SYzNh38BhpxT';
+  final endpoint = Endpoints.getCurrentUser;
+  final user = UserModel(
+    name: 'Yerkebulan',
+    phoneNumber: '+77470726323'
+  );
+
+
+  test('Should load Profile', () async { 
     when(httpClient.post(
       endpoint.buildURL(),
       headers: endpoint.getHeaders(token: token),
@@ -39,8 +45,22 @@ main() {
     )).thenAnswer((_) async => http.Response(json.encode(user.toJson()), 200));
     
     final result = await profileDataSourceImpl.getCurrentUser(token);
-    print(result.phoneNumber);
-    print(user.phoneNumber);
+
     expect(result, equals(user));
+  });
+
+  test('Shoule return Failure when status is wrong', () async {
+    print("STARTING___SECOND___TEST");
+
+    when(httpClient.post(
+      endpoint.buildURL(),
+      headers: endpoint.getHeaders(token: token),
+      body: jsonEncode({
+        'application_id': '1' 
+      }),
+    )).thenAnswer((_) async {
+      print("Why is not called");
+      return http.Response('ERROR OCCURED', 404);
+    });
   });
 }

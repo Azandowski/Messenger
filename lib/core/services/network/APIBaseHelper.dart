@@ -20,7 +20,7 @@ class ApiBaseHelper {
     );
   }
 
-  Future<dynamic> post(Endpoints endpoint, {String token, Map params}) {
+  Future<http.Response> post(Endpoints endpoint, {String token, Map params}) {
     Map headers = endpoint.getHeaders(token: token);
     return apiHttpClient.post(
       endpoint.buildURL(),

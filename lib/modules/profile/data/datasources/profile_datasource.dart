@@ -15,15 +15,12 @@ class ProfileDataSourceImpl implements ProfileDataSource {
   
   @override
   Future<User> getCurrentUser(String token) async {
-    try {
-      http.Response response = await sl<NetworkingService>().getCurrentUser(token: token);
-      if (response.statusCode >= 200 && response.statusCode <= 299) {
-        return UserModel.fromJson(json.decode(response.body));
-      } else {
-        throw ServerFailure(message: response.body.toString());
-      }
-    } catch (e) {
-      throw ServerFailure(message: e.toString());
+    http.Response response = await sl<NetworkingService>().getCurrentUser(token: token);
+
+    if (response.statusCode >= 200 && response.statusCode <= 299) {
+      return UserModel.fromJson(json.decode(response.body));
+    } else {
+      throw ServerFailure(message: response.body.toString());
     }
   }
 }
