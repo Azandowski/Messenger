@@ -10,8 +10,6 @@ final sl = GetIt.instance;
 
 Future<void> init() async {
   //! Features - Authorization
-  // Networking Service
-  sl.registerLazySingleton(() => NetworkingService(httpClient: sl()));
 
   // Data sources
   sl.registerLazySingleton<AuthenticationLocalDataSource>(
@@ -19,7 +17,7 @@ Future<void> init() async {
   );
 
   sl.registerLazySingleton<AuthenticationRemoteDataSource>(
-    () => AuthenticationRemoteDataSourceImpl(networkingService: sl()),
+    () => AuthenticationRemoteDataSourceImpl(client: sl()),
   );
 
   // local storage
