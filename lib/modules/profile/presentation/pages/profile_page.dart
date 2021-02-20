@@ -27,7 +27,7 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
       body: BlocProvider<ProfileBloc>(
         create: (_) => ProfileBloc(
-          getUser: GetUser(ProfileRepositiryImpl(
+          getUser: GetUser(ProfileRepositoryImpl(
             profileDataSource: ProfileDataSourceImpl(), 
             networkInfo:  sl<NetworkInfoImpl>(),)
           ),

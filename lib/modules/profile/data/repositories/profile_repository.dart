@@ -7,22 +7,26 @@ import 'package:messenger_mobile/modules/profile/domain/entities/user.dart';
 import 'package:messenger_mobile/modules/profile/domain/repositories/profile_respository.dart';
 import 'package:messenger_mobile/modules/profile/domain/usecases/get_user.dart';
 
-class ProfileRepositiryImpl extends ProfileRepository {
+class ProfileRepositoryImpl extends ProfileRepository {
   final ProfileDataSource profileDataSource;
   final NetworkInfo networkInfo;
 
-  ProfileRepositiryImpl({
+  ProfileRepositoryImpl({
     @required this.profileDataSource, 
     @required this.networkInfo
   });
 
   @override
   Future<Either<Failure, User>> getUser(GetUserParams getUserParams) async {
-    try {   
-      final token = await profileDataSource.getCurrentUser(getUserParams.token);
-      return Right(token);
-    } catch (e) {
-      return Left(e);
+    if (await networkInfo.isConnected) {
+      try {   
+        final token = await profileDataSource.getCurrentUser(getUserParams.token);
+        return Right(token);
+      } catch (e) {
+        return Left(e);
+      }
+    } else {
+      return Left(ConnectionFailure());
     }
   }
 }
