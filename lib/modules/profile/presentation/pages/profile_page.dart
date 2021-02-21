@@ -1,16 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger_mobile/core/config/auth_config.dart';
-import 'package:messenger_mobile/core/services/network/network_info.dart';
 import 'package:messenger_mobile/locator.dart';
 import 'package:messenger_mobile/modules/authentication/presentation/bloc/index.dart';
 import 'package:messenger_mobile/modules/edit_profile/presentation/pages/edit_profile_page.dart';
 import 'package:messenger_mobile/modules/profile/bloc/index.dart';
-import 'package:messenger_mobile/modules/profile/data/datasources/profile_datasource.dart';
-import 'package:messenger_mobile/modules/profile/data/repositories/profile_repository.dart';
-import 'package:messenger_mobile/modules/profile/domain/usecases/get_user.dart';
 import 'package:messenger_mobile/modules/profile/presentation/widgets/profile_header.dart';
-import 'package:http/http.dart' as http;
 import 'package:messenger_mobile/modules/profile/presentation/widgets/profile_item.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -35,14 +30,8 @@ class ProfilePage extends StatelessWidget {
       ),
       backgroundColor: Colors.grey[200],
       body: BlocProvider<ProfileBloc>(
-        create: (_) => ProfileBloc(
-          getUser: GetUser(ProfileRepositoryImpl(
-            profileDataSource: ProfileDataSourceImpl(
-              client: sl<http.Client>()
-            ), 
-            networkInfo:  sl<NetworkInfoImpl>(),)
-          ),
-        )..add(LoadProfile(token: token)),
+        create: (_) => sl<ProfileBloc>()
+          ..add(LoadProfile(token: token)),
         child: BlocBuilder<ProfileBloc, ProfileState>(
           builder: (context, profileState) { 
             if (profileState is ProfileLoading) {
@@ -55,7 +44,7 @@ class ProfilePage extends StatelessWidget {
                     name: profileState.user.name,
                     phoneNumber: profileState.user.phoneNumber,
                     onPress: () {
-                      Navigator.of(context).pushNamed(EditProfilePage.pageID);
+                      _handleEditScreenNavigation(context);
                     },
                   ),
                   buildSeparator(),
@@ -86,5 +75,15 @@ class ProfilePage extends StatelessWidget {
         )
       )
     );
+  }
+
+
+  _handleEditScreenNavigation (BuildContext context) async {
+    final needsUpdate = await Navigator.of(context).pushNamed(EditProfilePage.pageID);
+    
+
+    if (needsUpdate != null && needsUpdate) {
+      BlocProvider.of<ProfileBloc>(context).add(LoadProfile(token: sl<AuthConfig>().token));
+    }
   }
 }

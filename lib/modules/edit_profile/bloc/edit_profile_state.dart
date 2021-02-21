@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:equatable/equatable.dart';
 import 'package:messenger_mobile/modules/profile/domain/entities/user.dart';
 
@@ -11,14 +13,14 @@ class EditProfileLoading extends EditProfileState {}
 class EditProfileSuccess extends EditProfileState {}
 
 class EditProfileNormal extends EditProfileState {
-  final User user;
+  final File imageFile;
   
   EditProfileNormal ({
-    this.user
+    this.imageFile
   });
 
   @override
-  List<Object> get props => [user];
+  List<Object> get props => [imageFile];
 }
 
 class EditProfileError extends EditProfileState {

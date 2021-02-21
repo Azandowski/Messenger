@@ -49,8 +49,7 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
   @override
   Future<Either<Failure, TokenEntity>> login(params) async {
     try {
-      final token =
-          await remoteDataSource.login(params.phoneNumber, params.code);
+      final token = await remoteDataSource.login(params.phoneNumber, params.code);
       localDataSource.saveToken(token.token);
       return Right(token);
     } on ServerFailure {

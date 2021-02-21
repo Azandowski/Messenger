@@ -33,10 +33,10 @@ class EditUserParams extends Equatable {
 
   Map<String, String> get jsonBody {
     return {
-      'name': name,
-      'surname': surname,
-      'patronym': patronym,
-      'phone': phoneNumber
+      if (name != null) ...{'name': name},
+      if (surname != null) ...{'surname': surname},
+      if (patronym != null) ...{'patronym': patronym},
+      if (phoneNumber != null) ...{'phone': phoneNumber},
     };
   }
 

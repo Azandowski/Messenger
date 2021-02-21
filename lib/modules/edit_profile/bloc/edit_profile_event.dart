@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
+import 'package:image_picker/image_picker.dart';
 
 
 abstract class EditProfileEvent extends Equatable {
@@ -25,7 +26,21 @@ class EditProfileUpdateUser extends EditProfileEvent {
     this.patronym, 
     this.phoneNumber
   });
+
+  @override
+  List<Object> get props => [
+    token, image, name, surname, patronym, phoneNumber
+  ];
 }
 
-// class EditProfileInit extends EditProfileEvent {}
+class PickProfileImage extends EditProfileEvent {
+  final ImageSource imageSource;
+
+  PickProfileImage({
+    @required this.imageSource
+  });
+
+  @override
+  List<Object> get props => [imageSource];
+}
 

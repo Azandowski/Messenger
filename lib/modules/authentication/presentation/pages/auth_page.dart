@@ -21,8 +21,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  BlocBuilder<AuthenticationBloc, AuthenticationState> buildBody(
-      BuildContext context) {
+  BlocBuilder<AuthenticationBloc, AuthenticationState> buildBody( BuildContext context) {
     return BlocBuilder<AuthenticationBloc, AuthenticationState>(
       builder: (context, state) {
         if (state is Unauthenticated) {

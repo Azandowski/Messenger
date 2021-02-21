@@ -18,6 +18,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   @override
   Stream<ProfileState> mapEventToState(ProfileEvent event) async* {
     if (event is LoadProfile) {
+      yield ProfileLoading();
       var userResponse = await getUser(GetUserParams(token: event.token));
       yield* userResponse.fold((failure) async* {
         yield ProfileError(message: failure.message);

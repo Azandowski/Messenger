@@ -18,15 +18,17 @@ extension ActionButtonSizeExtension on ActionButtonSize {
 }
 
 class ActionButton extends StatelessWidget {
-  ActionButton(
-      {this.isLoading = false,
-      @required this.text,
-      @required this.onTap,
-      this.doNotApplyWidth = false,
-      this.type = ActionButtonType.gradient,
-      this.textColor,
-      this.size = ActionButtonSize.big,
-      this.borderColor});
+  ActionButton({
+    @required this.text,
+    @required this.onTap,
+    this.doNotApplyWidth = false,
+    this.type = ActionButtonType.gradient,
+    this.textColor,
+    this.size = ActionButtonSize.big,
+    this.borderColor,
+    this.isLoading = false,
+  });
+
   final bool isLoading;
   final text;
   final VoidCallback onTap;
@@ -37,8 +39,8 @@ class ActionButton extends StatelessWidget {
   final ActionButtonSize size;
 
   BoxDecoration getDecorationBox(ThemeData theme) {
-    var border = BorderSide(
-        color: borderColor ?? Color.fromRGBO(118, 82, 216, 1), width: 1);
+    var border = BorderSide(color: borderColor ?? Color.fromRGBO(118, 82, 216, 1), width: 1);
+    
     if (type == ActionButtonType.gradient) {
       return BoxDecoration(
         borderRadius: BorderRadius.circular(25),
@@ -47,8 +49,7 @@ class ActionButton extends StatelessWidget {
     } else if (type == ActionButtonType.outline) {
       return BoxDecoration(
         borderRadius: BorderRadius.circular(10),
-        border:
-            Border(bottom: border, top: border, left: border, right: border),
+        border: Border(bottom: border, top: border, left: border, right: border),
       );
     } else if (type == ActionButtonType.transparent) {
       return BoxDecoration(
@@ -76,8 +77,8 @@ class ActionButton extends StatelessWidget {
                 ? LoadWidget()
                 : Center(
                     child: Text(text,
-                        textAlign: TextAlign.center,
-                        style: AppFontStyles.mainStyle),
+                      textAlign: TextAlign.center,
+                      style: AppFontStyles.actionButtonStyle),
                   ),
           ),
         ),

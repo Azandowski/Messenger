@@ -1,6 +1,7 @@
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
+import 'package:messenger_mobile/modules/profile/domain/repositories/profile_respository.dart';
 import 'modules/authentication/data/datasources/local_authentication_datasource.dart';
 import 'modules/authentication/data/datasources/remote_authentication_datasource.dart';
 import 'modules/authentication/data/repositories/authentication_repository_impl.dart';
@@ -13,6 +14,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'core/config/auth_config.dart';
 import 'core/services/network/network_info.dart';
+import 'modules/profile/bloc/index.dart';
+import 'modules/profile/data/datasources/profile_datasource.dart';
+import 'modules/profile/data/repositories/profile_repository.dart';
+import 'modules/profile/domain/usecases/get_user.dart';
 
 final sl = GetIt.instance;
 
@@ -29,10 +34,17 @@ Future<void> init() async {
     ),
   );
 
+  sl.registerFactory(
+    () => ProfileBloc(
+      getUser: sl()
+    )
+  );
+
   // Use cases
   sl.registerLazySingleton(() => GetToken(sl()));
   sl.registerLazySingleton(() => Login(sl()));
-  sl.registerLazySingleton(() => CreateCode(sl()));
+  sl.registerLazySingleton(() => CreateCode(sl())); 
+  sl.registerLazySingleton(() => GetUser(sl()));
 
   // Repository
   sl.registerLazySingleton<AuthenticationRepository>(
@@ -43,6 +55,13 @@ Future<void> init() async {
     ),
   );
 
+  sl.registerLazySingleton<ProfileRepository>(
+    () => ProfileRepositoryImpl(
+      profileDataSource: sl(),
+      networkInfo: sl()
+    )
+  );
+
   // Data sources
   sl.registerLazySingleton<AuthenticationLocalDataSource>(
     () => AuthenticationLocalDataSourceImpl(),
@@ -50,6 +69,10 @@ Future<void> init() async {
 
   sl.registerLazySingleton<AuthenticationRemoteDataSource>(
     () => AuthenticationRemoteDataSourceImpl(client: sl()),
+  );
+
+  sl.registerLazySingleton<ProfileDataSource>(
+    () => ProfileDataSourceImpl(client: sl())
   );
 
   //! Core
