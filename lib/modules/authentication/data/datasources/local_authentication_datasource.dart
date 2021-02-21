@@ -1,8 +1,8 @@
+import 'package:messenger_mobile/core/error/failures.dart';
+
 import '../../../../core/config/storage.dart';
-import '../../../../core/error/failures.dart';
 
 abstract class AuthenticationLocalDataSource {
-
   Future<void> saveToken(String token);
 
   /// read to keystore/keychain
@@ -23,7 +23,12 @@ class AuthenticationLocalDataSourceImpl
 
   @override
   Future<String> getToken() async {
-    return await Storage().secureStorage.read(key: ACCESS_TOKEN);
+    var token = await Storage().secureStorage.read(key: ACCESS_TOKEN);
+    if (token != null && token != '') {
+      return token;
+    } else {
+      throw StorageFailure();
+    }
   }
 
   @override

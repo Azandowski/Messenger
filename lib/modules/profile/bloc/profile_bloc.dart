@@ -1,8 +1,9 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/modules/profile/bloc/profile_event.dart';
-import 'package:messenger_mobile/modules/profile/bloc/profile_state.dart';
-import 'package:messenger_mobile/modules/profile/domain/usecases/get_user.dart';
+
+import '../domain/usecases/get_user.dart';
+import 'profile_event.dart';
+import 'profile_state.dart';
 
 class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   final GetUser getUser;

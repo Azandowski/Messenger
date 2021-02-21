@@ -1,13 +1,59 @@
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:get_it/get_it.dart';
-import 'package:messenger_mobile/core/config/auth_config.dart';
-import 'package:messenger_mobile/core/services/network/network_info.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'package:messenger_mobile/modules/authentication/data/datasources/local_authentication_datasource.dart';
+import 'package:messenger_mobile/modules/authentication/data/datasources/remote_authentication_datasource.dart';
+import 'package:messenger_mobile/modules/authentication/data/repositories/authentication_repository_impl.dart';
+import 'package:messenger_mobile/modules/authentication/domain/repositories/authentication_repository.dart';
+import 'package:messenger_mobile/modules/authentication/domain/usecases/create_code.dart';
+import 'package:messenger_mobile/modules/authentication/domain/usecases/get_token.dart';
+import 'package:messenger_mobile/modules/authentication/domain/usecases/login.dart';
+import 'package:messenger_mobile/modules/authentication/presentation/bloc/index.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'core/config/auth_config.dart';
+import 'core/services/network/network_info.dart';
 
 final sl = GetIt.instance;
 
 Future<void> init() async {
+  //! FEATURES
+  //Authentication
+
+  //BLoc
+  sl.registerFactory(
+    () => AuthenticationBloc(
+      createCode: sl(),
+      getToken: sl(),
+      login: sl(),
+    ),
+  );
+
+  // Use cases
+  sl.registerLazySingleton(() => GetToken(sl()));
+  sl.registerLazySingleton(() => Login(sl()));
+  sl.registerLazySingleton(() => CreateCode(sl()));
+
+  // Repository
+  sl.registerLazySingleton<AuthenticationRepository>(
+    () => AuthenticationRepositiryImpl(
+      localDataSource: sl(),
+      networkInfo: sl(),
+      remoteDataSource: sl(),
+    ),
+  );
+
+  // Data sources
+  sl.registerLazySingleton<AuthenticationLocalDataSource>(
+    () => AuthenticationLocalDataSourceImpl(),
+  );
+
+  sl.registerLazySingleton<AuthenticationRemoteDataSource>(
+    () => AuthenticationRemoteDataSourceImpl(client: sl()),
+  );
+
+  //! Core
+
   // local storage
   final sharedPreferences = await SharedPreferences.getInstance();
   sl.registerLazySingleton(() => sharedPreferences);
@@ -15,7 +61,7 @@ Future<void> init() async {
   // network online/offline mode
   sl.registerLazySingleton(() => DataConnectionChecker());
 
-  sl.registerLazySingleton(() => NetworkInfoImpl(DataConnectionChecker()));
+  sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(sl()));
 
   sl.registerLazySingleton(() => AuthConfig());
 

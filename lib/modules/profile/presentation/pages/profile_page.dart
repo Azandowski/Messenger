@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:messenger_mobile/core/config/auth_config.dart';
-import 'package:messenger_mobile/core/services/network/network_info.dart';
-import 'package:messenger_mobile/locator.dart';
-import 'package:messenger_mobile/modules/profile/bloc/index.dart';
-import 'package:messenger_mobile/modules/profile/data/datasources/profile_datasource.dart';
-import 'package:messenger_mobile/modules/profile/data/repositories/profile_repository.dart';
-import 'package:messenger_mobile/modules/profile/domain/usecases/get_user.dart';
-import 'package:messenger_mobile/modules/profile/presentation/widgets/profile_header.dart';
+
+import '../../../../core/config/auth_config.dart';
+import '../../../../core/services/network/network_info.dart';
+import '../../../../locator.dart';
+import '../../bloc/index.dart';
+import '../../data/datasources/profile_datasource.dart';
+import '../../data/repositories/profile_repository.dart';
+import '../../domain/usecases/get_user.dart';
+import '../widgets/profile_header.dart';
 
 class ProfilePage extends StatefulWidget {
   

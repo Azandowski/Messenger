@@ -1,14 +1,15 @@
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
-import 'package:messenger_mobile/core/config/settings.dart';
-import 'package:messenger_mobile/core/error/failures.dart';
-import 'package:messenger_mobile/core/services/network/Endpoints.dart';
-import 'package:messenger_mobile/modules/authentication/data/models/code_response.dart';
-import 'package:messenger_mobile/modules/authentication/data/models/token_model.dart';
-import 'package:messenger_mobile/modules/authentication/domain/entities/code_entity.dart';
 import 'package:http/http.dart' as http;
-import 'package:messenger_mobile/modules/authentication/domain/entities/token_entity.dart';
+
+import '../../../../core/config/settings.dart';
+import '../../../../core/error/failures.dart';
+import '../../../../core/services/network/Endpoints.dart';
+import '../../domain/entities/code_entity.dart';
+import '../../domain/entities/token_entity.dart';
+import '../models/code_response.dart';
+import '../models/token_model.dart';
 
 abstract class AuthenticationRemoteDataSource {
   Future<CodeEntity> createCode(String number);

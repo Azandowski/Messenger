@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/modules/authentication/domain/entities/token_entity.dart';
+import '../../domain/entities/token_entity.dart';
 
 class TokenModel extends TokenEntity {
   final String token;

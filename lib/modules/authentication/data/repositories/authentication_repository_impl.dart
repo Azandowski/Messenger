@@ -1,14 +1,14 @@
 import 'package:dartz/dartz.dart';
-import 'package:messenger_mobile/core/services/network/network_info.dart';
-import 'package:messenger_mobile/modules/authentication/data/datasources/local_authentication_datasource.dart';
-import 'package:messenger_mobile/modules/authentication/data/datasources/remote_authentication_datasource.dart';
-import 'package:messenger_mobile/modules/authentication/domain/entities/code_entity.dart';
-import 'package:messenger_mobile/modules/authentication/domain/entities/token_entity.dart';
-import 'package:messenger_mobile/modules/authentication/domain/repositories/authentication_repository.dart';
-import 'package:messenger_mobile/modules/authentication/domain/usecases/create_code.dart';
 import 'package:meta/meta.dart';
 
 import '../../../../core/error/failures.dart';
+import '../../../../core/services/network/network_info.dart';
+import '../../domain/entities/code_entity.dart';
+import '../../domain/entities/token_entity.dart';
+import '../../domain/repositories/authentication_repository.dart';
+import '../../domain/usecases/create_code.dart';
+import '../datasources/local_authentication_datasource.dart';
+import '../datasources/remote_authentication_datasource.dart';
 
 class AuthenticationRepositiryImpl implements AuthenticationRepository {
   final AuthenticationRemoteDataSource remoteDataSource;
@@ -51,6 +51,7 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
     try {
       final token =
           await remoteDataSource.login(params.phoneNumber, params.code);
+      localDataSource.saveToken(token.token);
       return Right(token);
     } on ServerFailure {
       return Left(ServerFailure(message: 'null'));
