@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:messenger_mobile/core/config/routes.dart';
 import 'package:messenger_mobile/core/services/network/network_info.dart';
 import 'package:messenger_mobile/locator.dart';
 import 'package:messenger_mobile/modules/authentication/data/datasources/local_authentication_datasource.dart';
@@ -43,6 +44,7 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      routes: routes,
       home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
         builder: (context, state) {
           if (state is Authenticated) {

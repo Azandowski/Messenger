@@ -4,6 +4,7 @@ import 'package:messenger_mobile/core/config/auth_config.dart';
 import 'package:messenger_mobile/core/services/network/network_info.dart';
 import 'package:messenger_mobile/locator.dart';
 import 'package:messenger_mobile/modules/authentication/bloc/index.dart';
+import 'package:messenger_mobile/modules/edit_profile/presentation/pages/edit_profile_page.dart';
 import 'package:messenger_mobile/modules/profile/bloc/index.dart';
 import 'package:messenger_mobile/modules/profile/data/datasources/profile_datasource.dart';
 import 'package:messenger_mobile/modules/profile/data/repositories/profile_repository.dart';
@@ -43,7 +44,7 @@ class ProfilePage extends StatelessWidget {
           ),
         )..add(LoadProfile(token: token)),
         child: BlocBuilder<ProfileBloc, ProfileState>(
-          builder: (_, profileState) { 
+          builder: (context, profileState) { 
             if (profileState is ProfileLoading) {
               return Center(child: CircularProgressIndicator());
             } else if (profileState is ProfileLoaded) {
@@ -53,6 +54,9 @@ class ProfilePage extends StatelessWidget {
                     imageURL: profileState.user.profileImage,
                     name: profileState.user.name,
                     phoneNumber: profileState.user.phoneNumber,
+                    onPress: () {
+                      Navigator.of(context).pushNamed(EditProfilePage.pageID);
+                    },
                   ),
                   buildSeparator(),
                   ProfileItem(

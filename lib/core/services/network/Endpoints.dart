@@ -23,6 +23,7 @@ extension EndpointsExtension on Endpoints {
     return {
       if (defaultHeaders != null) ...defaultHeaders, 
       if (token != null && token != "") ...{"Authorization": "Bearer $token"},
+      if (defaultHeaders == null && this != Endpoints.updateCurrentUser)  ...{'Content-Type' : 'application/json; charset=utf-8'},
       if (this == Endpoints.updateCurrentUser) ...{
         "Accept": "text/html,application/xml"
       }

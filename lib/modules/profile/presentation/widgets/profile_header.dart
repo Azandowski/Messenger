@@ -6,12 +6,14 @@ class ProfileHeader extends StatelessWidget {
   final String imageURL;
   final String name;
   final String phoneNumber;
-
+  final Function onPress;
+  
   const ProfileHeader({
     Key key, 
     this.imageURL, 
     this.name, 
-    this.phoneNumber
+    this.phoneNumber,
+    this.onPress
   }) : super(key: key);
   
   @override
@@ -27,26 +29,31 @@ class ProfileHeader extends StatelessWidget {
               AssetImage('default_user.jpg') : NetworkImage(imageURL),
           ),
           SizedBox(width: 10,),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                name ?? 'no_name',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold
+          GestureDetector(
+            onTap: () {
+              if (onPress != null) { onPress(); }   
+            },
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  name ?? 'no_name',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold
+                  ),
                 ),
-              ),
-              SizedBox(height: 5,),
-              Text(
-                phoneNumber,
-                style: TextStyle(
-                  fontSize: 16
+                SizedBox(height: 5,),
+                Text(
+                  phoneNumber,
+                  style: TextStyle(
+                    fontSize: 16
+                  )
                 )
-              )
-            ],
+              ],
+            ),
           )
         ],
       ),
