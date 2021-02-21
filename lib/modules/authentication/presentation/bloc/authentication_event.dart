@@ -16,13 +16,8 @@ class CreateCodeEvent extends AuthenticationEvent {
   );
 
   @override
-  List<Object> get props => [
-        phone,
-      ];
+  List<Object> get props => [phone];
 }
-
-class PoFanu extends AuthenticationEvent {}
-
 class SendCode extends AuthenticationEvent {
   final CodeEntity codeEntity;
   final String userCode;

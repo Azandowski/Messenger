@@ -16,8 +16,7 @@ import 'authentication_event.dart';
 import 'authentication_state.dart';
 import 'index.dart';
 
-class AuthenticationBloc
-    extends Bloc<AuthenticationEvent, AuthenticationState> {
+class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> {
   final GetToken getToken;
   final CreateCode createCode;
   final Login login;
@@ -34,30 +33,35 @@ class AuthenticationBloc
   ) async* {
     if (event is AppStarted) {
       final tokenOrFailure = await getToken(NoParams());
+      
       yield* _eitherLoginOrProfile(tokenOrFailure);
     } else if (event is ChangeLoginMode) {
+      
       yield Unauthenticated(loginMode: event.currentMode);
     } else if (event is CreateCodeEvent) {
       final params = PhoneParams(phoneNumber: event.phone);
       final errorOrCode = await createCode(params);
+      
       yield* _eitherCodeOrFailure(errorOrCode);
     } else if (event is SendCode) {
-      final loginParams = LoginParams(
-          phoneNumber: event.codeEntity.phone, code: event.userCode);
+      final loginParams = LoginParams(phoneNumber: event.codeEntity.phone, code: event.userCode);
       final errorOrToken = await login(loginParams);
+      
       yield* _eitherTokenOrFailure(errorOrToken);
-    } else if (event is PoFanu) {
-      print('qotaaaaq');
-      yield Authenticated(token: 'sndlansld');
-    }
+    } 
   }
 
   Stream<AuthenticationState> _eitherLoginOrProfile(
     Either<Failure, String> tokenOrFailure,
   ) async* {
     yield tokenOrFailure.fold(
-      (failure) => Unauthenticated(),
-      (token) => Authenticated(token: token),
+      (failure) {
+        _handleUnauthenticated();
+        return Unauthenticated();
+      }, (token) {
+        _handleAuthenticated(token);
+        return Authenticated(token: token);
+      },
     );
   }
 
@@ -65,8 +69,13 @@ class AuthenticationBloc
     Either<Failure, CodeEntity> failureOrCode,
   ) async* {
     yield failureOrCode.fold(
-      (failure) => InvalidPhone(message: failure.message),
-      (code) => PreSendCode(codeEntity: code),
+      (failure) {
+        _handleUnauthenticated();
+        return InvalidPhone(message: failure.message);
+      },
+      (code) {
+        return PreSendCode(codeEntity: code);
+      },
     );
   }
 
@@ -74,8 +83,14 @@ class AuthenticationBloc
     Either<Failure, TokenEntity> failureOrToken,
   ) async* {
     yield failureOrToken.fold(
-      (failure) => InvalidCode(message: failure.message),
-      (token) => Authenticated(token: token.token),
+      (failure) {
+        _handleUnauthenticated();
+        return InvalidCode(message: failure.message);
+      },
+      (token) {
+        _handleAuthenticated(token.token);
+        return Authenticated(token: token.token);
+      },
     );
   }
 
@@ -89,16 +104,3 @@ class AuthenticationBloc
     sl<AuthConfig>().token = null;
   }
 }
-//  yield* token.fold((failure) async* {
-//         _handleUnauthenticated();
-//         yield Unauthenticated();
-//       }, (token) async* {
-//         if (token != '' && token != null) {
-//           _handleAuthenticated(token);
-//           yield Authenticated(token: token);
-//         } else {
-//           _handleAuthenticated('1853|z0H7WZomuJ9MhLZ2yZI0VkZuD7f1SYzNh38BhpxT');
-//           yield Authenticated(
-//               token: '1853|z0H7WZomuJ9MhLZ2yZI0VkZuD7f1SYzNh38BhpxT');
-//         }
-//       });
