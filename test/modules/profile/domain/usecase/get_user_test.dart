@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:messenger_mobile/modules/profile/domain/repositories/profile_respository.dart';
 import 'package:messenger_mobile/modules/profile/domain/usecases/get_user.dart';
+import 'package:messenger_mobile/modules/profile/domain/usecases/profile_params.dart';
 import 'package:mockito/mockito.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:messenger_mobile/modules/profile/domain/entities/user.dart';

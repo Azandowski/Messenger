@@ -22,12 +22,14 @@ class ProfileHeader extends StatelessWidget {
       child: Row(
         children: [
           CircleAvatar(
-            radius: 75,
+            radius: 37.5,
             backgroundImage: imageURL == null ? 
               AssetImage('default_user.jpg') : NetworkImage(imageURL),
           ),
           SizedBox(width: 10,),
           Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 name ?? 'no_name',

@@ -1,0 +1,47 @@
+import 'dart:io';
+
+import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
+
+class GetUserParams extends Equatable {
+  final String token;
+
+  GetUserParams({
+    @required this.token
+  });
+
+  @override
+  List<Object> get props => [token];
+}
+
+class EditUserParams extends Equatable {
+  final String token;
+  final File image;
+  final String name;
+  final String surname;
+  final String patronym;
+  final String phoneNumber;
+
+  EditUserParams ({
+    @required this.token, 
+    this.image,
+    this.name,
+    this.surname,
+    this.patronym,
+    this.phoneNumber
+  });
+
+  Map<String, String> get jsonBody {
+    return {
+      'name': name,
+      'surname': surname,
+      'patronym': patronym,
+      'phone': phoneNumber
+    };
+  }
+
+  @override
+  List<Object> get props => [
+    token, image, name, phoneNumber, patronym, surname
+  ];
+}

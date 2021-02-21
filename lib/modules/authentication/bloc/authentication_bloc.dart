@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger_mobile/core/config/auth_config.dart';
 import 'package:messenger_mobile/core/usecases/usecase.dart';
 import 'package:messenger_mobile/modules/authentication/bloc/index.dart';
+import 'package:messenger_mobile/modules/authentication/domain/entities/auth_enums.dart';
 import 'package:messenger_mobile/modules/authentication/domain/usecases/get_token.dart';
 import '../../../core/config/storage.dart';
 import '../../../locator.dart';
@@ -40,6 +41,9 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       });
     } else if (event is ChangeLoginMode) {
       yield Unauthenticated(loginMode: event.currentMode);
+    } else if (event is LoggedOut) {
+      _handleUnauthenticated();
+      yield Unauthenticated(loginMode: LoginScreenMode.enterPhone);
     }
 
 

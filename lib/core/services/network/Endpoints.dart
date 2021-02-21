@@ -6,7 +6,8 @@ enum Endpoints {
   login,
 
   // Profile
-  getCurrentUser
+  getCurrentUser,
+  updateCurrentUser
 }
 
 extension EndpointsExtension on Endpoints {
@@ -22,7 +23,9 @@ extension EndpointsExtension on Endpoints {
     return {
       if (defaultHeaders != null) ...defaultHeaders, 
       if (token != null && token != "") ...{"Authorization": "Bearer $token"},
-      if (defaultHeaders == null) ...{'Content-Type' : 'application/json; charset=utf-8'}
+      if (this == Endpoints.updateCurrentUser) ...{
+        "Accept": "text/html,application/xml"
+      }
     };
   }
 
@@ -34,14 +37,16 @@ extension EndpointsExtension on Endpoints {
         return "${Config.baseAPIpath.value}/auth/login";
       case Endpoints.getCurrentUser:
         return "${Config.baseAPIpath.value}/user/getCurrentUser";
+      case Endpoints.updateCurrentUser:
+        return '${Config.baseAPIpath.value}/user/updateCurrentUser';
     }
   }
 
   Uri buildURL({Map<String, dynamic> queryParameters}) {
     return Uri(
-        scheme: this.scheme,
-        host: this.hostName,
-        path: this.path,
-        queryParameters: queryParameters ?? {});
+      scheme: this.scheme,
+      host: this.hostName,
+      path: this.path,
+      queryParameters: queryParameters ?? {});
   }
 }

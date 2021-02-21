@@ -1,28 +1,31 @@
 import 'package:dartz/dartz.dart';
 import 'package:messenger_mobile/core/error/failures.dart';
 import 'package:messenger_mobile/core/services/network/network_info.dart';
-import 'package:messenger_mobile/modules/profile/data/datasources/profile_datasource.dart';
+import 'package:messenger_mobile/modules/edit_profile/data/datasources/edit_profile_datasource.dart';
+import 'package:messenger_mobile/modules/edit_profile/data/repositories/edit_profile_repositories.dart';
 import 'package:messenger_mobile/modules/profile/data/models/user_model.dart';
-import 'package:messenger_mobile/modules/profile/data/repositories/profile_repository.dart';
 import 'package:messenger_mobile/modules/profile/domain/entities/user.dart';
+import 'package:messenger_mobile/modules/profile/domain/usecases/edit_user.dart';
 import 'package:messenger_mobile/modules/profile/domain/usecases/profile_params.dart';
 import 'package:mockito/mockito.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-class MockRemoteDataSource extends Mock implements ProfileDataSource {}
+
+class MockEditProfileDataSource extends Mock implements EditProfileDataSource {}
 
 class MockNetworkInfo extends Mock implements NetworkInfo {}
 
+
 void main() { 
-  ProfileRepositoryImpl repository;
-  MockRemoteDataSource dataSource;
+  EditUserRepositoryImpl repository;
+  MockEditProfileDataSource dataSource;
   MockNetworkInfo mockNetworkInfo;
 
   setUp(() { 
-    dataSource = MockRemoteDataSource();
+    dataSource = MockEditProfileDataSource();
     mockNetworkInfo = MockNetworkInfo();
-    repository = ProfileRepositoryImpl(
-      profileDataSource: dataSource, 
+    repository = EditUserRepositoryImpl(  
+      editProfileDataSource: dataSource,
       networkInfo: mockNetworkInfo
     );
   });
@@ -47,8 +50,8 @@ void main() {
     });
   }
 
-  group('Get Current User', () {
-    
+
+  group('Update Current User', () { 
     final userModel = UserModel(
       name: 'Yerkebulan',
       phoneNumber: '+77470726323',
@@ -56,8 +59,12 @@ void main() {
     );
     
     final User user  = userModel;
-    final GetUserParams getUserParams = GetUserParams(token: 'sample token');
 
+    final EditUserParams editUserParams = EditUserParams(
+      token: '',
+      name: userModel.name
+    );
+    
     test(
       'should check if the device is online',
       () async {
@@ -65,7 +72,7 @@ void main() {
         when(mockNetworkInfo.isConnected).thenAnswer((_) async => true);
         
         // act
-        repository.getUser(getUserParams);
+        repository.updateUser(editUserParams);
         
         // assert
         verify(mockNetworkInfo.isConnected);
@@ -77,14 +84,22 @@ void main() {
         'should return remote data when the call to remote data source is successful',
         () async {
           // arrange
-          when(dataSource.getCurrentUser(any))
-            .thenAnswer((_) async => userModel);
+          when(dataSource.updateUser(
+            file: anyNamed('file'), 
+            data: anyNamed('data'), 
+            token: anyNamed('token')
+          )).thenAnswer((_) async => true);
           // act
-          final result = await repository.getUser(getUserParams);
-          // assert
+          final result = await repository.updateUser(editUserParams);
           
-          verify(dataSource.getCurrentUser(getUserParams.token));
-          expect(result, equals(Right(user)));
+          // assert
+          verify(dataSource.updateUser(
+            file: editUserParams.image, 
+            data: editUserParams.jsonBody, 
+            token: editUserParams.token
+          ));
+
+          expect(result, equals(Right(true)));
         },
       );
 
@@ -92,29 +107,24 @@ void main() {
         'should return server failure when the call to remote data source is unsuccessful',
         () async {
           // arrange
-          when(dataSource.getCurrentUser(any))
-              .thenThrow(ServerFailure(message: ''));
+          when(dataSource.updateUser(
+            file: anyNamed('file'), 
+            data: anyNamed('data'), 
+            token: anyNamed('token')
+          )).thenThrow(ServerFailure(message: ''));
+          
           // act
-          final result = await repository.getUser(getUserParams);
+          final result = await repository.updateUser(editUserParams);
+          
           // assert
-          verify(dataSource.getCurrentUser(getUserParams.token));
+          verify(dataSource.updateUser(
+            file: editUserParams.image, 
+            data: editUserParams.jsonBody, 
+            token: editUserParams.token
+          ));
           expect(result, isA<Left>());
         },
       );      
     });
-
-    runTestsOffline(() {
-      test(
-        'should return internet error',
-        () async {
-          // arrange
-          when(dataSource.getCurrentUser(any))
-              .thenAnswer((_) async => userModel);
-          // act
-          final result = await repository.getUser(getUserParams);
-          // assert
-          expect(result, isA<Left>());
-        });
-    });
   });
-} 
+}

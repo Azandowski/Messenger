@@ -5,7 +5,8 @@ import 'package:messenger_mobile/core/services/network/network_info.dart';
 import 'package:messenger_mobile/modules/profile/data/datasources/profile_datasource.dart';
 import 'package:messenger_mobile/modules/profile/domain/entities/user.dart';
 import 'package:messenger_mobile/modules/profile/domain/repositories/profile_respository.dart';
-import 'package:messenger_mobile/modules/profile/domain/usecases/get_user.dart';
+import 'package:messenger_mobile/modules/profile/domain/usecases/profile_params.dart';
+
 
 class ProfileRepositoryImpl extends ProfileRepository {
   final ProfileDataSource profileDataSource;

@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:messenger_mobile/modules/profile/bloc/profile_event.dart';
 import 'package:messenger_mobile/modules/profile/bloc/profile_state.dart';
 import 'package:messenger_mobile/modules/profile/domain/usecases/get_user.dart';
+import 'package:messenger_mobile/modules/profile/domain/usecases/profile_params.dart';
+
 
 class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   final GetUser getUser;
