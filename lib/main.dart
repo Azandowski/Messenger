@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:messenger_mobile/core/blocs/bloc/auth_bloc.dart';
 import 'app/appTheme.dart';
 import 'core/screens/splash_screen.dart';
-import 'modules/authentication/presentation/bloc/authentication_bloc.dart';
-import 'modules/authentication/presentation/bloc/index.dart';
 import 'locator.dart' as serviceLocator;
 import 'package:messenger_mobile/core/config/routes.dart';
-
 
 final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
 
@@ -28,7 +26,7 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => serviceLocator.sl<AuthenticationBloc>(),
+      create: (context) => serviceLocator.sl<AuthBloc>(),
       child: MaterialApp(
         home: SplashScreen(),
         theme: AppTheme.light,

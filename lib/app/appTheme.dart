@@ -37,7 +37,7 @@ abstract class AppFontStyles {
         fontSize: 14,
       );
   static get greyPhoneStyle => TextStyle(
-        color: Color(0xffE0E0E0),
+        color: Color(0xff828282),
         fontWeight: FontWeight.w400,
         fontSize: 12,
       );

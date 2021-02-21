@@ -1,6 +1,7 @@
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
+import 'package:messenger_mobile/core/blocs/bloc/auth_bloc.dart';
 import 'modules/authentication/data/datasources/local_authentication_datasource.dart';
 import 'modules/authentication/data/datasources/remote_authentication_datasource.dart';
 import 'modules/authentication/data/repositories/authentication_repository_impl.dart';
@@ -24,7 +25,6 @@ Future<void> init() async {
   sl.registerFactory(
     () => AuthenticationBloc(
       createCode: sl(),
-      getToken: sl(),
       login: sl(),
     ),
   );
@@ -53,6 +53,14 @@ Future<void> init() async {
   );
 
   //! Core
+
+  //BLoc
+
+  sl.registerFactory(
+    () => AuthBloc(
+      getToken: sl(),
+    ),
+  );
 
   // local storage
   final sharedPreferences = await SharedPreferences.getInstance();

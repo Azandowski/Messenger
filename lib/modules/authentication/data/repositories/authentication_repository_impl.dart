@@ -28,8 +28,8 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
         final codeEntity =
             await remoteDataSource.createCode(params.phoneNumber);
         return Right(codeEntity);
-      } catch (e) {
-        return Left(e);
+      } on ServerFailure {
+        return Left(ServerFailure(message: 'invalid phone'));
       }
     } else {
       throw ServerFailure(message: 'no_internet');

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:messenger_mobile/locator.dart';
+import 'package:messenger_mobile/modules/authentication/presentation/pages/pin_code_page.dart';
 import '../bloc/index.dart';
 import 'phone_enter_page.dart';
 
@@ -21,31 +23,21 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  BlocBuilder<AuthenticationBloc, AuthenticationState> buildBody(
-      BuildContext context) {
-    return BlocBuilder<AuthenticationBloc, AuthenticationState>(
-      builder: (context, state) {
-        if (state is Unauthenticated) {
-          return PhoneEnterPage();
-        } else if (state is Loading) {
-          return LoadingWidget();
-        } else if (state is PreSendCode) {
-          return TypeCodeScreen();
-        }
-      },
+  buildBody(BuildContext context) {
+    return BlocProvider(
+      create: (context) => sl<AuthenticationBloc>(),
+      child: BlocBuilder<AuthenticationBloc, AuthenticationState>(
+        builder: (context, state) {
+          if (state is InitialStat) {
+            return PhoneEnterPage();
+          } else if (state is Loading) {
+            return LoadingWidget();
+          } else if (state is CodeState) {
+            return PinCodePage();
+          }
+        },
+      ),
     );
-  }
-}
-
-class TypeCodeScreen extends StatefulWidget {
-  @override
-  _TypeCodeScreenState createState() => _TypeCodeScreenState();
-}
-
-class _TypeCodeScreenState extends State<TypeCodeScreen> {
-  @override
-  Widget build(BuildContext context) {
-    return Container();
   }
 }
 

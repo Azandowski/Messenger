@@ -46,13 +46,13 @@ class ActionButton extends StatelessWidget {
       );
     } else if (type == ActionButtonType.outline) {
       return BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(25),
         border:
             Border(bottom: border, top: border, left: border, right: border),
       );
     } else if (type == ActionButtonType.transparent) {
       return BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(25),
       );
     }
   }
@@ -63,12 +63,12 @@ class ActionButton extends StatelessWidget {
     return Container(
       decoration: getDecorationBox(Theme.of(context)),
       child: Material(
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(25),
         color: Colors.transparent,
         child: InkWell(
           onTap: onTap,
           splashColor: Colors.white60,
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(25),
           child: Container(
             padding: EdgeInsets.symmetric(vertical: size.verticalPadding),
             width: doNotApplyWidth ? null : w - 32,

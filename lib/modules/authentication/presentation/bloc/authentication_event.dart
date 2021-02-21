@@ -1,13 +1,10 @@
 import 'package:equatable/equatable.dart';
 import '../../domain/entities/code_entity.dart';
-import '../../domain/entities/auth_enums.dart';
 
 abstract class AuthenticationEvent extends Equatable {
   @override
   List<Object> get props => [];
 }
-
-class AppStarted extends AuthenticationEvent {}
 
 class CreateCodeEvent extends AuthenticationEvent {
   final String phone;
@@ -18,6 +15,7 @@ class CreateCodeEvent extends AuthenticationEvent {
   @override
   List<Object> get props => [phone];
 }
+
 class SendCode extends AuthenticationEvent {
   final CodeEntity codeEntity;
   final String userCode;
@@ -37,12 +35,3 @@ class LoggedIn extends AuthenticationEvent {
 }
 
 class LoggedOut extends AuthenticationEvent {}
-
-class ChangeLoginMode extends AuthenticationEvent {
-  final LoginScreenMode currentMode;
-
-  ChangeLoginMode(this.currentMode);
-
-  @override
-  List<Object> get props => [currentMode];
-}

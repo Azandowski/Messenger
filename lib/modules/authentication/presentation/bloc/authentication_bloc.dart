@@ -10,58 +10,36 @@ import '../../domain/usecases/login.dart';
 import '../../../../core/config/auth_config.dart';
 import '../../../../core/config/storage.dart';
 import '../../../../locator.dart';
-import '../../../../core/usecases/usecase.dart';
-import '../../domain/usecases/get_token.dart';
 import 'authentication_event.dart';
 import 'authentication_state.dart';
 import 'index.dart';
 
-class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> {
-  final GetToken getToken;
+class AuthenticationBloc
+    extends Bloc<AuthenticationEvent, AuthenticationState> {
   final CreateCode createCode;
   final Login login;
 
   AuthenticationBloc({
-    @required this.getToken,
     @required this.createCode,
     @required this.login,
-  }) : super(Uninitialized());
+  }) : super((InitialStat()));
 
   @override
   Stream<AuthenticationState> mapEventToState(
     AuthenticationEvent event,
   ) async* {
-    if (event is AppStarted) {
-      final tokenOrFailure = await getToken(NoParams());
-      
-      yield* _eitherLoginOrProfile(tokenOrFailure);
-    } else if (event is ChangeLoginMode) {
-      yield Unauthenticated(loginMode: event.currentMode);
-    } else if (event is CreateCodeEvent) {
+    if (event is CreateCodeEvent) {
+      isLoading = true;
       final params = PhoneParams(phoneNumber: event.phone);
       final errorOrCode = await createCode(params);
-      
       yield* _eitherCodeOrFailure(errorOrCode);
     } else if (event is SendCode) {
-      final loginParams = LoginParams(phoneNumber: event.codeEntity.phone, code: event.userCode);
+      final loginParams = LoginParams(
+          phoneNumber: event.codeEntity.phone, code: event.userCode);
       final errorOrToken = await login(loginParams);
-      
-      yield* _eitherTokenOrFailure(errorOrToken);
-    } 
-  }
 
-  Stream<AuthenticationState> _eitherLoginOrProfile(
-    Either<Failure, String> tokenOrFailure,
-  ) async* {
-    yield tokenOrFailure.fold(
-      (failure) {
-        _handleUnauthenticated();
-        return Unauthenticated();
-      }, (token) {
-        _handleAuthenticated(token);
-        return Authenticated(token: token);
-      },
-    );
+      yield* _eitherTokenOrFailure(errorOrToken);
+    }
   }
 
   Stream<AuthenticationState> _eitherCodeOrFailure(
@@ -70,10 +48,10 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     yield failureOrCode.fold(
       (failure) {
         _handleUnauthenticated();
-        return InvalidPhone(message: failure.message);
+        return AuthenticationError(message: failure.message);
       },
       (code) {
-        return PreSendCode(codeEntity: code);
+        return CodeState(codeEntity: code);
       },
     );
   }
@@ -84,11 +62,11 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     yield failureOrToken.fold(
       (failure) {
         _handleUnauthenticated();
-        return InvalidCode(message: failure.message);
+        return AuthenticationError(message: failure.message);
       },
       (token) {
         _handleAuthenticated(token.token);
-        return Authenticated(token: token.token);
+        // return Authenticated(token: token.token);
       },
     );
   }
@@ -102,4 +80,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     Storage().token = null;
     sl<AuthConfig>().token = null;
   }
+
+  //Vars
+  bool isLoading = false;
 }

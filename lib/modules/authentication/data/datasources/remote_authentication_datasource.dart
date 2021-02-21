@@ -26,7 +26,7 @@ class AuthenticationRemoteDataSourceImpl
   Future<CodeModel> createCode(String number) async {
     http.Response response = await client.post(
       Endpoints.createCode.buildURL(),
-      body: {'phone': number},
+      body: jsonEncode({'phone': number}),
       headers: Endpoints.createCode.getHeaders(),
     );
     if (response.statusCode >= 200 && response.statusCode <= 299) {
@@ -42,9 +42,12 @@ class AuthenticationRemoteDataSourceImpl
     var url = Endpoints.login.buildURL();
     var headers = Endpoints.login.getHeaders();
     final response = await client.post(url,
-      body: json.encode({'phone': number, 'code': code, 'application_id': APP_ID, }),
-      headers: headers
-    );
+        body: json.encode({
+          'phone': number,
+          'code': code,
+          'application_id': APP_ID,
+        }),
+        headers: headers);
 
     if (response.statusCode >= 200 && response.statusCode <= 299) {
       var jsonMap = json.decode(response.body);
