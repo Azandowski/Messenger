@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger_mobile/core/config/auth_config.dart';
 import 'package:messenger_mobile/core/services/network/network_info.dart';
 import 'package:messenger_mobile/locator.dart';
-import 'package:messenger_mobile/modules/authentication/bloc/index.dart';
+import 'package:messenger_mobile/modules/authentication/presentation/bloc/index.dart';
 import 'package:messenger_mobile/modules/edit_profile/presentation/pages/edit_profile_page.dart';
 import 'package:messenger_mobile/modules/profile/bloc/index.dart';
 import 'package:messenger_mobile/modules/profile/data/datasources/profile_datasource.dart';
@@ -74,7 +74,7 @@ class ProfilePage extends StatelessWidget {
                       isRed: true,
                     ),
                     onTap: () {
-                      BlocProvider.of<AuthenticationBloc>(context, listen: false).add(LoggedOut());
+                      sl<AuthenticationBloc>().add(LoggedOut());
                     },
                   ),
                 ],

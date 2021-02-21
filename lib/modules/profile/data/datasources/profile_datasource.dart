@@ -1,10 +1,12 @@
-import 'package:flutter/foundation.dart';
-import 'package:messenger_mobile/core/error/failures.dart';
-import 'package:messenger_mobile/core/services/network/Endpoints.dart';
-import 'package:messenger_mobile/modules/profile/data/models/user_model.dart';
-import 'package:messenger_mobile/modules/profile/domain/entities/user.dart';
 import 'dart:convert';
+
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+
+import '../../../../core/error/failures.dart';
+import '../../../../core/services/network/Endpoints.dart';
+import '../../domain/entities/user.dart';
+import '../models/user_model.dart';
 
 abstract class ProfileDataSource {
   Future<User> getCurrentUser(String token);

@@ -1,4 +1,4 @@
-import 'package:messenger_mobile/modules/profile/domain/entities/user.dart';
+import '../../domain/entities/user.dart';
 
 class UserModel extends User {
   final String name;
