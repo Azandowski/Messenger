@@ -1,4 +1,4 @@
-import 'package:messenger_mobile/core/error/failures.dart';
+import '../../../../core/error/failures.dart';
 
 import '../../../../core/config/storage.dart';
 

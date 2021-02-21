@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:messenger_mobile/modules/authentication/domain/entities/code_entity.dart';
+import '../../domain/entities/code_entity.dart';
 import '../../domain/entities/auth_enums.dart';
 
 abstract class AuthenticationEvent extends Equatable {
@@ -20,6 +20,8 @@ class CreateCodeEvent extends AuthenticationEvent {
         phone,
       ];
 }
+
+class PoFanu extends AuthenticationEvent {}
 
 class SendCode extends AuthenticationEvent {
   final CodeEntity codeEntity;

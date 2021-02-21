@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:messenger_mobile/locator.dart';
-import 'package:messenger_mobile/modules/authentication/presentation/bloc/index.dart';
-import 'package:messenger_mobile/modules/authentication/presentation/pages/auth_page.dart';
-import 'package:messenger_mobile/modules/profile/presentation/pages/profile_page.dart';
+import '../../locator.dart';
+import '../../modules/authentication/presentation/bloc/index.dart';
+import '../../modules/authentication/presentation/pages/auth_page.dart';
+import '../../modules/profile/presentation/pages/profile_page.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -21,21 +21,30 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<AuthenticationBloc, AuthenticationState>(
-      listener: (context, state) {
-        if (state is Unauthenticated) {
-          print('shit damn');
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => LoginPage()));
-        } else if (state is Authenticated) {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => ProfilePage()));
-        }
-      },
-      child: Scaffold(
-        body: Center(
-          child: Text('Splash Screen'),
-        ),
+    return BlocProvider<AuthenticationBloc>(
+      create: (context) => _authenticationBloc,
+      child: BlocBuilder<AuthenticationBloc, AuthenticationState>(
+        builder: (context, state) {
+          if (state is Unauthenticated) {
+            return LoginPage();
+          } else if (state is Authenticated) {
+            return ProfilePage();
+          } else {
+            return SplashPage();
+          }
+        },
+      ),
+    );
+  }
+}
+
+class SplashPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      //TODO put here splash image of AIO Messenger
+      body: Center(
+        child: Text('initing'),
       ),
     );
   }

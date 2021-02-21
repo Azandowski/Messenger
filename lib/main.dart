@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:messenger_mobile/core/screens/splash_screen.dart';
-import 'package:messenger_mobile/modules/authentication/presentation/pages/auth_page.dart';
+import 'app/appTheme.dart';
+import 'core/screens/splash_screen.dart';
+import 'modules/authentication/presentation/pages/auth_page.dart';
 import 'modules/authentication/presentation/bloc/authentication_bloc.dart';
 import 'modules/authentication/presentation/bloc/index.dart';
 import 'locator.dart' as serviceLocator;
@@ -28,7 +29,10 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => serviceLocator.sl<AuthenticationBloc>(),
-      child: MaterialApp(home: SplashScreen(), navigatorKey: navigatorKey),
+      child: MaterialApp(
+          home: SplashScreen(),
+          theme: AppTheme.light,
+          navigatorKey: navigatorKey),
     );
   }
 }

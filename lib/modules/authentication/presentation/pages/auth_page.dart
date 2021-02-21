@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:messenger_mobile/locator.dart';
-import 'package:messenger_mobile/modules/authentication/presentation/bloc/index.dart';
+import '../bloc/index.dart';
+import 'phone_enter_page.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -12,40 +12,28 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Login Screen'),
-      ),
-      body: buildBody(context),
+      body: SafeArea(
+          child: Center(
+              child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: buildBody(context),
+      ))),
     );
   }
 
-  BlocProvider<AuthenticationBloc> buildBody(BuildContext context) {
-    return BlocProvider(
-      create: (_) => sl<AuthenticationBloc>(),
-      child: BlocBuilder<AuthenticationBloc, AuthenticationState>(
-        builder: (context, state) {
-          if (state is Unauthenticated) {
-            return TypeNumberStateScreen();
-          } else if (state is Loading) {
-            return LoadingWidget();
-          } else if (state is PreSendCode) {
-            return TypeCodeScreen();
-          }
-        },
-      ),
+  BlocBuilder<AuthenticationBloc, AuthenticationState> buildBody(
+      BuildContext context) {
+    return BlocBuilder<AuthenticationBloc, AuthenticationState>(
+      builder: (context, state) {
+        if (state is Unauthenticated) {
+          return PhoneEnterPage();
+        } else if (state is Loading) {
+          return LoadingWidget();
+        } else if (state is PreSendCode) {
+          return TypeCodeScreen();
+        }
+      },
     );
-  }
-}
-
-class TypeNumberStateScreen extends StatefulWidget {
-  @override
-  _TypeNumberStateScreenState createState() => _TypeNumberStateScreenState();
-}
-
-class _TypeNumberStateScreenState extends State<TypeNumberStateScreen> {
-  @override
-  Widget build(BuildContext context) {
-    return Container();
   }
 }
 

@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/modules/authentication/domain/entities/code_entity.dart';
+import '../../domain/entities/code_entity.dart';
 import '../../domain/entities/auth_enums.dart';
 
 abstract class AuthenticationState extends Equatable {

@@ -1,14 +1,14 @@
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
-import 'package:messenger_mobile/modules/authentication/data/datasources/local_authentication_datasource.dart';
-import 'package:messenger_mobile/modules/authentication/data/datasources/remote_authentication_datasource.dart';
-import 'package:messenger_mobile/modules/authentication/data/repositories/authentication_repository_impl.dart';
-import 'package:messenger_mobile/modules/authentication/domain/repositories/authentication_repository.dart';
-import 'package:messenger_mobile/modules/authentication/domain/usecases/create_code.dart';
-import 'package:messenger_mobile/modules/authentication/domain/usecases/get_token.dart';
-import 'package:messenger_mobile/modules/authentication/domain/usecases/login.dart';
-import 'package:messenger_mobile/modules/authentication/presentation/bloc/index.dart';
+import 'modules/authentication/data/datasources/local_authentication_datasource.dart';
+import 'modules/authentication/data/datasources/remote_authentication_datasource.dart';
+import 'modules/authentication/data/repositories/authentication_repository_impl.dart';
+import 'modules/authentication/domain/repositories/authentication_repository.dart';
+import 'modules/authentication/domain/usecases/create_code.dart';
+import 'modules/authentication/domain/usecases/get_token.dart';
+import 'modules/authentication/domain/usecases/login.dart';
+import 'modules/authentication/presentation/bloc/index.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'core/config/auth_config.dart';

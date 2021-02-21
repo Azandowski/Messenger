@@ -2,11 +2,11 @@ import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:messenger_mobile/core/error/failures.dart';
-import 'package:messenger_mobile/modules/authentication/domain/entities/code_entity.dart';
-import 'package:messenger_mobile/modules/authentication/domain/entities/token_entity.dart';
-import 'package:messenger_mobile/modules/authentication/domain/usecases/create_code.dart';
-import 'package:messenger_mobile/modules/authentication/domain/usecases/login.dart';
+import '../../../../core/error/failures.dart';
+import '../../domain/entities/code_entity.dart';
+import '../../domain/entities/token_entity.dart';
+import '../../domain/usecases/create_code.dart';
+import '../../domain/usecases/login.dart';
 import '../../../../core/config/auth_config.dart';
 import '../../../../core/config/storage.dart';
 import '../../../../locator.dart';
@@ -46,6 +46,9 @@ class AuthenticationBloc
           phoneNumber: event.codeEntity.phone, code: event.userCode);
       final errorOrToken = await login(loginParams);
       yield* _eitherTokenOrFailure(errorOrToken);
+    } else if (event is PoFanu) {
+      print('qotaaaaq');
+      yield Authenticated(token: 'sndlansld');
     }
   }
 
