@@ -20,7 +20,7 @@ void main() {
   test('should get code when there is a code', () async {
     final phone = '+77055946560';
     final CodeEntity codeEntity =
-        CodeEntity(id: 12, phone: phone, code: '1122', attempts: 0);
+        CodeEntity(id: 12, phone: phone, attempts: 0);
     //arrange
     when(mockAuthRepository
             .createCode(PhoneParams(phoneNumber: '+77055946560')))

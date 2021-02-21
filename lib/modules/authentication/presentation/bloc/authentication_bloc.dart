@@ -36,7 +36,6 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       
       yield* _eitherLoginOrProfile(tokenOrFailure);
     } else if (event is ChangeLoginMode) {
-      
       yield Unauthenticated(loginMode: event.currentMode);
     } else if (event is CreateCodeEvent) {
       final params = PhoneParams(phoneNumber: event.phone);

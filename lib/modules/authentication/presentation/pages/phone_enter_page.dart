@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:messenger_mobile/core/widgets/independent/textfields/outlineTextField.dart';
+import 'package:messenger_mobile/modules/authentication/domain/entities/code_entity.dart';
+import 'package:messenger_mobile/modules/authentication/presentation/bloc/index.dart';
 import '../../../../app/appTheme.dart';
 import '../../../../core/screens/offert_screen.dart';
 import '../../../../core/widgets/independent/buttons/gradient_main_button.dart';
+import '../../../../locator.dart';
 
 class PhoneEnterPage extends StatefulWidget {
   @override
@@ -47,7 +50,14 @@ class _PhoneEnterPageState extends State<PhoneEnterPage> {
           OffertTextWidget(),
           ActionButton(
             text: 'Продолжить',
-            onTap: () {},
+            onTap: () {
+              sl<AuthenticationBloc>().add(SendCode(
+                codeEntity: CodeEntity(
+                  phone: '+77777777777'
+                ),
+                userCode: '0000'
+              ));
+            },
           )
         ],
       ),
@@ -81,8 +91,7 @@ class OffertTextWidget extends StatelessWidget {
         ),
       ),
       onTap: () {
-        Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => OffertView()));
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) => OffertView()));
       },
     );
   }

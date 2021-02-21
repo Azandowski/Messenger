@@ -19,7 +19,7 @@ extension EndpointsExtension on Endpoints {
     return Config.baseUrl.value;
   }
 
-  Map<String, String> getHeaders({token: String, Map defaultHeaders}) {
+  Map<String, String> getHeaders({String token, Map defaultHeaders}) {
     return {
       if (defaultHeaders != null) ...defaultHeaders, 
       if (token != null && token != "") ...{"Authorization": "Bearer $token"},
@@ -33,9 +33,9 @@ extension EndpointsExtension on Endpoints {
   String get path {
     switch (this) {
       case Endpoints.createCode:
-        return "${Config.baseAPIpath.value}/auth/createCode";
+        return "${Config.baseAPIpath.value}/createCode";
       case Endpoints.login:
-        return "${Config.baseAPIpath.value}/auth/login";
+        return "${Config.baseAPIpath.value}/login";
       case Endpoints.getCurrentUser:
         return "${Config.baseAPIpath.value}/user/getCurrentUser";
       case Endpoints.updateCurrentUser:

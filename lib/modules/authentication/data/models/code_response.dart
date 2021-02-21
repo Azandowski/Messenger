@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../../domain/entities/code_entity.dart';
 
 class CodeModel extends CodeEntity {
@@ -8,12 +7,12 @@ class CodeModel extends CodeEntity {
   final String code;
   final int attempts;
 
-  CodeModel(
-      {@required this.id,
-      @required this.phone,
-      @required this.code,
-      @required this.attempts})
-      : super(id: id, phone: phone, code: code, attempts: attempts);
+  CodeModel({
+    @required this.id,
+    @required this.phone,
+    @required this.code,
+    @required this.attempts
+  }) : super(id: id, phone: phone,  attempts: attempts);
 
   factory CodeModel.fromJson(Map<String, dynamic> json) {
     return CodeModel(
@@ -22,6 +21,7 @@ class CodeModel extends CodeEntity {
         code: json['code'],
         attempts: json['attempts']);
   }
+
   Map<String, dynamic> toJson() {
     return {
       'id': id,
