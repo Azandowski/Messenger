@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:messenger_mobile/core/services/network/config.dart';
 import 'package:messenger_mobile/modules/profile/data/models/user_model.dart';
 import 'package:messenger_mobile/modules/profile/domain/entities/user.dart';
 
@@ -8,7 +9,7 @@ void main () {
     surname: 'Surname',
     patronym: 'Patronym',
     phoneNumber: '+77470726323',
-    profileImage: 'image.png'
+    profileImage: ConfigExtension.buildURLHead() + 'image.png'
   );
 
   test('check superclass', () async {
@@ -22,7 +23,7 @@ void main () {
         'surname': 'Surname',
         'patronym': 'Patronym',
         'phone': '+77470726323',
-        'profile_image': 'image.png'
+        'avatar': 'image.png'
       };
 
       final result = UserModel.fromJson(jsonMap);
@@ -34,7 +35,7 @@ void main () {
     final Map<String, dynamic> expectedJSON = {
       'name': 'Yerkebulan',
       'phone': '+77470726323',
-      'profile_image': 'image.png',
+      'avatar':  ConfigExtension.buildURLHead() +  'image.png',
       'surname': 'Surname',
       'patronym': 'Patronym',
     };

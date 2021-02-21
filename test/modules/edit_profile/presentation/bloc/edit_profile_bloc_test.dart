@@ -9,17 +9,17 @@ class MockEditUser extends Mock implements EditUser {}
 
 
 void main () { 
-  EditProfileBloc bloc;
+  EditProfileCubit cubit;
   MockEditUser mockEditUser;
   
   setUp(() { 
     mockEditUser = MockEditUser();
-    bloc = EditProfileBloc(editUser: mockEditUser);
+    cubit = EditProfileCubit(editUser: mockEditUser);
   });
 
   test('initialState should be Normal State', () {
     // assert
-    expect(bloc.state, equals(EditProfileNormal()));
+    expect(cubit.state, equals(EditProfileNormal()));
   });
 
   test ('should return error if there is an error', () {
@@ -31,7 +31,7 @@ void main () {
       EditProfileError(message: 'ERROR')
     ];
 
-    bloc.add(EditProfileUpdateUser(token: ''));
+    cubit.updateProfile(EditProfileUpdateUser(token: ''));
   });
 
   test ('If success state becomes success', () {
@@ -43,6 +43,6 @@ void main () {
       EditProfileSuccess()
     ];
 
-    bloc.add(EditProfileUpdateUser(token: ''));
+    cubit.updateProfile(EditProfileUpdateUser(token: ''));
   }); 
 }

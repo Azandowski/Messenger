@@ -13,4 +13,8 @@ extension ConfigExtension on Config {
         return 'https';
     }
   }
+
+  static String buildURLHead () {
+    return Config.baseScheme.value + "://" + Config.baseUrl.value + '/';
+  }
 }

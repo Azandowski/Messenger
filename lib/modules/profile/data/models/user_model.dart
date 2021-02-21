@@ -1,3 +1,5 @@
+import 'package:messenger_mobile/core/services/network/config.dart';
+
 import '../../domain/entities/user.dart';
 
 class UserModel extends User {
@@ -27,7 +29,7 @@ class UserModel extends User {
       surname: json['surname'],
       patronym: json['patronym'],
       phoneNumber: json['phone'],
-      profileImage: json['profile_image']
+      profileImage: ConfigExtension.buildURLHead() +  json['avatar']
     );
   }
 
@@ -37,7 +39,7 @@ class UserModel extends User {
       'surname': surname,
       'patronym': patronym,
       'phone': phoneNumber,
-      'profile_image': profileImage
+      'avatar': profileImage
     };
   }
 }

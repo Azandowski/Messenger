@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger_mobile/core/widgets/independent/pickers/photo_picker.dart';
+import 'package:messenger_mobile/modules/edit_profile/bloc/edit_profile_cubit.dart';
 import 'package:messenger_mobile/modules/edit_profile/bloc/index.dart';
 import 'package:messenger_mobile/modules/profile/domain/entities/user.dart';
 
@@ -25,7 +26,7 @@ class UserPickerView extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         PhotoPicker().showImageSourceSelectionDialog(context, (imageSource) {
-          BlocProvider.of<EditProfileBloc>(context).add(PickProfileImage(imageSource: imageSource));
+          BlocProvider.of<EditProfileCubit>(context).pickProfileImage(PickProfileImage(imageSource: imageSource));
         });
       },
       child: Stack(
