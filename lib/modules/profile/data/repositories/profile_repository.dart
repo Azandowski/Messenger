@@ -21,8 +21,8 @@ class ProfileRepositoryImpl extends ProfileRepository {
   Future<Either<Failure, User>> getUser(GetUserParams getUserParams) async {
     if (await networkInfo.isConnected) {
       try {   
-        final token = await profileDataSource.getCurrentUser(getUserParams.token);
-        return Right(token);
+        final user = await profileDataSource.getCurrentUser(getUserParams.token);
+        return Right(user);
       } catch (e) {
         return Left(e);
       }

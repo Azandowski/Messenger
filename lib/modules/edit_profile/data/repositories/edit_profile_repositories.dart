@@ -18,8 +18,19 @@ class EditUserRepositoryImpl extends EditUserRepository {
   });
 
   @override
-  Future<Either<Failure, bool>> updateUser(EditUserParams editUserParams) {
-    // TODO: implement updateUser
-    throw UnimplementedError();
+  Future<Either<Failure, bool>> updateUser(EditUserParams editUserParams) async {
+    if (await networkInfo.isConnected) { 
+      try {    
+        final response = await editProfileDataSource.updateUser(
+          file: editUserParams.image, data: editUserParams.jsonBody, token: editUserParams.token
+        );
+
+        return Right(response);
+      } catch (e) {
+        return Left(e);
+      }
+    } else {
+      return Left(ConnectionFailure());
+    }
   }
 }

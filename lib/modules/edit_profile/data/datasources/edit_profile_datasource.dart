@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:messenger_mobile/core/error/failures.dart';
 import 'package:path/path.dart';
 
 abstract class EditProfileDataSource {
@@ -20,8 +21,16 @@ class EditProfileDataSourceImpl implements EditProfileDataSource {
   });
 
   @override
-  Future<bool> updateUser({File file, Map<String, String> data, String token}) {
-    throw UnimplementedError();
+  Future<bool> updateUser({File file, Map<String, String> data, String token}) async {
+    http.StreamedResponse response = await postUserData(
+      token: token, request: request, data: data, files: file != null ? [file] : []
+    );
+
+    if (response.statusCode >= 200 && response.statusCode <= 299) { 
+      return true;
+    } else {
+      throw ServerFailure(message: response.stream.bytesToString());
+    }
   }
 
   
@@ -37,7 +46,6 @@ class EditProfileDataSourceImpl implements EditProfileDataSource {
     (data ?? {}).keys.forEach((e) { request.fields[e] = data[e]; });
 
     request.files.addAll(await getFilesList(files));
-
     return request.send();
   }
 
@@ -59,20 +67,4 @@ class EditProfileDataSourceImpl implements EditProfileDataSource {
 
     return _files;
   }
-
-  
-  // @override
-  // Future<User> getCurrentUser(String token) async {
-  //   http.Response response = await client.post(
-  //     Endpoints.getCurrentUser.buildURL(), 
-  //     headers: Endpoints.getCurrentUser.getHeaders(token: token),
-  //     body: json.encode({ 'application_id': '1' })
-  //   );
-
-  //   if (response.statusCode >= 200 && response.statusCode <= 299) {
-  //     return UserModel.fromJson(json.decode(response.body));
-  //   } else {
-  //     throw ServerFailure(message: response.body.toString());
-  //   }
-  // }
 }
