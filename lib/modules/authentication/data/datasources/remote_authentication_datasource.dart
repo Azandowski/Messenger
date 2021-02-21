@@ -42,7 +42,7 @@ class AuthenticationRemoteDataSourceImpl
     var url = Endpoints.login.buildURL();
     var headers = Endpoints.login.getHeaders();
     final response = await client.post(url,
-      body: {'phone': number, 'code': code, 'application_id': APP_ID, },
+      body: json.encode({'phone': number, 'code': code, 'application_id': APP_ID, }),
       headers: headers
     );
 
