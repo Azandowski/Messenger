@@ -6,7 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:messenger_mobile/modules/edit_profile/bloc/edit_profile_event.dart';
 import 'package:messenger_mobile/modules/edit_profile/bloc/edit_profile_state.dart';
-import 'package:messenger_mobile/modules/profile/bloc/index.dart';
 import 'package:messenger_mobile/modules/profile/domain/usecases/edit_user.dart';
 import 'package:messenger_mobile/modules/profile/domain/usecases/profile_params.dart';
 
@@ -17,7 +16,7 @@ class EditProfileCubit extends Cubit<EditProfileState> {
   
   EditProfileCubit({
     @required this.editUser
-  }) : super(EditProfileNormal());
+  }) : super(EditProfileLoading());
 
   Future<void> updateProfile (EditProfileUpdateUser event) async {
     emit(EditProfileLoading());
@@ -35,8 +34,16 @@ class EditProfileCubit extends Cubit<EditProfileState> {
         emit(EditProfileError(message: failure.message))
       }, 
       (_) {
-        emit(EditProfileSuccess());
+        emit(EditProfileError(message: 'ERROR HAPPENED'));
+        // emit(EditProfileSuccess());
       });
+  }
+
+  void initProfile (EditProfileInit event) {
+    nameTextController.text = event.user.name ?? '';
+    patronymTextController.text = event.user.patronym ?? '';
+    surnameTextController.text = event.user.surname ?? '';
+    emit(EditProfileNormal(imageFile: imageFile));
   }
 
   Future<void> pickProfileImage (PickProfileImage event) async {

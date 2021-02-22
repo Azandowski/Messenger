@@ -19,7 +19,7 @@ void main () {
 
   test('initialState should be Normal State', () {
     // assert
-    expect(cubit.state, equals(EditProfileNormal()));
+    expect(cubit.state, equals(EditProfileLoading()));
   });
 
   test ('should return error if there is an error', () {

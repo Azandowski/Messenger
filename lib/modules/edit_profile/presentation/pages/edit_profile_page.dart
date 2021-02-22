@@ -44,7 +44,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
         backgroundColor: Color.fromRGBO(250, 249, 255, 1)
       ),
       body: BlocListener(
-        cubit: cubit,
+        cubit: cubit..initProfile(EditProfileInit(
+          user: user
+        )),
         listener: (context, state) {
           if (state is EditProfileSuccess) {
             Navigator.of(context).pop(true);
@@ -62,75 +64,71 @@ class _EditProfilePageState extends State<EditProfilePage> {
           create: (_) => cubit,
           child: BlocBuilder<EditProfileCubit, EditProfileState> (
             builder: (context, state) {
-              if (state is EditProfileNormal || state is EditProfileLoading) {
-                return Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SizedBox(height: 12),
-                      UserPickerView(
-                        context: context,
-                        user: user,
-                        imageFile: cubit.imageFile,
-                      ),
-                      Container(
-                        padding: const EdgeInsets.only(top: 12),
-                        color: Theme.of(context).backgroundColor,
-                        child: Column(
-                          children: [
-                            IgnorePointer(
-                              ignoring: state is EditProfileLoading,
-                              child: CustomTextField(
-                                customPadding: const EdgeInsets.only(left: 16, right: 16),
-                                labelText: "Фамилия",
-                                textCtr: cubit.nameTextController,
-                              ),
+              return Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(height: 12),
+                    UserPickerView(
+                      context: context,
+                      user: user,
+                      imageFile: cubit.imageFile,
+                    ),
+                    Container(
+                      padding: const EdgeInsets.only(top: 12),
+                      color: Theme.of(context).backgroundColor,
+                      child: Column(
+                        children: [
+                          IgnorePointer(
+                            ignoring: state is EditProfileLoading,
+                            child: CustomTextField(
+                              customPadding: const EdgeInsets.only(left: 16, right: 16),
+                              labelText: "Фамилия",
+                              textCtr: cubit.nameTextController,
                             ),
-                            IgnorePointer(
-                              ignoring: state is EditProfileLoading,
-                              child: CustomTextField(
-                                customPadding: const EdgeInsets.only(left: 16, right: 16),
-                                labelText: "Имя",
-                                textCtr: cubit.surnameTextController,
-                              ),
+                          ),
+                          IgnorePointer(
+                            ignoring: state is EditProfileLoading,
+                            child: CustomTextField(
+                              customPadding: const EdgeInsets.only(left: 16, right: 16),
+                              labelText: "Имя",
+                              textCtr: cubit.surnameTextController,
                             ),
-                            IgnorePointer(
-                              ignoring: state is EditProfileLoading,
-                              child: CustomTextField(
-                                customPadding: const EdgeInsets.only(left: 16, right: 16),
-                                labelText: "Отчество",
-                                textCtr: cubit.patronymTextController,
-                              ),
+                          ),
+                          IgnorePointer(
+                            ignoring: state is EditProfileLoading,
+                            child: CustomTextField(
+                              customPadding: const EdgeInsets.only(left: 16, right: 16),
+                              labelText: "Отчество",
+                              textCtr: cubit.patronymTextController,
                             ),
-                            SizedBox(
-                              height: 12,
-                            ),
-                            ActionButton(
-                              isLoading: state is EditProfileLoading,
-                              text: 'Сохранить',
-                              onTap: () {
-                                if (state is EditProfileNormal) {
-                                  cubit.updateProfile(EditProfileUpdateUser(
-                                    token: token,
-                                    image: cubit.imageFile,
-                                    name: cubit.nameTextController.text,
-                                    surname: cubit.surnameTextController.text,
-                                    patronym: cubit.patronymTextController.text
-                                  ));
-                                }
-                              },
-                            )
-                          ],
-                        )
-                      ),
-                    ]
-                  ),
-                );
-              } else {
-                return Container();
-              }
+                          ),
+                          const SizedBox(
+                            height: 12,
+                          ),
+                          ActionButton(
+                            isLoading: state is EditProfileLoading,
+                            text: 'Сохранить',
+                            onTap: () {
+                              if (!(state is EditProfileLoading)) {
+                                cubit.updateProfile(EditProfileUpdateUser(
+                                  token: token,
+                                  image: cubit.imageFile,
+                                  name: cubit.nameTextController.text,
+                                  surname: cubit.surnameTextController.text,
+                                  patronym: cubit.patronymTextController.text
+                                ));
+                              }
+                            },
+                          )
+                        ],
+                      )
+                    ),
+                  ]
+                ),
+              );
             },
           ),
         ),

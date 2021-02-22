@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:messenger_mobile/core/error/failures.dart';
+import 'package:messenger_mobile/core/services/network/Endpoints.dart';
 import 'package:path/path.dart';
 
 abstract class EditProfileDataSource {
@@ -40,13 +41,26 @@ class EditProfileDataSourceImpl implements EditProfileDataSource {
     Map data, 
     List<File> files
   }) async {
+    http.MultipartRequest copyRequest = http.MultipartRequest(
+      'POST', Endpoints.updateCurrentUser.buildURL()
+    );
+
     request.headers["Authorization"] = "Bearer $token";
     request.headers["Accept"] = 'application/json';
 
+    request.headers.forEach((name, value) {
+      copyRequest.headers[name] = value;
+    }); 
+
     (data ?? {}).keys.forEach((e) { request.fields[e] = data[e]; });
 
+    request.fields.forEach((name, value) {
+      copyRequest.fields[name] = value;
+    });
+
     request.files.addAll(await getFilesList(files));
-    return request.send();
+    copyRequest.files.addAll(request.files);
+    return copyRequest.send();
   }
 
 

@@ -74,12 +74,13 @@ class ActionButton extends StatelessWidget {
             padding: EdgeInsets.symmetric(vertical: size.verticalPadding),
             width: doNotApplyWidth ? null : w - 32,
             child: isLoading
-                ? LoadWidget()
-                : Center(
-                    child: Text(text,
-                      textAlign: TextAlign.center,
-                      style: AppFontStyles.actionButtonStyle),
-                  ),
+              ? LoadWidget(
+                size: 20,
+              ) : Center(
+                child: Text(text,
+                  textAlign: TextAlign.center,
+                  style: AppFontStyles.actionButtonStyle),
+              ),
           ),
         ),
       ),

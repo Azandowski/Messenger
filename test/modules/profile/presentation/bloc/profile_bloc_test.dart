@@ -10,17 +10,17 @@ import 'package:flutter_test/flutter_test.dart';
 class MockGetUser extends Mock implements GetUser {}
 
 void main () {
-  ProfileBloc bloc;
+  ProfileCubit cubit;
   MockGetUser mockGetUser;
 
   setUp(() { 
     mockGetUser = MockGetUser();
-    bloc = ProfileBloc(getUser: mockGetUser);
+    cubit = ProfileCubit(getUser: mockGetUser);
   });
 
   test('initialState should be Loading State', () {
     // assert
-    expect(bloc.state, equals(ProfileLoading()));
+    expect(cubit.state, equals(ProfileLoading()));
   });
 
   test ('should return error if there is an error', () {
@@ -32,7 +32,7 @@ void main () {
       ProfileError(message: 'ERROR')
     ];
 
-    bloc.add(LoadProfile(token: ''));
+    cubit.loadUser(LoadProfile(token: ''));
   });
 
   test ('If success state becomes profile loaded', () {
@@ -49,6 +49,6 @@ void main () {
       ProfileLoaded(user: user)
     ];
 
-    bloc.add(LoadProfile(token: ''));
+    cubit.loadUser(LoadProfile(token: ''));
   }); 
 }

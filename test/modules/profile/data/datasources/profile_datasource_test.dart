@@ -25,12 +25,11 @@ main() {
   final user = UserModel(name: 'Yerkebulan', phoneNumber: '+77470726323');
 
   test('Should load Profile', () async {
-    when(httpClient.post(any,
-            headers: anyNamed('headers'), body: anyNamed('body')))
-        .thenAnswer(
-            (_) async => http.Response(json.encode(user.toJson()), 200));
+    when(httpClient.post(any, headers: anyNamed('headers'), body: anyNamed('body')))
+      .thenAnswer(
+        (_) async => http.Response(json.encode(user.toJson()), 200));
 
-    final result = await profileDataSourceImpl.getCurrentUser(token);
+    final result = await profileDataSourceImpl.getCurrentUser('token');
 
     expect(result, equals(user));
   });

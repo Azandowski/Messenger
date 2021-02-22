@@ -37,7 +37,7 @@ class UserPickerView extends StatelessWidget {
           ),
           Positioned(
             bottom: -8,
-            right: -5,
+            right: 0,
             child: Image(
               width: 35,
               height: 35,

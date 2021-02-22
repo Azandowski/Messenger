@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:equatable/equatable.dart';
-import 'package:messenger_mobile/modules/profile/domain/entities/user.dart';
 
 abstract class EditProfileState extends Equatable {
   @override

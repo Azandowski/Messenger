@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 abstract class AppColors {
   static get primary => Colors.white;
+  static get secondary => Color.fromRGBO(227, 226, 239, 1);
   static get iconSelected => Color.fromRGBO(66, 115, 175, 1);
   static get paleFontColor => Colors.black;
   static get indicatorColor => Color(0xff9357CD);
@@ -122,7 +123,7 @@ abstract class AppFontStyles {
 
 abstract class AppTheme {
   static get light => ThemeData(
-    primaryColor: Color.fromRGBO(227, 226, 239, 1),
+    primaryColor: AppColors.secondary,
     accentColor: Colors.black,
     backgroundColor: Colors.white,
     scaffoldBackgroundColor: Colors.white,

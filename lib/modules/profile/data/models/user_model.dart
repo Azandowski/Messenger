@@ -29,7 +29,8 @@ class UserModel extends User {
       surname: json['surname'],
       patronym: json['patronym'],
       phoneNumber: json['phone'],
-      profileImage: ConfigExtension.buildURLHead() +  json['avatar']
+      profileImage: json['avatar'] != null ? 
+        ConfigExtension.buildURLHead() + json['avatar'] : null
     );
   }
 
