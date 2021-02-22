@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:messenger_mobile/core/blocs/bloc/auth_bloc.dart';
 import 'package:messenger_mobile/core/widgets/independent/bottomBar/appBottomBar.dart';
+import 'package:messenger_mobile/modules/authentication/presentation/pages/auth_page.dart';
+import 'package:messenger_mobile/modules/profile/presentation/pages/profile_page.dart';
 import '../../locator.dart';
-import '../../modules/authentication/presentation/bloc/index.dart';
-import '../../modules/authentication/presentation/pages/auth_page.dart';
-import '../../modules/profile/presentation/pages/profile_page.dart';
 
 
 class SplashScreen extends StatefulWidget {
@@ -24,13 +24,14 @@ class _SplashScreenState extends State<SplashScreen> {
     SplashPage(),
     ProfilePage(),
   ];
+
   int _viewIndex = 0;
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<AuthenticationBloc>(
-      create: (context) => sl<AuthenticationBloc>()..add(AppStarted()),
-      child: BlocBuilder<AuthenticationBloc, AuthenticationState>(
+    return BlocProvider<AuthBloc>(
+      create: (context) => sl<AuthBloc>()..add(AppStarted()),
+      child: BlocBuilder<AuthBloc, AuthState>(
         builder: (context, state) {
           if (state is Unauthenticated) {
             return LoginPage();

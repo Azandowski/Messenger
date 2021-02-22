@@ -44,11 +44,10 @@ abstract class AppFontStyles {
   );
 
   static get greyPhoneStyle => TextStyle(
-    color: Color(0xffE0E0E0),
+    color: Color(0xff828282),
     fontWeight: FontWeight.w400,
     fontSize: 12,
   );
-
   static get paleStyle => TextStyle(
     color: AppColors.paleFontColor,
     fontWeight: FontWeight.w500,
