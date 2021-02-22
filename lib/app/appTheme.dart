@@ -129,7 +129,9 @@ abstract class AppTheme {
     scaffoldBackgroundColor: Colors.white,
     highlightColor: Color(0xff292969),
     indicatorColor: Color(0xff9357CD),
-    bottomAppBarColor: Color.fromRGBO(39, 53, 126, 1),
+    bottomAppBarTheme: BottomAppBarTheme(
+      color: Colors.white,
+    ),
     appBarTheme: AppBarTheme(color: Colors.white),
     textTheme: TextTheme(
       bodyText1: TextStyle(

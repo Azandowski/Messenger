@@ -27,14 +27,11 @@ void main() async {
 class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => serviceLocator.sl<AuthenticationBloc>(),
-      child: MaterialApp(
-        home: SplashScreen(),
-        theme: AppTheme.light,
-        navigatorKey: navigatorKey,
-        routes: routes,
-      ),
+    return MaterialApp(
+      home: SplashScreen(),
+      theme: AppTheme.light,
+      navigatorKey: navigatorKey,
+      routes: routes,
     );
   }
 }

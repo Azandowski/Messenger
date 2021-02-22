@@ -47,7 +47,10 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       final errorOrToken = await login(loginParams);
       
       yield* _eitherTokenOrFailure(errorOrToken);
-    } 
+    } else if (event is LoggedOut) {
+      _handleUnauthenticated();
+      yield Unauthenticated();
+    }
   }
 
   Stream<AuthenticationState> _eitherLoginOrProfile(
