@@ -50,12 +50,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
 
   void _handleAuthenticated(String token) {
-    Storage().token = token;
     sl<AuthConfig>().token = token;
   }
 
   void _handleUnauthenticated() {
-    Storage().token = null;
+    // TODO: remove here token
     sl<AuthConfig>().token = null;
   }
 }
