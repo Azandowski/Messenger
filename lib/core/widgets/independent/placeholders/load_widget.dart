@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/app/appTheme.dart';
+import '../../../../app/appTheme.dart';
 
 class LoadWidget extends StatelessWidget {
-  
   final double size;
 
   const LoadWidget({Key key, this.size}) : super(key: key);
@@ -10,14 +9,13 @@ class LoadWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: size == null ? buildSpinner() : SizedBox(
-        width: size,
-        height: size,
-        child: buildSpinner()
-      ),
+      child: size == null
+          ? buildSpinner()
+          : SizedBox(width: size, height: size, child: buildSpinner()),
     );
   }
-  Widget buildSpinner () {
+
+  Widget buildSpinner() {
     return CircularProgressIndicator(
       backgroundColor: AppColors.indicatorColor,
       valueColor: new AlwaysStoppedAnimation<Color>(AppColors.secondary),

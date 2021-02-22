@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:messenger_mobile/app/appTheme.dart';
-import 'package:messenger_mobile/core/widgets/independent/buttons/gradient_main_button.dart';
-import 'package:messenger_mobile/modules/authentication/presentation/bloc/index.dart';
+import '../../../../app/appTheme.dart';
+import '../../../../core/widgets/independent/buttons/gradient_main_button.dart';
+import '../bloc/index.dart';
 import 'package:pin_input_text_field/pin_input_text_field.dart';
 
 class PinCodePage extends StatefulWidget {

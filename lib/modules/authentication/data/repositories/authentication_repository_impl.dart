@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:dartz/dartz.dart';
+import 'package:messenger_mobile/core/authorization/bloc/auth_bloc.dart';
 import 'package:meta/meta.dart';
 
 import '../../../../core/error/failures.dart';
@@ -41,19 +44,34 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
     try {
       final token = await localDataSource.getToken();
       return Right(token);
-    } catch (e) {
-      return Left(e);
+    } on StorageFailure {
+      return Left(StorageFailure());
     }
   }
 
   @override
   Future<Either<Failure, TokenEntity>> login(params) async {
     try {
-      final token = await remoteDataSource.login(params.phoneNumber, params.code);
+      final token =
+          await remoteDataSource.login(params.phoneNumber, params.code);
       localDataSource.saveToken(token.token);
       return Right(token);
     } on ServerFailure {
       return Left(ServerFailure(message: 'null'));
     }
+  }
+
+  final _controller = StreamController<AuthenticationStatus>();
+
+  @override
+  Stream<AuthenticationStatus> get status async* {
+    var token = await getToken();
+    yield* token.fold((error) async* {
+      yield AuthenticationStatus.unauthenticated;
+      yield* _controller.stream;
+    }, (token) async* {
+      yield AuthenticationStatus.authenticated;
+      yield* _controller.stream;
+    });
   }
 }

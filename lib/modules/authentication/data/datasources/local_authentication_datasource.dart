@@ -1,6 +1,5 @@
-import '../../../../core/error/failures.dart';
-
 import '../../../../core/config/storage.dart';
+import '../../../../core/error/failures.dart';
 
 abstract class AuthenticationLocalDataSource {
   Future<void> saveToken(String token);

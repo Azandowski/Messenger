@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:messenger_mobile/core/widgets/independent/textfields/outlineTextField.dart';
-import 'package:messenger_mobile/locator.dart';
-import 'package:messenger_mobile/modules/authentication/presentation/bloc/index.dart';
+import '../../../../core/widgets/independent/textfields/outlineTextField.dart';
+import '../../../../locator.dart';
+import '../bloc/index.dart';
 import '../../../../app/appTheme.dart';
 import '../../../../core/screens/offert_screen.dart';
 import '../../../../core/widgets/independent/buttons/gradient_main_button.dart';

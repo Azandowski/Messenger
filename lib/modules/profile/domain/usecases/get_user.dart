@@ -1,9 +1,10 @@
 import 'package:dartz/dartz.dart';
-import 'package:messenger_mobile/core/error/failures.dart';
-import 'package:messenger_mobile/core/usecases/usecase.dart';
-import 'package:messenger_mobile/modules/profile/domain/entities/user.dart';
-import 'package:messenger_mobile/modules/profile/domain/repositories/profile_respository.dart';
-import 'package:messenger_mobile/modules/profile/domain/usecases/profile_params.dart';
+
+import '../../../../core/error/failures.dart';
+import '../../../../core/usecases/usecase.dart';
+import '../entities/user.dart';
+import '../repositories/profile_respository.dart';
+import 'profile_params.dart';
 
 class GetUser implements UseCase<User, GetUserParams> {
   final ProfileRepository repository;
@@ -15,4 +16,3 @@ class GetUser implements UseCase<User, GetUserParams> {
     return await repository.getUser(params);
   }
 }
-

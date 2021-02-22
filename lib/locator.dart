@@ -1,8 +1,8 @@
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
-import 'package:messenger_mobile/modules/profile/domain/repositories/profile_respository.dart';
-import 'core/blocs/bloc/auth_bloc.dart';
+import 'package:messenger_mobile/core/authorization/bloc/auth_bloc.dart';
+import 'modules/profile/domain/repositories/profile_respository.dart';
 import 'modules/authentication/data/datasources/local_authentication_datasource.dart';
 import 'modules/authentication/data/datasources/remote_authentication_datasource.dart';
 import 'modules/authentication/data/repositories/authentication_repository_impl.dart';
@@ -35,16 +35,12 @@ Future<void> init() async {
     ),
   );
 
-  sl.registerFactory(
-    () => ProfileCubit(
-      getUser: sl()
-    )
-  );
+  sl.registerFactory(() => ProfileCubit(getUser: sl()));
 
   // Use cases
   sl.registerLazySingleton(() => GetToken(sl()));
   sl.registerLazySingleton(() => Login(sl()));
-  sl.registerLazySingleton(() => CreateCode(sl())); 
+  sl.registerLazySingleton(() => CreateCode(sl()));
   sl.registerLazySingleton(() => GetUser(sl()));
 
   // Repository
@@ -57,11 +53,7 @@ Future<void> init() async {
   );
 
   sl.registerLazySingleton<ProfileRepository>(
-    () => ProfileRepositoryImpl(
-      profileDataSource: sl(),
-      networkInfo: sl()
-    )
-  );
+      () => ProfileRepositoryImpl(profileDataSource: sl(), networkInfo: sl()));
 
   // Data sources
   sl.registerLazySingleton<AuthenticationLocalDataSource>(
@@ -73,8 +65,7 @@ Future<void> init() async {
   );
 
   sl.registerLazySingleton<ProfileDataSource>(
-    () => ProfileDataSourceImpl(client: sl())
-  );
+      () => ProfileDataSourceImpl(client: sl()));
 
   //! Core
 
@@ -82,6 +73,7 @@ Future<void> init() async {
 
   sl.registerFactory(
     () => AuthBloc(
+      authRepositiry: sl(),
       getToken: sl(),
     ),
   );

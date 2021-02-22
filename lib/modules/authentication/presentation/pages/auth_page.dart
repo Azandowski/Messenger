@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:messenger_mobile/locator.dart';
-import 'package:messenger_mobile/modules/authentication/presentation/pages/pin_code_page.dart';
+import '../../../../locator.dart';
+import 'pin_code_page.dart';
 import '../bloc/index.dart';
 import 'phone_enter_page.dart';
 
 class LoginPage extends StatefulWidget {
+  static var id = 'login_page';
+
   @override
   _LoginPageState createState() => _LoginPageState();
 }
