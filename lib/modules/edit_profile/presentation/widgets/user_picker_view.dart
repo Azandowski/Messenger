@@ -2,22 +2,19 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../../../core/widgets/independent/pickers/photo_picker.dart';
 import '../../../profile/domain/entities/user.dart';
-import '../../bloc/edit_profile_cubit.dart';
-import '../../bloc/index.dart';
 
 class UserPickerView extends StatelessWidget {
   final BuildContext context;
   final User user;
   final File imageFile;
+  final Function onSelectPhoto;
 
   const UserPickerView({
     @required this.context,
     @required this.user,
     @required this.imageFile,
+    @required this.onSelectPhoto,
     Key key,
   }) : super(key: key);
 
@@ -25,10 +22,7 @@ class UserPickerView extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        PhotoPicker().showImageSourceSelectionDialog(context, (imageSource) {
-          BlocProvider.of<EditProfileCubit>(context)
-              .pickProfileImage(PickProfileImage(imageSource: imageSource));
-        });
+        onSelectPhoto();
       },
       child: Stack(
         children: [
