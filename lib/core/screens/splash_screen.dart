@@ -29,28 +29,27 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<AuthBloc>(
-        create: (context) => sl<AuthBloc>(),
-        child: BlocListener<AuthBloc, AuthState>(
-          listener: (context, state) {
-            switch (state.status) {
-              case AuthenticationStatus.authenticated:
-                _navigator.pushNamedAndRemoveUntil(
-                    EditProfilePage.pageID, (route) => false);
-                break;
-              case AuthenticationStatus.unauthenticated:
-                _navigator.pushNamedAndRemoveUntil(
-                    LoginPage.id, (route) => false);
-                break;
-              default:
-                break;
-            }
-          },
-          child: Scaffold(
-            //TODO PUT SOME IMAGE
-            backgroundColor: Colors.black,
-          ),
-        ));
+    return BlocListener<AuthBloc, AuthState>(
+      listener: (context, state) {
+        print(state.toString() + ' THIS IS FROM BLOCLISTENER');
+        switch (state.status) {
+          case AuthenticationStatus.authenticated:
+            print('strange');
+            _navigator.pushNamedAndRemoveUntil(
+                EditProfilePage.pageID, (route) => false);
+            break;
+          case AuthenticationStatus.unauthenticated:
+            _navigator.pushNamedAndRemoveUntil(LoginPage.id, (route) => false);
+            break;
+          default:
+            break;
+        }
+      },
+      child: Scaffold(
+        //TODO PUT SOME IMAGE
+        backgroundColor: Colors.red,
+      ),
+    );
   }
 }
 

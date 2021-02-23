@@ -6,6 +6,7 @@ abstract class AuthenticationLocalDataSource {
 
   /// read to keystore/keychain
   Future<String> getToken();
+  Stream<String> get token;
 
   /// delete from keystore/keychain
   Future<void> deleteToken();
@@ -33,5 +34,11 @@ class AuthenticationLocalDataSourceImpl
   @override
   Future<void> saveToken(String token) async {
     await Storage().secureStorage.write(key: ACCESS_TOKEN, value: token);
+  }
+
+  @override
+  Stream<String> get token async* {
+    var token = Storage().secureStorage.read(key: ACCESS_TOKEN).asStream();
+    yield* token;
   }
 }

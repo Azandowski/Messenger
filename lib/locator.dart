@@ -2,6 +2,7 @@ import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
 import 'package:messenger_mobile/core/authorization/bloc/auth_bloc.dart';
+import 'package:messenger_mobile/modules/authentication/domain/usecases/save_token.dart';
 import 'modules/profile/domain/repositories/profile_respository.dart';
 import 'modules/authentication/data/datasources/local_authentication_datasource.dart';
 import 'modules/authentication/data/datasources/remote_authentication_datasource.dart';
@@ -30,7 +31,6 @@ Future<void> init() async {
   //BLoc
   sl.registerFactory(
     () => AuthenticationBloc(
-      createCode: sl(),
       login: sl(),
     ),
   );
@@ -42,6 +42,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => Login(sl()));
   sl.registerLazySingleton(() => CreateCode(sl()));
   sl.registerLazySingleton(() => GetUser(sl()));
+  sl.registerLazySingleton(() => SaveToken(sl()));
 
   // Repository
   sl.registerLazySingleton<AuthenticationRepository>(

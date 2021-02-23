@@ -12,33 +12,31 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final GetToken getToken;
   final AuthenticationRepository authRepositiry;
 
+  StreamSubscription<AuthenticationStatus> _authenticationStatusSubscription;
+
   AuthBloc({
     @required this.getToken,
     @required this.authRepositiry,
   }) : super(AuthState.unknown()) {
-    _authenticationStatusSubscription = authRepositiry.status.listen((status) {
+    _authenticationStatusSubscription =
+        authRepositiry.status.stream.listen((status) {
       print(status);
-      add(AuthenticationStatusChanged(status));
+      print('lyaaaaaa');
+      return add(AuthenticationStatusChanged(status));
     });
   }
-
-  StreamSubscription<AuthenticationStatus> _authenticationStatusSubscription;
 
   @override
   Stream<AuthState> mapEventToState(
     AuthEvent event,
   ) async* {
     if (event is AuthenticationStatusChanged) {
+      print('changed auth state');
       yield await _mapAuthenticationStatusChangedToState(event);
     } else if (event is AuthenticationLogoutRequested) {
+      print('fucking works');
       // unawaited(_authenticationRepository.logOut());
     }
-  }
-
-  @override
-  Future<void> close() {
-    // _userSubscription?.cancel();
-    return super.close();
   }
 
   Future<AuthState> _mapAuthenticationStatusChangedToState(

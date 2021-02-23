@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:messenger_mobile/modules/authentication/presentation/pages/type_code_page.dart/pages/type_code_page.dart';
+import 'package:messenger_mobile/modules/authentication/presentation/pages/type_phone_page/cubit/typephone_cubit.dart';
+import 'package:messenger_mobile/modules/authentication/presentation/pages/type_phone_page/pages/type_phone_page.dart';
 import '../../../../locator.dart';
-import 'pin_code_page.dart';
 import '../bloc/index.dart';
-import 'phone_enter_page.dart';
 
 class LoginPage extends StatefulWidget {
   static var id = 'login_page';
@@ -26,29 +27,21 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   buildBody(BuildContext context) {
-    return BlocProvider(
-      create: (context) => sl<AuthenticationBloc>(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => sl<AuthenticationBloc>()),
+        BlocProvider(create: (context) => TypephoneCubit(createCode: sl())),
+      ],
       child: BlocBuilder<AuthenticationBloc, AuthenticationState>(
         builder: (context, state) {
           if (state is InitialStat) {
-            return PhoneEnterPage();
-          } else if (state is Loading) {
-            return LoadingWidget();
+            return TypePhonePage();
           } else if (state is CodeState) {
-            return PinCodePage();
+            return TypeCodePage(
+              codeEntity: state.codeEntity,
+            );
           }
         },
-      ),
-    );
-  }
-}
-
-class LoadingWidget extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: CircularProgressIndicator(
-        backgroundColor: Colors.pink,
       ),
     );
   }
