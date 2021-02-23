@@ -37,6 +37,7 @@ class PhotoPicker {
                       ),
                       onTap: () {
                         callback(ImageSource.gallery);
+                        Navigator.pop(context);
                       },
                     ),
                     Padding(padding: EdgeInsets.all(8.0)),
@@ -49,6 +50,7 @@ class PhotoPicker {
                       ),
                       onTap: () {
                         callback(ImageSource.camera);
+                        Navigator.pop(context);
                       },
                     )
                   ],

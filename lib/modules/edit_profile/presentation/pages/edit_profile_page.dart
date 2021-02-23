@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
+import 'package:messenger_mobile/core/widgets/independent/pickers/photo_picker.dart';
 import '../../../../core/config/auth_config.dart';
 import '../../../../core/services/network/Endpoints.dart';
 import '../../../../core/services/network/network_info.dart';
@@ -71,6 +73,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       children: [
                         SizedBox(height: 12),
                         UserPickerView(
+                          onSelectPhoto: () {
+                            PhotoPicker().showImageSourceSelectionDialog(
+                                context,
+                                (source) => cubit.pickProfileImage(
+                                    PickProfileImage(imageSource: source)));
+                          },
                           context: context,
                           user: user,
                           imageFile: cubit.imageFile,
@@ -138,11 +146,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   void _initCubit() {
     cubit = EditProfileCubit(
+        getImageUseCase: sl(),
         editUser: EditUser(EditUserRepositoryImpl(
-      editProfileDataSource: EditProfileDataSourceImpl(
-          request: http.MultipartRequest(
-              'POST', Endpoints.updateCurrentUser.buildURL())),
-      networkInfo: sl<NetworkInfo>(),
-    )));
+          editProfileDataSource: EditProfileDataSourceImpl(
+              request: http.MultipartRequest(
+                  'POST', Endpoints.updateCurrentUser.buildURL())),
+          networkInfo: sl<NetworkInfo>(),
+        )));
   }
 }
