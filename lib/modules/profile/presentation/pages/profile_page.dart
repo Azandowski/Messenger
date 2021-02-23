@@ -92,7 +92,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   _handleEditScreenNavigation(BuildContext context) async {
     final needsUpdate =
-        await Navigator.of(context).pushNamed(EditProfilePage.pageID);
+        await Navigator.of(context).push(EditProfilePage.route());
 
     if (needsUpdate != null && needsUpdate) {
       BlocProvider.of<ProfileCubit>(context)

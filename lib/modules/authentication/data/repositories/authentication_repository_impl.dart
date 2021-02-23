@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:dartz/dartz.dart';
 import 'package:messenger_mobile/core/authorization/bloc/auth_bloc.dart';
+import 'package:messenger_mobile/core/config/auth_config.dart';
+import 'package:messenger_mobile/locator.dart';
 import 'package:messenger_mobile/modules/profile/domain/entities/user.dart';
 import 'package:meta/meta.dart';
 
@@ -24,29 +26,24 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
     @required this.networkInfo,
     @required this.localDataSource,
   }) {
-    localDataSource.deleteToken();
+    // localDataSource.deleteToken();
     initToken();
   }
 
   Future initToken() async {
-    print('doing this shit');
     try {
       final token = await localDataSource.getToken();
 
-      print(token);
+      sl<AuthConfig>().token = token;
 
-      status.add(AuthenticationStatus.authenticated);
+      print(token);
 
       var failOrUser = await getCurrentUser(token);
 
-      failOrUser.fold((error) => print('nu nahui'), (user) {
-        if (user.name != null && user.name != "") {
-          print('pizdec');
-          status.add(AuthenticationStatus.authenticated);
-        }
-      });
+      failOrUser.fold((error) => params.add(AuthParams(null, null)),
+          (user) => params.add(AuthParams(user, token)));
     } on StorageFailure {
-      status.add(AuthenticationStatus.unauthenticated);
+      params.add(AuthParams(null, null));
     }
   }
 
@@ -92,6 +89,7 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
   @override
   Future<Either<Failure, String>> saveToken(String token) async {
     await localDataSource.saveToken(token);
+    sl<AuthConfig>().token = token;
     await initToken();
     return Right(token);
   }
@@ -100,6 +98,8 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
   Future<Either<Failure, User>> getCurrentUser(String token) async {
     try {
       var user = await remoteDataSource.getCurrentUser(token);
+      print(user.surname);
+      sl<AuthConfig>().user = user;
       return Right(user);
     } on ServerFailure {
       return Left(ServerFailure(message: 'Error'));
@@ -111,6 +111,6 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
   }
 
   @override
-  StreamController<AuthenticationStatus> status =
-      StreamController<AuthenticationStatus>.broadcast();
+  StreamController<AuthParams> params =
+      StreamController<AuthParams>.broadcast();
 }

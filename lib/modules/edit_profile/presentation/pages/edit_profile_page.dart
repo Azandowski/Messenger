@@ -17,7 +17,9 @@ import '../../data/repositories/edit_profile_repositories.dart';
 import '../widgets/user_picker_view.dart';
 
 class EditProfilePage extends StatefulWidget {
-  static final pageID = 'editProfilePage';
+  static Route route() {
+    return MaterialPageRoute<void>(builder: (_) => EditProfilePage());
+  }
 
   @override
   _EditProfilePageState createState() => _EditProfilePageState();

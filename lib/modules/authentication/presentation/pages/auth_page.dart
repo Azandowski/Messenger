@@ -7,7 +7,9 @@ import '../../../../locator.dart';
 import '../bloc/index.dart';
 
 class LoginPage extends StatefulWidget {
-  static var id = 'login_page';
+  static Route route() {
+    return MaterialPageRoute<void>(builder: (_) => LoginPage());
+  }
 
   @override
   _LoginPageState createState() => _LoginPageState();

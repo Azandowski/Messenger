@@ -8,12 +8,12 @@ abstract class AuthEvent extends Equatable {
 }
 
 class AuthenticationStatusChanged extends AuthEvent {
-  const AuthenticationStatusChanged(this.status);
+  const AuthenticationStatusChanged(this.params);
 
-  final AuthenticationStatus status;
+  final AuthParams params;
 
   @override
-  List<Object> get props => [status];
+  List<Object> get props => [params];
 }
 
 class AuthenticationLogoutRequested extends AuthEvent {}

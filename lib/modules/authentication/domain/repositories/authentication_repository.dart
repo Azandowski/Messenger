@@ -16,5 +16,5 @@ abstract class AuthenticationRepository {
   Future<Either<Failure, User>> getCurrentUser(String token);
   Future<Either<Failure, TokenEntity>> login(LoginParams params);
   Future<Either<Failure, String>> saveToken(String token);
-  StreamController<AuthenticationStatus> status;
+  StreamController<AuthParams> params;
 }
