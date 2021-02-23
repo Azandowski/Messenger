@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
+import 'package:messenger_mobile/modules/profile/data/models/user_model.dart';
+import 'package:messenger_mobile/modules/profile/domain/entities/user.dart';
 
 import '../../../../core/config/settings.dart';
 import '../../../../core/error/failures.dart';
@@ -14,6 +16,7 @@ import '../models/token_model.dart';
 abstract class AuthenticationRemoteDataSource {
   Future<CodeEntity> createCode(String number);
   Future<TokenEntity> login(String number, String code);
+  Future<User> getCurrentUser(String token);
 }
 
 class AuthenticationRemoteDataSourceImpl
@@ -58,4 +61,21 @@ class AuthenticationRemoteDataSourceImpl
   }
 
   void returnUrlBodyHeaders(Endpoints endpoint) {}
+
+  @override
+  Future<User> getCurrentUser(String token) async {
+    var url = Endpoints.getCurrentUser.buildURL();
+    var headers = Endpoints.getCurrentUser.getHeaders(token: token);
+    final response = await client.post(url,
+        body: json.encode({
+          'application_id': APP_ID,
+        }),
+        headers: headers);
+    var jsonMap = json.decode(response.body);
+    if (response.statusCode >= 200 && response.statusCode <= 299) {
+      return UserModel.fromJson(jsonMap);
+    } else {
+      throw ServerFailure(message: jsonMap['message']);
+    }
+  }
 }

@@ -12,19 +12,17 @@ import '../../../../locator.dart';
 class ProfileCubit extends Cubit<ProfileState> {
   final GetUser getUser;
 
-  ProfileCubit({
-    @required this.getUser
-  }) : super(ProfileLoading());
+  ProfileCubit({@required this.getUser}) : super(ProfileLoading());
 
-  Future<void> loadUser (LoadProfile event) async {
+  Future<void> loadUser(LoadProfile event) async {
     emit(ProfileLoading());
     print("[loadUser] token: ${event.token}");
     var userResponse = await getUser(GetUserParams(token: event.token));
     userResponse.fold((failure) {
-        emit(ProfileError(message: failure.message));
-      }, (user) {
-        sl<AuthConfig>().user = user;
-        emit(ProfileLoaded(user: user));
-      });
+      emit(ProfileError(message: failure.message));
+    }, (user) {
+      sl<AuthConfig>().user = user;
+      emit(ProfileLoaded(user: user));
+    });
   }
 }

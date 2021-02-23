@@ -16,10 +16,10 @@ class CreateCodeEvent extends AuthenticationEvent {
   List<Object> get props => [phone];
 }
 
-class SendCode extends AuthenticationEvent {
+class GoToCodePage extends AuthenticationEvent {
   final CodeEntity codeEntity;
   final String userCode;
-  SendCode({this.codeEntity, this.userCode});
+  GoToCodePage({this.codeEntity, this.userCode});
 
   @override
   List<Object> get props => [codeEntity, userCode];

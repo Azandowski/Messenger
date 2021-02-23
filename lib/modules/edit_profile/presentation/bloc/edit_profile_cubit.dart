@@ -3,33 +3,29 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:messenger_mobile/modules/edit_profile/presentation/bloc/edit_profile_event.dart';
-import 'package:messenger_mobile/modules/edit_profile/presentation/bloc/edit_profile_state.dart';
+
+import 'package:messenger_mobile/modules/media/domain/usecases/get_image.dart';
 import 'package:messenger_mobile/modules/profile/domain/usecases/edit_user.dart';
 import 'package:messenger_mobile/modules/profile/domain/usecases/profile_params.dart';
 
-import '../../../../main.dart';
-
-
+import 'edit_profile_event.dart';
+import 'edit_profile_state.dart';
 
 class EditProfileCubit extends Cubit<EditProfileState> {
   final EditUser editUser;
-  
-  EditProfileCubit({
-    @required this.editUser
-  }) : super(EditProfileLoading());
+  final GetImage getImageUseCase;
+  EditProfileCubit({@required this.editUser, @required this.getImageUseCase})
+      : super(EditProfileLoading());
 
-  Future<void> updateProfile (EditProfileUpdateUser event) async {
+  Future<void> updateProfile(EditProfileUpdateUser event) async {
     emit(EditProfileLoading());
     var response = await editUser(EditUserParams(
-      token: event.token,
-      image: event.image,
-      name: event.name,
-      surname: event.surname,
-      phoneNumber: event.phoneNumber,
-      patronym: event.patronym
-    ));
+        token: event.token,
+        image: event.image,
+        name: event.name,
+        surname: event.surname,
+        phoneNumber: event.phoneNumber,
+        patronym: event.patronym));
 
     response.fold(
       (failure) => {
@@ -40,18 +36,21 @@ class EditProfileCubit extends Cubit<EditProfileState> {
       });
   }
 
-  void initProfile (EditProfileInit event) {
+  void initProfile(EditProfileInit event) {
     nameTextController.text = event.user.name ?? '';
     patronymTextController.text = event.user.patronym ?? '';
     surnameTextController.text = event.user.surname ?? '';
     emit(EditProfileNormal(imageFile: imageFile));
   }
 
-  Future<void> pickProfileImage (PickProfileImage event) async {
-    var pickedFile = await ImagePicker().getImage(source: event.imageSource);
-    imageFile = File(pickedFile.path);
-    Navigator.of(navigatorKey.currentContext).pop();
-    emit(EditProfileNormal(imageFile: imageFile));
+  Future<void> pickProfileImage(PickProfileImage event) async {
+    print('taking');
+    var pickedFile = await getImageUseCase(event.imageSource);
+    pickedFile.fold(
+        (l) => emit(EditProfileError(message: 'Unable to get image')), (image) {
+      imageFile = image;
+      emit(EditProfileNormal(imageFile: image));
+    });
   }
 
   // MARK: - Local Data
@@ -61,4 +60,3 @@ class EditProfileCubit extends Cubit<EditProfileState> {
   TextEditingController patronymTextController = TextEditingController();
   TextEditingController surnameTextController = TextEditingController();
 }
-

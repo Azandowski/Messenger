@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/app/appTheme.dart';
+
+import '../../../../app/appTheme.dart';
 
 class CustomTextField extends StatelessWidget {
   final IconData prefixIcon;
@@ -13,16 +14,23 @@ class CustomTextField extends StatelessWidget {
   final Function(String) validator;
   final EdgeInsets customPadding;
 
-  CustomTextField({ 
-    this.prefixIcon, this.obscure, this.onChanged, this.textCtr,
-    this.headText, this.helperText, this.maxSymbols,
-    this.labelText, this.validator, this.customPadding
-  });
-  
+  CustomTextField(
+      {this.prefixIcon,
+      this.obscure,
+      this.onChanged,
+      this.textCtr,
+      this.headText,
+      this.helperText,
+      this.maxSymbols,
+      this.labelText,
+      this.validator,
+      this.customPadding});
+
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: customPadding ?? const EdgeInsets.only(top: 35,left: 16,right: 16),
+      padding:
+          customPadding ?? const EdgeInsets.only(top: 35, left: 16, right: 16),
       child: Container(
         height: 80,
         child: TextFormField(
@@ -34,7 +42,11 @@ class CustomTextField extends StatelessWidget {
           obscureText: obscure ?? false,
           decoration: new InputDecoration(
             errorStyle: TextStyle(color: Colors.red),
-            suffixIcon: Icon(prefixIcon, color: Colors.black, size: 15,),
+            suffixIcon: Icon(
+              prefixIcon,
+              color: Colors.black,
+              size: 15,
+            ),
             suffixIconConstraints: BoxConstraints(maxHeight: 50),
             helperText: helperText ?? '',
             helperStyle: TextStyle(color: AppColors.accentBlueColor),

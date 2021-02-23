@@ -5,7 +5,14 @@ import 'package:messenger_mobile/modules/chats/data/datasource/chats_datasource.
 import 'package:messenger_mobile/modules/chats/data/repositories/chats_repository_impl.dart';
 import 'package:messenger_mobile/modules/chats/domain/repositories/chats_repository.dart';
 import 'package:messenger_mobile/modules/profile/domain/repositories/profile_respository.dart';
-import 'core/blocs/bloc/auth_bloc.dart';
+import 'package:messenger_mobile/core/authorization/bloc/auth_bloc.dart';
+import 'package:messenger_mobile/modules/authentication/domain/usecases/get_current_user.dart';
+import 'package:messenger_mobile/modules/authentication/domain/usecases/save_token.dart';
+import 'package:messenger_mobile/modules/media/data/datasources/local_media_datasource.dart';
+import 'package:messenger_mobile/modules/media/data/repositories/media_repository_impl.dart';
+import 'package:messenger_mobile/modules/media/domain/repositories/media_repository.dart';
+import 'package:messenger_mobile/modules/media/domain/usecases/get_image.dart';
+import 'modules/profile/domain/repositories/profile_respository.dart';
 import 'modules/authentication/data/datasources/local_authentication_datasource.dart';
 import 'modules/authentication/data/datasources/remote_authentication_datasource.dart';
 import 'modules/authentication/data/repositories/authentication_repository_impl.dart';
@@ -35,16 +42,11 @@ Future<void> init() async {
   //BLoc
   sl.registerFactory(
     () => AuthenticationBloc(
-      createCode: sl(),
       login: sl(),
     ),
   );
 
-  sl.registerFactory(
-    () => ProfileCubit(
-      getUser: sl()
-    )
-  );
+  sl.registerFactory(() => ProfileCubit(getUser: sl()));
 
   sl.registerFactory(
     () => ChatsCubit(
@@ -55,9 +57,10 @@ Future<void> init() async {
   // Use cases
   sl.registerLazySingleton(() => GetToken(sl()));
   sl.registerLazySingleton(() => Login(sl()));
-  sl.registerLazySingleton(() => CreateCode(sl())); 
+  sl.registerLazySingleton(() => CreateCode(sl()));
   sl.registerLazySingleton(() => GetUser(sl()));
   sl.registerLazySingleton(() => GetCategories(repository: sl()));
+  sl.registerLazySingleton(() => SaveToken(sl()));
 
   // Repository
 
@@ -70,11 +73,7 @@ Future<void> init() async {
   );
 
   sl.registerLazySingleton<ProfileRepository>(
-    () => ProfileRepositoryImpl(
-      profileDataSource: sl(),
-      networkInfo: sl()
-    )
-  );
+      () => ProfileRepositoryImpl(profileDataSource: sl(), networkInfo: sl()));
 
   sl.registerLazySingleton<ChatsRepository>(
     () => ChatsRepositoryImpl(
@@ -92,8 +91,7 @@ Future<void> init() async {
   );
 
   sl.registerLazySingleton<ProfileDataSource>(
-    () => ProfileDataSourceImpl(client: sl())
-  );
+      () => ProfileDataSourceImpl(client: sl()));
 
   sl.registerLazySingleton<ChatsDataSource>(
     () => ChatsDataSourceImpl(client: sl())
@@ -105,6 +103,7 @@ Future<void> init() async {
 
   sl.registerFactory(
     () => AuthBloc(
+      authRepositiry: sl(),
       getToken: sl(),
     ),
   );
@@ -121,4 +120,22 @@ Future<void> init() async {
   sl.registerLazySingleton(() => AuthConfig());
 
   sl.registerLazySingleton(() => http.Client());
+
+  // UseCases
+  sl.registerLazySingleton(() => GetImage(sl()));
+
+  sl.registerLazySingleton(() => GetCurrentUser(sl()));
+
+  // Repositories
+  sl.registerLazySingleton<MediaRepository>(
+    () => MediaRepositoryImpl(
+      mediaLocalDataSource: sl(),
+    ),
+  );
+
+  // Data sources
+
+  sl.registerLazySingleton<MediaLocalDataSource>(
+    () => MediaLocalDataSourceImpl(),
+  );
 }

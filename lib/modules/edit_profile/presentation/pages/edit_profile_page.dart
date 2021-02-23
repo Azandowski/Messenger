@@ -1,34 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:messenger_mobile/core/config/auth_config.dart';
-import 'package:messenger_mobile/core/services/network/Endpoints.dart';
-import 'package:messenger_mobile/core/services/network/network_info.dart';
-import 'package:messenger_mobile/core/widgets/independent/buttons/gradient_main_button.dart';
-import 'package:messenger_mobile/core/widgets/independent/pickers/photo_picker.dart';
-import 'package:messenger_mobile/core/widgets/independent/textfields/customTextField.dart';
-import 'package:messenger_mobile/locator.dart';
-import 'package:messenger_mobile/modules/edit_profile/data/datasources/edit_profile_datasource.dart';
-import 'package:messenger_mobile/modules/edit_profile/data/repositories/edit_profile_repositories.dart';
-import 'package:messenger_mobile/modules/edit_profile/presentation/bloc/edit_profile_cubit.dart';
-import 'package:messenger_mobile/modules/edit_profile/presentation/bloc/edit_profile_event.dart';
-import 'package:messenger_mobile/modules/edit_profile/presentation/bloc/edit_profile_state.dart';
-import 'package:messenger_mobile/modules/edit_profile/presentation/widgets/user_picker_view.dart';
-import 'package:messenger_mobile/modules/profile/domain/entities/user.dart';
-import 'package:messenger_mobile/modules/profile/domain/usecases/edit_user.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
+import 'package:messenger_mobile/core/widgets/independent/pickers/photo_picker.dart';
+import 'package:messenger_mobile/modules/edit_profile/presentation/bloc/index.dart';
+import '../../../../core/config/auth_config.dart';
+import '../../../../core/services/network/Endpoints.dart';
+import '../../../../core/services/network/network_info.dart';
+import '../../../../core/widgets/independent/buttons/gradient_main_button.dart';
+import '../../../../core/widgets/independent/textfields/customTextField.dart';
+import '../../../../locator.dart';
+import '../../../profile/domain/entities/user.dart';
+import '../../../profile/domain/usecases/edit_user.dart';
+import '../../data/datasources/edit_profile_datasource.dart';
+import '../../data/repositories/edit_profile_repositories.dart';
+import '../widgets/user_picker_view.dart';
 
 class EditProfilePage extends StatefulWidget {
-  
-  static final pageID = 'editProfilePage';
+  static Route route() {
+    return MaterialPageRoute<void>(builder: (_) => EditProfilePage());
+  }
 
   @override
   _EditProfilePageState createState() => _EditProfilePageState();
 }
 
 class _EditProfilePageState extends State<EditProfilePage> {
-  
   EditProfileCubit cubit;
-  
+
   @override
   void initState() {
     _initCubit();
@@ -138,15 +137,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
     );
   }
 
-
-  void _initCubit () {
+  void _initCubit() {
     cubit = EditProfileCubit(
-      editUser: EditUser(EditUserRepositoryImpl(
-        editProfileDataSource: EditProfileDataSourceImpl(
-          request: http.MultipartRequest('POST', Endpoints.updateCurrentUser.buildURL())
-        ),
-        networkInfo:  sl<NetworkInfo>(),)
-      )
-    );
+        getImageUseCase: sl(),
+        editUser: EditUser(EditUserRepositoryImpl(
+          editProfileDataSource: EditProfileDataSourceImpl(
+              request: http.MultipartRequest(
+                  'POST', Endpoints.updateCurrentUser.buildURL())),
+          networkInfo: sl<NetworkInfo>(),
+        )));
   }
 }

@@ -9,22 +9,28 @@ class OutlineTextField extends StatelessWidget {
     @required this.textEditingController,
     @required this.width,
     @required this.height,
+    @required this.labelText,
+    this.prefixText = '',
+    this.textInputType = TextInputType.text,
   }) : super(key: key);
 
   final FocusNode focusNode;
   final TextEditingController textEditingController;
   final double width;
   final double height;
+  final String labelText;
+  final String prefixText;
+  final TextInputType textInputType;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       focusNode: focusNode,
       controller: textEditingController,
-      keyboardType: TextInputType.phone,
+      keyboardType: textInputType,
       cursorColor: AppColors.accentBlueColor,
       decoration: InputDecoration(
-          prefix: Text('+', style: AppFontStyles.blackMediumStyle),
+          prefix: Text(prefixText, style: AppFontStyles.blackMediumStyle),
           contentPadding: EdgeInsets.symmetric(
               horizontal: width / (360 / 16), vertical: height / (724 / 18)),
           focusedBorder: OutlineInputBorder(
@@ -55,7 +61,7 @@ class OutlineTextField extends StatelessWidget {
                 color: AppColors.indicatorColor,
                 width: 1,
               )),
-          labelText: 'Номер телефона',
+          labelText: labelText,
           labelStyle: AppFontStyles.blueSmallStyle),
     );
   }

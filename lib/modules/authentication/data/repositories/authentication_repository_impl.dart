@@ -1,4 +1,10 @@
+import 'dart:async';
+
 import 'package:dartz/dartz.dart';
+import 'package:messenger_mobile/core/authorization/bloc/auth_bloc.dart';
+import 'package:messenger_mobile/core/config/auth_config.dart';
+import 'package:messenger_mobile/locator.dart';
+import 'package:messenger_mobile/modules/profile/domain/entities/user.dart';
 import 'package:meta/meta.dart';
 
 import '../../../../core/error/failures.dart';
@@ -19,7 +25,24 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
     @required this.remoteDataSource,
     @required this.networkInfo,
     @required this.localDataSource,
-  });
+  }) {
+    // localDataSource.deleteToken();
+    initToken();
+  }
+
+  Future initToken() async {
+    try {
+      final token = await localDataSource.getToken();
+
+      sl<AuthConfig>().token = token;
+
+      print(token);
+
+      await getCurrentUser(token);
+    } on StorageFailure {
+      params.add(AuthParams(null, null));
+    }
+  }
 
   @override
   Future<Either<Failure, CodeEntity>> createCode(PhoneParams params) async {
@@ -41,19 +64,52 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
     try {
       final token = await localDataSource.getToken();
       return Right(token);
-    } catch (e) {
-      return Left(e);
+    } on StorageFailure {
+      return Left(StorageFailure());
     }
   }
 
   @override
   Future<Either<Failure, TokenEntity>> login(params) async {
     try {
-      final token = await remoteDataSource.login(params.phoneNumber, params.code);
+      final token =
+          await remoteDataSource.login(params.phoneNumber, params.code);
       localDataSource.saveToken(token.token);
       return Right(token);
     } on ServerFailure {
       return Left(ServerFailure(message: 'null'));
     }
   }
+
+  StreamSubscription<String> _tokenSubscription;
+
+  @override
+  Future<Either<Failure, String>> saveToken(String token) async {
+    await localDataSource.saveToken(token);
+    sl<AuthConfig>().token = token;
+    await initToken();
+    return Right(token);
+  }
+
+  @override
+  Future<Either<Failure, User>> getCurrentUser(String token) async {
+    try {
+      var user = await remoteDataSource.getCurrentUser(token);
+      print(user.surname);
+      sl<AuthConfig>().user = user;
+      params.add(AuthParams(user, token));
+      return Right(user);
+    } on ServerFailure {
+      params.add(AuthParams(null, null));
+      return Left(ServerFailure(message: 'Error'));
+    }
+  }
+
+  Stream<String> get token async* {
+    yield* localDataSource.token;
+  }
+
+  @override
+  StreamController<AuthParams> params =
+      StreamController<AuthParams>.broadcast();
 }
