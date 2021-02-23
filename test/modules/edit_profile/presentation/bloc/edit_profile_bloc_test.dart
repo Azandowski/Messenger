@@ -1,12 +1,13 @@
 import 'package:dartz/dartz.dart';
 import 'package:messenger_mobile/core/error/failures.dart';
-import 'package:messenger_mobile/modules/edit_profile/bloc/index.dart';
+import 'package:messenger_mobile/modules/edit_profile/presentation/bloc/edit_profile_cubit.dart';
+import 'package:messenger_mobile/modules/edit_profile/presentation/bloc/edit_profile_event.dart';
+import 'package:messenger_mobile/modules/edit_profile/presentation/bloc/edit_profile_state.dart';
 import 'package:messenger_mobile/modules/profile/domain/usecases/edit_user.dart';
 import 'package:mockito/mockito.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 class MockEditUser extends Mock implements EditUser {}
-
 
 void main () { 
   EditProfileCubit cubit;

@@ -15,8 +15,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'core/config/auth_config.dart';
 import 'core/services/network/network_info.dart';
-import 'modules/profile/bloc/index.dart';
-import 'modules/profile/bloc/profile_cubit.dart';
+import 'modules/profile/presentation/bloc/index.dart';
+import 'modules/profile/presentation/bloc/profile_cubit.dart';
 import 'modules/profile/data/datasources/profile_datasource.dart';
 import 'modules/profile/data/repositories/profile_repository.dart';
 import 'modules/profile/domain/usecases/get_user.dart';

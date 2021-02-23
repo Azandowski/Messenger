@@ -4,12 +4,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:messenger_mobile/modules/edit_profile/bloc/edit_profile_event.dart';
-import 'package:messenger_mobile/modules/edit_profile/bloc/edit_profile_state.dart';
+import 'package:messenger_mobile/modules/edit_profile/presentation/bloc/edit_profile_event.dart';
+import 'package:messenger_mobile/modules/edit_profile/presentation/bloc/edit_profile_state.dart';
 import 'package:messenger_mobile/modules/profile/domain/usecases/edit_user.dart';
 import 'package:messenger_mobile/modules/profile/domain/usecases/profile_params.dart';
 
-import '../../../main.dart';
+import '../../../../main.dart';
+
+
 
 class EditProfileCubit extends Cubit<EditProfileState> {
   final EditUser editUser;

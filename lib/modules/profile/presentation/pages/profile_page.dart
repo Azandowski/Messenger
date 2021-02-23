@@ -4,8 +4,9 @@ import 'package:messenger_mobile/core/config/auth_config.dart';
 import 'package:messenger_mobile/locator.dart';
 import 'package:messenger_mobile/modules/authentication/presentation/bloc/index.dart';
 import 'package:messenger_mobile/modules/edit_profile/presentation/pages/edit_profile_page.dart';
-import 'package:messenger_mobile/modules/profile/bloc/index.dart';
-import 'package:messenger_mobile/modules/profile/bloc/profile_cubit.dart';
+import 'package:messenger_mobile/modules/profile/presentation/bloc/index.dart';
+import 'package:messenger_mobile/modules/profile/presentation/bloc/profile_cubit.dart';
+
 import 'package:messenger_mobile/modules/profile/presentation/widgets/profile_header.dart';
 import 'package:messenger_mobile/modules/profile/presentation/widgets/profile_item.dart';
 import 'package:messenger_mobile/modules/profile/presentation/widgets/profile_shimmer.dart';

@@ -1,7 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:messenger_mobile/modules/profile/domain/entities/user.dart';
 
-import '../domain/entities/user.dart';
+
 
 abstract class ProfileState extends Equatable {
   @override
