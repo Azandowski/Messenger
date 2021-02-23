@@ -39,7 +39,7 @@ main() {
     ));
     
     final result = await editProfileDataSourceImpl.updateUser(
-      token: ''
+      token: '', isTest: true
     );
 
     verify(httpMultipartRequest.send());

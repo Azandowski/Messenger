@@ -22,15 +22,17 @@ class EditProfileDataSourceImpl implements EditProfileDataSource {
   });
 
   @override
-  Future<bool> updateUser({File file, Map<String, String> data, String token}) async {
+  Future<bool> updateUser({
+    File file, Map<String, String> data, String token, bool isTest = false
+  }) async {
     http.StreamedResponse response = await postUserData(
-      token: token, request: request, data: data, files: file != null ? [file] : []
+      token: token, request: request, data: data, files: file != null ? [file] : [], isTest: isTest
     );
 
     if (response.statusCode >= 200 && response.statusCode <= 299) { 
       return true;
     } else {
-      throw ServerFailure(message: response.stream.bytesToString());
+      throw ServerFailure(message: response.stream.bytesToString().toString());
     }
   }
 
@@ -39,27 +41,32 @@ class EditProfileDataSourceImpl implements EditProfileDataSource {
     @required String token, 
     @required http.MultipartRequest request,
     Map data, 
-    List<File> files
+    List<File> files,
+    bool isTest = false
   }) async {
-    http.MultipartRequest copyRequest = http.MultipartRequest(
+    http.MultipartRequest copyRequest = isTest ? request : http.MultipartRequest(
       'POST', Endpoints.updateCurrentUser.buildURL()
     );
 
     request.headers["Authorization"] = "Bearer $token";
     request.headers["Accept"] = 'application/json';
 
-    request.headers.forEach((name, value) {
-      copyRequest.headers[name] = value;
-    }); 
-
     (data ?? {}).keys.forEach((e) { request.fields[e] = data[e]; });
 
-    request.fields.forEach((name, value) {
-      copyRequest.fields[name] = value;
-    });
-
     request.files.addAll(await getFilesList(files));
-    copyRequest.files.addAll(request.files);
+
+    if (!isTest) {
+      request.headers.forEach((name, value) {
+        copyRequest.headers[name] = value;
+      }); 
+
+      request.fields.forEach((name, value) {
+        copyRequest.fields[name] = value;
+      });
+
+      copyRequest.files.addAll(request.files);
+    }
+
     return copyRequest.send();
   }
 

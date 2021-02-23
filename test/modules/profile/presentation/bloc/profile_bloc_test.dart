@@ -1,5 +1,7 @@
 import 'package:dartz/dartz.dart';
+import 'package:messenger_mobile/core/config/auth_config.dart';
 import 'package:messenger_mobile/core/error/failures.dart';
+import 'package:messenger_mobile/locator.dart';
 import 'package:messenger_mobile/modules/profile/bloc/index.dart';
 import 'package:messenger_mobile/modules/profile/domain/entities/user.dart';
 import 'package:messenger_mobile/modules/profile/domain/usecases/get_user.dart';
@@ -36,6 +38,7 @@ void main () {
   });
 
   test ('If success state becomes profile loaded', () {
+    sl.registerLazySingleton(() => AuthConfig());
     final User user = User(
       name: 'Yerkebulan',
       phoneNumber: '+77470726323'
