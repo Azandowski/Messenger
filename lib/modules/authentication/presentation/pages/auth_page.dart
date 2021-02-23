@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:messenger_mobile/modules/authentication/presentation/pages/type_code_page.dart/pages/type_code_page.dart';
-import 'package:messenger_mobile/modules/authentication/presentation/pages/type_phone_page/cubit/typephone_cubit.dart';
-import 'package:messenger_mobile/modules/authentication/presentation/pages/type_phone_page/pages/type_phone_page.dart';
+
 import '../../../../locator.dart';
 import '../bloc/index.dart';
+import 'type_code_page.dart/pages/type_code_page.dart';
+import 'type_phone_page/cubit/typephone_cubit.dart';
+import 'type_phone_page/pages/type_phone_page.dart';
 
 class LoginPage extends StatefulWidget {
   static Route route() {

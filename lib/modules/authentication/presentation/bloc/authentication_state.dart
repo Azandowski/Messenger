@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+
 import '../../domain/entities/code_entity.dart';
 
 abstract class AuthenticationState extends Equatable {

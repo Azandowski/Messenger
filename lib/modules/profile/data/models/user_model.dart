@@ -1,5 +1,4 @@
 import '../../../../core/services/network/config.dart';
-
 import '../../domain/entities/user.dart';
 
 class UserModel extends User {

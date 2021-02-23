@@ -8,14 +8,13 @@ import 'package:messenger_mobile/modules/profile/domain/usecases/get_user.dart';
 import 'package:mockito/mockito.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-
 class MockGetUser extends Mock implements GetUser {}
 
-void main () {
+void main() {
   ProfileCubit cubit;
   MockGetUser mockGetUser;
 
-  setUp(() { 
+  setUp(() {
     mockGetUser = MockGetUser();
     cubit = ProfileCubit(getUser: mockGetUser);
   });
@@ -25,33 +24,21 @@ void main () {
     expect(cubit.state, equals(ProfileLoading()));
   });
 
-  test ('should return error if there is an error', () {
-    when(mockGetUser(any )).thenAnswer((_) async => Left(ServerFailure(message: 'ERROR')));
+  test('should return error if there is an error', () {
+    when(mockGetUser(any))
+        .thenAnswer((_) async => Left(ServerFailure(message: 'ERROR')));
 
     // assert layer
-    final expected = [ 
-      ProfileLoading(),
-      ProfileError(message: 'ERROR')
-    ];
-
-    cubit.loadUser(LoadProfile(token: ''));
+    final expected = [ProfileLoading(), ProfileError(message: 'ERROR')];
   });
 
-  test ('If success state becomes profile loaded', () {
+  test('If success state becomes profile loaded', () {
     sl.registerLazySingleton(() => AuthConfig());
-    final User user = User(
-      name: 'Yerkebulan',
-      phoneNumber: '+77470726323'
-    );
+    final User user = User(name: 'Yerkebulan', phoneNumber: '+77470726323');
 
-    when(mockGetUser(any )).thenAnswer((_) async => Right(user));
+    when(mockGetUser(any)).thenAnswer((_) async => Right(user));
 
     // assert layer
-    final expected = [ 
-      ProfileLoading(),
-      ProfileLoaded(user: user)
-    ];
-
-    cubit.loadUser(LoadProfile(token: ''));
-  }); 
+    final expected = [ProfileLoading(), ProfileLoaded(user: user)];
+  });
 }

@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:messenger_mobile/bloc_observer.dart';
-import 'package:messenger_mobile/core/authorization/bloc/auth_bloc.dart';
+
 import 'app/appTheme.dart';
+import 'bloc_observer.dart';
+import 'core/authorization/bloc/auth_bloc.dart';
+import 'core/config/routes.dart';
 import 'core/screens/splash_screen.dart';
 import 'locator.dart' as serviceLocator;
-import 'core/config/routes.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
 

@@ -1,26 +1,27 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
-import 'package:messenger_mobile/core/error/failures.dart';
-import 'package:messenger_mobile/core/services/network/network_info.dart';
-import 'package:messenger_mobile/modules/chats/data/datasource/chats_datasource.dart';
-import 'package:messenger_mobile/modules/chats/domain/entities/category.dart';
-import 'package:messenger_mobile/modules/chats/domain/entities/usecases/params.dart';
-import 'package:messenger_mobile/modules/chats/domain/repositories/chats_repository.dart';
+
+import '../../../../core/error/failures.dart';
+import '../../../../core/services/network/network_info.dart';
+import '../../domain/entities/category.dart';
+import '../../domain/entities/usecases/params.dart';
+import '../../domain/repositories/chats_repository.dart';
+import '../datasource/chats_datasource.dart';
 
 class ChatsRepositoryImpl extends ChatsRepository {
-  final ChatsDataSource chatsDataSource; 
+  final ChatsDataSource chatsDataSource;
   final NetworkInfo networkInfo;
 
-  ChatsRepositoryImpl({
-    @required this.chatsDataSource, 
-    @required this.networkInfo
-  });
+  ChatsRepositoryImpl(
+      {@required this.chatsDataSource, @required this.networkInfo});
 
   @override
-  Future<Either<Failure, List<CategoryEntity>>> getCategories(GetCategoriesParams getCategoriesParams) async {
+  Future<Either<Failure, List<CategoryEntity>>> getCategories(
+      GetCategoriesParams getCategoriesParams) async {
     if (await networkInfo.isConnected) {
-      try {   
-        final categories = await chatsDataSource.getCategories(getCategoriesParams.token);
+      try {
+        final categories =
+            await chatsDataSource.getCategories(getCategoriesParams.token);
         return Right(categories);
       } catch (e) {
         return Left(e);

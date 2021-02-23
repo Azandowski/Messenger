@@ -4,10 +4,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:messenger_mobile/modules/media/domain/usecases/get_image.dart';
-import 'package:messenger_mobile/modules/profile/domain/usecases/edit_user.dart';
-import 'package:messenger_mobile/modules/profile/domain/usecases/profile_params.dart';
-
+import '../../../media/domain/usecases/get_image.dart';
+import '../../../profile/domain/usecases/edit_user.dart';
+import '../../../profile/domain/usecases/profile_params.dart';
 import 'edit_profile_event.dart';
 import 'edit_profile_state.dart';
 
@@ -28,12 +27,9 @@ class EditProfileCubit extends Cubit<EditProfileState> {
         patronym: event.patronym));
 
     response.fold(
-      (failure) => {
-        emit(EditProfileError(message: failure.message))
-      }, 
-      (_) {
-        emit(EditProfileSuccess());
-      });
+        (failure) => {emit(EditProfileError(message: failure.message))}, (_) {
+      emit(EditProfileSuccess());
+    });
   }
 
   void initProfile(EditProfileInit event) {

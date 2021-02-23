@@ -1,8 +1,9 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/modules/authentication/domain/entities/code_entity.dart';
-import 'package:messenger_mobile/modules/authentication/domain/usecases/create_code.dart';
+
+import '../../../../domain/entities/code_entity.dart';
+import '../../../../domain/usecases/create_code.dart';
 
 part 'typephone_state.dart';
 

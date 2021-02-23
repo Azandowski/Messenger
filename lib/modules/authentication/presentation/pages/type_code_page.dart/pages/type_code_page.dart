@@ -1,13 +1,15 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:messenger_mobile/app/appTheme.dart';
-import 'package:messenger_mobile/core/widgets/independent/buttons/gradient_main_button.dart';
-import 'package:messenger_mobile/locator.dart';
-import 'package:messenger_mobile/modules/authentication/domain/entities/code_entity.dart';
-import 'package:messenger_mobile/modules/authentication/presentation/pages/type_code_page.dart/cubit/cubit/typecode_cubit.dart';
-import 'package:messenger_mobile/modules/authentication/presentation/pages/type_phone_page/cubit/typephone_cubit.dart';
-import 'package:messenger_mobile/modules/authentication/presentation/widgets/pin_field.dart';
+
+import '../../../../../../app/appTheme.dart';
+import '../../../../../../core/widgets/independent/buttons/gradient_main_button.dart';
+import '../../../../../../locator.dart';
+import '../../../../domain/entities/code_entity.dart';
+import '../../../widgets/pin_field.dart';
+import '../../type_phone_page/cubit/typephone_cubit.dart';
+import '../cubit/cubit/typecode_cubit.dart';
 
 class TypeCodePage extends StatefulWidget {
   const TypeCodePage({Key key, @required this.codeEntity}) : super(key: key);

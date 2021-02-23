@@ -1,20 +1,21 @@
 import 'dart:io';
-import 'package:http/http.dart' as http;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
-import 'package:messenger_mobile/app/appTheme.dart';
-import 'package:messenger_mobile/core/services/network/Endpoints.dart';
-import 'package:messenger_mobile/core/widgets/independent/buttons/gradient_main_button.dart';
-import 'package:messenger_mobile/core/widgets/independent/textfields/outlineTextField.dart';
-import 'package:messenger_mobile/locator.dart';
-import 'package:messenger_mobile/modules/authentication/presentation/pages/type_name_page/cubit/typename_cubit.dart';
-import 'package:messenger_mobile/modules/authentication/presentation/pages/type_phone_page/cubit/typephone_cubit.dart';
-import 'package:messenger_mobile/modules/edit_profile/data/datasources/edit_profile_datasource.dart';
-import 'package:messenger_mobile/modules/edit_profile/data/repositories/edit_profile_repositories.dart';
-import 'package:messenger_mobile/modules/edit_profile/presentation/widgets/user_picker_view.dart';
-import 'package:messenger_mobile/modules/profile/domain/entities/user.dart';
-import 'package:messenger_mobile/modules/profile/domain/usecases/edit_user.dart';
+
+import '../../../../../../app/appTheme.dart';
+import '../../../../../../core/services/network/Endpoints.dart';
+import '../../../../../../core/widgets/independent/buttons/gradient_main_button.dart';
+import '../../../../../../core/widgets/independent/textfields/outlineTextField.dart';
+import '../../../../../../locator.dart';
+import '../../../../../edit_profile/data/datasources/edit_profile_datasource.dart';
+import '../../../../../edit_profile/data/repositories/edit_profile_repositories.dart';
+import '../../../../../edit_profile/presentation/widgets/user_picker_view.dart';
+import '../../../../../profile/domain/entities/user.dart';
+import '../../../../../profile/domain/usecases/edit_user.dart';
+import '../cubit/typename_cubit.dart';
 
 class TypeNamePage extends StatefulWidget {
   final User user;

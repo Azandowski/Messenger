@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+
 import '../../domain/entities/code_entity.dart';
 
 abstract class AuthenticationEvent extends Equatable {

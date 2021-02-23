@@ -9,7 +9,7 @@ abstract class AuthenticationLocalDataSource {
   Stream<String> get token;
 
   /// delete from keystore/keychain
-  Future<void> deleteToken();
+  Future<bool> deleteToken();
 }
 
 const ACCESS_TOKEN = 'access_token';
@@ -17,8 +17,9 @@ const ACCESS_TOKEN = 'access_token';
 class AuthenticationLocalDataSourceImpl
     implements AuthenticationLocalDataSource {
   @override
-  Future<void> deleteToken() async {
+  Future<bool> deleteToken() async {
     await Storage().secureStorage.delete(key: ACCESS_TOKEN);
+    return true;
   }
 
   @override

@@ -1,10 +1,11 @@
-import 'package:flutter/foundation.dart';
-import '../../../../core/error/failures.dart';
 import 'package:dartz/dartz.dart';
+import 'package:flutter/foundation.dart';
+
+import '../../../../core/error/failures.dart';
 import '../../../../core/services/network/network_info.dart';
-import '../datasources/edit_profile_datasource.dart';
-import '../../domain/repositories/edit_profile_repositories.dart';
 import '../../../profile/domain/usecases/profile_params.dart';
+import '../../domain/repositories/edit_profile_repositories.dart';
+import '../datasources/edit_profile_datasource.dart';
 
 class EditUserRepositoryImpl extends EditUserRepository {
   final EditProfileDataSource editProfileDataSource;

@@ -1,10 +1,11 @@
 import 'dart:async';
 
 import 'package:dartz/dartz.dart';
-import 'package:messenger_mobile/core/authorization/bloc/auth_bloc.dart';
-import 'package:messenger_mobile/core/config/auth_config.dart';
-import 'package:messenger_mobile/locator.dart';
-import 'package:messenger_mobile/modules/profile/domain/entities/user.dart';
+import 'package:messenger_mobile/core/usecases/usecase.dart';
+import '../../../../core/authorization/bloc/auth_bloc.dart';
+import '../../../../core/config/auth_config.dart';
+import '../../../../locator.dart';
+import '../../../profile/domain/entities/user.dart';
 import 'package:meta/meta.dart';
 
 import '../../../../core/error/failures.dart';
@@ -112,4 +113,15 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
   @override
   StreamController<AuthParams> params =
       StreamController<AuthParams>.broadcast();
+
+  @override
+  Future<Either<Failure, bool>> logout(NoParams params) async {
+    try {
+      await localDataSource.deleteToken();
+      initToken();
+      return Right(true);
+    } on StorageFailure {
+      return Left(StorageFailure());
+    }
+  }
 }

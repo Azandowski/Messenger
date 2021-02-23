@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../domain/entities/token_entity.dart';
 
 class TokenModel extends TokenEntity {
