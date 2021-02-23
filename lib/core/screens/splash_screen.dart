@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger_mobile/core/blocs/bloc/auth_bloc.dart';
 import 'package:messenger_mobile/core/widgets/independent/bottomBar/appBottomBar.dart';
 import 'package:messenger_mobile/modules/authentication/presentation/pages/auth_page.dart';
+import 'package:messenger_mobile/modules/chats/presentation/pages/chats_screen.dart';
 import 'package:messenger_mobile/modules/profile/presentation/pages/profile_page.dart';
 import '../../locator.dart';
 
@@ -19,7 +20,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   final bucket = PageStorageBucket();
   final pages = [
-    ProfilePage(),
+    ChatsScreen(),
     ProfilePage(),
     SplashPage(),
     ProfilePage(),

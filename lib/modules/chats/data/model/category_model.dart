@@ -20,11 +20,20 @@ class CategoryModel extends CategoryEntity {
   );
 
   factory CategoryModel.fromJson(Map<String, dynamic> json) { 
-    return CategoryModel();
+    return CategoryModel(
+      id: json['id'],
+      name: json['name'],
+      avatar: json['avatar'],
+      totalChats: json['total_chats']
+    );
   }
 
   Map<String, dynamic> toJson () {
     return {
+      'id': id,
+      'name': name,
+      'avatar': avatar,
+      'total_chats': totalChats
     };
   }
 }

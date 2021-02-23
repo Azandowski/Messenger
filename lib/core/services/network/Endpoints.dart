@@ -7,7 +7,11 @@ enum Endpoints {
 
   // Profile
   getCurrentUser,
-  updateCurrentUser
+  updateCurrentUser,
+
+  // Chat Main Screen
+  getCategories,
+
 }
 
 extension EndpointsExtension on Endpoints {
@@ -40,6 +44,8 @@ extension EndpointsExtension on Endpoints {
         return "${Config.baseAPIpath.value}/user/getCurrentUser";
       case Endpoints.updateCurrentUser:
         return '${Config.baseAPIpath.value}/user/updateCurrentUser';
+      case Endpoints.getCategories:
+        return '${Config.baseAPIpath.value}/messenger/category/';
     }
   }
 

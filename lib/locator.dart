@@ -1,6 +1,9 @@
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
+import 'package:messenger_mobile/modules/chats/data/datasource/chats_datasource.dart';
+import 'package:messenger_mobile/modules/chats/data/repositories/chats_repository_impl.dart';
+import 'package:messenger_mobile/modules/chats/domain/repositories/chats_repository.dart';
 import 'package:messenger_mobile/modules/profile/domain/repositories/profile_respository.dart';
 import 'core/blocs/bloc/auth_bloc.dart';
 import 'modules/authentication/data/datasources/local_authentication_datasource.dart';
@@ -15,6 +18,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'core/config/auth_config.dart';
 import 'core/services/network/network_info.dart';
+import 'modules/chats/domain/entities/usecases/get_categories.dart';
+import 'modules/chats/presentation/bloc/cubit/chats_cubit_cubit.dart';
 import 'modules/profile/presentation/bloc/index.dart';
 import 'modules/profile/presentation/bloc/profile_cubit.dart';
 import 'modules/profile/data/datasources/profile_datasource.dart';
@@ -41,13 +46,21 @@ Future<void> init() async {
     )
   );
 
+  sl.registerFactory(
+    () => ChatsCubit(
+      getCategories: sl()
+    )
+  );
+
   // Use cases
   sl.registerLazySingleton(() => GetToken(sl()));
   sl.registerLazySingleton(() => Login(sl()));
   sl.registerLazySingleton(() => CreateCode(sl())); 
   sl.registerLazySingleton(() => GetUser(sl()));
+  sl.registerLazySingleton(() => GetCategories(repository: sl()));
 
   // Repository
+
   sl.registerLazySingleton<AuthenticationRepository>(
     () => AuthenticationRepositiryImpl(
       localDataSource: sl(),
@@ -63,6 +76,12 @@ Future<void> init() async {
     )
   );
 
+  sl.registerLazySingleton<ChatsRepository>(
+    () => ChatsRepositoryImpl(
+      chatsDataSource: sl(), 
+      networkInfo: sl())
+  );
+
   // Data sources
   sl.registerLazySingleton<AuthenticationLocalDataSource>(
     () => AuthenticationLocalDataSourceImpl(),
@@ -74,6 +93,10 @@ Future<void> init() async {
 
   sl.registerLazySingleton<ProfileDataSource>(
     () => ProfileDataSourceImpl(client: sl())
+  );
+
+  sl.registerLazySingleton<ChatsDataSource>(
+    () => ChatsDataSourceImpl(client: sl())
   );
 
   //! Core
