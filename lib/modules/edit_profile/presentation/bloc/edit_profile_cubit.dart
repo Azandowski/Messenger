@@ -36,8 +36,7 @@ class EditProfileCubit extends Cubit<EditProfileState> {
         emit(EditProfileError(message: failure.message))
       }, 
       (_) {
-        emit(EditProfileError(message: 'ERROR HAPPENED'));
-        // emit(EditProfileSuccess());
+        emit(EditProfileSuccess());
       });
   }
 

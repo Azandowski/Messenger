@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:messenger_mobile/core/blocs/bloc/auth_bloc.dart';
 import 'app/appTheme.dart';
 import 'core/screens/splash_screen.dart';
 import 'locator.dart' as serviceLocator;

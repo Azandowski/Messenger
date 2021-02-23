@@ -18,6 +18,7 @@ class ProfileCubit extends Cubit<ProfileState> {
 
   Future<void> loadUser (LoadProfile event) async {
     emit(ProfileLoading());
+    print("[loadUser] token: ${event.token}");
     var userResponse = await getUser(GetUserParams(token: event.token));
     userResponse.fold((failure) {
         emit(ProfileError(message: failure.message));

@@ -4,6 +4,7 @@ import 'package:messenger_mobile/core/config/auth_config.dart';
 import 'package:messenger_mobile/core/services/network/Endpoints.dart';
 import 'package:messenger_mobile/core/services/network/network_info.dart';
 import 'package:messenger_mobile/core/widgets/independent/buttons/gradient_main_button.dart';
+import 'package:messenger_mobile/core/widgets/independent/pickers/photo_picker.dart';
 import 'package:messenger_mobile/core/widgets/independent/textfields/customTextField.dart';
 import 'package:messenger_mobile/locator.dart';
 import 'package:messenger_mobile/modules/edit_profile/data/datasources/edit_profile_datasource.dart';
@@ -76,6 +77,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       context: context,
                       user: user,
                       imageFile: cubit.imageFile,
+                      onSelectPhoto: () {
+                        PhotoPicker().showImageSourceSelectionDialog(context, (imageSource) {
+                          BlocProvider.of<EditProfileCubit>(context).pickProfileImage(PickProfileImage(imageSource: imageSource));
+                        });
+                      },
                     ),
                     Container(
                       padding: const EdgeInsets.only(top: 12),
