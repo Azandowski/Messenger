@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
-import 'package:messenger_mobile/core/widgets/independent/pickers/photo_picker.dart';
-
 import '../../../../core/config/auth_config.dart';
 import '../../../../core/services/network/Endpoints.dart';
 import '../../../../core/services/network/network_info.dart';
@@ -76,12 +74,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           context: context,
                           user: user,
                           imageFile: cubit.imageFile,
-                          onSelectPhoto: () {
-                            PhotoPicker().showImageSourceSelectionDialog(context, (imageSource) {
-                              BlocProvider.of<EditProfileCubit>(context)
-                                  .pickProfileImage(PickProfileImage(imageSource: imageSource));
-                            });
-                          },
                         ),
                         Container(
                             padding: const EdgeInsets.only(top: 12),

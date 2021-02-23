@@ -2,7 +2,12 @@ import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
 import 'package:messenger_mobile/core/authorization/bloc/auth_bloc.dart';
+import 'package:messenger_mobile/modules/authentication/domain/usecases/get_current_user.dart';
 import 'package:messenger_mobile/modules/authentication/domain/usecases/save_token.dart';
+import 'package:messenger_mobile/modules/media/data/datasources/local_media_datasource.dart';
+import 'package:messenger_mobile/modules/media/data/repositories/media_repository_impl.dart';
+import 'package:messenger_mobile/modules/media/domain/repositories/media_repository.dart';
+import 'package:messenger_mobile/modules/media/domain/usecases/get_image.dart';
 import 'modules/profile/domain/repositories/profile_respository.dart';
 import 'modules/authentication/data/datasources/local_authentication_datasource.dart';
 import 'modules/authentication/data/datasources/remote_authentication_datasource.dart';
@@ -91,4 +96,22 @@ Future<void> init() async {
   sl.registerLazySingleton(() => AuthConfig());
 
   sl.registerLazySingleton(() => http.Client());
+
+  // UseCases
+  sl.registerLazySingleton(() => GetImage(sl()));
+
+  sl.registerLazySingleton(() => GetCurrentUser(sl()));
+
+  // Repositories
+  sl.registerLazySingleton<MediaRepository>(
+    () => MediaRepositoryImpl(
+      mediaLocalDataSource: sl(),
+    ),
+  );
+
+  // Data sources
+
+  sl.registerLazySingleton<MediaLocalDataSource>(
+    () => MediaLocalDataSourceImpl(),
+  );
 }

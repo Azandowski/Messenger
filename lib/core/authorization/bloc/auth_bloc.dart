@@ -37,8 +37,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   Future<AuthState> _mapAuthenticationStatusChangedToState(
     AuthParams params,
   ) async {
-    if (params.user != null) {
-      return Authenticated(user: params.user);
+    var user = params.user;
+    if (user != null && user.fullName != null && user.fullName != "") {
+      return Authenticated(user: user);
+    } else if (user != null && user.fullName == null || user.fullName == "") {
+      return NeedsNamePhoto(user: user);
     } else if (params.token == null || params.token == '') {
       return Unauthenticated();
     } else {

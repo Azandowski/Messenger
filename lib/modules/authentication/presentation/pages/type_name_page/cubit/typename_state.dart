@@ -8,3 +8,15 @@ abstract class TypeNameState extends Equatable {
 }
 
 class TypenameInitial extends TypeNameState {}
+
+class FileSelected extends TypeNameState {
+  final File imageFile;
+
+  FileSelected({this.imageFile});
+}
+
+class ErrorSelecting extends TypeNameState {}
+
+class UpdatingUser extends TypeNameState {}
+
+class ErrorUploading extends TypeNameState {}

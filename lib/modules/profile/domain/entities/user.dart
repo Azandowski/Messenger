@@ -19,4 +19,10 @@ class User extends Equatable {
       [name, surname, patronym, phoneNumber, profileImage];
 
   static const empty = null;
+
+  String get fullName {
+    return [surname, name, patronym]
+        .where((e) => e != null && e != "")
+        .join(" ");
+  }
 }

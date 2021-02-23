@@ -18,11 +18,11 @@ class SplashScreen extends StatelessWidget {
         } else if (state is Unauthenticated) {
           return LoginPage();
         } else if (state is Authenticated) {
-          if (state.user.name != null && state.user.name != "") {
-            return EditProfilePage();
-          } else {
-            return TypeNamePage();
-          }
+          return EditProfilePage();
+        } else if (state is NeedsNamePhoto) {
+          return TypeNamePage(
+            user: state.user,
+          );
         }
       },
     );

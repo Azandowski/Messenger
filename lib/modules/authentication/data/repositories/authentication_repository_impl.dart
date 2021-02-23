@@ -38,10 +38,7 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
 
       print(token);
 
-      var failOrUser = await getCurrentUser(token);
-
-      failOrUser.fold((error) => params.add(AuthParams(null, null)),
-          (user) => params.add(AuthParams(user, token)));
+      await getCurrentUser(token);
     } on StorageFailure {
       params.add(AuthParams(null, null));
     }
@@ -100,8 +97,10 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
       var user = await remoteDataSource.getCurrentUser(token);
       print(user.surname);
       sl<AuthConfig>().user = user;
+      params.add(AuthParams(user, token));
       return Right(user);
     } on ServerFailure {
+      params.add(AuthParams(null, null));
       return Left(ServerFailure(message: 'Error'));
     }
   }

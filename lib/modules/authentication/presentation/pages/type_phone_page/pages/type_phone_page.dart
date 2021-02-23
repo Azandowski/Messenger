@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger_mobile/app/appTheme.dart';
 import 'package:messenger_mobile/core/widgets/independent/buttons/gradient_main_button.dart';
 import 'package:messenger_mobile/core/widgets/independent/textfields/outlineTextField.dart';
-import 'package:messenger_mobile/locator.dart';
 import 'package:messenger_mobile/modules/authentication/presentation/bloc/authentication_bloc.dart';
 import 'package:messenger_mobile/modules/authentication/presentation/bloc/index.dart';
 import 'package:messenger_mobile/modules/authentication/presentation/pages/type_phone_page/cubit/typephone_cubit.dart';
@@ -62,7 +61,10 @@ class _TypePhonePageState extends State<TypePhonePage> {
                 height: height * 0.05,
               ),
               OutlineTextField(
+                  labelText: 'Номер телефона',
+                  prefixText: '+',
                   focusNode: focusNode,
+                  textInputType: TextInputType.phone,
                   textEditingController: _phoneCtrl,
                   width: width,
                   height: height),

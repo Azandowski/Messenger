@@ -15,6 +15,12 @@ class Authenticated extends AuthState {
   Authenticated({this.user});
 }
 
+class NeedsNamePhoto extends AuthState {
+  final User user;
+
+  NeedsNamePhoto({this.user});
+}
+
 class AuthParams {
   final User user;
   final String token;

@@ -20,15 +20,12 @@ class UserPickerView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var w = MediaQuery.of(context).size.width;
     return GestureDetector(
-      onTap: () {
-        onSelectPhoto();
-      },
+      onTap: onSelectPhoto,
       child: Stack(
         children: [
-          ClipRRect(
-              borderRadius: BorderRadius.circular(60.0),
-              child: _buildImageView()),
+          ClipOval(child: _buildImageView(w / 3)),
           Positioned(
               bottom: -8,
               right: 0,
@@ -42,11 +39,11 @@ class UserPickerView extends StatelessWidget {
     );
   }
 
-  Widget _buildImageView() {
+  Widget _buildImageView(double width) {
     if (imageFile != null) {
       return _buildImageViewFromUrl(imageFile);
     } else {
-      return _buildImageViewFromAssetsOrProfilePicture();
+      return _buildImageViewFromAssetsOrProfilePicture(width);
     }
   }
 
@@ -54,12 +51,12 @@ class UserPickerView extends StatelessWidget {
     return Image.file(file, width: 120, height: 120, fit: BoxFit.cover);
   }
 
-  Widget _buildImageViewFromAssetsOrProfilePicture() {
+  Widget _buildImageViewFromAssetsOrProfilePicture(double width) {
     return Image(
-        width: 120,
-        height: 120,
+        width: width,
+        height: width,
         fit: BoxFit.cover,
-        image: user.profileImage != null
+        image: user?.profileImage != null
             ? NetworkImage(user.profileImage)
             : AssetImage("assets/images/default_user.jpg"));
   }
