@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:messenger_mobile/core/widgets/independent/small_widgets/photo_picker_view.dart';
 
 import '../../../../../../app/appTheme.dart';
 import '../../../../../../core/services/network/Endpoints.dart';
@@ -12,7 +13,6 @@ import '../../../../../../core/widgets/independent/textfields/outlineTextField.d
 import '../../../../../../locator.dart';
 import '../../../../../edit_profile/data/datasources/edit_profile_datasource.dart';
 import '../../../../../edit_profile/data/repositories/edit_profile_repositories.dart';
-import '../../../../../edit_profile/presentation/widgets/user_picker_view.dart';
 import '../../../../../profile/domain/entities/user.dart';
 import '../../../../../profile/domain/usecases/edit_user.dart';
 import '../cubit/typename_cubit.dart';
@@ -102,14 +102,12 @@ class _TypeNamePageState extends State<TypeNamePage> {
                     if (state is FileSelected) {
                       _image = state.imageFile;
                     }
-                    return UserPickerView(
-                      context: context,
-                      user: widget.user,
-                      imageFile: _image,
+
+                    return PhotoPickerView(
+                      defaultPhotoProvider: _image != null ? 
+                        FileImage(_image) : widget.user?.profileImage != null ? NetworkImage(widget.user?.profileImage) : null,
                       onSelectPhoto: () {
-                        context
-                            .read<TypeNameCubit>()
-                            .getImage(ImageSource.camera);
+                        context.read<TypeNameCubit>().getImage(ImageSource.camera);
                       },
                     );
                   },

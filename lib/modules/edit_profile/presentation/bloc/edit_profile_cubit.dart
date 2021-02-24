@@ -13,18 +13,22 @@ import 'edit_profile_state.dart';
 class EditProfileCubit extends Cubit<EditProfileState> {
   final EditUser editUser;
   final GetImage getImageUseCase;
-  EditProfileCubit({@required this.editUser, @required this.getImageUseCase})
-      : super(EditProfileLoading());
+  
+  EditProfileCubit({
+    @required this.editUser, 
+    @required this.getImageUseCase
+  }) : super(EditProfileLoading());
 
   Future<void> updateProfile(EditProfileUpdateUser event) async {
     emit(EditProfileLoading());
     var response = await editUser(EditUserParams(
-        token: event.token,
-        image: event.image,
-        name: event.name,
-        surname: event.surname,
-        phoneNumber: event.phoneNumber,
-        patronym: event.patronym));
+      token: event.token,
+      image: event.image,
+      name: event.name,
+      surname: event.surname,
+      phoneNumber: event.phoneNumber,
+      patronym: event.patronym
+    ));
 
     response.fold(
         (failure) => {emit(EditProfileError(message: failure.message))}, (_) {
