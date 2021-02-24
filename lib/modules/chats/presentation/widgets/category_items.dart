@@ -11,14 +11,14 @@ class CategoriesSection extends StatelessWidget {
   final Function(int) onItemSelect;
   final bool isLoading;
 
-  const CategoriesSection({
-    @required this.categories,
-    @required this.currentSelectedItemId,
-    @required this.onNextClick,
-    @required this.isLoading,
-    @required this.onItemSelect,
-    Key key
-  }) : super(key: key);
+  const CategoriesSection(
+      {@required this.categories,
+      @required this.currentSelectedItemId,
+      @required this.onNextClick,
+      @required this.isLoading,
+      @required this.onItemSelect,
+      Key key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -42,10 +42,9 @@ class CategoriesSection extends StatelessWidget {
             CategoryShimmerItems()
           else
             CategoryItemsScroll(
-              categories: categories,
-              currentSelectedItemId: currentSelectedItemId,
-              onItemSelect: onItemSelect
-            )
+                categories: categories,
+                currentSelectedItemId: currentSelectedItemId,
+                onItemSelect: onItemSelect)
         ],
       ),
     );
