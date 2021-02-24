@@ -1,34 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../../../locator.dart';
+import 'package:messenger_mobile/modules/create_category/presentation/pages/create_category_screen.dart';
 import '../bloc/cubit/chats_cubit_cubit.dart';
 import '../widgets/category_items.dart';
 
 class ChatsScreen extends StatefulWidget {
-
   @override
   _ChatsScreenState createState() => _ChatsScreenState();
 }
 
 class _ChatsScreenState extends State<ChatsScreen> {
-  
-  ChatsCubit cubit;
+  int _index = 0;
 
   @override
-  void initState() {
-    super.initState();
-    cubit = sl<ChatsCubit>();
-  }
-  
-  @override
   Widget build(BuildContext context) {
+    var cubit = context.read<ChatsCubit>();
     return Scaffold(
         appBar: AppBar(
           title: Text("Главная"),
         ),
         body: BlocConsumer<ChatsCubit, ChatsCubitState>(
-          cubit: cubit..initCubit(),
           listener: (context, state) {
             if (state is ChatsCubitError) {
               Scaffold.of(context).showSnackBar(
@@ -38,6 +29,12 @@ class _ChatsScreenState extends State<ChatsScreen> {
                 ), // SnackBar
               );
             }
+            if (state is ChatsCubitNormal) {
+              var stateCategory = state.chatCategoriesState;
+              if (stateCategory is ChatCategoriesLoaded) {
+                _index = stateCategory.index;
+              }
+            }
           },
           builder: (context, state) {
             return Column(
@@ -45,7 +42,10 @@ class _ChatsScreenState extends State<ChatsScreen> {
                 if (!cubit.showCategoriesSpinner)
                   CategoriesSection(
                     categories: cubit.categories,
-                    currentSelectedItemId: 2,
+                    currentSelectedItemId: _index,
+                    onNextClick: () {
+                      Navigator.pushNamed(context, CreateCategoryScreen.id);
+                    },
                   )
                 else
                   Center(child: CircularProgressIndicator())

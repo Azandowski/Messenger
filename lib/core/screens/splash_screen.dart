@@ -9,8 +9,6 @@ import '../../modules/authentication/presentation/pages/type_name_page/pages/typ
 import '../authorization/bloc/auth_bloc.dart';
 
 class SplashScreen extends StatelessWidget {
-  NavigatorState get _navigator => navigatorKey.currentState;
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AuthBloc, AuthState>(

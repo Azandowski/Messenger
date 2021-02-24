@@ -14,18 +14,16 @@ class ChatsCubit extends Cubit<ChatsCubitState> {
   final GetCategories getCategories;
 
   ChatsCubit({@required this.getCategories})
-    : super(ChatsCubitNormal(
-        chatListsState: ChatListsLoading(),
-        chatCategoriesState: ChatCategoriesLoading()));
-
-  void initCubit() {
+      : super(ChatsCubitNormal(
+            chatListsState: ChatListsLoading(),
+            chatCategoriesState: ChatCategoriesLoading())) {
     loadCategories(token: sl<AuthConfig>().token);
   }
 
   Future<void> loadCategories({@required String token}) async {
     final response =
         await getCategories.call(GetCategoriesParams(token: token));
-    
+
     response.fold((failure) {
       emit(ChatsCubitError(errorMessage: failure.message));
     }, (categories) {
@@ -34,18 +32,38 @@ class ChatsCubit extends Cubit<ChatsCubitState> {
           : ChatListsLoading();
 
       emit(ChatsCubitNormal(
-        chatListsState: listsState,
-        chatCategoriesState: ChatCategoriesLoaded(categories: categories)
-      ));
+          chatListsState: listsState,
+          chatCategoriesState: ChatCategoriesLoaded(
+              categories: categories, index: categories[0].id)));
     });
+  }
+
+  void tabUpdate(index) {
+    print('daomnsamdoasmd');
+    ChatListsState listsState = this.state is ChatsCubitNormal
+        ? (this.state as ChatsCubitNormal).chatListsState
+        : ChatListsLoading();
+    emit(ChatsCubitNormal(
+        chatListsState: listsState,
+        chatCategoriesState:
+            ChatCategoriesLoaded(categories: categories, index: index)));
   }
 
   // MARK: - Getters
 
+  ChatListsState get currentListsState {
+    return this.state is ChatsCubitNormal
+      ? (this.state as ChatsCubitNormal).chatListsState
+      : ChatListsLoading();
+  }
+
   List<CategoryEntity> get categories {
     if (this.state is ChatsCubitNormal) {
-      if ((this.state as ChatsCubitNormal).chatCategoriesState is ChatCategoriesLoaded) {
-        return ((this.state as ChatsCubitNormal).chatCategoriesState as ChatCategoriesLoaded).categories;
+      if ((this.state as ChatsCubitNormal).chatCategoriesState
+          is ChatCategoriesLoaded) {
+        return ((this.state as ChatsCubitNormal).chatCategoriesState
+                as ChatCategoriesLoaded)
+            .categories;
       } else {
         return [];
       }
@@ -55,7 +73,8 @@ class ChatsCubit extends Cubit<ChatsCubitState> {
   }
 
   bool get showCategoriesSpinner {
-    var categoriesLoaded =  (state is ChatsCubitNormal) && (state as ChatsCubitNormal).chatCategoriesState is ChatCategoriesLoaded;
+    var categoriesLoaded = (state is ChatsCubitNormal) &&
+        (state as ChatsCubitNormal).chatCategoriesState is ChatCategoriesLoaded;
     return !categoriesLoaded && !(state is ChatsCubitError);
   }
 }
