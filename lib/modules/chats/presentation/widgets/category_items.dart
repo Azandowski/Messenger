@@ -7,10 +7,12 @@ import 'category_item.dart';
 class CategoriesSection extends StatelessWidget {
   final List<CategoryEntity> categories;
   final int currentSelectedItemId;
+  final Function onNextClick;
 
   const CategoriesSection({
     @required this.categories,
     @required this.currentSelectedItemId,
+    @required this.onNextClick,
     Key key
   }) : super(key: key);
 
@@ -24,7 +26,10 @@ class CategoriesSection extends StatelessWidget {
         children: [
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
             Text('Категории чатов', style: AppFontStyles.headingTextSyle),
-            Icon(Icons.chevron_right)
+            GestureDetector(
+              child: Icon(Icons.chevron_right),
+              onTap: onNextClick,
+            )
           ]),
           SizedBox(
             height: 15,

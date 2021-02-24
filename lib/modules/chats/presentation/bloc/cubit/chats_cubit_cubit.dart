@@ -42,6 +42,12 @@ class ChatsCubit extends Cubit<ChatsCubitState> {
 
   // MARK: - Getters
 
+  ChatListsState get currentListsState {
+    return this.state is ChatsCubitNormal
+      ? (this.state as ChatsCubitNormal).chatListsState
+      : ChatListsLoading();
+  }
+
   List<CategoryEntity> get categories {
     if (this.state is ChatsCubitNormal) {
       if ((this.state as ChatsCubitNormal).chatCategoriesState is ChatCategoriesLoaded) {
