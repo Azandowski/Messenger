@@ -12,6 +12,7 @@ import 'package:messenger_mobile/modules/create_category/presentation/create_cat
 import 'package:messenger_mobile/modules/create_category/presentation/create_category_main/widgets/create_category_header.dart';
 
 import '../../../../../locator.dart';
+import 'package:messenger_mobile/modules/create_category/presentation/chooseChats/presentation/chat_choose_page.dart';
 
 class CreateCategoryScreen extends StatelessWidget {
   static final String id = 'create_category';
@@ -69,6 +70,9 @@ class CreateCategoryScreen extends StatelessWidget {
           );
         },
       ),
+      floatingActionButton: FloatingActionButton(onPressed: (){
+        Navigator.pushNamed(context, ChooseChatsPage.id);
+      },),
     );
   }
 

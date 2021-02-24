@@ -8,6 +8,7 @@ abstract class AppColors {
   static get indicatorColor => Color(0xff9357CD);
   static get accentBlueColor => Color(0xff396FB4);
   static get greyColor => Color(0xff898989);
+  static get successGreenColor => Color(0xff3BE388);
 }
 
 abstract class AppFontStyles {
