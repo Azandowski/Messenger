@@ -15,4 +15,7 @@ class ChooseChatsLoaded extends ChooseChatsState {
   final List<ChatEntity> chatEntities;
 
   ChooseChatsLoaded({@required this.chatEntities});
+
+  @override
+  List<Object> get props => [chatEntities];
 }

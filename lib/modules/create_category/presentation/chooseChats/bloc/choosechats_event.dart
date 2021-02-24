@@ -8,7 +8,10 @@ abstract class ChooseChatsEvent extends Equatable {
 }
 
 class ChatChosen extends ChooseChatsEvent{
-  final int index;
+  final ChatEntity chat;
 
-  ChatChosen(this.index);
+  ChatChosen(this.chat);
+
+  @override
+  List<Object> get props => [chat];
 }
