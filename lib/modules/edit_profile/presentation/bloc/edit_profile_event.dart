@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:messenger_mobile/modules/profile/domain/entities/user.dart';
 
-import '../../profile/domain/entities/user.dart';
 
 abstract class EditProfileEvent extends Equatable {
   @override
