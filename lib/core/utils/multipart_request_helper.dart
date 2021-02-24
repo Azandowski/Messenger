@@ -56,8 +56,10 @@ class MultipartRequestHelper {
     });
 
     (data ?? {}).keys.forEach((e) {
-      request.fields[e] = data[e];
+      request.fields[e] = data[e].toString();
     });
+
+    copyRequest.fields.addAll(request.fields);
   
     request.files.addAll(await getFilesList(
       files ?? [], keyName

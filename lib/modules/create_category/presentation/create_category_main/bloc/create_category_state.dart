@@ -10,7 +10,7 @@ abstract class CreateCategoryState extends Equatable {
 
 class CreateCategoryNormal extends CreateCategoryState {
   final File imageFile;
-  final List chats;
+  final List<ChatEntity> chats;
 
   CreateCategoryNormal({
     @required this.imageFile,

@@ -4,10 +4,12 @@ import 'package:messenger_mobile/core/widgets/independent/buttons/gradient_main_
 class BottomActionButtonContainer extends StatelessWidget {
   final Function onTap;
   final String title;
+  final bool isLoading;
 
   const BottomActionButtonContainer({
     @required this.onTap,
     @required this.title,
+    this.isLoading = false,
     Key key, 
   }) : super(key: key);
 
@@ -26,6 +28,7 @@ class BottomActionButtonContainer extends StatelessWidget {
         child: ActionButton(
           text: title,
           onTap: onTap,
+          isLoading: isLoading
         ),
       )
     );

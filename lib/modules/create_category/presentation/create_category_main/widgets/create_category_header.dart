@@ -9,10 +9,12 @@ class CreateCategoryHeader extends StatelessWidget {
   
   final ImageProvider imageProvider;
   final Function(File) selectImage;
+  final TextEditingController nameController;
 
   const CreateCategoryHeader({
     @required this.imageProvider, 
     @required this.selectImage,
+    @required this.nameController,
     Key key
   }) : super(key: key);
 
@@ -27,6 +29,7 @@ class CreateCategoryHeader extends StatelessWidget {
           }
         ),
         CustomTextField(
+          textCtr: nameController,
           labelText: 'Название категории',
         ),
         Container(

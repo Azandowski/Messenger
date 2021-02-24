@@ -38,7 +38,12 @@ class PhotoPickerView extends StatelessWidget {
 
   Widget _buildImageView(double width) {
     if (defaultPhotoProvider != null) {
-      return Image(image: defaultPhotoProvider);
+      return Image(
+        image: defaultPhotoProvider,
+        width: width,
+        height: width,
+        fit: BoxFit.cover,
+      );
     } else {
       return Image(
         width: width,
