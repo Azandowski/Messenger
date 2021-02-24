@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:messenger_mobile/modules/create_category/presentation/pages/create_category_screen.dart';
+import 'package:messenger_mobile/modules/create_category/presentation/create_category_main/pages/create_category_screen.dart';
 import '../bloc/cubit/chats_cubit_cubit.dart';
 import '../widgets/category_items.dart';
 

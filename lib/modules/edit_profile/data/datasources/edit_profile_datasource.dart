@@ -8,10 +8,11 @@ import '../../../../core/error/failures.dart';
 import '../../../../core/services/network/Endpoints.dart';
 
 abstract class EditProfileDataSource {
-  Future<bool> updateUser(
-      {@required File file,
-      @required Map<String, String> data,
-      @required String token});
+  Future<bool> updateUser({
+    @required File file,
+    @required Map<String, String> data,
+    @required String token
+  });
 }
 
 class EditProfileDataSourceImpl implements EditProfileDataSource {
@@ -20,8 +21,9 @@ class EditProfileDataSourceImpl implements EditProfileDataSource {
   EditProfileDataSourceImpl({@required this.request});
 
   @override
-  Future<bool> updateUser(
-      {File file, Map<String, String> data, String token}) async {
+  Future<bool> updateUser({
+    File file, Map<String, String> data, String token
+  }) async {
     http.StreamedResponse response = await postUserData(
         token: token,
         request: request,
