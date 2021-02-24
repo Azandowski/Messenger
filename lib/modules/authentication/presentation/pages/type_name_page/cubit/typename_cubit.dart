@@ -4,13 +4,14 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:messenger_mobile/core/config/auth_config.dart';
-import 'package:messenger_mobile/locator.dart';
-import 'package:messenger_mobile/modules/authentication/domain/usecases/get_current_user.dart';
-import 'package:messenger_mobile/modules/media/domain/usecases/get_image.dart';
-import 'package:messenger_mobile/modules/profile/domain/entities/user.dart';
-import 'package:messenger_mobile/modules/profile/domain/usecases/edit_user.dart';
-import 'package:messenger_mobile/modules/profile/domain/usecases/profile_params.dart';
+
+import '../../../../../../core/config/auth_config.dart';
+import '../../../../../../locator.dart';
+import '../../../../../media/domain/usecases/get_image.dart';
+import '../../../../../profile/domain/entities/user.dart';
+import '../../../../../profile/domain/usecases/edit_user.dart';
+import '../../../../../profile/domain/usecases/profile_params.dart';
+import '../../../../domain/usecases/get_current_user.dart';
 
 part 'typename_state.dart';
 

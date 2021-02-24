@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:messenger_mobile/core/config/auth_config.dart';
-import 'package:messenger_mobile/locator.dart';
-import 'package:messenger_mobile/modules/authentication/presentation/bloc/index.dart';
-import 'package:messenger_mobile/modules/edit_profile/presentation/pages/edit_profile_page.dart';
-import 'package:messenger_mobile/modules/profile/presentation/bloc/index.dart';
-import 'package:messenger_mobile/modules/profile/presentation/bloc/profile_cubit.dart';
+import 'package:messenger_mobile/core/authorization/bloc/auth_bloc.dart';
 
-import 'package:messenger_mobile/modules/profile/presentation/widgets/profile_header.dart';
-import 'package:messenger_mobile/modules/profile/presentation/widgets/profile_item.dart';
-import 'package:messenger_mobile/modules/profile/presentation/widgets/profile_shimmer.dart';
+import '../../../../core/config/auth_config.dart';
+import '../../../../locator.dart';
+import '../../../authentication/presentation/bloc/index.dart';
+import '../../../edit_profile/presentation/pages/edit_profile_page.dart';
+import '../bloc/index.dart';
+import '../bloc/profile_cubit.dart';
+import '../widgets/profile_header.dart';
+import '../widgets/profile_item.dart';
+import '../widgets/profile_shimmer.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -49,7 +50,7 @@ class _ProfilePageState extends State<ProfilePage> {
               }
             },
             child: BlocProvider<ProfileCubit>(
-                create: (_) => cubit..loadUser(LoadProfile(token: token)),
+                create: (_) => cubit,
                 child: BlocBuilder<ProfileCubit, ProfileState>(
                     builder: (context, profileState) {
                   if (profileState is ProfileLoading) {
@@ -80,7 +81,9 @@ class _ProfilePageState extends State<ProfilePage> {
                             isRed: true,
                           ),
                           onTap: () {
-                            sl<AuthenticationBloc>().add(LoggedOut());
+                            context
+                                .read<AuthBloc>()
+                                .add(AuthenticationLogoutRequested());
                           },
                         ),
                       ],
@@ -94,10 +97,5 @@ class _ProfilePageState extends State<ProfilePage> {
   _handleEditScreenNavigation(BuildContext context) async {
     final needsUpdate =
         await Navigator.of(context).push(EditProfilePage.route());
-
-    if (needsUpdate != null && needsUpdate) {
-      BlocProvider.of<ProfileCubit>(context)
-          .loadUser(LoadProfile(token: sl<AuthConfig>().token));
-    }
   }
 }

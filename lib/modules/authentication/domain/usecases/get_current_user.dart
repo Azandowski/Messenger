@@ -1,7 +1,8 @@
 import 'package:dartz/dartz.dart';
-import 'package:messenger_mobile/modules/profile/domain/entities/user.dart';
+
 import '../../../../core/error/failures.dart';
 import '../../../../core/usecases/usecase.dart';
+import '../../../profile/domain/entities/user.dart';
 import '../repositories/authentication_repository.dart';
 
 class GetCurrentUser implements UseCase<User, String> {

@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/app/appTheme.dart';
-import 'package:messenger_mobile/core/widgets/independent/images/ImageWithCorner.dart';
-import 'package:messenger_mobile/modules/chats/domain/entities/category.dart';
+
+import '../../../../app/appTheme.dart';
+import '../../../../core/widgets/independent/images/ImageWithCorner.dart';
+import '../../domain/entities/category.dart';
 
 class CategoryItem extends StatelessWidget {
-  
   final CategoryEntity entity;
   bool isSelected;
 
   CategoryItem({
     @required this.entity,
     this.isSelected = false,
-    Key key, 
+    Key key,
   }) : super(key: key);
-  
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -25,21 +25,25 @@ class CategoryItem extends StatelessWidget {
             borderRadius: BorderRadius.circular(15),
             path: entity.avatar,
             isFromAsset: false,
-            width: 80, height: 80,
+            width: 80,
+            height: 80,
           ),
-          SizedBox(height: 10,),
+          SizedBox(
+            height: 10,
+          ),
           Text(
             entity.name,
             style: AppFontStyles.mainStyle,
             textAlign: TextAlign.center,
             overflow: TextOverflow.ellipsis,
           ),
-          SizedBox(height: 10,),
+          SizedBox(
+            height: 10,
+          ),
           Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(4),
-              color: isSelected ? AppColors.indicatorColor : null
-            ),
+                borderRadius: BorderRadius.circular(4),
+                color: isSelected ? AppColors.indicatorColor : null),
             height: 6,
           )
         ],

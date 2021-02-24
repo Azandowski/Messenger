@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:messenger_mobile/modules/chats/domain/entities/category.dart';
-import 'package:messenger_mobile/modules/chats/presentation/bloc/cubit/chats_cubit_cubit.dart';
-import 'package:messenger_mobile/modules/chats/presentation/widgets/category_items.dart';
 
 import '../../../../locator.dart';
+import '../../domain/entities/category.dart';
+import '../bloc/cubit/chats_cubit_cubit.dart';
+import '../widgets/category_items.dart';
 
 class ChatsScreen extends StatelessWidget {
   final List<CategoryEntity> entities = [
@@ -43,36 +43,35 @@ class ChatsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Главная"),
-      ),
-      body: BlocConsumer<ChatsCubit, ChatsCubitState>(
-        cubit: sl<ChatsCubit>()..initCubit(),
-        listener: (context, state) {
-          if (state is ChatsCubitError) {
-            Scaffold.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.errorMessage, style: TextStyle(
-                  color: Colors.red
-                )),
-              ), // SnackBar
+        appBar: AppBar(
+          title: Text("Главная"),
+        ),
+        body: BlocConsumer<ChatsCubit, ChatsCubitState>(
+          cubit: sl<ChatsCubit>()..initCubit(),
+          listener: (context, state) {
+            if (state is ChatsCubitError) {
+              Scaffold.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.errorMessage,
+                      style: TextStyle(color: Colors.red)),
+                ), // SnackBar
+              );
+            }
+          },
+          builder: (context, state) {
+            return Column(
+              children: [
+                if (state is ChatsCubitNormal &&
+                    state.chatListsState != ChatListsLoading)
+                  CategoriesSection(
+                    categories: entities,
+                    currentSelectedItemId: 2,
+                  )
+                else
+                  Center(child: CircularProgressIndicator())
+              ],
             );
-          }
-        },
-        builder: (context, state) {
-          return Column(
-            children: [
-              if (state is ChatsCubitNormal && state.chatListsState != ChatListsLoading) 
-                CategoriesSection(
-                  categories: entities,
-                  currentSelectedItemId: 2,
-                )
-              else 
-                Center(child: CircularProgressIndicator())
-            ],
-          );
-        },
-      )
-    );
+          },
+        ));
   }
 }

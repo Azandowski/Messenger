@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
-import 'package:image_picker/image_picker.dart';
-import 'package:messenger_mobile/core/widgets/independent/pickers/photo_picker.dart';
-import 'package:messenger_mobile/modules/edit_profile/presentation/bloc/index.dart';
+
 import '../../../../core/config/auth_config.dart';
 import '../../../../core/services/network/Endpoints.dart';
 import '../../../../core/services/network/network_info.dart';
 import '../../../../core/widgets/independent/buttons/gradient_main_button.dart';
+import '../../../../core/widgets/independent/pickers/photo_picker.dart';
 import '../../../../core/widgets/independent/textfields/customTextField.dart';
 import '../../../../locator.dart';
 import '../../../profile/domain/entities/user.dart';
 import '../../../profile/domain/usecases/edit_user.dart';
 import '../../data/datasources/edit_profile_datasource.dart';
 import '../../data/repositories/edit_profile_repositories.dart';
+import '../bloc/index.dart';
 import '../widgets/user_picker_view.dart';
 
 class EditProfilePage extends StatefulWidget {
@@ -40,101 +40,103 @@ class _EditProfilePageState extends State<EditProfilePage> {
     final String token = sl<AuthConfig>().token;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text( "Редактировать", style: TextStyle(color: Colors.black),),
-        backgroundColor: Color.fromRGBO(250, 249, 255, 1)
-      ),
-      body: BlocConsumer<EditProfileCubit, EditProfileState>(
-        cubit: cubit..initProfile(EditProfileInit(
-          user: user
-        )),
-        listener: (context, state) {
-          if (state is EditProfileSuccess) {
-            Navigator.of(context).pop(true);
-          } else if (state is EditProfileError) {
-            Scaffold.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.message, style: TextStyle(
-                  color: Colors.red
-                )),
-              ), // SnackBar
-            );
-          }
-        },
-        builder: (context, state) {
-          return Container(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SizedBox(height: 12),
-                UserPickerView(
-                  context: context,
-                  user: user,
-                  imageFile: cubit.imageFile,
-                  onSelectPhoto: () {
-                    PhotoPicker().showImageSourceSelectionDialog(context, (imageSource) {
-                      BlocProvider.of<EditProfileCubit>(context).pickProfileImage(PickProfileImage(imageSource: imageSource));
-                    });
-                  },
-                ),
-                Container(
-                  padding: const EdgeInsets.only(top: 12),
-                  color: Theme.of(context).backgroundColor,
-                  child: Column(
-                    children: [
-                      IgnorePointer(
-                        ignoring: state is EditProfileLoading,
-                        child: CustomTextField(
-                          customPadding: const EdgeInsets.only(left: 16, right: 16),
-                          labelText: "Фамилия",
-                          textCtr: cubit.nameTextController,
-                        ),
-                      ),
-                      IgnorePointer(
-                        ignoring: state is EditProfileLoading,
-                        child: CustomTextField(
-                          customPadding: const EdgeInsets.only(left: 16, right: 16),
-                          labelText: "Имя",
-                          textCtr: cubit.surnameTextController,
-                        ),
-                      ),
-                      IgnorePointer(
-                        ignoring: state is EditProfileLoading,
-                        child: CustomTextField(
-                          customPadding: const EdgeInsets.only(left: 16, right: 16),
-                          labelText: "Отчество",
-                          textCtr: cubit.patronymTextController,
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 12,
-                      ),
-                      ActionButton(
-                        isLoading: state is EditProfileLoading,
-                        text: 'Сохранить',
-                        onTap: () {
-                          if (!(state is EditProfileLoading)) {
-                            cubit.updateProfile(EditProfileUpdateUser(
-                              token: token,
-                              image: cubit.imageFile,
-                              name: cubit.nameTextController.text,
-                              surname: cubit.surnameTextController.text,
-                              patronym: cubit.patronymTextController.text
-                            ));
-                          }
-                        },
-                      )
-                    ],
-                  )
-                ),
-              ]
+        appBar: AppBar(
+            title: Text(
+              "Редактировать",
+              style: TextStyle(color: Colors.black),
             ),
-          );
-        }, 
-      )
-    );
+            backgroundColor: Color.fromRGBO(250, 249, 255, 1)),
+        body: BlocConsumer<EditProfileCubit, EditProfileState>(
+          cubit: cubit..initProfile(EditProfileInit(user: user)),
+          listener: (context, state) {
+            if (state is EditProfileSuccess) {
+              Navigator.of(context).pop(true);
+            } else if (state is EditProfileError) {
+              Scaffold.of(context).showSnackBar(
+                SnackBar(
+                  content:
+                      Text(state.message, style: TextStyle(color: Colors.red)),
+                ), // SnackBar
+              );
+            }
+          },
+          builder: (context, state) {
+            return Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(height: 12),
+                    UserPickerView(
+                      context: context,
+                      user: user,
+                      imageFile: cubit.imageFile,
+                      onSelectPhoto: () {
+                        PhotoPicker().showImageSourceSelectionDialog(context,
+                            (imageSource) {
+                          BlocProvider.of<EditProfileCubit>(context)
+                              .pickProfileImage(
+                                  PickProfileImage(imageSource: imageSource));
+                        });
+                      },
+                    ),
+                    Container(
+                        padding: const EdgeInsets.only(top: 12),
+                        color: Theme.of(context).backgroundColor,
+                        child: Column(
+                          children: [
+                            IgnorePointer(
+                              ignoring: state is EditProfileLoading,
+                              child: CustomTextField(
+                                customPadding:
+                                    const EdgeInsets.only(left: 16, right: 16),
+                                labelText: "Фамилия",
+                                textCtr: cubit.nameTextController,
+                              ),
+                            ),
+                            IgnorePointer(
+                              ignoring: state is EditProfileLoading,
+                              child: CustomTextField(
+                                customPadding:
+                                    const EdgeInsets.only(left: 16, right: 16),
+                                labelText: "Имя",
+                                textCtr: cubit.surnameTextController,
+                              ),
+                            ),
+                            IgnorePointer(
+                              ignoring: state is EditProfileLoading,
+                              child: CustomTextField(
+                                customPadding:
+                                    const EdgeInsets.only(left: 16, right: 16),
+                                labelText: "Отчество",
+                                textCtr: cubit.patronymTextController,
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 12,
+                            ),
+                            ActionButton(
+                              isLoading: state is EditProfileLoading,
+                              text: 'Сохранить',
+                              onTap: () {
+                                if (!(state is EditProfileLoading)) {
+                                  cubit.updateProfile(EditProfileUpdateUser(
+                                      token: token,
+                                      image: cubit.imageFile,
+                                      name: cubit.nameTextController.text,
+                                      surname: cubit.surnameTextController.text,
+                                      patronym:
+                                          cubit.patronymTextController.text));
+                                }
+                              },
+                            )
+                          ],
+                        )),
+                  ]),
+            );
+          },
+        ));
   }
 
   void _initCubit() {

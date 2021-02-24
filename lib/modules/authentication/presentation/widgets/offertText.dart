@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/app/appTheme.dart';
-import 'package:messenger_mobile/core/screens/offert_screen.dart';
+
+import '../../../../app/appTheme.dart';
+import '../../../../core/screens/offert_screen.dart';
 
 class OffertTextWidget extends StatelessWidget {
   const OffertTextWidget({

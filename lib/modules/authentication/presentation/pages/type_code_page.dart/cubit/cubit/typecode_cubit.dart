@@ -1,10 +1,11 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/modules/authentication/domain/entities/code_entity.dart';
-import 'package:messenger_mobile/modules/authentication/domain/entities/token_entity.dart';
-import 'package:messenger_mobile/modules/authentication/domain/usecases/login.dart';
-import 'package:messenger_mobile/modules/authentication/domain/usecases/save_token.dart';
+
+import '../../../../../domain/entities/code_entity.dart';
+import '../../../../../domain/entities/token_entity.dart';
+import '../../../../../domain/usecases/login.dart';
+import '../../../../../domain/usecases/save_token.dart';
 
 part 'typecode_state.dart';
 

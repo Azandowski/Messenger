@@ -1,10 +1,11 @@
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
+import 'package:meta/meta.dart';
+
 import '../../../../core/error/failures.dart';
 import '../../../../core/usecases/usecase.dart';
 import '../entities/code_entity.dart';
 import '../repositories/authentication_repository.dart';
-import 'package:meta/meta.dart';
 
 class CreateCode implements UseCase<CodeEntity, PhoneParams> {
   final AuthenticationRepository repository;

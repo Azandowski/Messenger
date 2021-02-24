@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:messenger_mobile/app/appTheme.dart';
-import 'package:messenger_mobile/core/widgets/independent/buttons/gradient_main_button.dart';
-import 'package:messenger_mobile/core/widgets/independent/textfields/outlineTextField.dart';
-import 'package:messenger_mobile/modules/authentication/presentation/bloc/authentication_bloc.dart';
-import 'package:messenger_mobile/modules/authentication/presentation/bloc/index.dart';
-import 'package:messenger_mobile/modules/authentication/presentation/pages/type_phone_page/cubit/typephone_cubit.dart';
-import 'package:messenger_mobile/modules/authentication/presentation/widgets/offertText.dart';
+
+import '../../../../../../app/appTheme.dart';
+import '../../../../../../core/widgets/independent/buttons/gradient_main_button.dart';
+import '../../../../../../core/widgets/independent/textfields/outlineTextField.dart';
+import '../../../bloc/authentication_bloc.dart';
+import '../../../bloc/index.dart';
+import '../../../widgets/offertText.dart';
+import '../cubit/typephone_cubit.dart';
 
 class TypePhonePage extends StatefulWidget {
   @override

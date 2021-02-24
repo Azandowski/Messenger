@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/modules/authentication/presentation/pages/type_code_page.dart/pages/type_code_page.dart';
-import 'package:messenger_mobile/modules/authentication/presentation/pages/type_phone_page/cubit/typephone_cubit.dart';
 import 'package:pin_input_text_field/pin_input_text_field.dart';
+
+import '../pages/type_code_page.dart/pages/type_code_page.dart';
+import '../pages/type_phone_page/cubit/typephone_cubit.dart';
 
 class PinField extends StatelessWidget {
   const PinField({

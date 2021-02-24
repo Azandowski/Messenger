@@ -15,29 +15,25 @@ class MockMultipartRequest extends Mock implements http.MultipartRequest {
   final files = <http.MultipartFile>[];
 }
 
-main() { 
+main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   EditProfileDataSourceImpl editProfileDataSourceImpl;
   MockMultipartRequest httpMultipartRequest;
 
-  setUp(() async { 
+  setUp(() async {
     httpMultipartRequest = MockMultipartRequest();
-    editProfileDataSourceImpl = EditProfileDataSourceImpl(request: httpMultipartRequest);
+    editProfileDataSourceImpl =
+        EditProfileDataSourceImpl(request: httpMultipartRequest);
   });
 
   // MARK: - Local props
 
-  final user = UserModel(
-    name: 'Yerkebulan',
-    phoneNumber: '+77470726323'
-  );
+  final user = UserModel(name: 'Yerkebulan', phoneNumber: '+77470726323');
 
+  test('Should Update Profile', () async {
+    when(httpMultipartRequest.send())
+        .thenAnswer((_) async => http.StreamedResponse(Stream.value([0]), 200));
 
-  test('Should Update Profile', () async { 
-    when(httpMultipartRequest.send()).thenAnswer((_) async => http.StreamedResponse(
-      Stream.value([0]), 200
-    ));
-    
     final result = await editProfileDataSourceImpl.updateUser(
       token: ''
     );
