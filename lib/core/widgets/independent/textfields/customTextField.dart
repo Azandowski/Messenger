@@ -14,17 +14,18 @@ class CustomTextField extends StatelessWidget {
   final Function(String) validator;
   final EdgeInsets customPadding;
 
-  CustomTextField(
-      {this.prefixIcon,
-      this.obscure,
-      this.onChanged,
-      this.textCtr,
-      this.headText,
-      this.helperText,
-      this.maxSymbols,
-      this.labelText,
-      this.validator,
-      this.customPadding});
+  CustomTextField({
+    this.prefixIcon,
+    this.obscure,
+    this.onChanged,
+    this.textCtr,
+    this.headText,
+    this.helperText,
+    this.maxSymbols,
+    this.labelText,
+    this.validator,
+    this.customPadding
+  });
 
   @override
   Widget build(BuildContext context) {

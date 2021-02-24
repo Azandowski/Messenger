@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
+import 'package:messenger_mobile/core/widgets/independent/small_widgets/photo_picker_view.dart';
 
 import '../../../../core/config/auth_config.dart';
 import '../../../../core/services/network/Endpoints.dart';
@@ -14,7 +15,6 @@ import '../../../profile/domain/usecases/edit_user.dart';
 import '../../data/datasources/edit_profile_datasource.dart';
 import '../../data/repositories/edit_profile_repositories.dart';
 import '../bloc/index.dart';
-import '../widgets/user_picker_view.dart';
 
 class EditProfilePage extends StatefulWidget {
   static Route route() {
@@ -68,10 +68,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     SizedBox(height: 12),
-                    UserPickerView(
-                      context: context,
-                      user: user,
-                      imageFile: cubit.imageFile,
+                    PhotoPickerView(
+                      defaultPhotoProvider: cubit.imageFile != null ? 
+                        FileImage(cubit.imageFile) : user?.profileImage != null ? NetworkImage(user?.profileImage) : null,
                       onSelectPhoto: () {
                         PhotoPicker().showImageSourceSelectionDialog(context,
                             (imageSource) {
