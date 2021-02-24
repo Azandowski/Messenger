@@ -11,20 +11,12 @@ class CategoriesSection extends StatelessWidget {
   final int currentSelectedItemId;
   final Function onNextClick;
 
-<<<<<<< HEAD
-  const CategoriesSection(
-      {@required this.categories,
-      @required this.currentSelectedItemId,
-      Key key})
-      : super(key: key);
-=======
   const CategoriesSection({
     @required this.categories,
     @required this.currentSelectedItemId,
     @required this.onNextClick,
     Key key
   }) : super(key: key);
->>>>>>> ecd24ebe470adc8a338b668b973c1237c0901218
 
   @override
   Widget build(BuildContext context) {
