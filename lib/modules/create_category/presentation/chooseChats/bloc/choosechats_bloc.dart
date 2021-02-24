@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/modules/create_category/domain/entities/chat_entity.dart';
+import '../../../domain/entities/chat_entity.dart';
 
 part 'choosechats_event.dart';
 part 'choosechats_state.dart';

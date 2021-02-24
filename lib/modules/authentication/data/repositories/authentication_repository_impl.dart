@@ -1,15 +1,15 @@
 import 'dart:async';
 
 import 'package:dartz/dartz.dart';
-import 'package:messenger_mobile/core/usecases/usecase.dart';
-import '../../../../core/authorization/bloc/auth_bloc.dart';
-import '../../../../core/config/auth_config.dart';
-import '../../../../locator.dart';
-import '../../../profile/domain/entities/user.dart';
 import 'package:meta/meta.dart';
 
+import '../../../../core/authorization/bloc/auth_bloc.dart';
+import '../../../../core/config/auth_config.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/services/network/network_info.dart';
+import '../../../../core/usecases/usecase.dart';
+import '../../../../locator.dart';
+import '../../../profile/domain/entities/user.dart';
 import '../../domain/entities/code_entity.dart';
 import '../../domain/entities/token_entity.dart';
 import '../../domain/repositories/authentication_repository.dart';

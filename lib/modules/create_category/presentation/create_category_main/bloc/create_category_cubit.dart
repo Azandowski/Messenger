@@ -3,8 +3,9 @@ import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
-import 'package:messenger_mobile/modules/chats/domain/entities/category.dart';
-import 'package:messenger_mobile/modules/create_category/domain/usecases/create_category.dart';
+import '../../../../chats/domain/entities/category.dart';
+import '../../../domain/entities/chat_entity.dart';
+import '../../../domain/usecases/create_category.dart';
 
 part 'create_category_state.dart';
 
@@ -16,7 +17,9 @@ class CreateCategoryCubit extends Cubit<CreateCategoryState> {
   
   CreateCategoryCubit({
     @required this.createCategory
-  }) : super(CreateCategoryLoading());
+  }) : super(CreateCategoryLoading()){
+     initCubit();
+  }
 
   // * * Events
 
@@ -24,6 +27,22 @@ class CreateCategoryCubit extends Cubit<CreateCategoryState> {
     emit(CreateCategoryNormal(
       imageFile: imageFile, 
       chats: [])
+    );
+  }
+
+  void addChats(List<ChatEntity> comingChats){
+    emit(CreateCategoryNormal(
+      imageFile: imageFile, 
+      chats: comingChats)
+    );
+  }
+
+  void deleteChat(ChatEntity chat){
+    var updatedChats = (state as CreateCategoryNormal).chats;
+    updatedChats.remove(chat);
+    emit(CreateCategoryNormal(
+      imageFile: imageFile, 
+      chats: updatedChats)
     );
   }
 

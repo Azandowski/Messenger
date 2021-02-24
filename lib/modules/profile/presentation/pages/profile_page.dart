@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:messenger_mobile/core/authorization/bloc/auth_bloc.dart';
 
+import '../../../../core/authorization/bloc/auth_bloc.dart';
 import '../../../../core/config/auth_config.dart';
 import '../../../../locator.dart';
-import '../../../authentication/presentation/bloc/index.dart';
 import '../../../edit_profile/presentation/pages/edit_profile_page.dart';
 import '../bloc/index.dart';
 import '../bloc/profile_cubit.dart';

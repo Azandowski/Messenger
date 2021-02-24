@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../../../app/appTheme.dart';
 import '../../domain/entities/category.dart';
 import 'category_item.dart';
