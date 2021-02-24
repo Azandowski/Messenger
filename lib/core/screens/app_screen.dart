@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger_mobile/core/screens/splash_screen.dart';
 import 'package:messenger_mobile/core/widgets/independent/bottomBar/appBottomBar.dart';
+import 'package:messenger_mobile/locator.dart';
+import 'package:messenger_mobile/modules/chats/presentation/bloc/cubit/chats_cubit_cubit.dart';
 import 'package:messenger_mobile/modules/chats/presentation/pages/chats_screen.dart';
 import 'package:messenger_mobile/modules/profile/presentation/pages/profile_page.dart';
 
@@ -23,26 +26,24 @@ class _AppScreenState extends State<AppScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      extendBody: true,
-      body: PageStorage(
-        bucket: bucket,
-        child: IndexedStack(
-          children: pages,
-          index: _viewIndex
-        )
+    return BlocProvider.value(
+      value: sl<ChatsCubit>(),
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        extendBody: true,
+        body: PageStorage(
+            bucket: bucket,
+            child: IndexedStack(children: pages, index: _viewIndex)),
+        bottomNavigationBar: AppBottomBar(
+            currentIndex: _viewIndex,
+            onTap: (int index) {
+              setState(() {
+                _viewIndex = index;
+              });
+            }),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        floatingActionButton: AddButton(),
       ),
-      bottomNavigationBar: AppBottomBar(
-        currentIndex: _viewIndex, 
-        onTap: (int index) {
-          setState(() {
-            _viewIndex = index;
-          });
-        }
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: AddButton(),
     );
   }
 }

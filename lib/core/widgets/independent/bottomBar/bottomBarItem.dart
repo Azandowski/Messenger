@@ -19,7 +19,6 @@ class BottomBarItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 55,
       decoration: BoxDecoration(
           border: isSelected
               ? Border(
@@ -28,7 +27,7 @@ class BottomBarItem extends StatelessWidget {
       child: IconButton(
         icon: Icon(
           iconData,
-          size: 25,
+          size: 30,
           color: isSelected ? AppColors.indicatorColor : Colors.grey[400],
         ),
         onPressed: () {

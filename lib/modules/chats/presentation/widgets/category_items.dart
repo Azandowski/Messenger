@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:messenger_mobile/modules/chats/presentation/bloc/cubit/chats_cubit_cubit.dart';
 
 import '../../../../app/appTheme.dart';
 import '../../domain/entities/category.dart';
@@ -8,11 +10,11 @@ class CategoriesSection extends StatelessWidget {
   final List<CategoryEntity> categories;
   final int currentSelectedItemId;
 
-  const CategoriesSection({
-    @required this.categories,
-    @required this.currentSelectedItemId,
-    Key key
-  }) : super(key: key);
+  const CategoriesSection(
+      {@required this.categories,
+      @required this.currentSelectedItemId,
+      Key key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +61,12 @@ class CategoryItemsScroll extends StatelessWidget {
               .map((e) => Padding(
                     padding: const EdgeInsets.only(right: 20),
                     child: CategoryItem(
-                        entity: e, isSelected: currentSelectedItemId == e.id),
+                      entity: e,
+                      isSelected: currentSelectedItemId == e.id,
+                      onSelect: () {
+                        BlocProvider.of<ChatsCubit>(context).tabUpdate(e.id);
+                      },
+                    ),
                   ))
               .toList(),
         ),

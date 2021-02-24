@@ -12,56 +12,54 @@ class AppBottomBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        height: 55,
-        child: BottomAppBar(
-          elevation: 20,
-          shape: CircularNotchedRectangle(),
-          notchMargin: 12,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                BottomBarItem(
-                    index: 0,
-                    iconData: Icons.chat,
-                    onChangeIndex: (index) {
-                      onTap(index);
-                    },
-                    isSelected: currentIndex == 0),
-                BottomBarItem(
-                  index: 1,
-                  isSelected: currentIndex == 1,
-                  iconData: Icons.home,
-                  onChangeIndex: (index) {
-                    onTap(index);
-                  },
-                ),
-                SizedBox(
-                  width: 40,
-                ),
-                BottomBarItem(
-                  index: 2,
-                  isSelected: currentIndex == 2,
-                  iconData: Icons.call,
-                  onChangeIndex: (index) {
-                    onTap(index);
-                  },
-                ),
-                BottomBarItem(
-                  index: 3,
-                  isSelected: currentIndex == 3,
-                  iconData: Icons.person,
-                  onChangeIndex: (index) {
-                    onTap(index);
-                  },
-                ),
-              ],
+    return BottomAppBar(
+      elevation: 20,
+      shape: CircularNotchedRectangle(),
+      notchMargin: 8,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            BottomBarItem(
+                index: 0,
+                iconData: Icons.chat,
+                onChangeIndex: (index) {
+                  onTap(index);
+                },
+                isSelected: currentIndex == 0),
+            BottomBarItem(
+              index: 1,
+              isSelected: currentIndex == 1,
+              iconData: Icons.home,
+              onChangeIndex: (index) {
+                onTap(index);
+              },
             ),
-          ),
-        ));
+            SizedBox(
+              width: 40,
+            ),
+            BottomBarItem(
+              index: 2,
+              isSelected: currentIndex == 2,
+              iconData: Icons.call,
+              onChangeIndex: (index) {
+                onTap(index);
+              },
+            ),
+            BottomBarItem(
+              index: 3,
+              isSelected: currentIndex == 3,
+              iconData: Icons.person,
+              onChangeIndex: (index) {
+                onTap(index);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 
