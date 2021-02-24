@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger_mobile/modules/create_category/presentation/pages/create_category_screen.dart';
-
-import '../../../../locator.dart';
 import '../bloc/cubit/chats_cubit_cubit.dart';
 import '../widgets/category_items.dart';
 
@@ -44,7 +42,7 @@ class _ChatsScreenState extends State<ChatsScreen> {
                 if (!cubit.showCategoriesSpinner)
                   CategoriesSection(
                     categories: cubit.categories,
-                    currentSelectedItemId: 2,
+                    currentSelectedItemId: _index,
                     onNextClick: () {
                       Navigator.pushNamed(context, CreateCategoryScreen.id);
                     },
