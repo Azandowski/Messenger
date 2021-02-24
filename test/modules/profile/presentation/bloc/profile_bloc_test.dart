@@ -21,7 +21,7 @@ void main() {
 
   test('initialState should be Loading State', () {
     // assert
-    expect(cubit.state, equals(ProfileLoading()));
+    expect(cubit.state, isA<ProfileLoaded>());
   });
 
   test('should return error if there is an error', () {

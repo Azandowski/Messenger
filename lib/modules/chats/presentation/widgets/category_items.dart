@@ -8,11 +8,11 @@ class CategoriesSection extends StatelessWidget {
   final List<CategoryEntity> categories;
   final int currentSelectedItemId;
 
-  const CategoriesSection(
-      {@required this.categories,
-      @required this.currentSelectedItemId,
-      Key key})
-      : super(key: key);
+  const CategoriesSection({
+    @required this.categories,
+    @required this.currentSelectedItemId,
+    Key key
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

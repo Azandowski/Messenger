@@ -71,11 +71,20 @@ class AuthenticationRemoteDataSourceImpl
           'application_id': APP_ID,
         }),
         headers: headers);
-    var jsonMap = json.decode(response.body);
     if (response.statusCode >= 200 && response.statusCode <= 299) {
+      var jsonMap = json.decode(response.body);
       return UserModel.fromJson(jsonMap);
     } else {
-      throw ServerFailure(message: jsonMap['message']);
+      var errorMessage = '';
+      
+      try {
+        var jsonMap = json.decode(response.body.toString());
+        errorMessage = jsonMap['message'] ?? jsonMap.toString();
+      } catch (e) {
+        errorMessage = response.body.toString();
+      }
+      
+      throw ServerFailure(message: errorMessage);
     }
   }
 }

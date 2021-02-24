@@ -1,6 +1,6 @@
 enum Config { baseUrl, baseScheme, baseAPIpath }
 
-const bool isDev = false;
+const bool isDev = true;
 
 extension ConfigExtension on Config {
   String get value {

@@ -15,6 +15,9 @@ class ChatsCubitNormal extends ChatsCubitState {
     @required this.chatListsState, 
     @required this.chatCategoriesState
   });
+  
+  @override
+  List<Object> get props => [chatListsState, chatCategoriesState];
 }
 
 class ChatsCubitError extends ChatsCubitState {
@@ -37,10 +40,14 @@ abstract class ChatListsState extends Equatable {
   List<Object> get props => [];
 }
 
-class ChatListsLoading extends ChatListsState {}
+class ChatListsLoading extends ChatListsState {
+  @override
+  List<Object> get props => [];
+}
 
 class ChatListsLoaded extends ChatListsState {
-  // TODO: Add here list of chat messages
+  @override
+  List<Object> get props => [];
 }
 
 
@@ -53,7 +60,10 @@ abstract class ChatCategoriesState extends Equatable {
   List<Object> get props => [];
 }
 
-class ChatCategoriesLoading extends ChatCategoriesState {}
+class ChatCategoriesLoading extends ChatCategoriesState {
+  @override
+  List<Object> get props => [];
+}
 
 class ChatCategoriesLoaded extends ChatCategoriesState {
   final List<CategoryEntity> categories;

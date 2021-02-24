@@ -2,44 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../locator.dart';
-import '../../domain/entities/category.dart';
 import '../bloc/cubit/chats_cubit_cubit.dart';
 import '../widgets/category_items.dart';
 
-class ChatsScreen extends StatelessWidget {
-  final List<CategoryEntity> entities = [
-    CategoryEntity(
-        id: 1,
-        name: 'Microphone',
-        avatar:
-            'https://imgresizer.eurosport.com/unsafe/1200x0/filters:format(jpeg):focal(1056x358:1058x356)/origin-imgresizer.eurosport.com/2021/02/19/2998019-61516108-2560-1440.jpg',
-        totalChats: 2),
-    CategoryEntity(
-        id: 2,
-        name: 'SuperWork',
-        avatar:
-            'https://imgresizer.eurosport.com/unsafe/1200x0/filters:format(jpeg):focal(1056x358:1058x356)/origin-imgresizer.eurosport.com/2021/02/19/2998019-61516108-2560-1440.jpg',
-        totalChats: 2),
-    CategoryEntity(
-        id: 3,
-        name: 'Tourism',
-        avatar:
-            'https://imgresizer.eurosport.com/unsafe/1200x0/filters:format(jpeg):focal(1056x358:1058x356)/origin-imgresizer.eurosport.com/2021/02/19/2998019-61516108-2560-1440.jpg',
-        totalChats: 2),
-    CategoryEntity(
-        id: 4,
-        name: 'MedApp',
-        avatar:
-            'https://imgresizer.eurosport.com/unsafe/1200x0/filters:format(jpeg):focal(1056x358:1058x356)/origin-imgresizer.eurosport.com/2021/02/19/2998019-61516108-2560-1440.jpg',
-        totalChats: 2),
-    CategoryEntity(
-        id: 4,
-        name: 'MedApp',
-        avatar:
-            'https://imgresizer.eurosport.com/unsafe/1200x0/filters:format(jpeg):focal(1056x358:1058x356)/origin-imgresizer.eurosport.com/2021/02/19/2998019-61516108-2560-1440.jpg',
-        totalChats: 2)
-  ];
+class ChatsScreen extends StatefulWidget {
 
+  @override
+  _ChatsScreenState createState() => _ChatsScreenState();
+}
+
+class _ChatsScreenState extends State<ChatsScreen> {
+  
+  ChatsCubit cubit;
+
+  @override
+  void initState() {
+    super.initState();
+    cubit = sl<ChatsCubit>();
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,7 +28,7 @@ class ChatsScreen extends StatelessWidget {
           title: Text("Главная"),
         ),
         body: BlocConsumer<ChatsCubit, ChatsCubitState>(
-          cubit: sl<ChatsCubit>()..initCubit(),
+          cubit: cubit..initCubit(),
           listener: (context, state) {
             if (state is ChatsCubitError) {
               Scaffold.of(context).showSnackBar(
@@ -61,10 +42,9 @@ class ChatsScreen extends StatelessWidget {
           builder: (context, state) {
             return Column(
               children: [
-                if (state is ChatsCubitNormal &&
-                    state.chatListsState != ChatListsLoading)
+                if (!cubit.showCategoriesSpinner)
                   CategoriesSection(
-                    categories: entities,
+                    categories: cubit.categories,
                     currentSelectedItemId: 2,
                   )
                 else

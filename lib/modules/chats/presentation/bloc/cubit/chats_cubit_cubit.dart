@@ -14,9 +14,9 @@ class ChatsCubit extends Cubit<ChatsCubitState> {
   final GetCategories getCategories;
 
   ChatsCubit({@required this.getCategories})
-      : super(ChatsCubitNormal(
-            chatListsState: ChatListsLoading(),
-            chatCategoriesState: ChatCategoriesLoading()));
+    : super(ChatsCubitNormal(
+        chatListsState: ChatListsLoading(),
+        chatCategoriesState: ChatCategoriesLoading()));
 
   void initCubit() {
     loadCategories(token: sl<AuthConfig>().token);
@@ -25,6 +25,7 @@ class ChatsCubit extends Cubit<ChatsCubitState> {
   Future<void> loadCategories({@required String token}) async {
     final response =
         await getCategories.call(GetCategoriesParams(token: token));
+    
     response.fold((failure) {
       emit(ChatsCubitError(errorMessage: failure.message));
     }, (categories) {
@@ -33,8 +34,28 @@ class ChatsCubit extends Cubit<ChatsCubitState> {
           : ChatListsLoading();
 
       emit(ChatsCubitNormal(
-          chatListsState: listsState,
-          chatCategoriesState: ChatCategoriesLoaded(categories: categories)));
+        chatListsState: listsState,
+        chatCategoriesState: ChatCategoriesLoaded(categories: categories)
+      ));
     });
+  }
+
+  // MARK: - Getters
+
+  List<CategoryEntity> get categories {
+    if (this.state is ChatsCubitNormal) {
+      if ((this.state as ChatsCubitNormal).chatCategoriesState is ChatCategoriesLoaded) {
+        return ((this.state as ChatsCubitNormal).chatCategoriesState as ChatCategoriesLoaded).categories;
+      } else {
+        return [];
+      }
+    } else {
+      return [];
+    }
+  }
+
+  bool get showCategoriesSpinner {
+    var categoriesLoaded =  (state is ChatsCubitNormal) && (state as ChatsCubitNormal).chatCategoriesState is ChatCategoriesLoaded;
+    return !categoriesLoaded && !(state is ChatsCubitError);
   }
 }

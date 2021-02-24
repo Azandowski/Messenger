@@ -19,10 +19,9 @@ class ChatsDataSourceImpl extends ChatsDataSource {
 
   @override
   Future<List<CategoryEntity>> getCategories(String token) async {
-    http.Response response = await client.post(
+    http.Response response = await client.get(
         Endpoints.getCategories.buildURL(),
-        headers: Endpoints.getCurrentUser.getHeaders(token: token),
-        body: json.encode({'application_id': '1'}));
+        headers: Endpoints.getCurrentUser.getHeaders(token: token));
 
     if (response.statusCode >= 200 && response.statusCode <= 299) {
       final categories = (json.decode(response.body) as List)
