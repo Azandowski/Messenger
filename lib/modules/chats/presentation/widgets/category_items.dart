@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:messenger_mobile/modules/chats/presentation/bloc/cubit/chats_cubit_cubit.dart';
-
 import '../../../../app/appTheme.dart';
 import '../../domain/entities/category.dart';
 import 'category_item.dart';
+import 'category_shimmer_items.dart';
 
 class CategoriesSection extends StatelessWidget {
   final List<CategoryEntity> categories;
   final int currentSelectedItemId;
   final Function onNextClick;
+  final Function(int) onItemSelect;
+  final bool isLoading;
 
   const CategoriesSection({
     @required this.categories,
     @required this.currentSelectedItemId,
     @required this.onNextClick,
+    @required this.isLoading,
+    @required this.onItemSelect,
     Key key
   }) : super(key: key);
 
@@ -36,10 +38,14 @@ class CategoriesSection extends StatelessWidget {
           SizedBox(
             height: 15,
           ),
-          CategoryItemsScroll(
-            categories: categories,
-            currentSelectedItemId: currentSelectedItemId,
-          )
+          if (isLoading)
+            CategoryShimmerItems()
+          else
+            CategoryItemsScroll(
+              categories: categories,
+              currentSelectedItemId: currentSelectedItemId,
+              onItemSelect: onItemSelect
+            )
         ],
       ),
     );
@@ -49,10 +55,12 @@ class CategoriesSection extends StatelessWidget {
 class CategoryItemsScroll extends StatelessWidget {
   final List<CategoryEntity> categories;
   final int currentSelectedItemId;
+  final Function(int) onItemSelect;
 
   const CategoryItemsScroll({
     @required this.categories,
     @required this.currentSelectedItemId,
+    @required this.onItemSelect,
     Key key,
   }) : super(key: key);
 
@@ -69,7 +77,7 @@ class CategoryItemsScroll extends StatelessWidget {
                       entity: e,
                       isSelected: currentSelectedItemId == e.id,
                       onSelect: () {
-                        BlocProvider.of<ChatsCubit>(context).tabUpdate(e.id);
+                        onItemSelect(e.id);
                       },
                     ),
                   ))

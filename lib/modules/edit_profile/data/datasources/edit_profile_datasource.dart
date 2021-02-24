@@ -35,11 +35,12 @@ class EditProfileDataSourceImpl implements EditProfileDataSource {
     }
   }
 
-  Future<http.StreamedResponse> postUserData(
-      {@required String token,
-      @required http.MultipartRequest request,
-      Map data,
-      List<File> files}) async {
+  Future<http.StreamedResponse> postUserData({
+    @required String token,
+    @required http.MultipartRequest request,
+    Map data,
+    List<File> files
+  }) async {
     
     http.MultipartRequest copyRequest = http.MultipartRequest('POST', Endpoints.updateCurrentUser.buildURL());
 

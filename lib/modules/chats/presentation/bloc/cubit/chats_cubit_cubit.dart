@@ -38,15 +38,14 @@ class ChatsCubit extends Cubit<ChatsCubitState> {
     });
   }
 
-  void tabUpdate(index) {
-    print('daomnsamdoasmd');
+  void tabUpdate(int index) {
     ChatListsState listsState = this.state is ChatsCubitNormal
         ? (this.state as ChatsCubitNormal).chatListsState
         : ChatListsLoading();
     emit(ChatsCubitNormal(
         chatListsState: listsState,
         chatCategoriesState:
-            ChatCategoriesLoaded(categories: categories, index: index)));
+          ChatCategoriesLoaded(categories: categories, index: index)));
   }
 
   // MARK: - Getters

@@ -16,42 +16,43 @@ class _ChatsScreenState extends State<ChatsScreen> {
   Widget build(BuildContext context) {
     var cubit = context.read<ChatsCubit>();
     return Scaffold(
-        appBar: AppBar(
-          title: Text("Главная"),
-        ),
-        body: BlocConsumer<ChatsCubit, ChatsCubitState>(
-          listener: (context, state) {
-            if (state is ChatsCubitError) {
-              Scaffold.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(state.errorMessage,
-                      style: TextStyle(color: Colors.red)),
-                ), // SnackBar
-              );
-            }
-            if (state is ChatsCubitNormal) {
-              var stateCategory = state.chatCategoriesState;
-              if (stateCategory is ChatCategoriesLoaded) {
-                _index = stateCategory.index;
-              }
-            }
-          },
-          builder: (context, state) {
-            return Column(
-              children: [
-                if (!cubit.showCategoriesSpinner)
-                  CategoriesSection(
-                    categories: cubit.categories,
-                    currentSelectedItemId: _index,
-                    onNextClick: () {
-                      Navigator.pushNamed(context, CreateCategoryScreen.id);
-                    },
-                  )
-                else
-                  Center(child: CircularProgressIndicator())
-              ],
+      appBar: AppBar(
+        title: Text("Главная"),
+      ),
+      body: BlocConsumer<ChatsCubit, ChatsCubitState>(
+        listener: (context, state) {
+          if (state is ChatsCubitError) {
+            Scaffold.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.errorMessage,
+                    style: TextStyle(color: Colors.red)),
+              ), // SnackBar
             );
-          },
-        ));
+          }
+          if (state is ChatsCubitNormal) {
+            var stateCategory = state.chatCategoriesState;
+            if (stateCategory is ChatCategoriesLoaded) {
+              _index = stateCategory.index;
+            }
+          }
+        },
+        builder: (context, state) {
+          return Column(
+            children: [
+              CategoriesSection(
+                isLoading: cubit.showCategoriesSpinner,
+                categories: cubit.categories,
+                currentSelectedItemId: _index,
+                onNextClick: () {
+                  Navigator.pushNamed(context, CreateCategoryScreen.id);
+                },
+                onItemSelect: (int id) {
+                  cubit.tabUpdate(id);
+                },
+              )
+            ],
+          );
+        },
+      ));
   }
 }
