@@ -44,7 +44,7 @@ class CreateCategoryCubit extends Cubit<CreateCategoryState> {
       (failure) => emit(CreateCategoryError(message: 'Unable to get image')), 
       (image) {
         imageFile = image;
-        emit(CreateCategoryNormal(imageFile: imageFile, chats: chats));
+        emit(CreateCategoryNormal(imageFile: imageFile, chats: _chats));
     });
   }
 
@@ -89,7 +89,7 @@ class CreateCategoryCubit extends Cubit<CreateCategoryState> {
 
   TextEditingController nameController = TextEditingController();
 
-  List<ChatEntity> get chats {
+  List<ChatEntity> get _chats {
     if (this.state is CreateCategoryNormal) {
       return (this.state as CreateCategoryNormal).chats;
     } else {

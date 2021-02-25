@@ -14,10 +14,17 @@ import '../../chooseChats/presentation/chat_choose_page.dart';
 import '../bloc/create_category_cubit.dart';
 import '../widgets/create_category_header.dart';
 
-class CreateCategoryScreen extends StatelessWidget implements ChatChooseDelegate {
+class CreateCategoryScreen extends StatefulWidget {
   static final String id = 'create_category';
+
+  @override
+  _CreateCategoryScreenState createState() => _CreateCategoryScreenState();
+}
+
+class _CreateCategoryScreenState extends State<CreateCategoryScreen> implements ChatChooseDelegate {
   NavigatorState get _navigator => navigatorKey.currentState;
   final CreateCategoryCubit cubit = sl<CreateCategoryCubit>();
+  List<ChatEntity> chats = [];
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +43,8 @@ class CreateCategoryScreen extends StatelessWidget implements ChatChooseDelegate
             );
           } else if (state is CreateCategorySuccess) {
             Navigator.of(context).pop(state.updatedCategories);
+          } else if (state is CreateCategoryNormal) {
+            chats = state.chats;
           }
         },
         builder: (context, state) {
@@ -61,10 +70,10 @@ class CreateCategoryScreen extends StatelessWidget implements ChatChooseDelegate
                       } 
                     ),
                     ChatCountView(
-                      count: cubit.chats.length
+                      count: chats.length
                     ),
                     ChatsList(
-                      items: cubit.chats,
+                      items: chats,
                       cellType: ChatCellType.optionsWithChat,
                       onSelectedOption: (ChatCellActionType action, ChatEntity entity) {
                         if (action == ChatCellActionType.delete) {
@@ -91,27 +100,6 @@ class CreateCategoryScreen extends StatelessWidget implements ChatChooseDelegate
       ),
     );
   }
-
-
-
-  // ! Test memory usage 
-  // * * Initialization of the cubit
-  // CreateCategoryCubit createCubit () {
-  //   cubit = CreateCategoryCubit(
-  //     createCategory: CreateCategoryUseCase(
-  //      CreateCategoryRepositoryImpl(
-  //        createCategoryDataSource: CreateCategoryDataSourceImpl(
-  //          multipartRequest: http.MultipartRequest(
-  //            'POST', Endpoints.createCategory.buildURL()
-  //          )
-  //         ), 
-  //        networkInfo: sl<NetworkInfo>()) 
-  //     ),
-  //     getImageUseCase: sl<GetImage>()
-  //   );
-
-  //   return cubit;
-  // }
 
   @override
   void didSaveChats(List<ChatEntity> chats) {
