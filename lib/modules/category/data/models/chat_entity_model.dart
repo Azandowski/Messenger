@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
+import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
 import 'package:messenger_mobile/modules/chats/data/model/category_model.dart';
 import 'package:messenger_mobile/modules/chats/domain/entities/category.dart';
-import 'package:messenger_mobile/modules/create_category/domain/entities/chat_entity.dart';
 
 class ChatEntityModel extends ChatEntity {
   final int chatId;

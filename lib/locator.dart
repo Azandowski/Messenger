@@ -1,6 +1,7 @@
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
+import 'package:messenger_mobile/core/category/bloc/category_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'core/authorization/bloc/auth_bloc.dart';
@@ -18,16 +19,16 @@ import 'modules/authentication/domain/usecases/login.dart';
 import 'modules/authentication/domain/usecases/logout.dart';
 import 'modules/authentication/domain/usecases/save_token.dart';
 import 'modules/authentication/presentation/bloc/index.dart';
+import 'modules/category/data/datasources/category_datasource.dart';
+import 'modules/category/data/repositories/category_repository.dart';
+import 'modules/category/domain/repositories/category_repository.dart';
+import 'modules/category/domain/usecases/create_category.dart';
+import 'modules/category/domain/usecases/get_categories.dart';
+import 'modules/category/presentation/create_category_main/bloc/create_category_cubit.dart';
 import 'modules/chats/data/datasource/chats_datasource.dart';
 import 'modules/chats/data/repositories/chats_repository_impl.dart';
-import 'modules/chats/domain/entities/usecases/get_categories.dart';
 import 'modules/chats/domain/repositories/chats_repository.dart';
 import 'modules/chats/presentation/bloc/cubit/chats_cubit_cubit.dart';
-import 'modules/create_category/data/datasources/create_category_datasource.dart';
-import 'modules/create_category/data/repositories/create_category_repository.dart';
-import 'modules/create_category/domain/repositories/create_category_repository.dart';
-import 'modules/create_category/domain/usecases/create_category.dart';
-import 'modules/create_category/presentation/create_category_main/bloc/create_category_cubit.dart';
 import 'modules/media/data/datasources/local_media_datasource.dart';
 import 'modules/media/data/repositories/media_repository_impl.dart';
 import 'modules/media/domain/repositories/media_repository.dart';
@@ -54,7 +55,7 @@ Future<void> init() async {
 
   sl.registerFactory(() => ProfileCubit(getUser: sl()));
 
-  sl.registerFactory(() => ChatsCubit(getCategories: sl()));
+  sl.registerFactory(() => ChatsCubit());
 
   // Use cases
   sl.registerLazySingleton(() => GetToken(sl()));
@@ -69,6 +70,7 @@ Future<void> init() async {
 
   sl.registerLazySingleton<AuthenticationRepository>(
     () => AuthenticationRepositiryImpl(
+      getCategories: sl(),
       localDataSource: sl(),
       networkInfo: sl(),
       remoteDataSource: sl(),
@@ -106,13 +108,16 @@ Future<void> init() async {
   sl.registerLazySingleton(() => GetImage(sl()));
 
   // Repoitory
-  sl.registerLazySingleton<CreateCategoryRepository>(
-      () => CreateCategoryRepositoryImpl(createCategoryDataSource: sl(), networkInfo: sl()));
+  sl.registerLazySingleton<CategoryRepository>(
+      () => CategoryRepositoryImpl(categoryDataSource: sl(), networkInfo: sl()));
   
   // Data Sources
   
-   sl.registerLazySingleton<CreateCategoryDataSource>(
-      () => CreateCategoryDataSourceImpl(multipartRequest: http.MultipartRequest('POST', Endpoints.createCategory.buildURL())));
+   sl.registerLazySingleton<CategoryDataSource>(
+      () => CategoryDataSourceImpl(
+        multipartRequest: http.MultipartRequest('POST', Endpoints.createCategory.buildURL()),
+        client: sl())
+    );
 
 
 
@@ -126,6 +131,13 @@ Future<void> init() async {
       logoutUseCase: sl(),
     ),
   );
+
+  sl.registerFactory(
+    () => CategoryBloc(
+      repository: sl(),
+    ),
+  );
+
 
   // local storage
   final sharedPreferences = await SharedPreferences.getInstance();

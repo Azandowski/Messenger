@@ -2,11 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger_mobile/core/widgets/independent/buttons/bottom_action_button.dart';
 import 'package:messenger_mobile/core/widgets/independent/pickers/photo_picker.dart';
-import 'package:messenger_mobile/modules/create_category/presentation/create_category_main/bloc/create_category_cubit.dart';
-
-import 'package:messenger_mobile/modules/create_category/presentation/create_category_main/widgets/chat_count_view.dart';
-import 'package:messenger_mobile/modules/create_category/presentation/create_category_main/widgets/chat_list.dart';
-import 'package:messenger_mobile/modules/create_category/presentation/create_category_main/widgets/create_category_header.dart';
+import 'package:messenger_mobile/modules/category/presentation/create_category_main/widgets/chat_count_view.dart';
+import 'package:messenger_mobile/modules/category/presentation/create_category_main/widgets/chat_list.dart';
 import '../../../../../locator.dart';
 import '../../../../../main.dart';
 import '../../../domain/entities/chat_entity.dart';

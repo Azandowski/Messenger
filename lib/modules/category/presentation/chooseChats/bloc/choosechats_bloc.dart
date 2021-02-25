@@ -28,7 +28,7 @@ class ChooseChatsBloc extends Bloc<ChooseChatsEvent, ChooseChatsState> {
     }
   }
 
-    Stream<ChooseChatsState> _mapTodoUpdatedToState(ChatChosen event) async* {
+  Stream<ChooseChatsState> _mapTodoUpdatedToState(ChatChosen event) async* {
     if (state is ChooseChatsLoaded) {
       final List<ChatEntity> updatedChats =
           (state as ChooseChatsLoaded).chatEntities.map((chat) {

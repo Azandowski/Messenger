@@ -3,11 +3,11 @@ import 'package:dartz/dartz.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/usecases/usecase.dart';
 import '../../../chats/domain/entities/category.dart';
-import '../repositories/create_category_repository.dart';
+import '../repositories/category_repository.dart';
 import 'params.dart';
 
 class CreateCategoryUseCase extends UseCase<List<CategoryEntity>, CreateCategoryParams>  {
-  final CreateCategoryRepository repository;
+  final CategoryRepository repository;
 
   CreateCategoryUseCase(this.repository);
 

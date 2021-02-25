@@ -9,13 +9,14 @@ abstract class ChatsCubitState extends Equatable {
 
 class ChatsCubitNormal extends ChatsCubitState {
   final ChatListsState chatListsState;
-  final ChatCategoriesState chatCategoriesState;
+  final int index;
 
   ChatsCubitNormal(
-      {@required this.chatListsState, @required this.chatCategoriesState});
+      {@required this.chatListsState,
+      @required this.index});
 
   @override
-  List<Object> get props => [chatListsState, chatCategoriesState];
+  List<Object> get props => [chatListsState, index];
 }
 
 class ChatsCubitError extends ChatsCubitState {
@@ -46,25 +47,3 @@ class ChatListsLoaded extends ChatListsState {
   List<Object> get props => [];
 }
 
-// MARK: - Chats Categories State
-
-abstract class ChatCategoriesState extends Equatable {
-  const ChatCategoriesState();
-
-  @override
-  List<Object> get props => [];
-}
-
-class ChatCategoriesLoading extends ChatCategoriesState {
-  @override
-  List<Object> get props => [];
-}
-
-class ChatCategoriesLoaded extends ChatCategoriesState {
-  final List<CategoryEntity> categories;
-  final int index;
-  ChatCategoriesLoaded({@required this.categories, @required this.index});
-
-  @override
-  List<Object> get props => [categories, index];
-}

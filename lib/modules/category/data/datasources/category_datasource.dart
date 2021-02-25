@@ -23,16 +23,18 @@ abstract class CreateCategoryDataSource {
   Future<PaginatedResult<ChatEntity>> getUserChats ({
     @required String token
   });
+
+  Future<List<CategoryEntity>> getCategories(String token);
 }
 
 class CreateCategoryDataSourceImpl implements CreateCategoryDataSource {
   
   final http.MultipartRequest multipartRequest;
-  final http.Client request;
+  final http.Client client;
 
   CreateCategoryDataSourceImpl({
     @required this.multipartRequest,
-    @required this.request
+    @required this.client
   });
   
   /**
@@ -74,7 +76,7 @@ class CreateCategoryDataSourceImpl implements CreateCategoryDataSource {
   Future<PaginatedResult<ChatEntity>> getUserChats({
     @required String token
   }) async {
-    http.Response response = await request.get(
+    http.Response response = await client.get(
       Endpoints.getAllUserChats.buildURL(), 
       headers: Endpoints.getAllUserChats.getHeaders(token: token)
     );
@@ -87,4 +89,21 @@ class CreateCategoryDataSourceImpl implements CreateCategoryDataSource {
       throw ServerFailure(message: response.body.toString());
     }
   } 
+
+  @override
+  Future<List<CategoryEntity>> getCategories(String token) async {
+    http.Response response = await client.get(
+      Endpoints.getCategories.buildURL(),
+      headers: Endpoints.getCurrentUser.getHeaders(token: token));
+
+    if (response.statusCode >= 200 && response.statusCode <= 299) {
+      final categories = (json.decode(response.body) as List)
+          .map((e) => CategoryModel.fromJson(e))
+          .toList();
+
+      return categories;
+    } else {
+      throw ServerFailure(message: response.body.toString());
+    }
+  }
 }

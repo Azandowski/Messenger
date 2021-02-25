@@ -6,7 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:messenger_mobile/core/config/auth_config.dart';
-import 'package:messenger_mobile/modules/create_category/domain/usecases/params.dart';
+import 'package:messenger_mobile/modules/category/domain/usecases/params.dart';
 import 'package:messenger_mobile/modules/media/domain/usecases/get_image.dart';
 import '../../../../../locator.dart';
 import '../../../../chats/domain/entities/category.dart';

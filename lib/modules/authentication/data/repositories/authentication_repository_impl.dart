@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:dartz/dartz.dart';
+import 'package:messenger_mobile/modules/category/domain/usecases/get_categories.dart';
+import 'package:messenger_mobile/modules/chats/domain/entities/usecases/params.dart';
 import 'package:meta/meta.dart';
 
 import '../../../../core/authorization/bloc/auth_bloc.dart';
@@ -21,11 +23,12 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
   final AuthenticationRemoteDataSource remoteDataSource;
   final AuthenticationLocalDataSource localDataSource;
   final NetworkInfo networkInfo;
-
+  final GetCategories getCategories;
   AuthenticationRepositiryImpl({
     @required this.remoteDataSource,
     @required this.networkInfo,
     @required this.localDataSource,
+    @required this.getCategories,
   }) {
     // localDataSource.deleteToken();
     initToken();
@@ -40,6 +43,8 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
       print(token);
 
       await getCurrentUser(token);
+
+      getCategories(GetCategoriesParams(token: token));
     } on StorageFailure {
       params.add(AuthParams(null, null));
     }
@@ -73,16 +78,14 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
   @override
   Future<Either<Failure, TokenEntity>> login(params) async {
     try {
-      final token =
-          await remoteDataSource.login(params.phoneNumber, params.code);
+      final token = await remoteDataSource.login(params.phoneNumber, params.code);
       localDataSource.saveToken(token.token);
+      getCategories(GetCategoriesParams(token: token.token));
       return Right(token);
     } on ServerFailure {
       return Left(ServerFailure(message: 'null'));
     }
   }
-
-  StreamSubscription<String> _tokenSubscription;
 
   @override
   Future<Either<Failure, String>> saveToken(String token) async {
