@@ -1,9 +1,10 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:messenger_mobile/modules/chats/domain/entities/category.dart';
 
 class ChatEntity extends Equatable {
   final int chatId;
-  final List<String> chatCategories;
+  final List<CategoryEntity> chatCategories;
   final String title;
   final String imageUrl;
   final bool selected;
@@ -17,7 +18,13 @@ class ChatEntity extends Equatable {
   });
 
   @override
-  List<Object> get props => [chatCategories, title, imageUrl, chatId, selected];
+  List<Object> get props => [
+    chatCategories, 
+    title, 
+    imageUrl, 
+    chatId, 
+    selected
+  ];
 
   ChatEntity copyWith({bool selected}) {
     return ChatEntity(

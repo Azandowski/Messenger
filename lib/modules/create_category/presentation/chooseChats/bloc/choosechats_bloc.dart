@@ -16,7 +16,7 @@ class ChooseChatsBloc extends Bloc<ChooseChatsEvent, ChooseChatsState> {
     chatId: index,
     imageUrl: url,
     title: 'Yelzhan Yerkebulan',
-    chatCategories: ['Superwork', 'Microphone', 'MedApp']
+    chatCategories: []
   ))));
 
   @override

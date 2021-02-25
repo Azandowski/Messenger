@@ -11,7 +11,8 @@ enum Endpoints {
 
   // Chat Main Screen
   getCategories,
-  createCategory
+  createCategory,
+  getAllUserChats
 }
 
 extension EndpointsExtension on Endpoints {
@@ -48,6 +49,8 @@ extension EndpointsExtension on Endpoints {
         return '${Config.baseAPIpath.value}/messenger/category';
       case Endpoints.createCategory:
         return '${Config.baseAPIpath.value}/messenger/category/post';
+      case Endpoints.getAllUserChats:
+        return '${Config.baseAPIpath.value}/messenger/user/chat';
     }
   }
 
