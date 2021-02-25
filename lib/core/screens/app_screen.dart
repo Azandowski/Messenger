@@ -28,7 +28,7 @@ class _AppScreenState extends State<AppScreen> {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-              BlocProvider.value(value: sl<ChatsCubit>()),
+        BlocProvider.value(value: sl<ChatsCubit>()),
       ],
           child: Scaffold(
             backgroundColor: Colors.white,

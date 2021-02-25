@@ -1,15 +1,15 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
+import 'package:messenger_mobile/modules/create_category/domain/repositories/create_category_repository.dart';
 
-import '../../../../../core/error/failures.dart';
-import '../../../../../core/usecases/usecase.dart';
-import '../../repositories/chats_repository.dart';
-import '../category.dart';
-import 'params.dart';
+import '../../../../core/error/failures.dart';
+import '../../../../core/usecases/usecase.dart';
+import '../../../chats/domain/entities/category.dart';
+import '../../../chats/domain/entities/usecases/params.dart';
 
 class GetCategories
     implements UseCase<List<CategoryEntity>, GetCategoriesParams> {
-  final ChatsRepository repository;
+  final CreateCategoryRepository repository;
 
   GetCategories({@required this.repository});
 

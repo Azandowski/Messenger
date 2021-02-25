@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
+import 'package:messenger_mobile/modules/chats/domain/entities/usecases/params.dart';
 
 import '../../../../core/error/failures.dart';
 import '../../../../core/services/network/network_info.dart';
@@ -8,7 +11,7 @@ import '../../domain/repositories/create_category_repository.dart';
 import '../../domain/usecases/params.dart';
 import '../datasources/create_category_datasource.dart';
 
-class CreateCategoryRepositoryImpl extends CreateCategoryRepository {
+class CreateCategoryRepositoryImpl implements CreateCategoryRepository {
   final CreateCategoryDataSource createCategoryDataSource;
   final NetworkInfo networkInfo;
 
@@ -36,4 +39,26 @@ class CreateCategoryRepositoryImpl extends CreateCategoryRepository {
       return Left(ConnectionFailure());
     }
   }
+
+
+  @override
+  StreamController<List<CategoryEntity>> categoryListController = StreamController<List<CategoryEntity>>.broadcast();
+
+ @override
+  Future<Either<Failure, List<CategoryEntity>>> getCategories(
+      GetCategoriesParams getCategoriesParams) async {
+    if (await networkInfo.isConnected) {
+      try {
+        final categories =
+            await createCategoryDataSource.getCategories(getCategoriesParams.token);
+        categoryListController.add(categories);
+        return Right(categories);
+      } catch (e) {
+        return Left(e);
+      }
+    } else {
+      return Left(ConnectionFailure());
+    }
+  }
+  
 }
