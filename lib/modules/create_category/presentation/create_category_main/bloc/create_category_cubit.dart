@@ -64,22 +64,22 @@ class CreateCategoryCubit extends Cubit<CreateCategoryState> {
   }
 
   void addChats (List<ChatEntity> comingChats){
-    chats = comingChats;
+    // chats = comingChats;
 
     emit(CreateCategoryNormal(
       imageFile: imageFile, 
-      chats: chats)
+      chats: comingChats)
     );
   }
 
   void deleteChat (ChatEntity chat){
-    var updatedChats = (state as CreateCategoryNormal).chats;
-    updatedChats.remove(chat);
-    chats = updatedChats;
+    var updatedChats = (state as CreateCategoryNormal).chats
+      .where((e) => e.chatId != chat.chatId)
+      .map((e) => e.copyWith(selected: true)).toList();
 
     emit(CreateCategoryNormal(
       imageFile: imageFile, 
-      chats: chats)
+      chats: updatedChats)
     );
   }
 
@@ -89,7 +89,11 @@ class CreateCategoryCubit extends Cubit<CreateCategoryState> {
 
   TextEditingController nameController = TextEditingController();
 
-  int chatCounts = 0;
-
-  List<ChatEntity> chats = [];
+  List<ChatEntity> get chats {
+    if (this.state is CreateCategoryNormal) {
+      return (this.state as CreateCategoryNormal).chats;
+    } else {
+      return [];
+   }
+  }
 }

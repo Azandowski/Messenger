@@ -61,7 +61,7 @@ class CreateCategoryScreen extends StatelessWidget implements ChatChooseDelegate
                       } 
                     ),
                     ChatCountView(
-                      count: cubit.chatCounts
+                      count: cubit.chats.length
                     ),
                     ChatsList(
                       items: cubit.chats,

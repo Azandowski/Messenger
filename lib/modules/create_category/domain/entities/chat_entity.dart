@@ -19,7 +19,7 @@ class ChatEntity extends Equatable {
   @override
   List<Object> get props => [chatCategories, title, imageUrl, chatId, selected];
 
-   ChatEntity copyWith({bool selected}) {
+  ChatEntity copyWith({bool selected}) {
     return ChatEntity(
       selected: selected ?? this.selected,
       chatId: this.chatId,
