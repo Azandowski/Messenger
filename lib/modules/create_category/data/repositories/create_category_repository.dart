@@ -1,11 +1,12 @@
-import 'package:flutter/foundation.dart';
-import 'package:messenger_mobile/core/error/failures.dart';
 import 'package:dartz/dartz.dart';
-import 'package:messenger_mobile/core/services/network/network_info.dart';
-import 'package:messenger_mobile/modules/chats/domain/entities/category.dart';
-import 'package:messenger_mobile/modules/create_category/data/datasources/create_category_datasource.dart';
-import 'package:messenger_mobile/modules/create_category/domain/repositories/create_category_repository.dart';
-import 'package:messenger_mobile/modules/create_category/domain/usecases/params.dart';
+import 'package:flutter/foundation.dart';
+
+import '../../../../core/error/failures.dart';
+import '../../../../core/services/network/network_info.dart';
+import '../../../chats/domain/entities/category.dart';
+import '../../domain/repositories/create_category_repository.dart';
+import '../../domain/usecases/params.dart';
+import '../datasources/create_category_datasource.dart';
 
 class CreateCategoryRepositoryImpl extends CreateCategoryRepository {
   final CreateCategoryDataSource createCategoryDataSource;

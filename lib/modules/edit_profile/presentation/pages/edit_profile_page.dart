@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
-import 'package:messenger_mobile/core/widgets/independent/small_widgets/photo_picker_view.dart';
 
 import '../../../../core/config/auth_config.dart';
 import '../../../../core/services/network/Endpoints.dart';
 import '../../../../core/services/network/network_info.dart';
 import '../../../../core/widgets/independent/buttons/gradient_main_button.dart';
 import '../../../../core/widgets/independent/pickers/photo_picker.dart';
+import '../../../../core/widgets/independent/small_widgets/photo_picker_view.dart';
 import '../../../../core/widgets/independent/textfields/customTextField.dart';
 import '../../../../locator.dart';
 import '../../../profile/domain/entities/user.dart';

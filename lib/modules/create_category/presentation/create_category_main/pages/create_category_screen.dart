@@ -1,26 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:messenger_mobile/core/services/network/Endpoints.dart';
-import 'package:messenger_mobile/core/services/network/network_info.dart';
 import 'package:messenger_mobile/core/widgets/independent/buttons/bottom_action_button.dart';
 import 'package:messenger_mobile/core/widgets/independent/pickers/photo_picker.dart';
-import 'package:messenger_mobile/modules/create_category/data/datasources/create_category_datasource.dart';
-import 'package:messenger_mobile/modules/create_category/data/repositories/create_category_repository.dart';
-import 'package:messenger_mobile/modules/create_category/domain/usecases/create_category.dart';
 import 'package:messenger_mobile/modules/create_category/presentation/create_category_main/bloc/create_category_cubit.dart';
-import 'package:http/http.dart' as http;
+
 import 'package:messenger_mobile/modules/create_category/presentation/create_category_main/widgets/chat_count_view.dart';
 import 'package:messenger_mobile/modules/create_category/presentation/create_category_main/widgets/chat_item_view.dart';
 import 'package:messenger_mobile/modules/create_category/presentation/create_category_main/widgets/create_category_header.dart';
-import 'package:messenger_mobile/modules/media/domain/usecases/get_image.dart';
-
 import '../../../../../locator.dart';
-import 'package:messenger_mobile/modules/create_category/presentation/chooseChats/presentation/chat_choose_page.dart';
+import '../../../../../main.dart';
+import '../../../domain/entities/chat_entity.dart';
+import '../../chooseChats/presentation/chat_choose_page.dart';
+import '../bloc/create_category_cubit.dart';
+import '../widgets/create_category_header.dart';
 
-class CreateCategoryScreen extends StatelessWidget {
+class CreateCategoryScreen extends StatelessWidget implements ChatChooseDeleagete {
   static final String id = 'create_category';
+  NavigatorState get _navigator => navigatorKey.currentState;
 
-  CreateCategoryCubit cubit;
+  CreateCategoryCubit cubit = sl<CreateCategoryCubit>();
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +27,7 @@ class CreateCategoryScreen extends StatelessWidget {
         title: Text('Создать категорию'),
       ),
       body: BlocConsumer<CreateCategoryCubit, CreateCategoryState>(
-        cubit: createCubit()..initCubit(),
+        cubit: cubit,
         listener: (context, state) {
           if (state is CreateCategoryError) {
             Scaffold.of(context).showSnackBar(
@@ -63,6 +61,9 @@ class CreateCategoryScreen extends StatelessWidget {
                                 cubit.selectPhoto(imageSource);
                               });
                           },
+                          onAddChats: () {
+                            _navigator.push(ChooseChatsPage.route(this));
+                          } 
                         ),
                         ChatCountView(
                           count: cubit.chatCounts
@@ -70,7 +71,11 @@ class CreateCategoryScreen extends StatelessWidget {
                         ...cubit.chats.map((chat) => ChatItemView(
                           entity: chat, 
                           onSelectedOption: (option) {
-                            // TODO: Implement Chat deletion and moving it 
+                            if (option == ChatItemAction.delete) {
+                              cubit.deleteChat(chat);
+                            } else {
+                              // TODO: Implement moving chat
+                            }
                           }
                         )).toList()
                       ],
@@ -90,28 +95,32 @@ class CreateCategoryScreen extends StatelessWidget {
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(onPressed: (){
-        Navigator.pushNamed(context, ChooseChatsPage.id);
-      },),
     );
   }
 
 
-  // * * Initialization of the cubit
-  CreateCategoryCubit createCubit () {
-    cubit = CreateCategoryCubit(
-      createCategory: CreateCategoryUseCase(
-       CreateCategoryRepositoryImpl(
-         createCategoryDataSource: CreateCategoryDataSourceImpl(
-           multipartRequest: http.MultipartRequest(
-             'POST', Endpoints.createCategory.buildURL()
-           )
-          ), 
-         networkInfo: sl<NetworkInfo>()) 
-      ),
-      getImageUseCase: sl<GetImage>()
-    );
 
-    return cubit;
+  // ! Test memory usage 
+  // * * Initialization of the cubit
+  // CreateCategoryCubit createCubit () {
+  //   cubit = CreateCategoryCubit(
+  //     createCategory: CreateCategoryUseCase(
+  //      CreateCategoryRepositoryImpl(
+  //        createCategoryDataSource: CreateCategoryDataSourceImpl(
+  //          multipartRequest: http.MultipartRequest(
+  //            'POST', Endpoints.createCategory.buildURL()
+  //          )
+  //         ), 
+  //        networkInfo: sl<NetworkInfo>()) 
+  //     ),
+  //     getImageUseCase: sl<GetImage>()
+  //   );
+
+  //   return cubit;
+  // }
+
+  @override
+  void didSaveChats(List<ChatEntity> chats) {
+    cubit.addChats(chats);
   }
 }

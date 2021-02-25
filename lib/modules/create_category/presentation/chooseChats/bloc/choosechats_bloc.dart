@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/modules/create_category/domain/entities/chat_entity.dart';
+import '../../../domain/entities/chat_entity.dart';
 
 part 'choosechats_event.dart';
 part 'choosechats_state.dart';
@@ -24,7 +24,18 @@ class ChooseChatsBloc extends Bloc<ChooseChatsEvent, ChooseChatsState> {
     ChooseChatsEvent event,
   ) async* {
     if(event is ChatChosen){
-       
+       yield* _mapTodoUpdatedToState(event);
+    }
+  }
+
+    Stream<ChooseChatsState> _mapTodoUpdatedToState(ChatChosen event) async* {
+    if (state is ChooseChatsLoaded) {
+      final List<ChatEntity> updatedChats =
+          (state as ChooseChatsLoaded).chatEntities.map((chat) {
+        return chat.chatId == event.chat.chatId ? event.chat : chat;
+      }).toList();
+      yield ChooseChatsLoaded(chatEntities: updatedChats);
+      // _saveTodos(updatedTodos);
     }
   }
 }

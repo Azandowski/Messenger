@@ -6,13 +6,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:messenger_mobile/core/config/auth_config.dart';
-import 'package:messenger_mobile/modules/chats/domain/entities/category.dart';
-import 'package:messenger_mobile/modules/create_category/domain/entities/chat_entity.dart';
-import 'package:messenger_mobile/modules/create_category/domain/usecases/create_category.dart';
 import 'package:messenger_mobile/modules/create_category/domain/usecases/params.dart';
 import 'package:messenger_mobile/modules/media/domain/usecases/get_image.dart';
-
 import '../../../../../locator.dart';
+import '../../../../chats/domain/entities/category.dart';
+import '../../../domain/entities/chat_entity.dart';
+import '../../../domain/usecases/create_category.dart';
 
 part 'create_category_state.dart';
 
@@ -25,8 +24,10 @@ class CreateCategoryCubit extends Cubit<CreateCategoryState> {
 
   CreateCategoryCubit({
     @required this.createCategory,
-    @required this.getImageUseCase
-  }) : super(CreateCategoryLoading());
+    @required this.getImageUseCase,
+  }) : super(CreateCategoryLoading()) {
+    initCubit();
+  }
 
   // * * Events
 
@@ -60,6 +61,23 @@ class CreateCategoryCubit extends Cubit<CreateCategoryState> {
     response.fold(
       (failure) => emit(CreateCategoryError(message: failure.message)), 
       (categories) => emit(CreateCategorySuccess(updatedCategories: categories)));
+  }
+
+  Future<void> addChats (List<ChatEntity> comingChats){
+    emit(CreateCategoryNormal(
+      imageFile: imageFile, 
+      chats: comingChats)
+    );
+  }
+
+  Future<void> deleteChat (ChatEntity chat){
+    var updatedChats = (state as CreateCategoryNormal).chats;
+    updatedChats.remove(chat);
+    
+    emit(CreateCategoryNormal(
+      imageFile: imageFile, 
+      chats: updatedChats)
+    );
   }
 
   // * * Local Data

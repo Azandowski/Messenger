@@ -1,82 +1,86 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:messenger_mobile/app/appTheme.dart';
-import 'package:messenger_mobile/core/widgets/independent/placeholders/load_widget.dart';
-import 'package:messenger_mobile/modules/create_category/presentation/chooseChats/bloc/choosechats_bloc.dart';
+
+import '../../../../../app/appTheme.dart';
+import '../../../../../core/widgets/independent/buttons/gradient_main_button.dart';
+import '../../../../../core/widgets/independent/placeholders/load_widget.dart';
+import '../../../domain/entities/chat_entity.dart';
+import '../../widgets/chat_list.dart';
+import '../bloc/choosechats_bloc.dart';
+
+abstract class ChatChooseDeleagete{
+  void didSaveChats(List<ChatEntity> chats);
+}
 
 class ChooseChatsPage extends StatelessWidget {
-  static var id = 'dmasm';
+
+  static Route route(ChatChooseDeleagete deleagete) {
+    return MaterialPageRoute<void>(builder: (_) => ChooseChatsPage(deleagete: deleagete,));
+  }
+
+  final ChatChooseDeleagete deleagete;
+  
+  int _items = 0;
+
+  ChooseChatsPage({Key key,@required this.deleagete}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => ChooseChatsBloc(),
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text('Выбрано: 4'),
-        ),
-        body: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-              child: Container(
-                child: Text('Выберите те чаты, которые вы хотите добавить',style: AppFontStyles.greyPhoneStyle,),
+      child: BlocConsumer<ChooseChatsBloc, ChooseChatsState>(
+        listener: (context, state) {
+          if(state is ChooseChatsLoaded){
+          _items = state.chatEntities.where((element) => element.selected).toList().length;
+          }
+        },
+        builder: (context, state) {
+          return Scaffold(
+              appBar: AppBar(
+                title: Text('Выбрано: ${_items}'),
               ),
+              body: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                        child: Container(
+                          child: Text('Выберите те чаты, которые вы хотите добавить',style: AppFontStyles.greyPhoneStyle,),
+                        ),
+                      ),
+                      returnStateWidget(state,context),
+                    ],
             ),
-            BlocConsumer<ChooseChatsBloc, ChooseChatsState>(
-              listener: (context, state) {},
-              builder: (context, state) {
-                if (state is ChooseChatsLoaded) {
-                  return ChatsList(state: state,);
-                } else if (state is ChooseChatLoading) {
-                  return LoadWidget();
-                } else {
-                  return Text('default');
-                }
-              },
-            )
-          ],
-        ),
+                if(state is ChooseChatsLoaded)  Positioned(
+                    bottom: 40,
+                    child: ActionButton(text: 'Добавить чаты', onTap: (){
+                      var selectedChats = state.chatEntities.where((element) => element.selected).toList();
+                      deleagete.didSaveChats(selectedChats);
+                      Navigator.pop(context);
+                    }),
+                  ),
+                ],
+              )
+         );
+       }
       ),
     );
   }
-}
 
-class ChatsList extends StatelessWidget {
-  final ChooseChatsLoaded state;
-
-  const ChatsList({
-    @required this.state,
-    Key key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-        child: ListView.separated(
-      separatorBuilder: (context, i) => Divider(),
-      itemBuilder: (context, i) {
-        var item = state.chatEntities[i];
-        return ListTile(
-          leading: FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Stack(
-              children: [
-                CircleAvatar(backgroundImage: NetworkImage(item.imageUrl),minRadius: 30,),
-                Positioned(bottom: 0, right: 0,
-                 child: ClipOval(
-                   child: Container(
-                     color: AppColors.successGreenColor,
-                   child: Icon(Icons.done,color: Colors.white,)
-                   ),
-                   ),
-                   )
-              ],
-            ),
-          ),
-          title: Text(state.chatEntities[i].title, style: AppFontStyles.mainStyle,),
+  Widget returnStateWidget(state, context){
+    if (state is ChooseChatsLoaded) {
+        return ChatsList(items: state.chatEntities,cellType: ChatCellType.add,
+        onSelect: (chatEntity){
+          BlocProvider.of<ChooseChatsBloc>(context).add(ChatChosen(chatEntity.copyWith(selected: !chatEntity.selected)));
+        },
         );
-      },
-      itemCount: state.chatEntities.length,
-    ));
+    } else if (state is ChooseChatLoading) {
+        return LoadWidget();
+    } else {
+        return Text('default');
+    }
   }
 }
+

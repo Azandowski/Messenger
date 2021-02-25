@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
-import 'package:messenger_mobile/core/widgets/independent/small_widgets/photo_picker_view.dart';
 
 import '../../../../../../app/appTheme.dart';
 import '../../../../../../core/services/network/Endpoints.dart';
 import '../../../../../../core/widgets/independent/buttons/gradient_main_button.dart';
+import '../../../../../../core/widgets/independent/small_widgets/photo_picker_view.dart';
 import '../../../../../../core/widgets/independent/textfields/outlineTextField.dart';
 import '../../../../../../locator.dart';
 import '../../../../../edit_profile/data/datasources/edit_profile_datasource.dart';
