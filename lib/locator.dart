@@ -99,10 +99,11 @@ Future<void> init() async {
   // CreateCategory
 
   //Bloc 
-  sl.registerFactory(() => CreateCategoryCubit(createCategory: sl()));
+  sl.registerFactory(() => CreateCategoryCubit(createCategory: sl(), getImageUseCase: sl()));
 
   //Use Cases
   sl.registerLazySingleton(() => CreateCategoryUseCase(sl()));
+  sl.registerLazySingleton(() => GetImage(sl()));
 
   // Repoitory
   sl.registerLazySingleton<CreateCategoryRepository>(
@@ -139,8 +140,6 @@ Future<void> init() async {
 
   sl.registerLazySingleton(() => http.Client());
 
-  // UseCases
-  sl.registerLazySingleton(() => GetImage(sl()));
 
   sl.registerLazySingleton(() => GetCurrentUser(sl()));
 

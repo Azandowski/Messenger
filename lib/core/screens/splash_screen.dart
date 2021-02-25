@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:messenger_mobile/locator.dart';
-import 'package:messenger_mobile/modules/create_category/presentation/create_category_main/bloc/create_category_cubit.dart';
-
 import '../../modules/authentication/presentation/pages/auth_page.dart';
 import '../../modules/authentication/presentation/pages/type_name_page/pages/type_name_page.dart';
 import '../authorization/bloc/auth_bloc.dart';
@@ -23,7 +20,7 @@ class SplashScreen extends StatelessWidget {
         return TypeNamePage(
           user: state.user,
         );
-      }
+      } else { return Container(); }
     },
       );
   }

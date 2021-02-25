@@ -18,6 +18,8 @@ class MediaRepositoryImpl implements MediaRepository {
     try {
       var image = await mediaLocalDataSource.getImage(source);
       return Right(image);
-    } on StorageFailure {}
+    } on StorageFailure {
+      return Left(StorageFailure());
+    }
   }
 }

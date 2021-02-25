@@ -15,7 +15,9 @@ void main () {
   
   setUp(() { 
     mockEditUser = MockEditUser();
-    cubit = EditProfileCubit(editUser: mockEditUser);
+    cubit = EditProfileCubit(
+      editUser: mockEditUser
+    );
   });
 
   test('initialState should be Normal State', () {

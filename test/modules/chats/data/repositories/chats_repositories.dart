@@ -5,9 +5,6 @@ import 'package:messenger_mobile/modules/chats/data/datasource/chats_datasource.
 import 'package:messenger_mobile/modules/chats/data/model/category_model.dart';
 import 'package:messenger_mobile/modules/chats/data/repositories/chats_repository_impl.dart';
 import 'package:messenger_mobile/modules/chats/domain/entities/usecases/params.dart';
-import 'package:messenger_mobile/modules/profile/data/models/user_model.dart';
-import 'package:messenger_mobile/modules/profile/domain/entities/user.dart';
-import 'package:messenger_mobile/modules/profile/domain/usecases/profile_params.dart';
 import 'package:mockito/mockito.dart';
 import 'package:flutter_test/flutter_test.dart';
 

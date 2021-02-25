@@ -63,20 +63,23 @@ class CreateCategoryCubit extends Cubit<CreateCategoryState> {
       (categories) => emit(CreateCategorySuccess(updatedCategories: categories)));
   }
 
-  Future<void> addChats (List<ChatEntity> comingChats){
+  void addChats (List<ChatEntity> comingChats){
+    chats = comingChats;
+
     emit(CreateCategoryNormal(
       imageFile: imageFile, 
-      chats: comingChats)
+      chats: chats)
     );
   }
 
-  Future<void> deleteChat (ChatEntity chat){
+  void deleteChat (ChatEntity chat){
     var updatedChats = (state as CreateCategoryNormal).chats;
     updatedChats.remove(chat);
-    
+    chats = updatedChats;
+
     emit(CreateCategoryNormal(
       imageFile: imageFile, 
-      chats: updatedChats)
+      chats: chats)
     );
   }
 
@@ -88,32 +91,5 @@ class CreateCategoryCubit extends Cubit<CreateCategoryState> {
 
   int chatCounts = 0;
 
-  List<ChatEntity> get chats {
-    return [
-      ChatEntity(
-        imageUrl: 'https://sitechecker.pro/wp-content/uploads/2017/12/URL-meaning.png',
-        title: 'Demo 1',
-        chatCategories: [],
-        chatId: 1
-      ),
-      ChatEntity(
-        imageUrl: 'https://sitechecker.pro/wp-content/uploads/2017/12/URL-meaning.png',
-        title: 'Demo 2',
-        chatCategories: [],
-        chatId: 2
-      ),
-      ChatEntity(
-        imageUrl: 'https://sitechecker.pro/wp-content/uploads/2017/12/URL-meaning.png',
-        title: 'Demo 3',
-        chatCategories: [],
-        chatId: 3
-      ),
-      ChatEntity(
-        imageUrl: 'https://sitechecker.pro/wp-content/uploads/2017/12/URL-meaning.png',
-        title: 'Demo 4',
-        chatCategories: [],
-        chatId: 4
-      )
-    ];
-  }
+  List<ChatEntity> chats = [];
 }

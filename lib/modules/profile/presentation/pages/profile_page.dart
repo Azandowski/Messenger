@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/authorization/bloc/auth_bloc.dart';
-import '../../../../core/config/auth_config.dart';
 import '../../../../locator.dart';
 import '../../../edit_profile/presentation/pages/edit_profile_page.dart';
 import '../bloc/index.dart';
@@ -30,7 +29,6 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    String token = sl<AuthConfig>().token;
     return Scaffold(
         appBar: AppBar(
             title: Text('Профиль', style: TextStyle(color: Colors.black)),
@@ -94,7 +92,6 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   _handleEditScreenNavigation(BuildContext context) async {
-    final needsUpdate =
-        await Navigator.of(context).push(EditProfilePage.route());
+    await Navigator.of(context).push(EditProfilePage.route());
   }
 }
