@@ -44,12 +44,13 @@ class CreateCategoryCubit extends Cubit<CreateCategoryState> {
       (failure) => emit(CreateCategoryError(message: 'Unable to get image')), 
       (image) {
         imageFile = image;
-        emit(CreateCategoryNormal(imageFile: imageFile, chats: _chats));
+        emit(CreateCategoryNormal(imageFile: imageFile, chats: chats));
     });
   }
 
   Future<void> sendData () async {
     // TODO: Update Chat IDS
+    
     emit(CreateCategoryLoading());
     var response = await createCategory(CreateCategoryParams(
       token: sl<AuthConfig>().token, 
@@ -64,18 +65,17 @@ class CreateCategoryCubit extends Cubit<CreateCategoryState> {
   }
 
   void addChats (List<ChatEntity> comingChats){
-    // chats = comingChats;
-
+    chats = comingChats;
     emit(CreateCategoryNormal(
       imageFile: imageFile, 
-      chats: comingChats)
+      chats: chats)
     );
   }
 
   void deleteChat (ChatEntity chat){
-    var updatedChats = (state as CreateCategoryNormal).chats
+    var updatedChats = chats
       .where((e) => e.chatId != chat.chatId)
-      .map((e) => e.copyWith(selected: true)).toList();
+      .map((e) => e.clone()).toList();
 
     emit(CreateCategoryNormal(
       imageFile: imageFile, 
@@ -85,15 +85,9 @@ class CreateCategoryCubit extends Cubit<CreateCategoryState> {
 
   // * * Local Data
 
+  List<ChatEntity> chats = [];
+
   File imageFile;
 
   TextEditingController nameController = TextEditingController();
-
-  List<ChatEntity> get _chats {
-    if (this.state is CreateCategoryNormal) {
-      return (this.state as CreateCategoryNormal).chats;
-    } else {
-      return [];
-   }
-  }
 }

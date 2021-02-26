@@ -15,7 +15,7 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
 
   CategoryBloc({
     @required this.repository,
-  }) : super(CategoryEmpty()){
+  }) : super(CategoryEmpty()) {
     _categoriesSubscription = repository.categoryListController.stream
       .listen((categories) => add(CategoriesChanged(newCategories: categories)));
   }
@@ -26,8 +26,8 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
   Stream<CategoryState> mapEventToState(
     CategoryEvent event,
   ) async* {
-    if(event is CategoriesChanged){
-     yield CategoryLoaded(categoryList: event.newCategories);
+    if (event is CategoriesChanged) {
+      yield CategoryLoaded(categoryList: event.newCategories);
     }
   }
 }

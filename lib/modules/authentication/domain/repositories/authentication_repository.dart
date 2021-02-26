@@ -1,8 +1,7 @@
 import 'dart:async';
 
 import 'package:dartz/dartz.dart';
-
-import '../../../../core/authorization/bloc/auth_bloc.dart';
+import 'package:messenger_mobile/core/blocs/authorization/bloc/auth_bloc.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/usecases/usecase.dart';
 import '../../../profile/domain/entities/user.dart';

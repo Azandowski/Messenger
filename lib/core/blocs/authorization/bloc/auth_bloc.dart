@@ -3,12 +3,10 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-
-import '../../../modules/authentication/domain/repositories/authentication_repository.dart';
-import '../../../modules/authentication/domain/usecases/logout.dart';
-import '../../../modules/profile/domain/entities/user.dart';
-import '../../usecases/usecase.dart';
-
+import 'package:messenger_mobile/core/usecases/usecase.dart';
+import 'package:messenger_mobile/modules/authentication/domain/repositories/authentication_repository.dart';
+import 'package:messenger_mobile/modules/authentication/domain/usecases/logout.dart';
+import 'package:messenger_mobile/modules/profile/domain/entities/user.dart';
 part 'auth_event.dart';
 part 'auth_state.dart';
 

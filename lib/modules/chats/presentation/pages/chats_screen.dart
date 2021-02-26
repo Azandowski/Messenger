@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:messenger_mobile/core/category/bloc/category_bloc.dart';
+import 'package:messenger_mobile/core/blocs/category/bloc/category_bloc.dart';
 import 'package:messenger_mobile/modules/category/presentation/create_category_main/pages/create_category_screen.dart';
 import '../bloc/cubit/chats_cubit_cubit.dart';
 import '../widgets/category_items.dart';
@@ -11,8 +11,14 @@ class ChatsScreen extends StatefulWidget {
 }
 
 class _ChatsScreenState extends State<ChatsScreen> {
-  int _index = 0;
-  
+
+  @override
+  void initState() {
+    var cubit = context.read<ChatsCubit>();
+    cubit.loadAllChats();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     var cubit = context.read<ChatsCubit>();
@@ -29,8 +35,6 @@ class _ChatsScreenState extends State<ChatsScreen> {
                 style: TextStyle(color: Colors.red)),
               ), // SnackBar
             );
-          } else if (state is ChatsCubitNormal) {
-            _index = state.index;
           }
         },
         builder: (context, state) {      
@@ -44,7 +48,7 @@ class _ChatsScreenState extends State<ChatsScreen> {
                   return CategoriesSection(
                     isLoading: state is CategoryEmpty,
                     categories: state is CategoryLoaded ? state.categoryList : [],
-                    currentSelectedItemId: _index, 
+                    currentSelectedItemId: cubit.currentTab, 
                     onNextClick: () {
                       Navigator.pushNamed(context, CreateCategoryScreen.id);
                     },

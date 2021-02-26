@@ -1,10 +1,9 @@
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
-import 'package:messenger_mobile/core/category/bloc/category_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'core/authorization/bloc/auth_bloc.dart';
+import 'core/blocs/authorization/bloc/auth_bloc.dart';
+import 'core/blocs/category/bloc/category_bloc.dart';
 import 'core/config/auth_config.dart';
 import 'core/services/network/Endpoints.dart';
 import 'core/services/network/network_info.dart';
@@ -28,6 +27,7 @@ import 'modules/category/presentation/create_category_main/bloc/create_category_
 import 'modules/chats/data/datasource/chats_datasource.dart';
 import 'modules/chats/data/repositories/chats_repository_impl.dart';
 import 'modules/chats/domain/repositories/chats_repository.dart';
+import 'modules/chats/domain/usecase/get_chats.dart';
 import 'modules/chats/presentation/bloc/cubit/chats_cubit_cubit.dart';
 import 'modules/media/data/datasources/local_media_datasource.dart';
 import 'modules/media/data/repositories/media_repository_impl.dart';
@@ -54,8 +54,7 @@ Future<void> init() async {
   );
 
   sl.registerFactory(() => ProfileCubit(getUser: sl()));
-
-  sl.registerFactory(() => ChatsCubit());
+  sl.registerFactory(() => ChatsCubit(sl()));
 
   // Use cases
   sl.registerLazySingleton(() => GetToken(sl()));
@@ -65,6 +64,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => GetUser(sl()));
   sl.registerLazySingleton(() => GetCategories(repository: sl()));
   sl.registerLazySingleton(() => SaveToken(sl()));
+  sl.registerLazySingleton(() => GetChats(sl()));
 
   // Repository
 
@@ -81,7 +81,7 @@ Future<void> init() async {
       () => ProfileRepositoryImpl(profileDataSource: sl(), networkInfo: sl()));
 
   sl.registerLazySingleton<ChatsRepository>(
-      () => ChatsRepositoryImpl(chatsDataSource: sl(), networkInfo: sl()));
+    () => ChatsRepositoryImpl(chatsDataSource: sl(), networkInfo: sl()));
 
   // Data sources
   sl.registerLazySingleton<AuthenticationLocalDataSource>(
@@ -137,7 +137,6 @@ Future<void> init() async {
       repository: sl(),
     ),
   );
-
 
   // local storage
   final sharedPreferences = await SharedPreferences.getInstance();

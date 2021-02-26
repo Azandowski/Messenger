@@ -3,16 +3,13 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
 import 'package:messenger_mobile/core/services/network/Endpoints.dart';
-import 'package:messenger_mobile/core/services/network/paginatedResult.dart';
-import 'package:messenger_mobile/modules/create_category/data/models/chat_entity_model.dart';
-import 'package:messenger_mobile/modules/create_category/domain/entities/chat_entity.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/utils/multipart_request_helper.dart';
 import '../../../chats/data/model/category_model.dart';
 import '../../../chats/domain/entities/category.dart';
 import 'package:messenger_mobile/core/utils/http_response_extension.dart';
 
-abstract class CreateCategoryDataSource {
+abstract class CategoryDataSource {
   Future<List<CategoryEntity>> createCategory({
     @required File file,
     @required String name,
@@ -20,19 +17,15 @@ abstract class CreateCategoryDataSource {
     List<int> chatIds,
   });
 
-  Future<PaginatedResult<ChatEntity>> getUserChats ({
-    @required String token
-  });
-
   Future<List<CategoryEntity>> getCategories(String token);
 }
 
-class CreateCategoryDataSourceImpl implements CreateCategoryDataSource {
+class CategoryDataSourceImpl implements CategoryDataSource {
   
   final http.MultipartRequest multipartRequest;
   final http.Client client;
 
-  CreateCategoryDataSourceImpl({
+  CategoryDataSourceImpl({
     @required this.multipartRequest,
     @required this.client
   });
@@ -67,28 +60,6 @@ class CreateCategoryDataSourceImpl implements CreateCategoryDataSource {
       throw ServerFailure(message: httpResponse.body.toString());
     }
   }
-
-
-  /**
-   * * Loading List of user's all chats via token
-   */
-  @override
-  Future<PaginatedResult<ChatEntity>> getUserChats({
-    @required String token
-  }) async {
-    http.Response response = await client.get(
-      Endpoints.getAllUserChats.buildURL(), 
-      headers: Endpoints.getAllUserChats.getHeaders(token: token)
-    );
-
-    if (response.isSuccess) {
-      return PaginatedResult.fromJson(
-        json.decode(response.body)['chat'], 
-        (jsonData) => ChatEntityModel.fromJson(jsonData));
-    } else {
-      throw ServerFailure(message: response.body.toString());
-    }
-  } 
 
   @override
   Future<List<CategoryEntity>> getCategories(String token) async {

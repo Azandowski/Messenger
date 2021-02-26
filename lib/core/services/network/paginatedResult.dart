@@ -1,4 +1,7 @@
 
+import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
+
 /**
  * * Holds response with pagination
  * ! T should have fromJson method
@@ -6,11 +9,11 @@
 
 class PaginatedResult <T> {
   final List<T> data;
-  final Uri nextPageUrl;
+  final PaginationData paginationData;
 
   PaginatedResult({
     this.data, 
-    this.nextPageUrl
+    this.paginationData
   });
 
   factory PaginatedResult.fromJson(
@@ -19,14 +22,38 @@ class PaginatedResult <T> {
   ) {
     List jsonDataArray = (json['data'] ?? []) as List;
     return PaginatedResult(
-      nextPageUrl: json['next_page_url'],
+      paginationData: PaginationData(
+        nextPageUrl: json['next_page_url'],
+        isFirstPage: json['current_page'] == 1
+      ),
       data: jsonDataArray.map((e) => factory(e)).toList()
     );
   }
+}
 
-  // * * Getters
 
-  bool get hasSecondPage {
+class PaginationData extends Equatable {
+  final Uri nextPageUrl;
+  final bool isFirstPage;
+
+  PaginationData({
+    @required this.nextPageUrl, 
+    @required this.isFirstPage
+  });
+
+  factory PaginationData.fromJson(
+    Map<String, dynamic> json
+  ) {
+    return PaginationData(
+      nextPageUrl: json['next_page_url'],
+      isFirstPage: json['current_page'] == 1
+    );
+  }
+  
+  bool get hasNextPage {
     return nextPageUrl != null;
   }
+
+  @override
+  List<Object> get props => [nextPageUrl, isFirstPage];
 }

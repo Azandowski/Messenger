@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger_mobile/core/widgets/independent/buttons/bottom_action_button.dart';
 import 'package:messenger_mobile/core/widgets/independent/pickers/photo_picker.dart';
+import 'package:messenger_mobile/modules/category/data/models/chat_view_model.dart';
 import 'package:messenger_mobile/modules/category/presentation/create_category_main/widgets/chat_count_view.dart';
 import 'package:messenger_mobile/modules/category/presentation/create_category_main/widgets/chat_list.dart';
 import '../../../../../locator.dart';
@@ -21,7 +22,7 @@ class CreateCategoryScreen extends StatefulWidget {
 class _CreateCategoryScreenState extends State<CreateCategoryScreen> implements ChatChooseDelegate {
   NavigatorState get _navigator => navigatorKey.currentState;
   final CreateCategoryCubit cubit = sl<CreateCategoryCubit>();
-  List<ChatEntity> chats = [];
+  List<ChatViewModel> chats = [];
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +42,7 @@ class _CreateCategoryScreenState extends State<CreateCategoryScreen> implements 
           } else if (state is CreateCategorySuccess) {
             Navigator.of(context).pop(state.updatedCategories);
           } else if (state is CreateCategoryNormal) {
-            chats = state.chats;
+            chats = state.chats.map((e) => ChatViewModel(e)).toList();
           }
         },
         builder: (context, state) {

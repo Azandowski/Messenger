@@ -1,11 +1,10 @@
 import 'dart:async';
 
 import 'package:dartz/dartz.dart';
+import 'package:messenger_mobile/core/blocs/authorization/bloc/auth_bloc.dart';
 import 'package:messenger_mobile/modules/category/domain/usecases/get_categories.dart';
 import 'package:messenger_mobile/modules/chats/domain/entities/usecases/params.dart';
 import 'package:meta/meta.dart';
-
-import '../../../../core/authorization/bloc/auth_bloc.dart';
 import '../../../../core/config/auth_config.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/services/network/network_info.dart';
@@ -115,7 +114,7 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
 
   @override
   StreamController<AuthParams> params =
-      StreamController<AuthParams>.broadcast();
+    StreamController<AuthParams>.broadcast();
 
   @override
   Future<Either<Failure, bool>> logout(NoParams params) async {

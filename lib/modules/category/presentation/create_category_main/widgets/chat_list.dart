@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:messenger_mobile/modules/category/data/models/chat_view_model.dart';
 
 import '../../../../../app/appTheme.dart';
 import '../../../domain/entities/chat_entity.dart';
 
 class ChatsList extends StatelessWidget {
-  final items;
+  final List<ChatViewModel> items;
   final ChatCellType cellType;
   final Function(ChatEntity) onSelect;
   final Function(ChatCellActionType, ChatEntity) onSelectedOption;
@@ -35,8 +36,8 @@ class ChatsList extends StatelessWidget {
     return Expanded(
       child: ListView.builder(
       itemBuilder: (context, i) {
-        ChatEntity item = items[i];
-        bool isSelected = cellType == ChatCellType.addChat && item.selected;
+        ChatViewModel item = items[i];
+        bool isSelected = cellType == ChatCellType.addChat && item.isSelected;
         
         return Container(
           color: isSelected ? AppColors.lightPinkColor : Colors.white,
@@ -47,7 +48,7 @@ class ChatsList extends StatelessWidget {
               child: Stack(
                 children: [
                   CircleAvatar(
-                    backgroundImage: NetworkImage(item.imageUrl),
+                    backgroundImage: NetworkImage(item.imageURL),
                     minRadius: 30,
                   ),
                   if (isSelected) 
@@ -68,9 +69,14 @@ class ChatsList extends StatelessWidget {
               ),
             ),
             title: Text(
-              item.title, 
+              item.entity.title, 
               style: AppFontStyles.mainStyle,
             ),
+            subtitle: item.hasDescription ? 
+              Text(
+                item.description,
+                style: AppFontStyles.blackMediumStyle,
+              ) : null,
             trailing: cellType == ChatCellType.optionsWithChat ? 
               PopupMenuButton<ChatCellActionType>(
                 itemBuilder: (context) => [
@@ -82,11 +88,11 @@ class ChatsList extends StatelessWidget {
                   );
                 }).toList(),
                 onSelected: (ChatCellActionType action) {
-                  onSelectedOption(action, item);
+                  onSelectedOption(action, item.entity);
                 }
               ) : SizedBox(),
             onTap: (){
-              onSelect(item);
+              onSelect(item.entity);
             },
           ),
         );

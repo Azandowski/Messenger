@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:messenger_mobile/core/services/network/config.dart';
 
 import '../../../../app/appTheme.dart';
 import '../../../../core/widgets/independent/images/ImageWithCorner.dart';
@@ -27,7 +28,7 @@ class CategoryItem extends StatelessWidget {
           children: [
             AvatarImage(
               borderRadius: BorderRadius.circular(15),
-              path: entity.avatar,
+              path: ConfigExtension.buildURLHead() +  entity.avatar,
               isFromAsset: false,
               width: 80,
               height: 80,

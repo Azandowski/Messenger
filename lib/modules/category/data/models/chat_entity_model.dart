@@ -5,18 +5,18 @@ import 'package:messenger_mobile/modules/chats/domain/entities/category.dart';
 
 class ChatEntityModel extends ChatEntity {
   final int chatId;
-  final List<CategoryEntity> chatCategories;
+  final CategoryEntity chatCategory;
   final String title;
   final String imageUrl;
 
   ChatEntityModel({
     @required this.chatId, 
-    @required this.chatCategories, 
+    @required this.chatCategory, 
     @required this.title, 
     @required this.imageUrl
   }) : super(
     chatId: chatId,
-    chatCategories: chatCategories,
+    chatCategory: chatCategory,
     title: title,
     imageUrl: imageUrl
   );
@@ -24,13 +24,11 @@ class ChatEntityModel extends ChatEntity {
   factory ChatEntityModel.fromJson(
     Map<String, dynamic> json,
   ) {
-    List jsonCategoriesArray = ((json['category_chat'] ?? []) as List);
-
     return ChatEntityModel(
       chatId: json['id'],
       title: json['name'],
       imageUrl: json['avatar'],
-      chatCategories: jsonCategoriesArray.map((e) => CategoryModel.fromJson(e)).toList(),
+      chatCategory: json['category_chat'] != null ? CategoryModel.fromJson(json['category_chat']) : null
     );
   }
 }

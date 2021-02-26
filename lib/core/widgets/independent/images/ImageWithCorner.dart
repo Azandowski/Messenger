@@ -20,13 +20,13 @@ class AvatarImage extends StatelessWidget {
     return ClipRRect(
       borderRadius: borderRadius ?? BorderRadius.circular(10.0),
       child: !isFromAsset ? FadeInImage(
-        placeholder: AssetImage("assets/images/logo.jpg"), 
+        placeholder: AssetImage("assets/images/logo.png"), 
         image: NetworkImage(path),
         width: width,
         height: height,
         fit: BoxFit.cover
       ) : Image.asset(
-          path == null || path == '' ? "assets/images/logo.jpg" : path, 
+          path == null || path == '' ? "assets/images/logo.png" : path, 
           width: width,
           height: height,
           fit: BoxFit.cover

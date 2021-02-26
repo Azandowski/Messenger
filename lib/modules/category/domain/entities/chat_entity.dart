@@ -4,34 +4,30 @@ import 'package:messenger_mobile/modules/chats/domain/entities/category.dart';
 
 class ChatEntity extends Equatable {
   final int chatId;
-  final List<CategoryEntity> chatCategories;
+  final CategoryEntity chatCategory;
   final String title;
   final String imageUrl;
-  final bool selected;
   
   ChatEntity({
-    @required this.chatCategories,
+    @required this.chatCategory,
     @required this.title,
     @required this.imageUrl,
     @required this.chatId,
-    this.selected = false
   });
 
   @override
   List<Object> get props => [
-    chatCategories, 
+    chatCategory, 
     title, 
     imageUrl, 
-    chatId, 
-    selected
+    chatId
   ];
 
-  ChatEntity copyWith({bool selected}) {
+  ChatEntity clone() {
     return ChatEntity(
-      selected: selected ?? this.selected,
       chatId: this.chatId,
       title: this.title,
-      chatCategories: this.chatCategories,
+      chatCategory: this.chatCategory,
       imageUrl: this.imageUrl,
     );
   }

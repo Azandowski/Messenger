@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:messenger_mobile/modules/category/data/models/chat_view_model.dart';
+import 'package:messenger_mobile/modules/category/presentation/create_category_main/widgets/chat_skeleton_item.dart';
+import 'package:messenger_mobile/modules/chats/presentation/bloc/cubit/chats_cubit_cubit.dart';
 
 import '../../../../../app/appTheme.dart';
 import '../../../../../core/widgets/independent/buttons/gradient_main_button.dart';
 import '../../../../../core/widgets/independent/placeholders/load_widget.dart';
 import '../../../domain/entities/chat_entity.dart';
 import '../../create_category_main/widgets/chat_list.dart';
-import '../bloc/choosechats_bloc.dart';
 
 abstract class ChatChooseDelegate{
   void didSaveChats(List<ChatEntity> chats);
 }
 
-class ChooseChatsPage extends StatelessWidget {
+class ChooseChatsPage extends StatefulWidget {
 
   static Route route(ChatChooseDelegate deleagete) {
     return MaterialPageRoute<void>(builder: (_) => ChooseChatsPage(delegate: deleagete,));
@@ -20,81 +22,122 @@ class ChooseChatsPage extends StatelessWidget {
 
   final ChatChooseDelegate delegate;
   
-  int _items = 0;
-
   ChooseChatsPage({
     @required this.delegate,
     Key key,
   }) : super(key: key);
 
   @override
+  _ChooseChatsPageState createState() => _ChooseChatsPageState();
+}
+
+class _ChooseChatsPageState extends State<ChooseChatsPage> {
+  
+  // * * Props
+  
+  int _chatsCount = 0;
+  List<ChatViewModel> chatEntities = [];
+
+  // * * Life-Cycle
+
+  @override
+  void initState() {
+    super.initState();
+    if (context.read<ChatsCubit>().state is ChatsCubitLoaded) {
+      assignEntities((context.read<ChatsCubit>().state as ChatsCubitLoaded).chats.data);
+    }
+  }
+
+  // * * UI
+
+  @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => ChooseChatsBloc(),
-      child: BlocConsumer<ChooseChatsBloc, ChooseChatsState>(
-        listener: (context, state) {
-          if (state is ChooseChatsLoaded) {
-            _items = state.chatEntities.where((element) => element.selected).toList().length;
-          }
-        },
-        builder: (context, state) {
-          return Scaffold(
-            appBar: AppBar(
-              title: Text('Выбрано: $_items'),
-            ),
-            body: Stack(
-              alignment: Alignment.center,
-              children: [
-                Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                      child: Container(
-                        child: Text(
-                          'Выберите те чаты, которые вы хотите добавить',
-                          style: AppFontStyles.greyPhoneStyle,
-                        ),
+    return BlocConsumer<ChatsCubit, ChatsCubitState>(
+      listener: (context, state) {
+        if (state is ChatsCubitLoaded) {
+          assignEntities(state.chats.data);
+          _chatsCount = chatEntities.where((e) => e.isSelected).toList().length;
+        } 
+      },
+      builder: (context, state) {
+        return Scaffold(
+          appBar: AppBar(
+            title: Text('Выбрано: $_chatsCount'),
+          ),
+          body: Stack(
+            alignment: Alignment.center,
+            children: [
+              Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                    child: Container(
+                      child: Text(
+                        'Выберите те чаты, которые вы хотите добавить',
+                        style: AppFontStyles.greyPhoneStyle,
                       ),
                     ),
-                    returnStateWidget(state,context),
-                  ],
-                ),
-                if (state is ChooseChatsLoaded)  
-                  Positioned(
-                    bottom: 40,
-                    child: ActionButton(
-                      text: 'Добавить чаты', 
-                      onTap: () {
-                        var selectedChats = state.chatEntities.where((element) => element.selected).toList();
-                        delegate.didSaveChats(selectedChats);
-                        Navigator.pop(context);
-                      }
-                    ),
                   ),
-              ],
-            )
-         );
-       }
-      ),
+                  returnStateWidget(state, context),
+                ],
+              ),
+              if (state is ChatsCubitLoaded)  
+                Positioned(
+                  bottom: 40,
+                  child: ActionButton(
+                    text: 'Добавить чаты', 
+                    onTap: () {
+                      List<ChatEntity> selectedChats = [];
+                      if (state is ChatsCubitLoaded) {
+                        selectedChats = chatEntities.where((e) => e.isSelected).map((e) => e.entity).toList();
+                      }
+
+                      widget.delegate.didSaveChats(selectedChats);
+                      Navigator.pop(context);
+                    }
+                  ),
+                ),
+            ],
+          )
+       );
+     }
     );
   }
 
   Widget returnStateWidget(state, context){
-    if (state is ChooseChatsLoaded) {
+    if (state is ChatsCubitLoaded) {
       return ChatsList(
-        items: state.chatEntities,
+        items: chatEntities,
         cellType: ChatCellType.addChat,
         onSelect: (ChatEntity chatEntity) {
-          BlocProvider.of<ChooseChatsBloc>(context).add(
-            ChatChosen(chatEntity.copyWith(selected: !chatEntity.selected))
-          );
+          var index = chatEntities.indexWhere((e) => e.entity.chatId == chatEntity.chatId);
+          if (index != null) {
+            setState(() {
+              chatEntities[index].isSelected = !chatEntities[index].isSelected;
+            });
+          }
         },
       );
-    } else if (state is ChooseChatLoading) {
-        return LoadWidget();
+    } else if (state is ChatsCubitLoading) {
+      return Expanded(
+        child: ListView.builder(
+          itemBuilder: (context, int index) {
+            return ChatShimmerItem();
+          },
+          itemCount: 10,
+        )
+      );
     } else {
-        return Text('default');
+      return Text('default');
     }
+  }
+
+  // * * Methods
+
+  void assignEntities (List<ChatEntity> entities) {
+    chatEntities = entities.map(
+      (e) => ChatViewModel(e)
+    ).toList();
   }
 }
 
