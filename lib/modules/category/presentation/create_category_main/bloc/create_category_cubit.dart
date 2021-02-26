@@ -25,7 +25,10 @@ class CreateCategoryCubit extends Cubit<CreateCategoryState> {
   CreateCategoryCubit({
     @required this.createCategory,
     @required this.getImageUseCase,
-  }) : super(CreateCategoryLoading()) {
+  }) : super(CreateCategoryLoading(
+    imageFile: null,
+    chats: []
+  )) {
     initCubit();
   }
 
@@ -33,7 +36,7 @@ class CreateCategoryCubit extends Cubit<CreateCategoryState> {
 
   void initCubit () {
     emit(CreateCategoryNormal(
-      imageFile: imageFile, 
+      imageFile: this.state.imageFile, 
       chats: [])
     );
   }
@@ -43,51 +46,54 @@ class CreateCategoryCubit extends Cubit<CreateCategoryState> {
     pickedFile.fold(
       (failure) => emit(CreateCategoryError(message: 'Unable to get image')), 
       (image) {
-        imageFile = image;
-        emit(CreateCategoryNormal(imageFile: imageFile, chats: chats));
+        emit(CreateCategoryNormal(imageFile: image, chats: this.state.chats));
     });
   }
 
   Future<void> sendData () async {
     // TODO: Update Chat IDS
     
-    emit(CreateCategoryLoading());
+    emit(CreateCategoryLoading(
+      imageFile: this.state.imageFile,
+      chats: this.state.chats
+    ));
+    
     var response = await createCategory(CreateCategoryParams(
       token: sl<AuthConfig>().token, 
-      avatarFile: imageFile, 
+      avatarFile: this.state.imageFile,
       name: nameController.text, 
       chatIds: []
     ));
 
     response.fold(
       (failure) => emit(CreateCategoryError(message: failure.message)), 
-      (categories) => emit(CreateCategorySuccess(updatedCategories: categories)));
+      (categories) => emit(CreateCategorySuccess(
+        updatedCategories: categories,
+        chats: this.state.chats,
+        imageFile: this.state.imageFile
+      ))
+    );
   }
 
   void addChats (List<ChatEntity> comingChats){
-    chats = comingChats;
     emit(CreateCategoryNormal(
-      imageFile: imageFile, 
-      chats: chats)
+      imageFile: this.state.imageFile, 
+      chats: comingChats)
     );
   }
 
   void deleteChat (ChatEntity chat){
-    var updatedChats = chats
+    var updatedChats = this.state.chats
       .where((e) => e.chatId != chat.chatId)
       .map((e) => e.clone()).toList();
 
     emit(CreateCategoryNormal(
-      imageFile: imageFile, 
+      imageFile: this.state.imageFile, 
       chats: updatedChats)
     );
   }
 
   // * * Local Data
-
-  List<ChatEntity> chats = [];
-
-  File imageFile;
 
   TextEditingController nameController = TextEditingController();
 }

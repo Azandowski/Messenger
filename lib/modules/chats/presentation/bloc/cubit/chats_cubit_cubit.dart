@@ -13,8 +13,6 @@ part 'chats_cubit_state.dart';
 class ChatsCubit extends Cubit<ChatsCubitState> {
 
   final GetChats getChats;
-  int currentTab;
-  PaginatedResult<ChatEntity> chats;
 
   PaginationData paginationData = PaginationData(
     isFirstPage: true,
@@ -22,16 +20,18 @@ class ChatsCubit extends Cubit<ChatsCubitState> {
   );
 
   ChatsCubit(this.getChats) : super(
-    ChatsCubitLoading()
+    ChatsCubitLoading(
+      chats: PaginatedResult(data: []),
+      currentTabIndex: 0
+    )
   );
   
-  // MARK: - Public Options
+  // * * Methods
 
   void tabUpdate(int index) {
-    currentTab = index;
     emit(ChatsCubitLoaded(
       currentTabIndex: index,
-      chats: chats
+      chats: this.state.chats
     ));
   }
 
@@ -43,12 +43,15 @@ class ChatsCubit extends Cubit<ChatsCubitState> {
     ));
 
     response.fold(
-      (failure) => emit(ChatsCubitError(errorMessage: failure.message)), 
+      (failure) => emit(ChatsCubitError(
+        errorMessage: failure.message,
+        chats: this.state.chats,
+        currentTabIndex: this.state.currentTabIndex
+      )), 
       (loadedChats) {
-        chats = loadedChats;
         emit(ChatsCubitLoaded(
           chats: loadedChats, 
-          currentTabIndex: currentTab
+          currentTabIndex: this.state.currentTabIndex
         ));
       }
     );

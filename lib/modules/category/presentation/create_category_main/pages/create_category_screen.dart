@@ -55,8 +55,8 @@ class _CreateCategoryScreenState extends State<CreateCategoryScreen> implements 
                     SizedBox(height: 30),
                     CreateCategoryHeader(
                       nameController: cubit.nameController,
-                      imageProvider: cubit.imageFile != null ? 
-                        FileImage(cubit.imageFile) : null,
+                      imageProvider: state.imageFile != null ? 
+                        FileImage(state.imageFile) : null,
                       selectImage: (file) {
                         PhotoPicker().showImageSourceSelectionDialog(context,
                           (imageSource) {

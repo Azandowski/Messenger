@@ -44,11 +44,11 @@ class _ChatsScreenState extends State<ChatsScreen> {
                 listener: (context, state) {
                   // TODO: implement listener
                 },
-                builder: (context, state) {
+                builder: (context, categoryState) {
                   return CategoriesSection(
-                    isLoading: state is CategoryEmpty,
-                    categories: state is CategoryLoaded ? state.categoryList : [],
-                    currentSelectedItemId: cubit.currentTab, 
+                    isLoading: categoryState is CategoryEmpty,
+                    categories: categoryState is CategoryLoaded ? categoryState.categoryList : [],
+                    currentSelectedItemId: state.currentTabIndex, 
                     onNextClick: () {
                       Navigator.pushNamed(context, CreateCategoryScreen.id);
                     },
