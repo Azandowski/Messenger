@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:messenger_mobile/core/blocs/category/bloc/category_bloc.dart';
-import 'package:messenger_mobile/modules/category/presentation/create_category_main/pages/create_category_screen.dart';
+import 'package:messenger_mobile/modules/category/data/models/chat_view_model.dart';
+import 'package:messenger_mobile/modules/category/presentation/create_category_main/widgets/chat_skeleton_item.dart';
+import 'package:messenger_mobile/modules/chats/presentation/widgets/categories_bloc_listener.dart';
+import 'package:messenger_mobile/modules/chats/presentation/widgets/chat_item/chat_preview_item.dart';
 import '../bloc/cubit/chats_cubit_cubit.dart';
-import '../widgets/category_items.dart';
+
 
 class ChatsScreen extends StatefulWidget {
   @override
@@ -22,46 +24,101 @@ class _ChatsScreenState extends State<ChatsScreen> {
   @override
   Widget build(BuildContext context) {
     var cubit = context.read<ChatsCubit>();
+    
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Главная"),
+      appBar: _buildAppBar(
+        ChatViewModel(cubit.selectedChat),
       ),
-      body: BlocConsumer<ChatsCubit, ChatsCubitState>(
-        listener: (context, state) {
-          if (state is ChatsCubitError) {
-            Scaffold.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.errorMessage,
-                style: TextStyle(color: Colors.red)),
-              ), // SnackBar
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/bg-home.png'),
+            fit: BoxFit.cover
+          )
+        ),
+        child: BlocConsumer<ChatsCubit, ChatsCubitState>(
+          listener: (context, state) {
+            _handleChatsUpdates(state);
+          },
+          builder: (context, state) {      
+            return BlocConsumer<ChatsCubit, ChatsCubitState>(
+              listener: (context, chatState) {},
+              builder: (context, chatState) {
+                return ListView.separated(
+                  itemBuilder: (context, int index) {
+                    if (index == 0) {
+                      return ChatScreenCategoriesView(
+                        chatsState: state,
+                      );
+                    } else if (!(chatState is ChatsCubitLoading)) {
+                      return GestureDetector(
+                        onLongPressStart: (d) {
+                          cubit.didSelectChat(index - 1);
+                        },
+                        child: ChatPreviewItem(
+                          ChatViewModel(
+                            chatState.chats.data[index - 1],
+                            isSelected: cubit.selectedChatIndex != null 
+                              && cubit.selectedChatIndex == index - 1
+                          )
+                        ),
+                      );
+                    } else {
+                      return ChatShimmerItem();
+                    }
+                  },
+                  itemCount: chatState is ChatsCubitLoading ? 10 :
+                    chatState.chats.data.length + 1,
+                  separatorBuilder: (context, int index) {
+                    return _buildSeparators(index);
+                  }
+                );
+              },
             );
-          }
-        },
-        builder: (context, state) {      
-          return Column(
-            children: [
-              BlocConsumer<CategoryBloc, CategoryState>(
-                listener: (context, state) {
-                  // TODO: implement listener
-                },
-                builder: (context, categoryState) {
-                  return CategoriesSection(
-                    isLoading: categoryState is CategoryEmpty,
-                    categories: categoryState is CategoryLoaded ? categoryState.categoryList : [],
-                    currentSelectedItemId: state.currentTabIndex, 
-                    onNextClick: () {
-                      Navigator.pushNamed(context, CreateCategoryScreen.id);
-                    },
-                    onItemSelect: (int id) {
-                      cubit.tabUpdate(id);
-                    },
-                  );
-                },
-              ),
-            ],
-          );
-        },
+          },
+        ),
       )
+    );
+  }
+
+  // * * Methods
+
+  void _handleChatsUpdates (ChatsCubitState state) {
+    if (state is ChatsCubitError) {
+      Scaffold.of(context).showSnackBar(
+        SnackBar(
+          content: Text(state.errorMessage,
+          style: TextStyle(color: Colors.red)),
+        ), // SnackBar
+      );
+    }
+  }
+
+  Widget _buildSeparators (int index) {
+    if (index == 0) {
+      return Container();
+    } else {
+      return Container(
+        height: 2,
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: Divider(color: Colors.grey,),
+      );
+    }
+  }
+
+  AppBar _buildAppBar (ChatViewModel selectedChat) {
+    var isSelected = selectedChat != null;
+
+    return AppBar(
+      title: Text(
+        !isSelected ? 'Главная' : 'Выбрано: 1'
+      ),
+      leading: isSelected ? IconButton(
+        icon: Icon(Icons.arrow_back),
+        onPressed: () {
+          context.read<ChatsCubit>().didCancelChatSelection();
+        },
+      ) : null,
     );
   }
 }

@@ -8,17 +8,20 @@ class ChatEntityModel extends ChatEntity {
   final CategoryEntity chatCategory;
   final String title;
   final String imageUrl;
+  final DateTime date;
 
   ChatEntityModel({
     @required this.chatId, 
     @required this.chatCategory, 
     @required this.title, 
-    @required this.imageUrl
+    @required this.imageUrl,
+    @required this.date
   }) : super(
     chatId: chatId,
     chatCategory: chatCategory,
     title: title,
-    imageUrl: imageUrl
+    imageUrl: imageUrl,
+    date: date
   );
 
   factory ChatEntityModel.fromJson(
@@ -28,7 +31,8 @@ class ChatEntityModel extends ChatEntity {
       chatId: json['id'],
       title: json['name'],
       imageUrl: json['avatar'],
-      chatCategory: json['category_chat'] != null ? CategoryModel.fromJson(json['category_chat']) : null
+      chatCategory: json['category_chat'] != null ? CategoryModel.fromJson(json['category_chat']) : null,
+      date: DateTime.parse(json['created_at']).toLocal()
     );
   }
 }

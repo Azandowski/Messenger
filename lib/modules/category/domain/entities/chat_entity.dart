@@ -7,12 +7,14 @@ class ChatEntity extends Equatable {
   final CategoryEntity chatCategory;
   final String title;
   final String imageUrl;
+  final DateTime date;
   
   ChatEntity({
     @required this.chatCategory,
     @required this.title,
     @required this.imageUrl,
     @required this.chatId,
+    @required this.date
   });
 
   @override
@@ -29,6 +31,7 @@ class ChatEntity extends Equatable {
       title: this.title,
       chatCategory: this.chatCategory,
       imageUrl: this.imageUrl,
+      date: this.date
     );
   }
 }
