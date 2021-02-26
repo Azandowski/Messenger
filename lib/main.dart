@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:messenger_mobile/core/blocs/category/bloc/category_bloc.dart';
 import 'package:messenger_mobile/modules/chats/presentation/bloc/cubit/chats_cubit_cubit.dart';
 
 import 'app/appTheme.dart';
@@ -33,6 +34,7 @@ class MainApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider.value(value: serviceLocator.sl<ChatsCubit>()),
+        BlocProvider(create: (_) => serviceLocator.sl<CategoryBloc>()),
         BlocProvider.value(value: serviceLocator.sl<AuthBloc>())
       ],
       child: MaterialApp(

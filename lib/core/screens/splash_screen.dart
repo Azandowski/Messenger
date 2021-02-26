@@ -17,10 +17,7 @@ class SplashScreen extends StatelessWidget {
       } else if (state is Unauthenticated) {
         return LoginPage();
       } else if (state is Authenticated) {
-        return BlocProvider.value(
-          value: sl<CategoryBloc>(),
-          child: AppScreen(),
-        );
+        return  AppScreen();
       } else if (state is NeedsNamePhoto) {
         return TypeNamePage(
           user: state.user,

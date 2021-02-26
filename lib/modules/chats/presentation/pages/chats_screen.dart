@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger_mobile/core/blocs/category/bloc/category_bloc.dart';
+import 'package:messenger_mobile/modules/category/presentation/category_list/category_list.dart';
 import 'package:messenger_mobile/modules/category/presentation/create_category_main/pages/create_category_screen.dart';
 import '../bloc/cubit/chats_cubit_cubit.dart';
 import '../widgets/category_items.dart';
@@ -50,7 +51,7 @@ class _ChatsScreenState extends State<ChatsScreen> {
                     categories: categoryState is CategoryLoaded ? categoryState.categoryList : [],
                     currentSelectedItemId: state.currentTabIndex, 
                     onNextClick: () {
-                      Navigator.pushNamed(context, CreateCategoryScreen.id);
+                      Navigator.pushNamed(context, CategoryList.id);
                     },
                     onItemSelect: (int id) {
                       cubit.tabUpdate(id);
