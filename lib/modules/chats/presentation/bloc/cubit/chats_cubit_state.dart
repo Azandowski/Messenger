@@ -55,3 +55,21 @@ class ChatsCubitError extends ChatsCubitState {
   @override
   List<Object> get props => [errorMessage, chats, currentTabIndex];
 }
+
+class ChatsCubitSelectedOne extends ChatsCubitState {
+  final PaginatedResult<ChatEntity> chats;
+  final int currentTabIndex;
+  final int selectedChatIndex;
+
+  ChatsCubitSelectedOne({
+    @required this.chats, 
+    @required this.currentTabIndex,
+    @required this.selectedChatIndex
+  }) : super(
+    chats: chats,
+    currentTabIndex: currentTabIndex
+  );
+
+  @override
+  List<Object> get props => [selectedChatIndex, chats, currentTabIndex];  
+}

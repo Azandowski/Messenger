@@ -14,42 +14,45 @@ class CategoryList extends StatelessWidget {
 
   final bool isMoveChat;
 
-  CategoryList({this.isMoveChat = false});
+  CategoryList({
+    this.isMoveChat = false
+  });
 
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<CategoryBloc, CategoryState>(
-      listener: (context, state) {
-      },
+      listener: (context, state) {},
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
-            title: Text( isMoveChat ? 'Переместить чат' : 'Категории чатов'),
+            title: Text(
+              isMoveChat ? 'Переместить чат' : 'Категории чатов'
+            ),
             actions: [
               IconButton(
-               icon: Icon(Icons.add,
-            ),
-              onPressed: () {
-                Navigator.pushNamed(context, CreateCategoryScreen.id);
-              },
-            )],
+                icon: Icon(Icons.add,),
+                onPressed: () {
+                  Navigator.pushNamed(context, CreateCategoryScreen.id);
+                },
+              )
+            ],
           ),
           backgroundColor: AppColors.pinkBackgroundColor,
           body: Column(
-                children: [
-                 Container(
-                      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 15),
-                      color: Colors.white,
-                      child: Text(isMoveChat ? 'Выберите категорию для переноса' :
-                        'Вы можете создавать свои категории с нужными чатами, для быстрого переключения между ними.',
-                        style: AppFontStyles.greyPhoneStyle,
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                    SizedBox(height: 15,),
-                  returnStateWidget(state, context),
-                ],
+            children: [
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 15),
+                color: Colors.white,
+                child: Text(isMoveChat ? 'Выберите категорию для переноса' :
+                  'Вы можете создавать свои категории с нужными чатами, для быстрого переключения между ними.',
+                  style: AppFontStyles.greyPhoneStyle,
+                  textAlign: TextAlign.center,
+                ),
               ),
+              SizedBox(height: 15,),
+              returnStateWidget(state, context),
+            ],
+          ),
        );
      }
     );
