@@ -93,7 +93,7 @@ class _TypeNamePageState extends State<TypeNamePage> {
                   height: 24,
                 ),
                 Text('Добавьте фото и укажите свое имя',
-                    style: AppFontStyles.paleHeading),
+                    style: AppFontStyles.placeholderMedium),
                 SizedBox(
                   height: 24,
                 ),

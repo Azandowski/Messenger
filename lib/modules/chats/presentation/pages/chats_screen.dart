@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger_mobile/modules/category/data/models/chat_view_model.dart';
-import 'package:messenger_mobile/modules/category/presentation/create_category_main/widgets/chat_skeleton_item.dart';
+import 'package:messenger_mobile/core/widgets/independent/small_widgets/cell_skeleton_item.dart';
 import 'package:messenger_mobile/modules/chats/presentation/widgets/categories_bloc_listener.dart';
 import 'package:messenger_mobile/modules/chats/presentation/widgets/chat_item/chat_preview_item.dart';
 import '../bloc/cubit/chats_cubit_cubit.dart';
@@ -64,7 +64,7 @@ class _ChatsScreenState extends State<ChatsScreen> {
                         ),
                       );
                     } else {
-                      return ChatShimmerItem();
+                      return CellShimmerItem();
                     }
                   },
                   itemCount: chatState is ChatsCubitLoading ? 10 :

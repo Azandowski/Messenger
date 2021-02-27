@@ -70,12 +70,12 @@ class ChatsList extends StatelessWidget {
             ),
             title: Text(
               item.entity.title, 
-              style: AppFontStyles.mainStyle,
+              style: AppFontStyles.headerMediumStyle,
             ),
             subtitle: item.hasDescription ? 
               Text(
                 item.description,
-                style: AppFontStyles.blackMediumStyle,
+                style: AppFontStyles.mediumStyle,
               ) : null,
             trailing: cellType == ChatCellType.optionsWithChat ? 
               PopupMenuButton<ChatCellActionType>(

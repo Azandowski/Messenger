@@ -5,7 +5,7 @@ import 'package:messenger_mobile/core/blocs/category/bloc/category_bloc.dart';
 import 'package:messenger_mobile/modules/category/presentation/category_list/widgets/category_cell.dart';
 import 'package:messenger_mobile/modules/category/presentation/category_list/widgets/category_list_widget.dart';
 import 'package:messenger_mobile/modules/category/presentation/create_category_main/pages/create_category_screen.dart';
-import 'package:messenger_mobile/modules/category/presentation/create_category_main/widgets/chat_skeleton_item.dart';
+import 'package:messenger_mobile/core/widgets/independent/small_widgets/cell_skeleton_item.dart';
 import 'package:messenger_mobile/modules/chats/domain/entities/category.dart';
 
 class CategoryList extends StatelessWidget {
@@ -45,7 +45,7 @@ class CategoryList extends StatelessWidget {
                 color: Colors.white,
                 child: Text(isMoveChat ? 'Выберите категорию для переноса' :
                   'Вы можете создавать свои категории с нужными чатами, для быстрого переключения между ними.',
-                  style: AppFontStyles.greyPhoneStyle,
+                  style: AppFontStyles.placeholderStyle,
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -75,7 +75,7 @@ class CategoryList extends StatelessWidget {
       return Expanded(
         child: ListView.builder(
           itemBuilder: (context, int index) {
-            return ChatShimmerItem();
+            return CellShimmerItem();
           },
           itemCount: 10,
         )

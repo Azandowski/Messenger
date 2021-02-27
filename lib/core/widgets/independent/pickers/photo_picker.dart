@@ -21,7 +21,7 @@ class PhotoPicker {
               backgroundColor: Theme.of(context).backgroundColor,
               title: Text(
                 "select_one_option",
-                style: AppFontStyles.mainStyle,
+                style: AppFontStyles.headerMediumStyle,
               ),
               content: SingleChildScrollView(
                 child: ListBody(

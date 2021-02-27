@@ -65,7 +65,7 @@ class CustomTextField extends StatelessWidget {
             floatingLabelBehavior: FloatingLabelBehavior.auto,
           ),
           keyboardType: TextInputType.text,
-          style: AppFontStyles.mainStyle,
+          style: AppFontStyles.headerMediumStyle,
           onChanged: onChanged,
         ),
       ),

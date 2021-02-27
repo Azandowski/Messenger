@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
-class ChatShimmerItem extends StatelessWidget {
+class CellShimmerItem extends StatelessWidget {
   
+  final double circleSize;
+
+  const CellShimmerItem({
+    this.circleSize = 60,
+    Key key, 
+  }) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -11,8 +18,8 @@ class ChatShimmerItem extends StatelessWidget {
         child: Row(
           children: [
             Container(
-              width: 60,
-              height: 60,
+              width: circleSize,
+              height: circleSize,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(30),
                 color: Colors.white,

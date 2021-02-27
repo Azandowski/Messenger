@@ -4,7 +4,6 @@ abstract class AppColors {
   static get primary => Colors.white;
   static get secondary => Colors.grey[200];
   static get iconSelected => Color.fromRGBO(66, 115, 175, 1);
-  static get paleFontColor => Colors.black;
   static get indicatorColor => Color(0xff9357CD);
   static get accentBlueColor => Color(0xff396FB4);
   static get greyColor => Color(0xff898989);
@@ -14,108 +13,56 @@ abstract class AppColors {
 }
 
 abstract class AppFontStyles {
+  
+  // Header Style
   static get headingBlackStyle =>
     TextStyle(color: Colors.black, fontWeight: FontWeight.w500, fontSize: 22);
   
-  static get mainStyle => TextStyle(
+  static get headingTextSyle => TextStyle(
+    color: Colors.black,
+    fontWeight: FontWeight.w500,
+    fontSize: 20,
+  );
+
+  // Normal Text Style
+  static get headerMediumStyle => TextStyle(
     color: Colors.black,
     fontWeight: FontWeight.w500,
     fontSize: 15,
   );
 
+  // For Medium Texts
+  static get mediumStyle => TextStyle(
+    color: Colors.black,
+    fontSize: 14,
+  );
+
+  static get placeholderMedium => TextStyle(
+    color: AppColors.greyColor,
+    fontWeight: FontWeight.w500,
+    fontSize: 15,
+  );
+
+  // For Grey Placeholders
+  static get placeholderStyle => TextStyle(
+    color: Color(0xff828282),
+    fontWeight: FontWeight.w400,
+    fontSize: 12,
+  );
+  
+  // Action Button Style
   static get actionButtonStyle => TextStyle(
     color: Colors.white,
     fontWeight: FontWeight.w500,
     fontSize: 15,
   );
 
-  static get percentInvestStyle => TextStyle(
-    color: Colors.white,
-    fontWeight: FontWeight.w700,
-    fontSize: 24,
-  );
-
-  static get mediumTextStyle => TextStyle(
-    color: Colors.white,
-    fontWeight: FontWeight.w700,
-    fontSize: 16,
-  );
-
-  static get blackMediumStyle => TextStyle(
-    color: Colors.black,
-    fontSize: 14,
-  );
-
-  static get greyPhoneStyle => TextStyle(
-    color: Color(0xff828282),
-    fontWeight: FontWeight.w400,
-    fontSize: 12,
-  );
-  static get paleStyle => TextStyle(
-    color: AppColors.paleFontColor,
-    fontWeight: FontWeight.w500,
-    fontSize: 12,
-  );
-
-  static get labelTextStyle => TextStyle(
-    color: AppColors.paleFontColor,
-    fontWeight: FontWeight.w500,
-    fontSize: 15,
-    height: -16);
-  
-  static get helperTextStyle => TextStyle(
-    color: Color(0xff828282),
-    fontSize: 12,
-  );
-
-  static get paleHeading => TextStyle(
-    color: AppColors.paleFontColor,
-    fontWeight: FontWeight.w500,
-    fontSize: 15,
-  );
-
-  static get headingTextSyle => TextStyle(
-    color: Colors.black,
-    fontWeight: FontWeight.w500,
-    fontSize: 20,
-  );
-  
-  static get headingBoldStyle => TextStyle(fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold);
-  static get hintAppTextStyle => TextStyle(
-    color: Color(0xffE0E0E0),
-    fontWeight: FontWeight.w400,
-    fontSize: 14,
-  );
-  static get nameWhiteStyle => TextStyle(
-    color: Colors.white,
-    fontWeight: FontWeight.w500,
-    fontSize: 14,
-  );
-  static get headingWhite2 => TextStyle(
-    color: Colors.white,
-    fontWeight: FontWeight.w400,
-    fontSize: 16,
-  );
-  static get referralNameStyle => TextStyle(
-    color: Colors.white,
-    fontWeight: FontWeight.w500,
-    fontSize: 18,
-  );
-  static get referralPhone => TextStyle(
-    color: Color(0xffE0E0E0),
-    fontWeight: FontWeight.w400,
-    fontSize: 16,
-  );
-  static get phoneListStyle => TextStyle(
-    color: Colors.white,
-    fontWeight: FontWeight.w700,
-    fontSize: 18,
-  );
   static get indicatorSmallStyle => TextStyle(
     color: AppColors.indicatorColor,
     fontWeight: FontWeight.w400,
     fontSize: 12,
   );
+  
   static get blueSmallStyle => TextStyle(
     color: AppColors.accentBlueColor,
     fontWeight: FontWeight.w400,

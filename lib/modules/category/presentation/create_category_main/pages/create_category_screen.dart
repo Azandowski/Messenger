@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger_mobile/core/widgets/independent/buttons/bottom_action_button.dart';
 import 'package:messenger_mobile/core/widgets/independent/pickers/photo_picker.dart';
 import 'package:messenger_mobile/modules/category/data/models/chat_view_model.dart';
-import 'package:messenger_mobile/modules/category/presentation/create_category_main/widgets/chat_count_view.dart';
+import 'package:messenger_mobile/core/widgets/independent/small_widgets/chat_count_view.dart';
 import 'package:messenger_mobile/modules/category/presentation/create_category_main/widgets/chat_list.dart';
 import '../../../../../locator.dart';
 import '../../../../../main.dart';
@@ -67,8 +67,8 @@ class _CreateCategoryScreenState extends State<CreateCategoryScreen> implements 
                         _navigator.push(ChooseChatsPage.route(this));
                       } 
                     ),
-                    ChatCountView(
-                      count: chats.length
+                    CellHeaderView(
+                      title: 'Чаты: ${chats.length}'
                     ),
                     ChatsList(
                       items: chats,

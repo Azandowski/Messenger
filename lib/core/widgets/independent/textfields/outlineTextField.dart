@@ -30,7 +30,7 @@ class OutlineTextField extends StatelessWidget {
       keyboardType: textInputType,
       cursorColor: AppColors.accentBlueColor,
       decoration: InputDecoration(
-          prefix: Text(prefixText, style: AppFontStyles.blackMediumStyle),
+          prefix: Text(prefixText, style: AppFontStyles.mediumStyle),
           contentPadding: EdgeInsets.symmetric(
               horizontal: width / (360 / 16), vertical: height / (724 / 18)),
           focusedBorder: OutlineInputBorder(

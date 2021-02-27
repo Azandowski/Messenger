@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-class ChatCountView extends StatelessWidget {
-  final int count;
+class CellHeaderView extends StatelessWidget {
+  final String title;
 
-  const ChatCountView({
-    @required this.count,
+  const CellHeaderView({
+    @required this.title,
     Key key
   }) : super(key: key);
 
@@ -17,7 +17,7 @@ class ChatCountView extends StatelessWidget {
       ),
       child: Center(
         child: Text(
-          'Чаты: $count',
+          title,
           textAlign: TextAlign.center,
         )
       )

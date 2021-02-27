@@ -86,7 +86,7 @@ class _TypeCodePageState extends State<TypeCodePage> {
                     style: AppFontStyles.headingBlackStyle),
                 SizedBox(height: 8),
                 Text('Код отправлен на ${widget.codeEntity.phone}',
-                    style: AppFontStyles.greyPhoneStyle),
+                    style: AppFontStyles.placeholderStyle),
                 SizedBox(height: 20),
                 PinField(
                   pinPutFocusNode: _pinPutFocusNode,
@@ -104,7 +104,7 @@ class _TypeCodePageState extends State<TypeCodePage> {
                 Center(
                     child: timer > 0
                         ? Text('Получить код повторно через: $timer сек',
-                            style: AppFontStyles.greyPhoneStyle)
+                            style: AppFontStyles.placeholderStyle)
                         : GestureDetector(
                             onTap: () {
                               phoneCubit.sendPhone(widget.codeEntity.phone);
@@ -115,7 +115,7 @@ class _TypeCodePageState extends State<TypeCodePage> {
                               });
                             },
                             child: Text('Получить код повторно',
-                                style: AppFontStyles.greyPhoneStyle),
+                                style: AppFontStyles.placeholderStyle),
                           )),
                 SizedBox(
                   height: height * 0.1,

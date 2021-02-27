@@ -38,7 +38,7 @@ class CategoryItem extends StatelessWidget {
             ),
             Text(
               entity.name,
-              style: AppFontStyles.mainStyle,
+              style: AppFontStyles.headerMediumStyle,
               textAlign: TextAlign.center,
               overflow: TextOverflow.ellipsis,
             ),
