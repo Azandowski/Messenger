@@ -57,6 +57,21 @@ class CreateCategoryRepositoryImpl implements CategoryRepository {
         return Left(e);
       }
     } else {
+      return Left(ConnectionFailure()); 
+    }
+  }
+
+  @override
+  Future<Either<Failure, CategoryEntity>> deleteCategory(int id) async{
+     if (await networkInfo.isConnected) {
+      try {
+        final category =
+            await createCategoryDataSource.deleteCatefory(id);
+        return Right(category);
+      } catch (e) {
+        return Left(e);
+      }
+    } else {
       return Left(ConnectionFailure());
     }
   }
