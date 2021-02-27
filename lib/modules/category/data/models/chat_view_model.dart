@@ -69,7 +69,7 @@ class ChatViewModel {
   }
 
   bool get isMuted {
-    return true;
+    return !entity.permissions.isSoundOn;
   }
 
   bool get isHideImages {
