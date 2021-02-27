@@ -2,7 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
+import 'package:messenger_mobile/core/config/auth_config.dart';
 import 'package:messenger_mobile/core/services/network/Endpoints.dart';
+import 'package:messenger_mobile/locator.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/utils/multipart_request_helper.dart';
 import '../../../chats/data/model/category_model.dart';
@@ -18,7 +20,9 @@ abstract class CategoryDataSource {
   });
 
   Future<List<CategoryEntity>> getCategories(String token);
-}
+
+  Future<CategoryEntity> deleteCatefory(int id);
+  }
 
 class CategoryDataSourceImpl implements CategoryDataSource {
   
@@ -73,6 +77,21 @@ class CategoryDataSourceImpl implements CategoryDataSource {
           .toList();
 
       return categories;
+    } else {
+      throw ServerFailure(message: response.body.toString());
+    }
+  }
+
+  @override
+  Future<CategoryEntity> deleteCatefory(int id) async {
+    var ednpoint = Endpoints.deleteCategory;
+    http.Response response = await client.delete(
+      ednpoint.buildURL(queryParameters: {'id':id}),
+      headers: Endpoints.getCurrentUser.getHeaders(token: sl<AuthConfig>().token));
+
+    if (response.statusCode >= 200 && response.statusCode <= 299) {
+      final category =  CategoryModel.fromJson(json.decode(response.body));
+      return category;
     } else {
       throw ServerFailure(message: response.body.toString());
     }

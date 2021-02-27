@@ -16,4 +16,6 @@ abstract class CategoryRepository {
   Future<Either<Failure, List<CategoryEntity>>> getCategories(
     GetCategoriesParams getCategoryParams
   );
+
+  Future<Either<Failure, CategoryEntity>> deleteCategory(int id);
 }
