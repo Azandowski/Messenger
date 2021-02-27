@@ -49,7 +49,7 @@ class CreateCategoryHeader extends StatelessWidget {
                 SizedBox(width: 10),
                 Text(
                   'Добавить чаты',
-                  style: AppFontStyles.mainStyle,
+                  style: AppFontStyles.headerMediumStyle,
                 )
               ],
             ),

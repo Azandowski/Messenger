@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger_mobile/modules/category/data/models/chat_view_model.dart';
-import 'package:messenger_mobile/modules/category/presentation/create_category_main/widgets/chat_skeleton_item.dart';
+import 'package:messenger_mobile/core/widgets/independent/small_widgets/cell_skeleton_item.dart';
 import 'package:messenger_mobile/modules/chats/presentation/bloc/cubit/chats_cubit_cubit.dart';
 
 import '../../../../../app/appTheme.dart';
@@ -15,8 +15,8 @@ abstract class ChatChooseDelegate{
 
 class ChooseChatsPage extends StatefulWidget {
 
-  static Route route(ChatChooseDelegate deleagete) {
-    return MaterialPageRoute<void>(builder: (_) => ChooseChatsPage(delegate: deleagete,));
+  static Route route(ChatChooseDelegate delegate) {
+    return MaterialPageRoute<void>(builder: (_) => ChooseChatsPage(delegate: delegate,));
   }
 
   final ChatChooseDelegate delegate;
@@ -73,7 +73,7 @@ class _ChooseChatsPageState extends State<ChooseChatsPage> {
                     child: Container(
                       child: Text(
                         'Выберите те чаты, которые вы хотите добавить',
-                        style: AppFontStyles.greyPhoneStyle,
+                        style: AppFontStyles.placeholderStyle,
                       ),
                     ),
                   ),
@@ -121,7 +121,7 @@ class _ChooseChatsPageState extends State<ChooseChatsPage> {
       return Expanded(
         child: ListView.builder(
           itemBuilder: (context, int index) {
-            return ChatShimmerItem();
+            return CellShimmerItem();
           },
           itemCount: 10,
         )

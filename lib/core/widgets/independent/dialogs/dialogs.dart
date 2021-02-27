@@ -119,7 +119,7 @@ class DialogsView extends StatelessWidget {
           ...[
             Text(
               title ?? '',
-              style: titleStyle ?? AppFontStyles.mainStyle,
+              style: titleStyle ?? AppFontStyles.headerMediumStyle,
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 10,)

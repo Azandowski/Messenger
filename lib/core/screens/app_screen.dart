@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:messenger_mobile/modules/creation_module/presentation/pages/creation_module_screen.dart';
+import '../../main.dart';
 import '../../modules/chats/presentation/pages/chats_screen.dart';
 import '../../modules/profile/presentation/pages/profile_page.dart';
 import '../widgets/independent/bottomBar/appBottomBar.dart';
@@ -11,6 +13,8 @@ class AppScreen extends StatefulWidget {
 
 class _AppScreenState extends State<AppScreen> {
   final bucket = PageStorageBucket();
+
+  NavigatorState get _navigator => navigatorKey.currentState;
 
   final pages = [
     ChatsScreen(),
@@ -37,7 +41,11 @@ class _AppScreenState extends State<AppScreen> {
           });
         }),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: AddButton(),
+      floatingActionButton: AddButton(
+        onTap: () {
+          _navigator.push(CreationModuleScreen.route());
+        },
+      ),
     );
   }
 }

@@ -7,6 +7,7 @@ import 'core/blocs/category/bloc/category_bloc.dart';
 import 'core/config/auth_config.dart';
 import 'core/services/network/Endpoints.dart';
 import 'core/services/network/network_info.dart';
+import 'core/utils/date_helper.dart';
 import 'modules/authentication/data/datasources/local_authentication_datasource.dart';
 import 'modules/authentication/data/datasources/remote_authentication_datasource.dart';
 import 'modules/authentication/data/repositories/authentication_repository_impl.dart';
@@ -148,6 +149,8 @@ Future<void> init() async {
   sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(sl()));
 
   sl.registerLazySingleton(() => AuthConfig());
+
+  sl.registerLazySingleton(() => DateHelper());
 
   sl.registerLazySingleton(() => http.Client());
 

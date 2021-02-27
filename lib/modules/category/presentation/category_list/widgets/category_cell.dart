@@ -30,12 +30,12 @@ class CategoryCell extends StatelessWidget {
           ),
       title: Text(
         item.name, 
-        style: AppFontStyles.mainStyle,
+        style: AppFontStyles.headerMediumStyle,
       ),
       subtitle:
         Text(
           (item.totalChats ?? 0).toString(),
-          style: AppFontStyles.blackMediumStyle,
+          style: AppFontStyles.mediumStyle,
         ),
       trailing: cellType == CategoryCellType.withOptions ? 
         PopupMenuButton<CategoryCellActionType>(

@@ -18,7 +18,7 @@ class OffertTextWidget extends StatelessWidget {
           child: RichText(
             text: TextSpan(
                 text: "you_agree_by_continuing",
-                style: AppFontStyles.paleStyle,
+                style: AppFontStyles.placeholderStyle,
                 children: [
                   TextSpan(
                       text: " ${'handle_personal_info'}",

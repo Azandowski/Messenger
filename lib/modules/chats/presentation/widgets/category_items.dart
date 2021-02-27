@@ -30,7 +30,9 @@ class CategoriesSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            Text('Категории чатов', style: AppFontStyles.headingTextSyle),
+            Text(
+              'Категории чатов', 
+              style: AppFontStyles.headerMediumStyle),
             GestureDetector(
               child: Icon(Icons.chevron_right),
               onTap: onNextClick,
