@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:messenger_mobile/core/config/auth_config.dart';
 import 'package:messenger_mobile/core/services/network/paginatedResult.dart';
 import 'package:messenger_mobile/modules/category/data/models/chat_entity_model.dart';
@@ -9,6 +10,7 @@ import 'package:messenger_mobile/modules/chats/domain/usecase/get_chats.dart';
 import 'package:messenger_mobile/modules/chats/domain/usecase/params.dart';
 
 import '../../../../../locator.dart';
+import '../../../../../main.dart';
 
 part 'chats_cubit_state.dart';
 
