@@ -24,6 +24,11 @@ abstract class AppFontStyles {
     fontSize: 20,
   );
 
+  static get logoHeadingStyle => TextStyle(
+    color: Colors.white,
+    fontWeight: FontWeight.w500,
+    fontSize: 30,
+  );
   // Normal Text Style
   static get headerMediumStyle => TextStyle(
     color: Colors.black,
