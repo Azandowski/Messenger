@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger_mobile/core/blocs/category/bloc/category_bloc.dart';
-import 'package:messenger_mobile/modules/chats/presentation/bloc/cubit/chats_cubit_cubit.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'app/appTheme.dart';
 import 'bloc_observer.dart';
@@ -11,7 +10,6 @@ import 'core/blocs/chat/bloc/bloc/chat_cubit.dart';
 import 'core/config/routes.dart';
 import 'core/screens/splash_screen.dart';
 import 'locator.dart' as serviceLocator;
-import 'modules/chats/presentation/bloc/cubit/chats_cubit_cubit.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
 

@@ -34,26 +34,22 @@ class CategoryCell extends StatelessWidget {
           item.name, 
           style: AppFontStyles.headerMediumStyle,
         ),
-        subtitle:
-          Text(
-            (item.totalChats ?? 0).toString(),
-            style: AppFontStyles.mediumStyle,
-          ),
-        trailing: cellType == CategoryCellType.withOptions ? 
-          PopupMenuButton<CategoryCellActionType>(
-            itemBuilder: (context) => [
-              CategoryCellActionType.edit, CategoryCellActionType.delete
-            ].map((e) {
-              return PopupMenuItem(
-                value: e,
-                child: Text(e.title)
-              );
-            }).toList(),
-            onSelected: (CategoryCellActionType action) {
-              onSelectedOption(action, item);
-            }
-          ) : SizedBox(),
-      ),  
+      trailing: cellType == CategoryCellType.withOptions ? 
+        PopupMenuButton<CategoryCellActionType>(
+          itemBuilder: (context) => [
+            CategoryCellActionType.edit, CategoryCellActionType.delete
+          ].map((e) {
+            return PopupMenuItem(
+              value: e,
+              child: Text(e.title)
+            );
+          }).toList(),
+          onSelected: (CategoryCellActionType action) {
+            onSelectedOption(action, item);
+          },
+          offset: Offset(0,100),
+        ) : SizedBox(),
+      ),
     );
   }
 }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger_mobile/core/blocs/authorization/bloc/auth_bloc.dart';
+import 'package:messenger_mobile/core/blocs/category/bloc/category_bloc.dart';
+import 'package:messenger_mobile/core/blocs/chat/bloc/bloc/chat_bloc.dart';
 import '../../../../locator.dart';
 import '../../../edit_profile/presentation/pages/edit_profile_page.dart';
 import '../bloc/index.dart';
@@ -77,7 +79,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           isRed: true,
                         ),
                         onTap: () {
-                          context.read<AuthBloc>().add(AuthenticationLogoutRequested());
+                          context.read<AuthBloc>().add(AuthenticationLogoutRequested(categoryBloc: context.read<CategoryBloc>(), chatBloc:context.read<ChatBloc>()));
                         },
                       ),
                     ],

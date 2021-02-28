@@ -1,10 +1,14 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 
+import 'package:contacts_service/contacts_service.dart';
 import 'package:dartz/dartz.dart';
 import 'package:messenger_mobile/core/blocs/authorization/bloc/auth_bloc.dart';
 import 'package:messenger_mobile/modules/category/domain/usecases/get_categories.dart';
 import 'package:messenger_mobile/modules/chats/domain/entities/usecases/params.dart';
 import 'package:meta/meta.dart';
+import 'package:path_provider/path_provider.dart';
 import '../../../../core/config/auth_config.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/services/network/network_info.dart';
@@ -41,6 +45,12 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
 
       print(token);
 
+      final sentContacts = await localDataSource.getContacts();
+
+      if(!sentContacts){
+         sendConctacts();
+      }
+
       await getCurrentUser(token);
 
       getCategories(GetCategoriesParams(token: token));
@@ -48,6 +58,7 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
       params.add(AuthParams(null, null));
     }
   }
+
 
   @override
   Future<Either<Failure, CodeEntity>> createCode(PhoneParams params) async {
@@ -82,7 +93,7 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
       getCategories(GetCategoriesParams(token: token.token));
       return Right(token);
     } on ServerFailure {
-      return Left(ServerFailure(message: 'null'));
+      return Left(ServerFailure(message: 'invalid code'));
     }
   }
 
@@ -125,5 +136,51 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
     } on StorageFailure {
       return Left(StorageFailure());
     }
+  }
+
+  Future sendConctacts() async {
+    Iterable<Contact> contacts = await ContactsService.getContacts(withThumbnails: false);
+    var jsonNew = jsonEncode(contacts.map((e) => e.toJson()).toList());
+    _writeJson(jsonNew);
+  }
+
+ 
+  Future<String> get _localPath async {
+    final directory = await getApplicationDocumentsDirectory();
+    return directory.path;
+  }
+
+  Future<File> get _localFile async {
+    final path = await _localPath;
+    return File('$path/contacts');
+  }
+
+  void _writeJson(String newJson) async {
+    final String dir = (await getApplicationDocumentsDirectory()).path;
+    final String path = '$dir/contacts.json';
+    final File file = File(path);
+    file.writeAsString(newJson);
+    print(file.path);
+  }
+
+}
+
+extension on Contact{
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+      data['middleName'] = middleName;
+      data['displayName'] = displayName;
+      if(this.phones != null) {
+        data["phones"] =  this.phones.map((e) => e.toJson()).toList();
+      }
+      return data;
+  }
+}
+
+extension on Item{
+  Map<String, dynamic> toJson() {
+    return {
+       this.label: this.value,
+    };
   }
 }

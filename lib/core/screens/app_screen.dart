@@ -1,3 +1,5 @@
+import 'package:flutter/services.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:messenger_mobile/modules/creation_module/presentation/pages/creation_module_screen.dart';
 import '../../main.dart';
@@ -12,6 +14,46 @@ class AppScreen extends StatefulWidget {
 }
 
 class _AppScreenState extends State<AppScreen> {
+
+  @override
+  void initState() {
+    super.initState();
+    _askPermissions();
+  }
+
+  Future<void> _askPermissions() async {
+    PermissionStatus permissionStatus = await _getContactPermission();
+    if (permissionStatus != PermissionStatus.granted) {
+      _handleInvalidPermissions(permissionStatus);
+    }
+  }
+
+  Future<PermissionStatus> _getContactPermission() async {
+    PermissionStatus permission = await Permission.contacts.request();
+    if (permission != PermissionStatus.granted &&
+        permission != PermissionStatus.denied) {
+          Map<Permission, PermissionStatus> statuses = await [
+          Permission.contacts].request();
+          return statuses[Permission.contacts] ??
+          PermissionStatus.undetermined;
+    } else {
+      return permission;
+    }
+  }
+
+  void _handleInvalidPermissions(PermissionStatus permissionStatus) {
+    if (permissionStatus == PermissionStatus.denied) {
+      throw PlatformException(
+          code: "PERMISSION_DENIED",
+          message: "Access to contacts data denied",
+          details: null);
+    } else if (permissionStatus == PermissionStatus.denied) {
+      throw PlatformException(
+          code: "PERMISSION_DISABLED",
+          message: "Contacts are not available on device",
+          details: null);
+    }
+  }
   final bucket = PageStorageBucket();
 
   NavigatorState get _navigator => navigatorKey.currentState;

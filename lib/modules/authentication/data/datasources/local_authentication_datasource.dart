@@ -10,15 +10,24 @@ abstract class AuthenticationLocalDataSource {
 
   /// delete from keystore/keychain
   Future<bool> deleteToken();
+
+  // write sent contacts
+  Future<void> saveContactsState(String token);
+
+  Future<bool> getContacts();
 }
 
 const ACCESS_TOKEN = 'access_token';
+const CONTACT = 'contact';
+
+const WROTE = 'contacts_wrote';
 
 class AuthenticationLocalDataSourceImpl
     implements AuthenticationLocalDataSource {
   @override
   Future<bool> deleteToken() async {
     await Storage().secureStorage.delete(key: ACCESS_TOKEN);
+    await Storage().secureStorage.delete(key: CONTACT);
     return true;
   }
 
@@ -41,5 +50,20 @@ class AuthenticationLocalDataSourceImpl
   Stream<String> get token async* {
     var token = Storage().secureStorage.read(key: ACCESS_TOKEN).asStream();
     yield* token;
+  }
+
+  @override
+  Future<void> saveContactsState(String token) async {
+    await Storage().secureStorage.write(key: CONTACT, value: WROTE);
+  }
+
+  @override
+  Future<bool> getContacts() async{
+    var contactsSent = await Storage().secureStorage.read(key: CONTACT);
+    if (contactsSent != null && contactsSent != '') {
+      return true;
+    } else {
+      return false;
+    }
   }
 }
