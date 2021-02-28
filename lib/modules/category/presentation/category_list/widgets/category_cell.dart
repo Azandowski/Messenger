@@ -17,42 +17,42 @@ class CategoryCell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-    key: key,
-    color: Colors.white,
-    child: ListTile(
-      contentPadding: EdgeInsets.symmetric(vertical: 12,horizontal: 16),
-      leading: FittedBox(
-        fit: BoxFit.scaleDown,
-        child: CircleAvatar(
-              backgroundImage: NetworkImage(item.avatar),
-              minRadius: 30,
-            ),
+      key: key,
+      color: Colors.white,
+      child: ListTile(
+        contentPadding: EdgeInsets.symmetric(vertical: 12,horizontal: 16),
+        leading: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: CircleAvatar(
+            backgroundImage: NetworkImage(item.avatar),
+            minRadius: 30,
           ),
-      title: Text(
-        item.name, 
-        style: AppFontStyles.headerMediumStyle,
-      ),
-      subtitle:
-        Text(
-          (item.totalChats ?? 0).toString(),
-          style: AppFontStyles.mediumStyle,
         ),
-      trailing: cellType == CategoryCellType.withOptions ? 
-        PopupMenuButton<CategoryCellActionType>(
-          itemBuilder: (context) => [
-            CategoryCellActionType.edit, CategoryCellActionType.delete
-          ].map((e) {
-            return PopupMenuItem(
-              value: e,
-              child: Text(e.title)
-            );
-          }).toList(),
-          onSelected: (CategoryCellActionType action) {
-            onSelectedOption(action, item);
-          }
-        ) : SizedBox(),
-    ),
-        );
+        title: Text(
+          item.name, 
+          style: AppFontStyles.headerMediumStyle,
+        ),
+        subtitle:
+          Text(
+            (item.totalChats ?? 0).toString(),
+            style: AppFontStyles.mediumStyle,
+          ),
+        trailing: cellType == CategoryCellType.withOptions ? 
+          PopupMenuButton<CategoryCellActionType>(
+            itemBuilder: (context) => [
+              CategoryCellActionType.edit, CategoryCellActionType.delete
+            ].map((e) {
+              return PopupMenuItem(
+                value: e,
+                child: Text(e.title)
+              );
+            }).toList(),
+            onSelected: (CategoryCellActionType action) {
+              onSelectedOption(action, item);
+            }
+          ) : SizedBox(),
+      ),  
+    );
   }
 }
 

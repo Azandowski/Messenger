@@ -18,26 +18,29 @@ class CategoriesList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       child: ReorderableListView(
-      header: Container(
-        key: ValueKey('header'),
-        width: double.infinity,
-        color: Colors.white,
-        padding: EdgeInsets.symmetric(vertical: 12),
-        child: Text('Категории: ${items.length}',textAlign: TextAlign.center,)
-      ),
-      onReorder: (oldI, newI){
-        
-      },
-      children: [
-        for (final item in items)
-          CategoryCell(
-            item: item,
-            cellType: cellType,
-            onSelectedOption: onSelectedOption,
-            key: ValueKey(item),
-         )
-      ],
-
-    ));
+        header: Container(
+          key: ValueKey('header'),
+          width: double.infinity,
+          color: Colors.white,
+          padding: EdgeInsets.symmetric(vertical: 12),
+          child: Text(
+            'Категории: ${items.length}',
+            textAlign: TextAlign.center,
+          )
+        ),
+        onReorder: (oldI, newI){
+          
+        },
+        children: [
+          for (final item in items)
+            CategoryCell(
+              item: item,
+              cellType: cellType,
+              onSelectedOption: onSelectedOption,
+              key: ValueKey(item),
+          )
+        ],
+      )
+    );
   }
 }
