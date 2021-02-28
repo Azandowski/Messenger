@@ -28,6 +28,8 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
   ) async* {
     if (event is CategoriesChanged) {
       yield CategoryLoaded(categoryList: event.newCategories);
+    }else if( event is CategoriesReset){
+      yield CategoryEmpty();
     }
   }
 }

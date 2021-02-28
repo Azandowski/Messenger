@@ -17,3 +17,5 @@ class CategoriesChanged extends CategoryEvent{
   @override
   List<Object> get props => [newCategories];
 }
+
+class CategoriesReset extends CategoryEvent{}

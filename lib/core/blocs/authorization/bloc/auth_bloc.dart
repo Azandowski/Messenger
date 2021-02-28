@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:messenger_mobile/core/blocs/category/bloc/category_bloc.dart';
+import 'package:messenger_mobile/core/blocs/chat/bloc/bloc/chat_bloc.dart';
 import 'package:messenger_mobile/core/usecases/usecase.dart';
 import 'package:messenger_mobile/modules/authentication/domain/repositories/authentication_repository.dart';
 import 'package:messenger_mobile/modules/authentication/domain/usecases/logout.dart';
@@ -30,6 +32,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       yield await _mapAuthenticationStatusChangedToState(event.params);
     } else if (event is AuthenticationLogoutRequested) {
       await logoutUseCase(NoParams());
+      event.categoryBloc.add(CategoriesReset());
     }
   }
 
