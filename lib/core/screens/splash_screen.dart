@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger_mobile/core/blocs/category/bloc/category_bloc.dart';
-import 'package:messenger_mobile/locator.dart';
 import '../../modules/authentication/presentation/pages/auth_page.dart';
 import '../../modules/authentication/presentation/pages/type_name_page/pages/type_name_page.dart';
 import '../blocs/authorization/bloc/auth_bloc.dart';
