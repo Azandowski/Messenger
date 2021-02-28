@@ -19,10 +19,10 @@ class AuthenticationStatusChanged extends AuthEvent {
 class AuthenticationLogoutRequested extends AuthEvent {
 
   final CategoryBloc categoryBloc;
-  final ChatBloc chatBloc;
+  final ChatGlobalCubit chatBloc;
 
   AuthenticationLogoutRequested({
     @required this.categoryBloc,
     @required this.chatBloc
-    });
+  });
 }
