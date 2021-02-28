@@ -19,7 +19,7 @@ class AvatarImage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ClipRRect(
       borderRadius: borderRadius ?? BorderRadius.circular(10.0),
-      child: !isFromAsset ? FadeInImage(
+      child: !isFromAsset && path != null ? FadeInImage(
         placeholder: AssetImage("assets/images/logo.png"), 
         image: NetworkImage(path),
         width: width,

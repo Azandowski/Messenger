@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:messenger_mobile/core/config/auth_config.dart';
 import 'package:messenger_mobile/modules/category/domain/usecases/params.dart';
+import 'package:messenger_mobile/modules/category/domain/usecases/transfer_chat.dart';
 import 'package:messenger_mobile/modules/media/domain/usecases/get_image.dart';
 import '../../../../../locator.dart';
 import '../../../../chats/domain/entities/category.dart';
@@ -21,10 +22,12 @@ class CreateCategoryCubit extends Cubit<CreateCategoryState> {
   
   final CreateCategoryUseCase createCategory;
   final GetImage getImageUseCase;
+  final TransferChats transferChats;
 
   CreateCategoryCubit({
     @required this.createCategory,
     @required this.getImageUseCase,
+    @required this.transferChats
   }) : super(CreateCategoryLoading(
     imageFile: null,
     chats: []
@@ -75,6 +78,31 @@ class CreateCategoryCubit extends Cubit<CreateCategoryState> {
     );
   }
 
+  Future<void> doTransferChats (int newCategory) async {
+    emit(CreateCategoryTransferLoading(
+      chats: this.state.chats, 
+      imageFile: this.state.imageFile, 
+      categoryID: newCategory, 
+      chatsIDs: movingChats
+    ));
+    
+    var response = await transferChats(TransferChatsParams(
+      newCategoryId: newCategory, chatsIDs: movingChats
+    ));
+
+    response.fold(
+      (failure) => emit(CreateCategoryError(message: failure.message)), 
+      (_) {
+        var updatedChats = this.state.chats
+          .where((e) => !movingChats.contains(e.chatId))
+          .map((e) => e.clone()).toList();
+        emit(CreateCategoryNormal(
+          imageFile: this.state.imageFile, 
+          chats: updatedChats)
+        );
+    });
+  } 
+
   void addChats (List<ChatEntity> comingChats){
     emit(CreateCategoryNormal(
       imageFile: this.state.imageFile, 
@@ -94,6 +122,8 @@ class CreateCategoryCubit extends Cubit<CreateCategoryState> {
   }
 
   // * * Local Data
+   
+  List<int> movingChats = [];
 
   TextEditingController nameController = TextEditingController();
 }

@@ -35,6 +35,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   @override
+  void dispose() {
+    cubit.close();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final User user = sl<AuthConfig>().user;
     final String token = sl<AuthConfig>().token;
@@ -74,9 +80,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       onSelectPhoto: () {
                         PhotoPicker().showImageSourceSelectionDialog(context,
                             (imageSource) {
-                          BlocProvider.of<EditProfileCubit>(context)
-                              .pickProfileImage(
-                                  PickProfileImage(imageSource: imageSource));
+                          cubit.pickProfileImage(PickProfileImage(imageSource: imageSource));
                         });
                       },
                     ),
@@ -121,12 +125,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
                               onTap: () {
                                 if (!(state is EditProfileLoading)) {
                                   cubit.updateProfile(EditProfileUpdateUser(
-                                      token: token,
-                                      image: cubit.imageFile,
-                                      name: cubit.nameTextController.text,
-                                      surname: cubit.surnameTextController.text,
-                                      patronym:
-                                          cubit.patronymTextController.text));
+                                    token: token,
+                                    image: cubit.imageFile,
+                                    name: cubit.nameTextController.text,
+                                    surname: cubit.surnameTextController.text,
+                                    patronym: cubit.patronymTextController.text));
                                 }
                               },
                             )

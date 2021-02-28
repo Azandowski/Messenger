@@ -8,19 +8,26 @@ class CategoryModel extends CategoryEntity {
   final String avatar;
   final int totalChats;
 
-  CategoryModel(
-      {@required this.id,
-      @required this.name,
-      @required this.avatar,
-      @required this.totalChats})
-      : super(id: id, name: name, avatar: avatar, totalChats: totalChats);
+  CategoryModel({
+    @required this.id,
+    @required this.name,
+    @required this.avatar,
+    @required this.totalChats
+  }) : super(
+    id: id, 
+    name: name, 
+    avatar: avatar, 
+    totalChats: totalChats
+  );
 
   factory CategoryModel.fromJson(Map<String, dynamic> json) {
     return CategoryModel(
-        id: json['id'],
-        name: json['name'],
-        avatar: json['avatar'],
-        totalChats: json['total_chats']);
+      id: json['id'],
+      name: json['name'],
+      avatar: json['avatar'] == '/' ? null : 
+        json['full_link'],
+      totalChats: json['total_chats']
+    );
   }
 
   Map<String, dynamic> toJson() {

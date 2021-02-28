@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:messenger_mobile/core/widgets/independent/placeholders/load_widget.dart';
 import 'package:messenger_mobile/modules/category/data/models/chat_view_model.dart';
 
 import '../../../../../app/appTheme.dart';
@@ -6,13 +7,15 @@ import '../../../domain/entities/chat_entity.dart';
 
 class ChatsList extends StatelessWidget {
   final List<ChatViewModel> items;
+  final List<int> loadingItemsIDS;
   final ChatCellType cellType;
   final Function(ChatEntity) onSelect;
   final Function(ChatCellActionType, ChatEntity) onSelectedOption;
-  
+
   ChatsList({
     @required this.items,
     @required this.cellType,
+    this.loadingItemsIDS,
     this.onSelect,
     this.onSelectedOption,
     Key key,
@@ -77,7 +80,11 @@ class ChatsList extends StatelessWidget {
                 item.description,
                 style: AppFontStyles.mediumStyle,
               ) : null,
-            trailing: cellType == ChatCellType.optionsWithChat ? 
+            trailing: (loadingItemsIDS ?? []).contains(item.entity.chatId) ? 
+              LoadWidget(
+                inCenter: false,
+                size: 16,
+              ) : cellType == ChatCellType.optionsWithChat ? 
               PopupMenuButton<ChatCellActionType>(
                 itemBuilder: (context) => [
                   ChatCellActionType.move, ChatCellActionType.delete

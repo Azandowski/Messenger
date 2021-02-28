@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:messenger_mobile/app/appTheme.dart';
+import 'package:messenger_mobile/core/widgets/independent/images/ImageWithCorner.dart';
 import 'package:messenger_mobile/modules/chats/domain/entities/category.dart';
 
 class CategoryCell extends StatelessWidget {
@@ -23,10 +24,11 @@ class CategoryCell extends StatelessWidget {
         contentPadding: EdgeInsets.symmetric(vertical: 12,horizontal: 16),
         leading: FittedBox(
           fit: BoxFit.scaleDown,
-          child: CircleAvatar(
-            backgroundImage: NetworkImage(item.avatar),
-            minRadius: 30,
-          ),
+          child: AvatarImage(
+            isFromAsset: false,
+            path: item.avatar,
+            width: 60, height: 60,
+          )
         ),
         title: Text(
           item.name, 

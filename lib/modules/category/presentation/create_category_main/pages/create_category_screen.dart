@@ -4,7 +4,9 @@ import 'package:messenger_mobile/core/widgets/independent/buttons/bottom_action_
 import 'package:messenger_mobile/core/widgets/independent/pickers/photo_picker.dart';
 import 'package:messenger_mobile/modules/category/data/models/chat_view_model.dart';
 import 'package:messenger_mobile/core/widgets/independent/small_widgets/chat_count_view.dart';
+import 'package:messenger_mobile/modules/category/presentation/category_list/category_list.dart';
 import 'package:messenger_mobile/modules/category/presentation/create_category_main/widgets/chat_list.dart';
+import 'package:messenger_mobile/modules/chats/domain/entities/category.dart';
 import '../../../../../locator.dart';
 import '../../../../../main.dart';
 import '../../../domain/entities/chat_entity.dart';
@@ -72,12 +74,19 @@ class _CreateCategoryScreenState extends State<CreateCategoryScreen> implements 
                     ),
                     ChatsList(
                       items: chats,
+                      loadingItemsIDS: state is CreateCategoryTransferLoading ? 
+                        state.chatsIDs : [],
                       cellType: ChatCellType.optionsWithChat,
-                      onSelectedOption: (ChatCellActionType action, ChatEntity entity) {
+                      onSelectedOption: (ChatCellActionType action, ChatEntity entity) async {
                         if (action == ChatCellActionType.delete) {
                           cubit.deleteChat(entity);
                         } else {
-                          // TODO: Implement moving chat
+                          var response = await _navigator.push(CategoryList.route(isMoveChat: true));
+
+                          if (response is CategoryEntity) {
+                            cubit.movingChats = [entity.chatId];
+                            cubit.doTransferChats(response.id);
+                          }
                         }
                       },
                     )

@@ -13,7 +13,6 @@ abstract class CreateCategoryState extends Equatable {
   List<Object> get props => [chats, imageFile];
 }
 
-
 class CreateCategoryNormal extends CreateCategoryState {
   final File imageFile;
   final List<ChatEntity> chats;
@@ -40,6 +39,23 @@ class CreateCategoryLoading extends CreateCategoryState {
   List<Object> get props => [chats, imageFile];
 }
 
+// Загрузка при переносе чата в другую категорию
+class CreateCategoryTransferLoading extends CreateCategoryState {
+  final List<ChatEntity> chats;
+  final File imageFile;
+  final int categoryID;
+  final List<int> chatsIDs;
+
+  CreateCategoryTransferLoading({
+    @required this.chats,
+    @required this.imageFile,
+    @required this.categoryID,
+    @required this.chatsIDs
+  }) : super(chats: chats, imageFile: imageFile);
+
+  @override
+  List<Object> get props => [chats, imageFile, categoryID, chatsIDs];
+}
 
 class CreateCategorySuccess extends CreateCategoryState {
   final List<CategoryEntity> updatedCategories;

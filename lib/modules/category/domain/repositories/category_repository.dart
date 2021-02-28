@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dartz/dartz.dart';
+import 'package:messenger_mobile/core/usecases/usecase.dart';
 import 'package:messenger_mobile/modules/chats/domain/entities/usecases/params.dart';
 
 import '../../../../core/error/failures.dart';
@@ -18,4 +19,6 @@ abstract class CategoryRepository {
   );
 
   Future<Either<Failure, CategoryEntity>> deleteCategory(int id);
+
+  Future<Either<Failure, NoParams>> transferChats (List<int> chatsIDs, int categoryID);
 }

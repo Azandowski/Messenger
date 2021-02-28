@@ -19,3 +19,16 @@ class CreateCategoryParams extends Equatable {
   @override
   List<Object> get props => [token, avatarFile, name, chatIds];
 }
+
+class TransferChatsParams extends Equatable { 
+  final int newCategoryId;
+  final List<int> chatsIDs;
+
+  TransferChatsParams({
+    @required this.newCategoryId,
+    @required this.chatsIDs
+  });
+
+  @override
+  List<Object> get props => [newCategoryId, chatsIDs];
+}

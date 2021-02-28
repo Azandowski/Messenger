@@ -51,7 +51,7 @@ class _ProfilePageState extends State<ProfilePage> {
               builder: (context, profileState) {
                 if (profileState is ProfileLoading) {
                   return ProfilePageShimmer();
-                } else if (profileState is ProfileLoaded) {
+                } else {
                   return Column(
                     children: [
                       ProfileHeader(
@@ -82,8 +82,6 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                     ],
                   );
-                } else {
-                  return Container();
                 }
               }
             )
@@ -93,6 +91,10 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   _handleEditScreenNavigation(BuildContext context) async {
-    await Navigator.of(context).push(EditProfilePage.route());
+    var needsUpdate = await Navigator.of(context).push(EditProfilePage.route());
+
+    if (needsUpdate != null && needsUpdate is bool && needsUpdate) {
+      cubit.updateProfile();
+    }
   }
 }

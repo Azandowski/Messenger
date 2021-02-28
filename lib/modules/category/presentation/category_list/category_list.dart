@@ -12,6 +12,10 @@ class CategoryList extends StatelessWidget {
 
   static var id = 'categorylist';
 
+  static Route route({ isMoveChat = false }) {
+    return MaterialPageRoute<void>(builder: (_) => CategoryList(isMoveChat: isMoveChat,));
+  }
+
   final bool isMoveChat;
 
   CategoryList({
@@ -41,6 +45,7 @@ class CategoryList extends StatelessWidget {
           body: Column(
             children: [
               Container(
+                width: MediaQuery.of(context).size.width,
                 padding: EdgeInsets.symmetric(horizontal: 16, vertical: 15),
                 color: Colors.white,
                 child: Text(isMoveChat ? 'Выберите категорию для переноса' :
@@ -58,17 +63,20 @@ class CategoryList extends StatelessWidget {
     );
   }
 
-  Widget returnStateWidget(state, context){
+  Widget returnStateWidget(state, context) {
     if (state is CategoryLoaded) {
       return CategoriesList(
         items: state.categoryList,
-        cellType: CategoryCellType.withOptions,
+        cellType: isMoveChat ? CategoryCellType.empty : CategoryCellType.withOptions,
         onSelectedOption: (CategoryCellActionType action, CategoryEntity entity) {
           if (action == CategoryCellActionType.delete) {
              // TODO: Implement delete category
           } else {
              // TODO: Implement edit chat
           }
+        },
+        onSelect: (item) {
+          Navigator.of(context).pop(item);
         },
       );
     } else if (state is CategoryEmpty) {

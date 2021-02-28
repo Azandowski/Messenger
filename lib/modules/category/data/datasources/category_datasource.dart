@@ -10,6 +10,7 @@ import '../../../../core/utils/multipart_request_helper.dart';
 import '../../../chats/data/model/category_model.dart';
 import '../../../chats/domain/entities/category.dart';
 import 'package:messenger_mobile/core/utils/http_response_extension.dart';
+import '../../../../core/utils/http_response_extension.dart';
 
 abstract class CategoryDataSource {
   Future<List<CategoryEntity>> createCategory({
@@ -22,8 +23,12 @@ abstract class CategoryDataSource {
   Future<List<CategoryEntity>> getCategories(String token);
 
   Future<CategoryEntity> deleteCatefory(int id);
-  }
 
+  Future<void> transferChats (List<int> chatsIDs, int categoryID);
+}
+
+
+// * * Implementation of the CategoryDataSource
 class CategoryDataSourceImpl implements CategoryDataSource {
   
   final http.MultipartRequest multipartRequest;
@@ -48,7 +53,7 @@ class CategoryDataSourceImpl implements CategoryDataSource {
       files: file != null ? [file] : file,
       keyName: 'file',
       data: {
-        'chat_ids': chatIds,
+        'transfer': chatIds.join(','),
         'name': name
       }
     );
@@ -93,6 +98,24 @@ class CategoryDataSourceImpl implements CategoryDataSource {
       final category =  CategoryModel.fromJson(json.decode(response.body));
       return category;
     } else {
+      throw ServerFailure(message: response.body.toString());
+    }
+  }
+
+  @override
+  Future<void> transferChats(List<int> chatsIDs, int categoryID) async {
+    Endpoints endpoint = Endpoints.transferChats;
+
+    http.Response response = await client.post(
+      endpoint.buildURL(), 
+      headers: endpoint.getHeaders(token: sl<AuthConfig>().token),
+      body: json.encode({
+        'new_category': '$categoryID',
+        'chats': chatsIDs.join(',')
+      })
+    );
+
+    if (!response.isSuccess) {
       throw ServerFailure(message: response.body.toString());
     }
   }

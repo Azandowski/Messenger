@@ -7,6 +7,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'app/appTheme.dart';
 import 'bloc_observer.dart';
 import 'core/blocs/authorization/bloc/auth_bloc.dart';
+import 'core/blocs/chat/bloc/bloc/chat_cubit.dart';
 import 'core/config/routes.dart';
 import 'core/screens/splash_screen.dart';
 import 'locator.dart' as serviceLocator;
@@ -35,7 +36,7 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider.value(value: serviceLocator.sl<ChatsCubit>()),
+        BlocProvider.value(value: serviceLocator.sl<ChatGlobalCubit>()),
         BlocProvider(create: (_) => serviceLocator.sl<CategoryBloc>()),
         BlocProvider.value(value: serviceLocator.sl<AuthBloc>())
       ],

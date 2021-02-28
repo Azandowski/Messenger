@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
+import 'package:messenger_mobile/core/usecases/usecase.dart';
 import 'package:messenger_mobile/modules/chats/domain/entities/usecases/params.dart';
 
 import '../../../../core/error/failures.dart';
@@ -66,6 +67,20 @@ class CategoryRepositoryImpl implements CategoryRepository {
       try {
         final response = await categoryDataSource.deleteCatefory(id);
         return Right(response);
+      } catch (e) {
+        return Left(e);
+      }
+    } else {
+      return Left(ConnectionFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, NoParams>> transferChats(List<int> chatsIDs, int categoryID) async {
+    if (await networkInfo.isConnected) {
+      try {
+        final response = await categoryDataSource.transferChats(chatsIDs, categoryID);
+        return Right(NoParams());
       } catch (e) {
         return Left(e);
       }

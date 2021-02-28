@@ -4,16 +4,23 @@ import '../../../../app/appTheme.dart';
 
 class LoadWidget extends StatelessWidget {
   final double size;
+  final bool inCenter;
 
-  const LoadWidget({Key key, this.size}) : super(key: key);
+  const LoadWidget({
+    this.size, 
+    this.inCenter = true,
+    Key key, 
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: size == null
-          ? buildSpinner()
-          : SizedBox(width: size, height: size, child: buildSpinner()),
-    );
+    final Widget spinner = size == null
+      ? buildSpinner()
+      : SizedBox(width: size, height: size, child: buildSpinner());
+      
+    return inCenter ? Center(
+      child: spinner
+    ) : spinner;
   }
 
   Widget buildSpinner() {
