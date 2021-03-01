@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_share/flutter_share.dart';
 import 'package:messenger_mobile/app/appTheme.dart';
 import 'package:messenger_mobile/core/widgets/independent/small_widgets/cell_skeleton_item.dart';
 import 'package:messenger_mobile/core/widgets/independent/small_widgets/chat_count_view.dart';
@@ -22,7 +23,14 @@ class CreationModuleScreen extends StatelessWidget {
         itemBuilder: (context, int index) {
           if (index == 0) {
             return ActionsContainer(
-              onTap: (CreationActions action) {
+              onTap: (CreationActions action) async {
+                if (action == CreationActions.inviteFriends) {
+                  await FlutterShare.share(
+                    title: 'AIO Messenger',
+                    text: 'Хэй, поскорее скачай мессенджер AIO!',
+                    linkUrl: 'https://messengeraio.page.link/invite'
+                  );
+                }
                 print('Click $action');
               },
             );
