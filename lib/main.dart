@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger_mobile/core/blocs/category/bloc/category_bloc.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:messenger_mobile/modules/chat/presentation/pages/chat_screen.dart';
 import 'app/appTheme.dart';
 import 'bloc_observer.dart';
 import 'core/blocs/authorization/bloc/auth_bloc.dart';
@@ -39,7 +40,7 @@ class MainApp extends StatelessWidget {
         BlocProvider.value(value: serviceLocator.sl<AuthBloc>())
       ],
       child: MaterialApp(
-        home: SplashScreen(),
+        home: ChatScreen(),
         theme: AppTheme.light,
         navigatorKey: navigatorKey,
         routes: routes,
