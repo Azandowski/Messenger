@@ -2,13 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger_mobile/app/appTheme.dart';
 import 'package:messenger_mobile/core/blocs/category/bloc/category_bloc.dart';
+import 'package:messenger_mobile/modules/category/domain/entities/create_category_screen_params.dart';
 import 'package:messenger_mobile/modules/category/presentation/category_list/widgets/category_cell.dart';
 import 'package:messenger_mobile/modules/category/presentation/category_list/widgets/category_list_widget.dart';
 import 'package:messenger_mobile/modules/category/presentation/create_category_main/pages/create_category_screen.dart';
 import 'package:messenger_mobile/core/widgets/independent/small_widgets/cell_skeleton_item.dart';
 import 'package:messenger_mobile/modules/chats/domain/entities/category.dart';
 
+import '../../../../main.dart';
+
 class CategoryList extends StatelessWidget {
+
+  NavigatorState get _navigator => navigatorKey.currentState;
 
   static var id = 'categorylist';
 
@@ -72,7 +77,10 @@ class CategoryList extends StatelessWidget {
           if (action == CategoryCellActionType.delete) {
              // TODO: Implement delete category
           } else {
-             // TODO: Implement edit chat
+            _navigator.push(CreateCategoryScreen.route(
+              mode: CreateCategoryScreenMode.edit,
+              category: entity
+            ));
           }
         },
         onSelect: (item) {

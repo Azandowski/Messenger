@@ -47,7 +47,7 @@ class CategoryCell extends StatelessWidget {
           onSelected: (CategoryCellActionType action) {
             onSelectedOption(action, item);
           },
-          offset: Offset(0,100),
+          offset: Offset(0, 100),
         ) : SizedBox(),
       ),
     );

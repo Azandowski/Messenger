@@ -37,7 +37,8 @@ class ChatEntityModel extends ChatEntity {
       title: json['name'],
       imageUrl: json['avatar'],
       chatCategory: json['category_chat'] != null ? CategoryModel.fromJson(json['category_chat']) : null,
-      date: DateTime.parse(json['created_at']).toLocal(),
+      date: json['created_at'] != null ? 
+        DateTime.parse(json['created_at']).toLocal() : null,
       permissions: json['settings'] != null ? 
         ChatPermissionModel.fromJson(json['settings']) : ChatPermissionModel()
     );

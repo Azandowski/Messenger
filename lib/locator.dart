@@ -30,6 +30,7 @@ import 'modules/category/presentation/create_category_main/bloc/create_category_
 import 'modules/chats/data/datasource/chats_datasource.dart';
 import 'modules/chats/data/repositories/chats_repository_impl.dart';
 import 'modules/chats/domain/repositories/chats_repository.dart';
+import 'modules/chats/domain/usecase/get_category_chats.dart';
 import 'modules/chats/domain/usecase/get_chats.dart';
 import 'modules/chats/presentation/bloc/cubit/chats_cubit_cubit.dart';
 import 'modules/media/data/datasources/local_media_datasource.dart';
@@ -112,13 +113,15 @@ Future<void> init() async {
   sl.registerFactory(() => CreateCategoryCubit(
     createCategory: sl(), 
     getImageUseCase: sl(),
-    transferChats: sl()
+    transferChats: sl(),
+    getCategoryChats: sl()
   ));
 
   //Use Cases
   sl.registerLazySingleton(() => CreateCategoryUseCase(sl()));
   sl.registerLazySingleton(() => GetImage(sl()));
   sl.registerLazySingleton(() => TransferChats(repository: sl()));
+  sl.registerLazySingleton(() => GetCategoryChats(sl()));
 
   // Repoitory
   sl.registerLazySingleton<CategoryRepository>(
@@ -174,19 +177,11 @@ Future<void> init() async {
     () => MediaRepositoryImpl(
       mediaLocalDataSource: sl(),
     ),
-  );
-
-  sl.registerLazySingleton<ChatsRepository>(
-      () => ChatsRepositoryImpl(chatsDataSource: sl(), networkInfo: sl()));
-  
+  );  
 
   // Data sources
 
   sl.registerLazySingleton<MediaLocalDataSource>(
     () => MediaLocalDataSourceImpl(),
-  );
-
-  sl.registerLazySingleton<ChatsDataSource>(
-    () => ChatsDataSourceImpl(client: sl()),
   );
 }

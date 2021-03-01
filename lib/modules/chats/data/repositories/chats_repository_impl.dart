@@ -51,4 +51,22 @@ class ChatsRepositoryImpl extends ChatsRepository {
       return Left(ConnectionFailure());
     }
   }
+
+  @override
+  Future<Either<Failure, List<ChatEntity>>> getCategoryChats(GetCategoryChatsParams params) async {
+    if (await networkInfo.isConnected) { 
+      try {
+        final response = await chatsDataSource.getCategoryChat(
+          token: params.token, 
+          categoryID: params.categoryID
+        );
+
+        return Right(response);
+      } catch (e) {
+        return Left(e);
+      }
+    } else {
+      return Left(ConnectionFailure());
+    }
+  }
 }

@@ -8,13 +8,21 @@ class CreateCategoryParams extends Equatable {
   final File avatarFile;
   final String name;
   final List<int> chatIds;
+  final bool isCreate;
+  final int categoryID;
 
   CreateCategoryParams({
     @required this.token,
     @required this.avatarFile, 
     @required this.name, 
     @required this.chatIds,
-  });
+    @required this.isCreate,
+    this.categoryID
+  }) {
+    if (!isCreate) {
+      assert(categoryID != null, 'category ID should be null for editing it');
+    }
+  }
 
   @override
   List<Object> get props => [token, avatarFile, name, chatIds];

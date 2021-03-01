@@ -18,6 +18,8 @@ abstract class CategoryDataSource {
     @required String name,
     @required String token,
     List<int> chatIds,
+    bool isCreate,
+    int categoryID,
   });
 
   Future<List<CategoryEntity>> getCategories(String token);
@@ -31,7 +33,7 @@ abstract class CategoryDataSource {
 // * * Implementation of the CategoryDataSource
 class CategoryDataSourceImpl implements CategoryDataSource {
   
-  final http.MultipartRequest multipartRequest;
+  http.MultipartRequest multipartRequest;
   final http.Client client;
 
   CategoryDataSourceImpl({
@@ -45,8 +47,16 @@ class CategoryDataSourceImpl implements CategoryDataSource {
    */
   @override
   Future<List<CategoryEntity>> createCategory({
-    File file, String name, List<int> chatIds, String token
+    bool isCreate,
+    int categoryID,
+    File file, 
+    String name, 
+    List<int> chatIds, 
+    String token
   }) async {
+    var url = isCreate ? Endpoints.createCategory.buildURL() : Endpoints.updateCategory.buildURL(urlParams: ['$categoryID']);
+    multipartRequest = http.MultipartRequest('POST', url);
+
     http.StreamedResponse streamResponse = await MultipartRequestHelper.postData(
       token: token, 
       request: multipartRequest, 

@@ -16,4 +16,5 @@ class TransferChats implements UseCase<NoParams, TransferChatsParams> {
   Future<Either<Failure, NoParams>> call(TransferChatsParams params) async {
     return await repository.transferChats(params.chatsIDs, params.newCategoryId);
   }
+  
 }

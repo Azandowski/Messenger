@@ -29,9 +29,12 @@ class CategoryRepositoryImpl implements CategoryRepository {
           file: createCategoryParams.avatarFile, 
           name: createCategoryParams.name, 
           token: createCategoryParams.token,
-          chatIds: createCategoryParams.chatIds
+          chatIds: createCategoryParams.chatIds,
+          isCreate: createCategoryParams.isCreate,
+          categoryID: createCategoryParams.categoryID
         );
         
+        categoryListController.add(response);
         return Right(response);
       } catch (e) {
         return Left(e);

@@ -39,6 +39,19 @@ class CreateCategoryLoading extends CreateCategoryState {
   List<Object> get props => [chats, imageFile];
 }
 
+class CreateCategoryChatsLoading extends CreateCategoryState {
+  final List<ChatEntity> chats;
+  final File imageFile;
+
+  CreateCategoryChatsLoading({
+    @required this.chats,
+    @required this.imageFile,
+  }) : super(chats: chats, imageFile: imageFile);
+  
+  @override
+  List<Object> get props => [chats, imageFile];
+}
+
 // Загрузка при переносе чата в другую категорию
 class CreateCategoryTransferLoading extends CreateCategoryState {
   final List<ChatEntity> chats;
