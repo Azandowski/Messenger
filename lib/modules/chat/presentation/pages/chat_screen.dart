@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:messenger_mobile/app/appTheme.dart';
-import 'package:messenger_mobile/core/widgets/independent/images/ImageWithCorner.dart';
 
 class ChatScreen extends StatefulWidget {
   @override
