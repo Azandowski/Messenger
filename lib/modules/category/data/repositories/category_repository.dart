@@ -65,12 +65,13 @@ class CategoryRepositoryImpl implements CategoryRepository {
   }
 
   @override
-  Future<Either<Failure, CategoryEntity>> deleteCategory(int id) async {
+  Future<Either<Failure, List<CategoryEntity>>> deleteCategory(int id) async {
     if (await networkInfo.isConnected) {
       try {
         final response = await categoryDataSource.deleteCatefory(id);
+        categoryListController.add(response);
         return Right(response);
-      } catch (e) {
+      } on ServerFailure catch(e) {  
         return Left(e);
       }
     } else {

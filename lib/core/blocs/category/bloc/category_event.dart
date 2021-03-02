@@ -18,4 +18,13 @@ class CategoriesChanged extends CategoryEvent{
   List<Object> get props => [newCategories];
 }
 
+class CategoryRemoving extends CategoryEvent{
+  final int categoryId;
+
+  CategoryRemoving({this.categoryId});
+
+  @override
+  List<Object> get props => [categoryId];
+}
+
 class CategoriesReset extends CategoryEvent{}
