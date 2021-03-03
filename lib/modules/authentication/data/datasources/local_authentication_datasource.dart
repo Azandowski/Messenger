@@ -12,7 +12,7 @@ abstract class AuthenticationLocalDataSource {
   Future<bool> deleteToken();
 
   // write sent contacts
-  Future<void> saveContactsState(String token);
+  Future<void> saveContactsState();
 
   Future<bool> getContacts();
 }
@@ -53,7 +53,7 @@ class AuthenticationLocalDataSourceImpl
   }
 
   @override
-  Future<void> saveContactsState(String token) async {
+  Future<void> saveContactsState() async {
     await Storage().secureStorage.write(key: CONTACT, value: WROTE);
   }
 

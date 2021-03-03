@@ -1,7 +1,11 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
+import 'package:messenger_mobile/core/config/auth_config.dart';
+import 'package:messenger_mobile/core/utils/multipart_request_helper.dart';
+import 'package:messenger_mobile/locator.dart';
 
 import '../../../../core/config/settings.dart';
 import '../../../../core/error/failures.dart';
@@ -17,13 +21,15 @@ abstract class AuthenticationRemoteDataSource {
   Future<CodeEntity> createCode(String number);
   Future<TokenEntity> login(String number, String code);
   Future<User> getCurrentUser(String token);
+  Future<bool> sendContacts(File contacts);
 }
 
 class AuthenticationRemoteDataSourceImpl
     implements AuthenticationRemoteDataSource {
   final http.Client client;
+  final http.MultipartRequest request;
 
-  AuthenticationRemoteDataSourceImpl({@required this.client});
+  AuthenticationRemoteDataSourceImpl({@required this.client,@required this.request});
 
   @override
   Future<CodeModel> createCode(String number) async {
@@ -87,6 +93,23 @@ class AuthenticationRemoteDataSourceImpl
       }
       
       throw ServerFailure(message: errorMessage);
+    }
+  }
+
+  @override
+  Future<bool> sendContacts(File contacts) async{
+    http.StreamedResponse response = await MultipartRequestHelper.postData(
+      token: sl<AuthConfig>().token, 
+      request: request, 
+      data: {},
+      files: contacts != null ? [contacts] : [],
+      keyName: 'contacts'
+    );
+    if (response.statusCode >= 200 && response.statusCode <= 299) {
+      print("that was good");
+      return true;
+    } else {
+      return false;
     }
   }
 }

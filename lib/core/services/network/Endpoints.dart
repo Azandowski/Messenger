@@ -16,7 +16,11 @@ enum Endpoints {
   getAllUserChats,
   deleteCategory,
   transferChats,
-  categoryChats
+  categoryChats,
+
+  //contacts
+  sendContacts,
+
 }
 
 extension EndpointsExtension on Endpoints {
@@ -63,6 +67,8 @@ extension EndpointsExtension on Endpoints {
         return '${Config.baseAPIpath.value}/messenger/category/${params[0]}';
       case Endpoints.transferChats:
         return '${Config.baseAPIpath.value}/messenger/category/chat/transfer';
+      case Endpoints.sendContacts:
+        return '${Config.baseAPIpath.value}/messenger/user/bind-contact';
     }
   }
 

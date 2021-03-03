@@ -141,26 +141,22 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
   Future sendConctacts() async {
     Iterable<Contact> contacts = await ContactsService.getContacts(withThumbnails: false);
     var jsonNew = jsonEncode(contacts.map((e) => e.toJson()).toList());
-    _writeJson(jsonNew);
+    File file = await _writeJson(jsonNew);
+    print(file.length());
+    var result = await remoteDataSource.sendContacts(file);
+    if(result){
+      print('saved');
+      localDataSource.saveContactsState();
+    }
   }
 
- 
-  Future<String> get _localPath async {
-    final directory = await getApplicationDocumentsDirectory();
-    return directory.path;
-  }
-
-  Future<File> get _localFile async {
-    final path = await _localPath;
-    return File('$path/contacts');
-  }
-
-  void _writeJson(String newJson) async {
+  Future<File> _writeJson(String newJson) async {
     final String dir = (await getApplicationDocumentsDirectory()).path;
     final String path = '$dir/contacts.json';
     final File file = File(path);
     file.writeAsString(newJson);
     print(file.path);
+    return file;
   }
 
 }

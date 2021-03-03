@@ -99,7 +99,8 @@ Future<void> init() async {
   );
 
   sl.registerLazySingleton<AuthenticationRemoteDataSource>(
-    () => AuthenticationRemoteDataSourceImpl(client: sl()),
+    () => AuthenticationRemoteDataSourceImpl(client: sl(),request: http.MultipartRequest(
+                  'POST', Endpoints.sendContacts.buildURL())),
   );
 
   sl.registerLazySingleton<ProfileDataSource>(
