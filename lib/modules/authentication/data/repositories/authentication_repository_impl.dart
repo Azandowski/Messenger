@@ -93,7 +93,7 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
       getCategories(GetCategoriesParams(token: token.token));
       return Right(token);
     } on ServerFailure {
-      return Left(ServerFailure(message: 'null'));
+      return Left(ServerFailure(message: 'invalid code'));
     }
   }
 

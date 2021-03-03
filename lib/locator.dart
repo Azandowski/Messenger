@@ -1,9 +1,11 @@
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
+import 'package:messenger_mobile/modules/category/domain/usecases/delete_category.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'core/blocs/authorization/bloc/auth_bloc.dart';
 import 'core/blocs/category/bloc/category_bloc.dart';
+import 'core/blocs/chat/bloc/bloc/chat_cubit.dart';
 import 'core/config/auth_config.dart';
 import 'core/services/network/Endpoints.dart';
 import 'core/services/network/network_info.dart';
@@ -24,10 +26,12 @@ import 'modules/category/data/repositories/category_repository.dart';
 import 'modules/category/domain/repositories/category_repository.dart';
 import 'modules/category/domain/usecases/create_category.dart';
 import 'modules/category/domain/usecases/get_categories.dart';
+import 'modules/category/domain/usecases/transfer_chat.dart';
 import 'modules/category/presentation/create_category_main/bloc/create_category_cubit.dart';
 import 'modules/chats/data/datasource/chats_datasource.dart';
 import 'modules/chats/data/repositories/chats_repository_impl.dart';
 import 'modules/chats/domain/repositories/chats_repository.dart';
+import 'modules/chats/domain/usecase/get_category_chats.dart';
 import 'modules/chats/domain/usecase/get_chats.dart';
 import 'modules/chats/presentation/bloc/cubit/chats_cubit_cubit.dart';
 import 'modules/media/data/datasources/local_media_datasource.dart';
@@ -37,7 +41,6 @@ import 'modules/media/domain/usecases/get_image.dart';
 import 'modules/profile/data/datasources/profile_datasource.dart';
 import 'modules/profile/data/repositories/profile_repository.dart';
 import 'modules/profile/domain/repositories/profile_respository.dart';
-import 'modules/profile/domain/usecases/get_user.dart';
 import 'modules/profile/presentation/bloc/index.dart';
 import 'modules/profile/presentation/bloc/profile_cubit.dart';
 
@@ -54,15 +57,21 @@ Future<void> init() async {
     ),
   );
 
+  sl.registerFactory(
+    () => ChatGlobalCubit(
+      sl()
+    )
+  );
+
+
   sl.registerFactory(() => ProfileCubit(getUser: sl()));
-  sl.registerFactory(() => ChatsCubit(sl()));
+  sl.registerFactory(() => ChatsCubit());
 
   // Use cases
   sl.registerLazySingleton(() => GetToken(sl()));
   sl.registerLazySingleton(() => Logout(sl()));
   sl.registerLazySingleton(() => Login(sl()));
   sl.registerLazySingleton(() => CreateCode(sl()));
-  sl.registerLazySingleton(() => GetUser(sl()));
   sl.registerLazySingleton(() => GetCategories(repository: sl()));
   sl.registerLazySingleton(() => SaveToken(sl()));
   sl.registerLazySingleton(() => GetChats(sl()));
@@ -102,11 +111,19 @@ Future<void> init() async {
   // CreateCategory
 
   //Bloc 
-  sl.registerFactory(() => CreateCategoryCubit(createCategory: sl(), getImageUseCase: sl()));
+  sl.registerFactory(() => CreateCategoryCubit(
+    createCategory: sl(), 
+    getImageUseCase: sl(),
+    transferChats: sl(),
+    getCategoryChats: sl()
+  ));
 
   //Use Cases
   sl.registerLazySingleton(() => CreateCategoryUseCase(sl()));
   sl.registerLazySingleton(() => GetImage(sl()));
+  sl.registerLazySingleton(() => TransferChats(repository: sl()));
+  sl.registerLazySingleton(() => GetCategoryChats(sl()));
+  sl.registerLazySingleton(() => DeleteCategory(repository: sl()));
 
   // Repoitory
   sl.registerLazySingleton<CategoryRepository>(
@@ -136,6 +153,7 @@ Future<void> init() async {
   sl.registerFactory(
     () => CategoryBloc(
       repository: sl(),
+      deleteCategory: sl(),
     ),
   );
 
@@ -162,7 +180,7 @@ Future<void> init() async {
     () => MediaRepositoryImpl(
       mediaLocalDataSource: sl(),
     ),
-  );
+  );  
 
   // Data sources
 

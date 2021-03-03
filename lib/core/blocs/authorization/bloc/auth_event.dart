@@ -16,4 +16,13 @@ class AuthenticationStatusChanged extends AuthEvent {
   List<Object> get props => [params];
 }
 
-class AuthenticationLogoutRequested extends AuthEvent {}
+class AuthenticationLogoutRequested extends AuthEvent {
+
+  final CategoryBloc categoryBloc;
+  final ChatGlobalCubit chatBloc;
+
+  AuthenticationLogoutRequested({
+    @required this.categoryBloc,
+    @required this.chatBloc
+  });
+}

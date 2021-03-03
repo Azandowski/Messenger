@@ -23,7 +23,7 @@ class PaginatedResult <T> {
     List jsonDataArray = (json['data'] ?? []) as List;
     return PaginatedResult(
       paginationData: PaginationData(
-        nextPageUrl: json['next_page_url'],
+        nextPageUrl: Uri.parse(json['next_page_url']),
         isFirstPage: json['current_page'] == 1
       ),
       data: jsonDataArray.map((e) => factory(e)).toList()

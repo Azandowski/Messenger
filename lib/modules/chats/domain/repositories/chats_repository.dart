@@ -11,6 +11,10 @@ abstract class ChatsRepository {
     GetChatsParams params
   );
 
+  Future<Either<Failure, List<ChatEntity>>> getCategoryChats (
+    GetCategoryChatsParams params
+  );
+
   List<ChatEntity> currentChats;
 
   StreamController<List<ChatEntity>> chatsController;

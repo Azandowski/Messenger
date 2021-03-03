@@ -67,10 +67,12 @@ class AuthenticationRemoteDataSourceImpl
     var url = Endpoints.getCurrentUser.buildURL();
     var headers = Endpoints.getCurrentUser.getHeaders(token: token);
     final response = await client.post(url,
-        body: json.encode({
-          'application_id': APP_ID,
-        }),
-        headers: headers);
+      body: json.encode({
+        'application_id': APP_ID,
+      }),
+      headers: headers
+    );
+
     if (response.statusCode >= 200 && response.statusCode <= 299) {
       var jsonMap = json.decode(response.body);
       return UserModel.fromJson(jsonMap);

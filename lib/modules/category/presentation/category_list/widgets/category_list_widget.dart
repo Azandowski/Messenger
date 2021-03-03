@@ -6,11 +6,13 @@ class CategoriesList extends StatelessWidget {
   final List<CategoryEntity> items;
   final CategoryCellType cellType;
   final Function(CategoryCellActionType, CategoryEntity) onSelectedOption;
-  
+  final Function(CategoryEntity) onSelect;
+
   CategoriesList({
     @required this.items,
     @required this.cellType,
     this.onSelectedOption,
+    this.onSelect,
     Key key,
   }) : super(key: key);
 
@@ -33,12 +35,19 @@ class CategoriesList extends StatelessWidget {
         },
         children: [
           for (final item in items)
-            CategoryCell(
-              item: item,
-              cellType: cellType,
-              onSelectedOption: onSelectedOption,
+            GestureDetector(
               key: ValueKey(item),
-          )
+              onTap: () {
+                if (onSelect != null) {
+                  onSelect(item);
+                }
+              },
+              child: CategoryCell(
+                item: item,
+                cellType: cellType,
+                onSelectedOption: onSelectedOption,
+              ),
+            )
         ],
       )
     );

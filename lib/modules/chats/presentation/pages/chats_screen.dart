@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:messenger_mobile/core/blocs/category/bloc/category_bloc.dart';
+import 'package:messenger_mobile/core/blocs/chat/bloc/bloc/chat_cubit.dart';
 import 'package:messenger_mobile/modules/category/data/models/chat_view_model.dart';
 import 'package:messenger_mobile/core/widgets/independent/small_widgets/cell_skeleton_item.dart';
 import 'package:messenger_mobile/modules/chats/presentation/widgets/categories_bloc_listener.dart';
 import 'package:messenger_mobile/modules/chats/presentation/widgets/chat_item/chat_preview_item.dart';
+import '../../../../locator.dart';
 import '../bloc/cubit/chats_cubit_cubit.dart';
 
 
@@ -15,64 +16,78 @@ class ChatsScreen extends StatefulWidget {
 
 class _ChatsScreenState extends State<ChatsScreen> {
 
+  ChatsCubit cubit;
+
   @override
   void initState() {
-    var cubit = context.read<ChatsCubit>();
-    cubit.loadAllChats();
+    cubit = sl<ChatsCubit>();
     super.initState();
   }
 
   @override
-  Widget build(BuildContext context) {
-    var cubit = context.read<ChatsCubit>();
+  void dispose() {
+    cubit.close();
+    super.dispose();
+  }
 
-    return BlocConsumer<ChatsCubit, ChatsCubitState>(
+  @override
+  Widget build(BuildContext context) {
+    return BlocConsumer<ChatGlobalCubit, ChatState>(
       listener: (context, chatState) {
         _handleChatsUpdates(chatState);
       },
       builder: (context, chatState) {
-        return Scaffold(
-          appBar: _buildAppBar(
-            cubit.selectedChat != null ?
-            ChatViewModel(cubit.selectedChat) : null,
-          ),
-          body: Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/images/bg-home.png'),
-                fit: BoxFit.cover
-              )
-            ),
-            child: ListView.separated(
-              itemBuilder: (context, int index) {
-                if (index == 0) {
-                  return ChatScreenCategoriesView(
-                    chatsState: chatState,
-                  );
-                } else if (!(chatState is ChatsCubitLoading)) {
-                  return GestureDetector(
-                    onLongPressStart: (d) {
-                      cubit.didSelectChat(index - 1);
+        return BlocProvider.value(
+          value: cubit,
+          child: BlocConsumer(
+            cubit: cubit,
+            listener: (context, state) {},
+            builder: (context, state) {
+              return Scaffold(
+                appBar: _buildAppBar(
+                  cubit.selectedChat != null ?
+                  ChatViewModel(cubit.selectedChat) : null,
+                ),
+                body: Container(
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage('assets/images/bg-home.png'),
+                      fit: BoxFit.cover
+                    )
+                  ),
+                  child: ListView.separated(
+                    itemBuilder: (context, int index) {
+                      if (index == 0) {
+                        return ChatScreenCategoriesView(
+                          chatsState: state,
+                        );
+                      } else if (!(chatState is ChatLoading)) {
+                        return GestureDetector(
+                          onLongPressStart: (d) {
+                            cubit.didSelectChat(index - 1);
+                          },
+                          child: ChatPreviewItem(
+                            ChatViewModel(
+                              chatState.chats.data[index - 1],
+                              isSelected: cubit.selectedChatIndex != null 
+                                && cubit.selectedChatIndex == index - 1
+                            )
+                          ),
+                        );
+                      } else {
+                        return CellShimmerItem();
+                      }
                     },
-                    child: ChatPreviewItem(
-                      ChatViewModel(
-                        chatState.chats.data[index - 1],
-                        isSelected: cubit.selectedChatIndex != null 
-                          && cubit.selectedChatIndex == index - 1
-                      )
-                    ),
-                  );
-                } else {
-                  return CellShimmerItem();
-                }
-              },
-              itemCount: chatState is ChatsCubitLoading ? 10 :
-                chatState.chats.data.length + 1,
-              separatorBuilder: (context, int index) {
-                return _buildSeparators(index);
-              }
-            )
-          )
+                    itemCount: chatState is ChatLoading ? 10 :
+                      chatState.chats.data.length + 1,
+                    separatorBuilder: (context, int index) {
+                      return _buildSeparators(index);
+                    }
+                  )
+                )
+              );
+            }
+          ),
         );
       },
     );
@@ -80,8 +95,8 @@ class _ChatsScreenState extends State<ChatsScreen> {
 
   // * * Methods
 
-  void _handleChatsUpdates (ChatsCubitState state) {
-    if (state is ChatsCubitError) {
+  void _handleChatsUpdates (ChatState state) {
+    if (state is ChatsError) {
       Scaffold.of(context).showSnackBar(
         SnackBar(
           content: Text(state.errorMessage,

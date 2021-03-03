@@ -14,3 +14,16 @@ class GetChatsParams extends Equatable {
   @override
   List<Object> get props => [token, paginationData];
 }
+
+class GetCategoryChatsParams extends Equatable {
+  final String token;
+  final int categoryID;
+
+  GetCategoryChatsParams({
+    @required this.token,
+    @required this.categoryID
+  });
+
+  @override
+  List<Object> get props => [token, categoryID];
+}

@@ -28,7 +28,7 @@ class CategoryItem extends StatelessWidget {
           children: [
             AvatarImage(
               borderRadius: BorderRadius.circular(15),
-              path: ConfigExtension.buildURLHead() +  entity.avatar,
+              path: entity.avatar,
               isFromAsset: false,
               width: 80,
               height: 80,

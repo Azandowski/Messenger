@@ -29,7 +29,6 @@ class ChatScreenCategoriesView extends StatelessWidget {
           currentSelectedItemId: chatsState.currentTabIndex, 
           onNextClick: () {
             Navigator.pushNamed(context, CategoryList.id);
-            // Navigator.pushNamed(context, CreateCategoryScreen.id);
           },
           onItemSelect: (int id) {
             context.read<ChatsCubit>().tabUpdate(id);

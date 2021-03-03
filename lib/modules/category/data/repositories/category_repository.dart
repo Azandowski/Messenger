@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
+import 'package:messenger_mobile/core/usecases/usecase.dart';
 import 'package:messenger_mobile/modules/chats/domain/entities/usecases/params.dart';
 
 import '../../../../core/error/failures.dart';
@@ -28,9 +29,12 @@ class CategoryRepositoryImpl implements CategoryRepository {
           file: createCategoryParams.avatarFile, 
           name: createCategoryParams.name, 
           token: createCategoryParams.token,
-          chatIds: createCategoryParams.chatIds
+          chatIds: createCategoryParams.chatIds,
+          isCreate: createCategoryParams.isCreate,
+          categoryID: createCategoryParams.categoryID
         );
         
+        categoryListController.add(response);
         return Right(response);
       } catch (e) {
         return Left(e);
@@ -61,11 +65,26 @@ class CategoryRepositoryImpl implements CategoryRepository {
   }
 
   @override
-  Future<Either<Failure, CategoryEntity>> deleteCategory(int id) async {
+  Future<Either<Failure, List<CategoryEntity>>> deleteCategory(int id) async {
     if (await networkInfo.isConnected) {
       try {
         final response = await categoryDataSource.deleteCatefory(id);
+        categoryListController.add(response);
         return Right(response);
+      } on ServerFailure catch(e) {  
+        return Left(e);
+      }
+    } else {
+      return Left(ConnectionFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, NoParams>> transferChats(List<int> chatsIDs, int categoryID) async {
+    if (await networkInfo.isConnected) {
+      try {
+        final response = await categoryDataSource.transferChats(chatsIDs, categoryID);
+        return Right(NoParams());
       } catch (e) {
         return Left(e);
       }

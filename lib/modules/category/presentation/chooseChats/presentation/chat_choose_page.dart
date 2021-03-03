@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:messenger_mobile/core/blocs/chat/bloc/bloc/chat_cubit.dart';
 import 'package:messenger_mobile/modules/category/data/models/chat_view_model.dart';
 import 'package:messenger_mobile/core/widgets/independent/small_widgets/cell_skeleton_item.dart';
-import 'package:messenger_mobile/modules/chats/presentation/bloc/cubit/chats_cubit_cubit.dart';
-
 import '../../../../../app/appTheme.dart';
 import '../../../../../core/widgets/independent/buttons/gradient_main_button.dart';
 import '../../../domain/entities/chat_entity.dart';
@@ -42,8 +41,8 @@ class _ChooseChatsPageState extends State<ChooseChatsPage> {
   @override
   void initState() {
     super.initState();
-    if (context.read<ChatsCubit>().state is ChatsCubitLoaded) {
-      assignEntities((context.read<ChatsCubit>().state as ChatsCubitLoaded).chats.data);
+    if (context.read<ChatGlobalCubit>().state is ChatsLoaded) {
+      assignEntities((context.read<ChatGlobalCubit>().state as ChatsLoaded).chats.data);
     }
   }
 
@@ -51,9 +50,9 @@ class _ChooseChatsPageState extends State<ChooseChatsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<ChatsCubit, ChatsCubitState>(
+    return BlocConsumer<ChatGlobalCubit, ChatState>(
       listener: (context, state) {
-        if (state is ChatsCubitLoaded) {
+        if (state is ChatsLoaded) {
           assignEntities(state.chats.data);
           _chatsCount = chatEntities.where((e) => e.isSelected).toList().length;
         } 
@@ -80,14 +79,14 @@ class _ChooseChatsPageState extends State<ChooseChatsPage> {
                   returnStateWidget(state, context),
                 ],
               ),
-              if (state is ChatsCubitLoaded)  
+              if (state is ChatsLoaded)  
                 Positioned(
                   bottom: 40,
                   child: ActionButton(
                     text: 'Добавить чаты', 
                     onTap: () {
                       List<ChatEntity> selectedChats = [];
-                      if (state is ChatsCubitLoaded) {
+                      if (state is ChatsLoaded) {
                         selectedChats = chatEntities.where((e) => e.isSelected).map((e) => e.entity).toList();
                       }
 
@@ -104,7 +103,7 @@ class _ChooseChatsPageState extends State<ChooseChatsPage> {
   }
 
   Widget returnStateWidget(state, context){
-    if (state is ChatsCubitLoaded) {
+    if (state is ChatsLoaded) {
       return ChatsList(
         items: chatEntities,
         cellType: ChatCellType.addChat,
@@ -117,7 +116,7 @@ class _ChooseChatsPageState extends State<ChooseChatsPage> {
           }
         },
       );
-    } else if (state is ChatsCubitLoading) {
+    } else if (state is ChatLoading) {
       return Expanded(
         child: ListView.builder(
           itemBuilder: (context, int index) {

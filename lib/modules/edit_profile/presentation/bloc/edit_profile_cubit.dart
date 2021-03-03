@@ -31,9 +31,13 @@ class EditProfileCubit extends Cubit<EditProfileState> {
     ));
 
     response.fold(
-        (failure) => {emit(EditProfileError(message: failure.message))}, (_) {
-      emit(EditProfileSuccess());
-    });
+      (failure) => {
+        emit(EditProfileError(message: failure.message))
+      }, 
+      (_) {
+        emit(EditProfileSuccess());
+      }
+    );
   }
 
   void initProfile(EditProfileInit event) {
