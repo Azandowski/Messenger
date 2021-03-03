@@ -17,5 +17,5 @@ abstract class ChatsRepository {
 
   List<ChatEntity> currentChats;
 
-  StreamController<List<ChatEntity>> chatsController;
+  Stream<List<ChatEntity>> chatsStream;
 }

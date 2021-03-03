@@ -16,12 +16,12 @@ class ChatGlobalCubit extends Cubit<ChatState> {
     super(ChatLoading(
       chats: PaginatedResult(data: []),
     )) {
-    _chatsSubscription = chatsRepository.chatsController.stream
-      .listen(
-        (chats) => ChatsLoaded(
-          chats: PaginatedResult(data: chats),
-        )
-      );
+    // _chatsSubscription = chatsRepository.chatsStream
+    //   .listen(
+    //     (chats) => ChatsLoaded(
+    //       chats: PaginatedResult(data: chats),
+    //     )
+    //   );
   }
 
   StreamSubscription<List<ChatEntity>> _chatsSubscription;

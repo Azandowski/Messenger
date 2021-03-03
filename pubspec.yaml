@@ -44,6 +44,8 @@ dependencies:
   image_picker: ^0.6.7+14
   shimmer: ^1.1.2
   pin_input_text_field: ^3.3.1
+  web_socket_channel: ^1.2.0
+  socket_io_client: ^0.9.12
 
   # Permissions
   permission_handler: ^5.1.0+2

@@ -19,7 +19,7 @@ class ChatsRepositoryImpl extends ChatsRepository {
   });
 
   @override
-  StreamController<List<ChatEntity>> chatsController = StreamController<List<ChatEntity>>.broadcast();
+  Stream<List<ChatEntity>> chatsStream;
 
   @override
   List<ChatEntity> currentChats = [];
@@ -37,10 +37,8 @@ class ChatsRepositoryImpl extends ChatsRepository {
 
         if (params.paginationData.isFirstPage) {
           currentChats = response.data;
-          chatsController.add(currentChats);
         } else {
           currentChats.addAll(response.data);
-          chatsController.add(currentChats);
         }
 
         return Right(response);

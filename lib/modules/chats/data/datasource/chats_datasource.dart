@@ -7,6 +7,7 @@ import 'package:messenger_mobile/core/services/network/paginatedResult.dart';
 import 'package:messenger_mobile/modules/category/data/models/chat_entity_model.dart';
 import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
 import 'package:messenger_mobile/core/utils/http_response_extension.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 abstract class ChatsDataSource {
   Future<PaginatedResult<ChatEntity>> getUserChats ({
@@ -25,7 +26,39 @@ class ChatsDataSourceImpl extends ChatsDataSource {
 
   ChatsDataSourceImpl({
     @required this.client
-  });
+  }) {
+    initSockets();
+  }
+
+  void initSockets () {
+    IO.Socket socket = IO.io(
+      'https://aio-test-vps.kulenkov-group.kz:6001',
+      {
+        'transports': ['websocket'],
+        'autoConnect': false,
+      }
+    );
+    
+    socket.connect();
+
+    socket.onConnect((_) {
+      print('connect');
+      socket.emit('messages.1', {
+        'text': "demo"
+      });
+    });
+
+    socket.on('messages.1', (data) {
+      print(data);
+    });
+
+    socket.onError((data) {
+      print(data);
+    });
+
+    socket.onDisconnect((_) => print('disconnect'));
+  }
+
 
   /**
   * * Loading List of user's all chats via token
