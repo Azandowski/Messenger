@@ -154,11 +154,10 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
     final String dir = (await getApplicationDocumentsDirectory()).path;
     final String path = '$dir/contacts.json';
     final File file = File(path);
-    file.writeAsString(newJson);
+    await file.writeAsString(newJson);
     print(file.path);
     return file;
   }
-
 }
 
 extension on Contact{
