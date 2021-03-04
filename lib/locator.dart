@@ -2,6 +2,10 @@ import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
 import 'package:messenger_mobile/modules/category/domain/usecases/delete_category.dart';
+import 'package:messenger_mobile/modules/creation_module/data/datasources/creation_module_datasource.dart';
+import 'package:messenger_mobile/modules/creation_module/data/repositories/creation_module_repository.dart';
+import 'package:messenger_mobile/modules/creation_module/domain/repositories/creation_module_repository.dart';
+import 'package:messenger_mobile/modules/creation_module/domain/usecases/fetch_contacts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'core/blocs/authorization/bloc/auth_bloc.dart';
 import 'core/blocs/category/bloc/category_bloc.dart';
@@ -108,7 +112,9 @@ Future<void> init() async {
 
   sl.registerLazySingleton<ChatsDataSource>(
       () => ChatsDataSourceImpl(client: sl()));
- 
+  // CONTACT
+  //USECASE
+  sl.registerLazySingleton(() => FetchContacts(CreationModuleRepositoryImpl(networkInfo: sl(), dataSource: CreationModuleDataSourceImpl(client: sl()))));
   // CreateCategory
 
   //Bloc 

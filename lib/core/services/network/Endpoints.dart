@@ -20,6 +20,7 @@ enum Endpoints {
 
   //contacts
   sendContacts,
+  fetchContacts,
 
 }
 
@@ -69,6 +70,8 @@ extension EndpointsExtension on Endpoints {
         return '${Config.baseAPIpath.value}/messenger/category/chat/transfer';
       case Endpoints.sendContacts:
         return '${Config.baseAPIpath.value}/messenger/user/bind-contact';
+      case Endpoints.fetchContacts:
+        return '${Config.baseAPIpath.value}/messenger/user/get-contacts';
     }
   }
 

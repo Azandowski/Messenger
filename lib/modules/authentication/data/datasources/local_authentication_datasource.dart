@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:contacts_service/contacts_service.dart';
 import '../../../../core/config/storage.dart';
 import '../../../../core/error/failures.dart';
 
@@ -12,15 +15,15 @@ abstract class AuthenticationLocalDataSource {
   Future<bool> deleteToken();
 
   // write sent contacts
-  Future<void> saveContactsState();
+  Future<void> saveContactsAsString(String contactsString);
 
-  Future<bool> getContacts();
+  Future<String> getDatabaseContacts();
+  Future<String> getDeviceContacts();
 }
 
 const ACCESS_TOKEN = 'access_token';
 const CONTACT = 'contact';
 
-const WROTE = 'contacts_wrote';
 
 class AuthenticationLocalDataSourceImpl
     implements AuthenticationLocalDataSource {
@@ -50,20 +53,46 @@ class AuthenticationLocalDataSourceImpl
   Stream<String> get token async* {
     var token = Storage().secureStorage.read(key: ACCESS_TOKEN).asStream();
     yield* token;
-  }
+  } 
 
   @override
-  Future<void> saveContactsState() async {
-    await Storage().secureStorage.write(key: CONTACT, value: WROTE);
-  }
-
-  @override
-  Future<bool> getContacts() async{
+  Future<String> getDatabaseContacts() async{
     var contactsSent = await Storage().secureStorage.read(key: CONTACT);
-    if (contactsSent != null && contactsSent != '') {
-      return true;
+    if (contactsSent != null) {
+      return contactsSent;
     } else {
-      return false;
+      return '';
     }
+  }
+
+  @override
+  Future<void> saveContactsAsString(String contactsJson) async {
+    await Storage().secureStorage.write(key: CONTACT, value: contactsJson);
+  }
+
+  @override
+  Future<String> getDeviceContacts() async{
+    Iterable<Contact> contacts = await ContactsService.getContacts(withThumbnails: false);
+    return jsonEncode(contacts.map((e) => e.toJson()).toList());
+  }
+}
+
+extension on Contact{
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+      data['middleName'] = middleName;
+      data['displayName'] = displayName;
+      if(this.phones != null) {
+        data["phones"] =  this.phones.map((e) => e.toJson()).toList();
+      }
+      return data;
+  }
+}
+
+extension on Item{
+  Map<String, dynamic> toJson() {
+    return {
+       this.label: this.value,
+    };
   }
 }

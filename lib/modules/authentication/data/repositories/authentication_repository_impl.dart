@@ -44,12 +44,9 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
       sl<AuthConfig>().token = token;
 
       print(token);
-
-      final sentContacts = await localDataSource.getContacts();
-
-      if(!sentContacts){
-         sendConctacts();
-      }
+    
+      sendConctacts();
+      
 
       await getCurrentUser(token);
 
@@ -139,14 +136,17 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
   }
 
   Future sendConctacts() async {
-    Iterable<Contact> contacts = await ContactsService.getContacts(withThumbnails: false);
-    var jsonNew = jsonEncode(contacts.map((e) => e.toJson()).toList());
-    File file = await _writeJson(jsonNew);
-    print(file.length());
-    var result = await remoteDataSource.sendContacts(file);
-    if(result){
+    var dbContacts = await localDataSource.getDatabaseContacts();
+    var deviceContacts = await localDataSource.getDeviceContacts();
+    if(deviceContacts != dbContacts){
+      File file = await _writeJson(deviceContacts);
+      var result = await remoteDataSource.sendContacts(file);
+      if(result){
       print('saved');
-      localDataSource.saveContactsState();
+      localDataSource.saveContactsAsString(deviceContacts);
+     }
+    }else{
+      print('THE SAME DID NOT CHANGE');
     }
   }
 
@@ -160,22 +160,4 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
   }
 }
 
-extension on Contact{
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-      data['middleName'] = middleName;
-      data['displayName'] = displayName;
-      if(this.phones != null) {
-        data["phones"] =  this.phones.map((e) => e.toJson()).toList();
-      }
-      return data;
-  }
-}
 
-extension on Item{
-  Map<String, dynamic> toJson() {
-    return {
-       this.label: this.value,
-    };
-  }
-}
