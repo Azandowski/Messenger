@@ -18,7 +18,6 @@ class CreationModuleRepositoryImpl implements CreationModuleRepository {
   });
   @override
   Future<Either<Failure, ContactResponse>> fetchContacts(Pagination pagination) async {
-    if (await networkInfo.isConnected) {
       try {
         final ContactResponse contactResponse =
             await dataSource.fetchContacts(pagination);
@@ -26,9 +25,5 @@ class CreationModuleRepositoryImpl implements CreationModuleRepository {
       } on ServerFailure catch(e) {
         return Left(ServerFailure(message: e.message));
       }
-    } else {
-      throw ServerFailure(message: 'no_internet');
-    }
-  
   }
 }
