@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:sembast/sembast.dart';
 
 import 'package:contacts_service/contacts_service.dart';
 import 'package:dartz/dartz.dart';
@@ -136,18 +137,33 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
   }
 
   Future sendConctacts() async {
-    var dbContacts = await localDataSource.getDatabaseContacts();
     var deviceContacts = await localDataSource.getDeviceContacts();
-    if(deviceContacts != dbContacts){
-      File file = await _writeJson(deviceContacts);
-      var result = await remoteDataSource.sendContacts(file);
-      if(result){
-      print('saved');
-      localDataSource.saveContactsAsString(deviceContacts);
-     }
-    }else{
-      print('THE SAME DID NOT CHANGE');
-    }
+    List<RecordSnapshot> dbContacts = await localDataSource.getDatabaseContacts();
+    var contactsShouldBeUpdated = [];
+
+    deviceContacts.forEach((e) { 
+      
+      var foundContact = dbContacts.firstWhere((d) {
+        var allPhonesMatch = true;
+        
+        ((d.value['phones'] ?? []) as List).forEach((phoneMap) { 
+          var result = ((e['phones'] ?? []) as List).firstWhere((k) => k['mobile'] == phoneMap['mobile'], orElse: () => null);
+          if (result == null) { allPhonesMatch = false; }
+        });
+
+        return allPhonesMatch;
+      }, orElse: () => null);
+
+      if (foundContact == null) {
+        contactsShouldBeUpdated.add(e);
+      }
+    });
+    
+
+    print(contactsShouldBeUpdated.length);
+    File file = await _writeJson(jsonEncode(contactsShouldBeUpdated));
+
+    return localDataSource.saveContacts(deviceContacts);
   }
 
   Future<File> _writeJson(String newJson) async {

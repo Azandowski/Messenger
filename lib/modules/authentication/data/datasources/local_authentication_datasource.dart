@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:contacts_service/contacts_service.dart';
+import 'package:messenger_mobile/core/services/localdb/app_database.dart';
+import 'package:sembast/sembast.dart';
 import '../../../../core/config/storage.dart';
 import '../../../../core/error/failures.dart';
 
@@ -15,18 +17,21 @@ abstract class AuthenticationLocalDataSource {
   Future<bool> deleteToken();
 
   // write sent contacts
-  Future<void> saveContactsAsString(String contactsString);
+  Future<void> saveContacts(List<Map> contacts);
 
-  Future<String> getDatabaseContacts();
-  Future<String> getDeviceContacts();
+  Future<List> getDatabaseContacts();
+  Future<List<Map>> getDeviceContacts();
 }
 
 const ACCESS_TOKEN = 'access_token';
 const CONTACT = 'contact';
 
 
-class AuthenticationLocalDataSourceImpl
-    implements AuthenticationLocalDataSource {
+class AuthenticationLocalDataSourceImpl implements AuthenticationLocalDataSource {
+  
+  Future<Database> get  _localDb  async => await AppDatabase.instance.database;
+  final _contactsFolder = intMapStoreFactory.store('contacts');
+
   @override
   Future<bool> deleteToken() async {
     await Storage().secureStorage.delete(key: ACCESS_TOKEN);
@@ -55,25 +60,30 @@ class AuthenticationLocalDataSourceImpl
     yield* token;
   } 
 
+  // Returns New Contacts
   @override
-  Future<String> getDatabaseContacts() async{
-    var contactsSent = await Storage().secureStorage.read(key: CONTACT);
-    if (contactsSent != null) {
-      return contactsSent;
-    } else {
-      return '';
+  Future<List> getDatabaseContacts() async{
+    return await _contactsFolder.find(await _localDb);
+  }
+
+  @override
+  Future<void> saveContacts(List<Map> contacts) async {
+    var db = await _localDb;
+    _contactsFolder.delete(db);
+
+    var contactSaveJobs = <Future>[];
+
+    for (Map contact in contacts) {
+      contactSaveJobs.add(_contactsFolder.add(db, contact));
     }
+
+    return Future.wait(contactSaveJobs);
   }
 
   @override
-  Future<void> saveContactsAsString(String contactsJson) async {
-    await Storage().secureStorage.write(key: CONTACT, value: contactsJson);
-  }
-
-  @override
-  Future<String> getDeviceContacts() async{
+  Future<List<Map>> getDeviceContacts() async{
     Iterable<Contact> contacts = await ContactsService.getContacts(withThumbnails: false);
-    return jsonEncode(contacts.map((e) => e.toJson()).toList());
+    return contacts.map((e) => e.toJson()).toList();
   }
 }
 
@@ -89,7 +99,7 @@ extension on Contact{
   }
 }
 
-extension on Item{
+extension on Item {
   Map<String, dynamic> toJson() {
     return {
        this.label: this.value,
