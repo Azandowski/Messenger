@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger_mobile/core/blocs/chat/bloc/bloc/chat_cubit.dart';
+import 'package:messenger_mobile/core/utils/paginated_scroll_controller.dart';
 import 'package:messenger_mobile/modules/category/data/models/chat_view_model.dart';
 import 'package:messenger_mobile/core/widgets/independent/small_widgets/cell_skeleton_item.dart';
 import 'package:messenger_mobile/modules/chats/presentation/widgets/categories_bloc_listener.dart';
@@ -16,11 +17,21 @@ class ChatsScreen extends StatefulWidget {
 
 class _ChatsScreenState extends State<ChatsScreen> {
 
+  PaginatedScrollController scrollController = PaginatedScrollController();
   ChatsCubit cubit;
 
   @override
   void initState() {
     cubit = sl<ChatsCubit>();
+    context.read<ChatGlobalCubit>().loadChats(isPagination: false);
+    scrollController.addListener(() {
+      bool hasNextPage = context.read<ChatGlobalCubit>().state.chats?.paginationData?.hasNextPage ?? true;
+      bool viewIsLoading = context.read<ChatGlobalCubit>().state is ChatLoading;
+
+      if (scrollController.isPaginated && hasNextPage && !viewIsLoading) {
+        context.read<ChatGlobalCubit>().loadChats(isPagination: true);
+      }
+    });
     super.initState();
   }
 
@@ -43,6 +54,8 @@ class _ChatsScreenState extends State<ChatsScreen> {
             cubit: cubit,
             listener: (context, state) {},
             builder: (context, state) {
+              int chatsCount = chatState.chats?.data?.length ?? 0;
+
               return Scaffold(
                 appBar: _buildAppBar(
                   cubit.selectedChat != null ?
@@ -56,12 +69,13 @@ class _ChatsScreenState extends State<ChatsScreen> {
                     )
                   ),
                   child: ListView.separated(
+                    controller: scrollController,
                     itemBuilder: (context, int index) {
                       if (index == 0) {
                         return ChatScreenCategoriesView(
                           chatsState: state,
                         );
-                      } else if (!(chatState is ChatLoading)) {
+                      } else if (index <= chatsCount) {
                         return GestureDetector(
                           onLongPressStart: (d) {
                             cubit.didSelectChat(index - 1);
@@ -78,8 +92,8 @@ class _ChatsScreenState extends State<ChatsScreen> {
                         return CellShimmerItem();
                       }
                     },
-                    itemCount: chatState is ChatLoading ? 10 :
-                      chatState.chats.data.length + 1,
+                    itemCount: chatState is ChatLoading ? 6 + chatsCount :
+                      chatsCount + 1,
                     separatorBuilder: (context, int index) {
                       return _buildSeparators(index);
                     }

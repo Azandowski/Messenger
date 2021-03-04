@@ -35,12 +35,14 @@ class ChatsDataSourceImpl extends ChatsDataSource {
     @required String token,
     @required PaginationData paginationData
   }) async {
+    print(paginationData.nextPageUrl);
+
     http.Response response = await client.get(
-      paginationData.isFirstPage ? 
+      paginationData.nextPageUrl == null ? 
         Endpoints.getAllUserChats.buildURL() : paginationData.nextPageUrl,
       headers: Endpoints.getAllUserChats.getHeaders(token: token)
     );
-
+    
     if (response.isSuccess) {
       return PaginatedResult.fromJson(
         json.decode(response.body)['chat'], 

@@ -59,6 +59,7 @@ Future<void> init() async {
 
   sl.registerFactory(
     () => ChatGlobalCubit(
+      sl(),
       sl()
     )
   );

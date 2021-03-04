@@ -13,13 +13,15 @@ abstract class ChatState extends Equatable {
 
 class ChatLoading extends ChatState {
   final PaginatedResult<ChatEntity> chats;
+  final bool isPagination;
 
   ChatLoading({
     @required this.chats,
+    @required this.isPagination
   }) : super(chats: chats);
   
   @override
-  List<Object> get props => [chats];
+  List<Object> get props => [chats, isPagination];
 }
 
 

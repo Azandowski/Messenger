@@ -40,7 +40,7 @@ class MainApp extends StatelessWidget {
         BlocProvider.value(value: serviceLocator.sl<AuthBloc>())
       ],
       child: MaterialApp(
-        home: ChatScreen(),
+        home: SplashScreen(),
         theme: AppTheme.light,
         navigatorKey: navigatorKey,
         routes: routes,

@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:messenger_mobile/modules/category/domain/entities/chat_permissions.dart';
+import 'package:messenger_mobile/modules/chat/data/models/message_model.dart';
 import 'package:messenger_mobile/modules/chats/domain/entities/category.dart';
 
 class ChatEntity extends Equatable {
@@ -10,14 +11,16 @@ class ChatEntity extends Equatable {
   final String imageUrl;
   final DateTime date;
   final ChatPermissions permissions;
-  
+  final MessageModel lastMessage;
+
   ChatEntity({
     @required this.chatCategory,
     @required this.title,
     @required this.imageUrl,
     @required this.chatId,
     @required this.date,
-    @required this.permissions
+    @required this.permissions,
+    this.lastMessage
   });
 
   @override
@@ -25,7 +28,10 @@ class ChatEntity extends Equatable {
     chatCategory, 
     title, 
     imageUrl, 
-    chatId
+    chatId,
+    lastMessage,
+    permissions, 
+    date
   ];
 
   ChatEntity clone() {
@@ -37,7 +43,8 @@ class ChatEntity extends Equatable {
       date: this.date,
       permissions: ChatPermissions(
         isSoundOn: this.permissions.isSoundOn
-      )
+      ),
+      lastMessage: this.lastMessage
     );
   }
 }

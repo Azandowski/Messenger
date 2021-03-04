@@ -13,16 +13,22 @@ class ChatViewModel {
   }
 
   String get imageURL {
-    return ConfigExtension.buildURLHead() + entity.imageUrl;
+    if (entity.imageUrl != null) {
+      return ConfigExtension.buildURLHead() + entity.imageUrl;
+    } else {
+      return null;
+    }
   }
 
   bool get hasDescription {
-    return entity.chatCategory != null;
+    return entity.chatCategory != null || entity.lastMessage != null;
   }
 
   String get description {
     if (isInLive) {
       return 'Сейчас в прямом эфире'.toUpperCase();
+    } else if (entity.lastMessage != null) {
+      return entity.lastMessage.text ?? '';
     } else {
       return entity.chatCategory?.name ?? '';
     }
@@ -30,7 +36,7 @@ class ChatViewModel {
 
   bool get isInLive {
     // TODO: Добавить property для прямых эфиров
-    return true;
+    return false;
   }
 
   bool get isGroup {
@@ -39,15 +45,15 @@ class ChatViewModel {
   }
 
   String get dateTime {
-    return new DateFormat("Hm").format(entity.date);
+    return new DateFormat("Hm").format(entity.date); 
   }
 
   bool get isRead {
-    return true;
+    return entity.lastMessage?.isRead ?? false;
   }
 
   int get unreadMessages {
-    return 4;
+    return 0;
   }
 
   ChatBottomPin get bottomPin {
