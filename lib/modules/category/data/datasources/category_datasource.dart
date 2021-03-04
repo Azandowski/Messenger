@@ -24,7 +24,7 @@ abstract class CategoryDataSource {
 
   Future<List<CategoryEntity>> getCategories(String token);
 
-  Future<CategoryEntity> deleteCatefory(int id);
+  Future<List<CategoryEntity>> deleteCatefory(int id);
 
   Future<void> transferChats (List<int> chatsIDs, int categoryID);
 }
@@ -98,15 +98,16 @@ class CategoryDataSourceImpl implements CategoryDataSource {
   }
 
   @override
-  Future<CategoryEntity> deleteCatefory(int id) async {
+  Future<List<CategoryEntity>> deleteCatefory(int id) async {
     var ednpoint = Endpoints.deleteCategory;
     http.Response response = await client.delete(
-      ednpoint.buildURL(queryParameters: {'id':id}),
+      ednpoint.buildURL(urlParams: [id.toString()]),
       headers: Endpoints.getCurrentUser.getHeaders(token: sl<AuthConfig>().token));
-
     if (response.statusCode >= 200 && response.statusCode <= 299) {
-      final category =  CategoryModel.fromJson(json.decode(response.body));
-      return category;
+      final categories =  (json.decode(response.body) as List)
+          .map((e) => CategoryModel.fromJson(e))
+          .toList();
+      return categories;
     } else {
       throw ServerFailure(message: response.body.toString());
     }

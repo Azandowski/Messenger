@@ -5,7 +5,7 @@ import '../../../../core/error/failures.dart';
 import '../../../../core/usecases/usecase.dart';
 import '../../../chats/domain/entities/category.dart';
 
-class DeleteCategory implements UseCase<CategoryEntity, int> {
+class DeleteCategory implements UseCase<List<CategoryEntity>, int> {
   final CategoryRepository repository;
 
   DeleteCategory({
@@ -13,7 +13,7 @@ class DeleteCategory implements UseCase<CategoryEntity, int> {
   });
 
   @override
-  Future<Either<Failure,CategoryEntity>> call(
+  Future<Either<Failure,List<CategoryEntity>>> call(
       int id) async {
     return await repository.deleteCategory(id);
   }

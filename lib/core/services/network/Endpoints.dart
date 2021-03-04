@@ -56,7 +56,7 @@ extension EndpointsExtension on Endpoints {
       case Endpoints.getAllUserChats:
         return '${Config.baseAPIpath.value}/messenger/user/chat';
       case Endpoints.deleteCategory:
-        return '${Config.baseAPIpath.value}/messenger/category';
+        return '${Config.baseAPIpath.value}/messenger/category/${params[0]}';
       case Endpoints.updateCategory:
         return '${Config.baseAPIpath.value}/messenger/category/${params[0]}/';
       case Endpoints.categoryChats:

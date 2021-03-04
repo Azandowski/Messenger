@@ -1,6 +1,7 @@
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
+import 'package:messenger_mobile/modules/category/domain/usecases/delete_category.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'core/blocs/authorization/bloc/auth_bloc.dart';
 import 'core/blocs/category/bloc/category_bloc.dart';
@@ -122,6 +123,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => GetImage(sl()));
   sl.registerLazySingleton(() => TransferChats(repository: sl()));
   sl.registerLazySingleton(() => GetCategoryChats(sl()));
+  sl.registerLazySingleton(() => DeleteCategory(repository: sl()));
 
   // Repoitory
   sl.registerLazySingleton<CategoryRepository>(
@@ -151,6 +153,7 @@ Future<void> init() async {
   sl.registerFactory(
     () => CategoryBloc(
       repository: sl(),
+      deleteCategory: sl(),
     ),
   );
 

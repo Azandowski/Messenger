@@ -19,7 +19,7 @@ abstract class CategoryRepository {
     GetCategoriesParams getCategoryParams
   );
 
-  Future<Either<Failure, CategoryEntity>> deleteCategory(int id);
+  Future<Either<Failure, List<CategoryEntity>>> deleteCategory(int id);
 
   Future<Either<Failure, NoParams>> transferChats(List<int> chatsIDs, int categoryID);
 }
