@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:sembast/sembast.dart';
 
 import 'package:contacts_service/contacts_service.dart';
 import 'package:dartz/dartz.dart';
@@ -44,12 +45,9 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
       sl<AuthConfig>().token = token;
 
       print(token);
-
-      final sentContacts = await localDataSource.getContacts();
-
-      if(!sentContacts){
-         sendConctacts();
-      }
+    
+      sendConctacts();
+      
 
       await getCurrentUser(token);
 
@@ -139,48 +137,43 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
   }
 
   Future sendConctacts() async {
-    Iterable<Contact> contacts = await ContactsService.getContacts(withThumbnails: false);
-    var jsonNew = jsonEncode(contacts.map((e) => e.toJson()).toList());
-    _writeJson(jsonNew);
+    var deviceContacts = await localDataSource.getDeviceContacts();
+    List<RecordSnapshot> dbContacts = await localDataSource.getDatabaseContacts();
+    var contactsShouldBeUpdated = [];
+
+    deviceContacts.forEach((e) { 
+      
+      var foundContact = dbContacts.firstWhere((d) {
+        var allPhonesMatch = true;
+        
+        ((d.value['phones'] ?? []) as List).forEach((phoneMap) { 
+          var result = ((e['phones'] ?? []) as List).firstWhere((k) => k['mobile'] == phoneMap['mobile'], orElse: () => null);
+          if (result == null) { allPhonesMatch = false; }
+        });
+
+        return allPhonesMatch;
+      }, orElse: () => null);
+
+      if (foundContact == null) {
+        contactsShouldBeUpdated.add(e);
+      }
+    });
+    
+
+    print(contactsShouldBeUpdated.length);
+    File file = await _writeJson(jsonEncode(contactsShouldBeUpdated));
+
+    return localDataSource.saveContacts(deviceContacts);
   }
 
- 
-  Future<String> get _localPath async {
-    final directory = await getApplicationDocumentsDirectory();
-    return directory.path;
-  }
-
-  Future<File> get _localFile async {
-    final path = await _localPath;
-    return File('$path/contacts');
-  }
-
-  void _writeJson(String newJson) async {
+  Future<File> _writeJson(String newJson) async {
     final String dir = (await getApplicationDocumentsDirectory()).path;
     final String path = '$dir/contacts.json';
     final File file = File(path);
-    file.writeAsString(newJson);
+    await file.writeAsString(newJson);
     print(file.path);
-  }
-
-}
-
-extension on Contact{
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-      data['middleName'] = middleName;
-      data['displayName'] = displayName;
-      if(this.phones != null) {
-        data["phones"] =  this.phones.map((e) => e.toJson()).toList();
-      }
-      return data;
+    return file;
   }
 }
 
-extension on Item{
-  Map<String, dynamic> toJson() {
-    return {
-       this.label: this.value,
-    };
-  }
-}
+

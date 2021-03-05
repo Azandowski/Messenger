@@ -19,15 +19,15 @@ class ContactCell extends StatelessWidget {
     return ListTile(
       leading: AvatarImage(
         isFromAsset: false,
-        path: contactItem.avatarURL,
+        path: contactItem.avatar,
         width: 35, height: 35,
       ),
       title: Text(
-        contactItem.name,
+        contactItem.name ?? '',
         style: AppFontStyles.mediumStyle,
       ),
       subtitle: Text(
-        sl<DateHelper>().getLastOnlineDate(contactItem.lastOnline),
+       contactItem.lastVisit != null ?  sl<DateHelper>().getLastOnlineDate(contactItem.lastVisit) : '',
         style: AppFontStyles.placeholderStyle,
       ),
       trailing: Icon(

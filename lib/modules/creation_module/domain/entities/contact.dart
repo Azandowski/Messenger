@@ -1,19 +1,20 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter/foundation.dart';
+class Contact extends Equatable{
+  int id;
+  String name;
+  String surname;
+  String patronym;
+  String avatar;
+  DateTime lastVisit;
 
-class Contact extends Equatable {
-  final DateTime lastOnline;
-  final String name;
-  final String avatarURL;
-
-  Contact({
-    @required this.lastOnline, 
-    this.name, 
-    this.avatarURL
-  });
+  Contact(
+      {this.id,
+      this.name,
+      this.surname,
+      this.patronym,
+      this.avatar,
+      this.lastVisit});
 
   @override
-  List<Object> get props => [
-    lastOnline, name, avatarURL
-  ];
+  List<Object> get props => [id,name,surname,patronym,avatar,lastVisit];
 }

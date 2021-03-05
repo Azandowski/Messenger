@@ -17,7 +17,12 @@ enum Endpoints {
   deleteCategory,
   transferChats,
   categoryChats,
-  reorderCategories
+  reorderCategories,
+
+  //contacts
+  sendContacts,
+  fetchContacts,
+
 }
 
 extension EndpointsExtension on Endpoints {
@@ -66,6 +71,10 @@ extension EndpointsExtension on Endpoints {
         return '${Config.baseAPIpath.value}/messenger/category/chat/transfer';
       case Endpoints.reorderCategories:
         return '${Config.baseAPIpath.value}/messenger/';
+      case Endpoints.sendContacts:
+        return '${Config.baseAPIpath.value}/messenger/user/bind-contact';
+      case Endpoints.fetchContacts:
+        return '${Config.baseAPIpath.value}/messenger/user/get-contacts';
     }
   }
 
