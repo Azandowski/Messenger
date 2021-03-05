@@ -14,6 +14,15 @@ class CategoryEntity extends Equatable {
     @required this.totalChats
   });
 
+  CategoryEntity clone() {
+    return CategoryEntity(
+      id: this.id,
+      name: this.name,
+      avatar: this.avatar,
+      totalChats: this.totalChats
+    );
+  }
+
   @override
   List<Object> get props => [
     id, name, avatar, totalChats

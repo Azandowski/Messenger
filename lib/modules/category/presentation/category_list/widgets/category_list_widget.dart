@@ -7,12 +7,14 @@ class CategoriesList extends StatelessWidget {
   final CategoryCellType cellType;
   final Function(CategoryCellActionType, CategoryEntity) onSelectedOption;
   final Function(CategoryEntity) onSelect;
+  final Function(int, int) onReorderCategories;
 
   CategoriesList({
     @required this.items,
     @required this.cellType,
     this.onSelectedOption,
     this.onSelect,
+    this.onReorderCategories,
     Key key,
   }) : super(key: key);
 
@@ -30,13 +32,15 @@ class CategoriesList extends StatelessWidget {
             textAlign: TextAlign.center,
           )
         ),
-        onReorder: (oldI, newI){
-          
+        onReorder: (oldI, newI) {
+          if (onReorderCategories != null) {
+            onReorderCategories(oldI, newI);
+          }
         },
         children: [
           for (final item in items)
             GestureDetector(
-              key: ValueKey(item),
+              key: ValueKey(item.id),
               onTap: () {
                 if (onSelect != null) {
                   onSelect(item);

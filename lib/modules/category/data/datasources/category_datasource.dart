@@ -27,6 +27,8 @@ abstract class CategoryDataSource {
   Future<List<CategoryEntity>> deleteCatefory(int id);
 
   Future<void> transferChats (List<int> chatsIDs, int categoryID);
+
+  Future<List<CategoryEntity>> reorderCategories (Map<int, int> categoryUpdates);
 }
 
 
@@ -128,6 +130,28 @@ class CategoryDataSourceImpl implements CategoryDataSource {
 
     if (!response.isSuccess) {
       throw ServerFailure(message: response.body.toString());
+    }
+  }
+
+  @override
+  Future<List<CategoryEntity>> reorderCategories(Map<int, int> categoryUpdates) async {
+    Endpoints endpoint = Endpoints.reorderCategories;
+
+    http.Response response = await client.post(
+      endpoint.buildURL(),
+      headers: endpoint.getHeaders(token: sl<AuthConfig>().token),
+      body: json.encode({
+        'data': categoryUpdates
+      })
+    );
+
+    if (!response.isSuccess) {
+      throw ServerFailure(message: response.body.toString());
+    } else {
+      final categories =  (json.decode(response.body) as List)
+        .map((e) => CategoryModel.fromJson(e))
+        .toList();
+      return categories;
     }
   }
 }

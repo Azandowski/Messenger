@@ -83,8 +83,22 @@ class CategoryRepositoryImpl implements CategoryRepository {
   Future<Either<Failure, NoParams>> transferChats(List<int> chatsIDs, int categoryID) async {
     if (await networkInfo.isConnected) {
       try {
-        final response = await categoryDataSource.transferChats(chatsIDs, categoryID);
+        await categoryDataSource.transferChats(chatsIDs, categoryID);
         return Right(NoParams());
+      } catch (e) {
+        return Left(e);
+      }
+    } else {
+      return Left(ConnectionFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<CategoryEntity>>> reorderCategories(Map<int, int> categoryUpdates) async {
+    if (await networkInfo.isConnected) { 
+      try {
+        final response = await categoryDataSource.reorderCategories(categoryUpdates);
+        return Right(response);
       } catch (e) {
         return Left(e);
       }
