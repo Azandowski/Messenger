@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:messenger_mobile/core/error/failures.dart';
 import 'package:messenger_mobile/core/services/network/Endpoints.dart';
 import 'package:messenger_mobile/core/services/network/paginatedResult.dart';
+import 'package:messenger_mobile/core/utils/error_handler.dart';
 import 'package:messenger_mobile/modules/category/data/models/chat_entity_model.dart';
 import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
 import 'package:messenger_mobile/core/utils/http_response_extension.dart';
@@ -48,7 +49,7 @@ class ChatsDataSourceImpl extends ChatsDataSource {
         json.decode(response.body)['chat'], 
         (jsonData) => ChatEntityModel.fromJson(jsonData));
     } else {
-      throw ServerFailure(message: response.body.toString());
+      throw ServerFailure(message: ErrorHandler.getErrorMessage(response.body.toString()));
     }
   }
 
@@ -66,7 +67,7 @@ class ChatsDataSourceImpl extends ChatsDataSource {
       List chats = (json.decode(response.body)['chats'] as List);
       return chats.map((e) => ChatEntityModel.fromJson(e)).toList();
     } else {
-      throw ServerFailure(message: response.body.toString());
+      throw ServerFailure(message: ErrorHandler.getErrorMessage(response.body.toString()));
     }
   } 
 }

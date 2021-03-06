@@ -28,6 +28,7 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
   final AuthenticationLocalDataSource localDataSource;
   final NetworkInfo networkInfo;
   final GetCategories getCategories;
+  
   AuthenticationRepositiryImpl({
     @required this.remoteDataSource,
     @required this.networkInfo,
@@ -40,14 +41,12 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
 
   Future initToken() async {
     try {
+      
       final token = await localDataSource.getToken();
 
       sl<AuthConfig>().token = token;
 
-      print(token);
-    
-      sendConctacts();
-      
+      print(token);  
 
       await getCurrentUser(token);
 
@@ -136,7 +135,8 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
     }
   }
 
-  Future sendConctacts() async {
+  @override
+  Future sendContacts() async {
     var deviceContacts = await localDataSource.getDeviceContacts();
     List<RecordSnapshot> dbContacts = await localDataSource.getDatabaseContacts();
     var contactsShouldBeUpdated = [];
@@ -155,15 +155,16 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
       }, orElse: () => null);
 
       if (foundContact == null) {
-        contactsShouldBeUpdated.add(e);
+        contactsShouldBeUpdated.add(_updatedContactToSendToBackend(e));
       }
     });
     
-
-    print(contactsShouldBeUpdated.length);
     File file = await _writeJson(jsonEncode(contactsShouldBeUpdated));
-
-    return localDataSource.saveContacts(deviceContacts);
+    var result = await remoteDataSource.sendContacts(file);
+    
+    if (result) {
+      return localDataSource.saveContacts(deviceContacts);
+    }
   }
 
   Future<File> _writeJson(String newJson) async {
@@ -173,6 +174,16 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
     await file.writeAsString(newJson);
     print(file.path);
     return file;
+  }
+
+  Map _updatedContactToSendToBackend (Map inputContact) {
+    Map object = inputContact;
+  
+    ['emails', 'postalAddresses'].forEach((key) { 
+      object.remove(key);
+    }); 
+
+    return object;
   }
 }
 

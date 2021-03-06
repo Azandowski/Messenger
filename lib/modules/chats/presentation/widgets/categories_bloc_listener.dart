@@ -25,7 +25,7 @@ class ChatScreenCategoriesView extends StatelessWidget {
       builder: (context, categoryState) {
         return CategoriesSection(
           isLoading: categoryState is CategoryEmpty,
-          categories: categoryState is CategoryLoaded ? categoryState.categoryList : [],
+          categories: categoryState.categoryList,
           currentSelectedItemId: chatsState.currentTabIndex, 
           onNextClick: () {
             Navigator.pushNamed(context, CategoryList.id);

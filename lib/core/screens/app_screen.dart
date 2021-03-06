@@ -1,7 +1,9 @@
 import 'package:flutter/services.dart';
+import 'package:messenger_mobile/modules/authentication/domain/repositories/authentication_repository.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:messenger_mobile/modules/creation_module/presentation/pages/creation_module_screen.dart';
+import '../../locator.dart';
 import '../../main.dart';
 import '../../modules/chats/presentation/pages/chats_screen.dart';
 import '../../modules/profile/presentation/pages/profile_page.dart';
@@ -25,6 +27,8 @@ class _AppScreenState extends State<AppScreen> {
     PermissionStatus permissionStatus = await _getContactPermission();
     if (permissionStatus != PermissionStatus.granted) {
       _handleInvalidPermissions(permissionStatus);
+    } else {
+      sl<AuthenticationRepository>().sendContacts();
     }
   }
 
@@ -47,13 +51,14 @@ class _AppScreenState extends State<AppScreen> {
           code: "PERMISSION_DENIED",
           message: "Access to contacts data denied",
           details: null);
-    } else if (permissionStatus == PermissionStatus.denied) {
+    } else {
       throw PlatformException(
           code: "PERMISSION_DISABLED",
           message: "Contacts are not available on device",
           details: null);
     }
   }
+  
   final bucket = PageStorageBucket();
 
   NavigatorState get _navigator => navigatorKey.currentState;

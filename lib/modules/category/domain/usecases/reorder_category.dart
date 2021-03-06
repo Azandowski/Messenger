@@ -6,7 +6,7 @@ import 'package:messenger_mobile/modules/chats/domain/entities/category.dart';
 import '../../../../core/usecases/usecase.dart';
 
 
-class ReorderCategories implements UseCase<List<CategoryEntity>, Map<int, int>> {
+class ReorderCategories implements UseCase<List<CategoryEntity>, Map<String, int>> {
   final CategoryRepository repository;
 
   ReorderCategories({
@@ -14,7 +14,7 @@ class ReorderCategories implements UseCase<List<CategoryEntity>, Map<int, int>> 
   });
 
   @override
-  Future<Either<Failure, List<CategoryEntity>>> call(Map<int, int> params) async {
+  Future<Either<Failure, List<CategoryEntity>>> call(Map<String, int> params) async {
     return await repository.reorderCategories(params);
   }
 }

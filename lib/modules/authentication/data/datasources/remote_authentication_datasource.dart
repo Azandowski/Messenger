@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:messenger_mobile/core/config/auth_config.dart';
+import 'package:messenger_mobile/core/utils/error_handler.dart';
 import 'package:messenger_mobile/core/utils/multipart_request_helper.dart';
 import 'package:messenger_mobile/locator.dart';
 
@@ -42,7 +43,7 @@ class AuthenticationRemoteDataSourceImpl
       var jsonMap = json.decode(response.body);
       return CodeModel.fromJson(jsonMap);
     } else {
-      throw ServerFailure(message: response.body.toString());
+      throw ServerFailure(message: ErrorHandler.getErrorMessage(response.body.toString()));
     }
   }
 
@@ -83,16 +84,7 @@ class AuthenticationRemoteDataSourceImpl
       var jsonMap = json.decode(response.body);
       return UserModel.fromJson(jsonMap);
     } else {
-      var errorMessage = '';
-      
-      try {
-        var jsonMap = json.decode(response.body.toString());
-        errorMessage = jsonMap['message'] ?? jsonMap.toString();
-      } catch (e) {
-        errorMessage = response.body.toString();
-      }
-      
-      throw ServerFailure(message: errorMessage);
+      throw ServerFailure(message: ErrorHandler.getErrorMessage(response.body.toString()));
     }
   }
 
@@ -105,7 +97,9 @@ class AuthenticationRemoteDataSourceImpl
       files: contacts != null ? [contacts] : [],
       keyName: 'contacts'
     );
+    
     print(response.statusCode);
+    
     if (response.statusCode >= 200 && response.statusCode <= 299) {
       print("that was good");
       return true;

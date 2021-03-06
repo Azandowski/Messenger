@@ -32,7 +32,7 @@ class CategoryRemoving extends CategoryEvent{
 class CategoriesReset extends CategoryEvent {}
 
 class CategoriesReordered extends CategoryEvent {
-  final Map<int, int> categoryUpdated;
+  final Map<String, int> categoryUpdated;
 
   CategoriesReordered({
     @required this.categoryUpdated

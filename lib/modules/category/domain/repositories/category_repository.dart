@@ -23,5 +23,5 @@ abstract class CategoryRepository {
 
   Future<Either<Failure, NoParams>> transferChats(List<int> chatsIDs, int categoryID);
 
-  Future<Either<Failure, List<CategoryEntity>>> reorderCategories (Map<int, int> categoryUpdates);
+  Future<Either<Failure, List<CategoryEntity>>> reorderCategories (Map<String, int> categoryUpdates);
 }

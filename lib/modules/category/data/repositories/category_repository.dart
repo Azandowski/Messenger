@@ -94,7 +94,7 @@ class CategoryRepositoryImpl implements CategoryRepository {
   }
 
   @override
-  Future<Either<Failure, List<CategoryEntity>>> reorderCategories(Map<int, int> categoryUpdates) async {
+  Future<Either<Failure, List<CategoryEntity>>> reorderCategories(Map<String, int> categoryUpdates) async {
     if (await networkInfo.isConnected) { 
       try {
         final response = await categoryDataSource.reorderCategories(categoryUpdates);

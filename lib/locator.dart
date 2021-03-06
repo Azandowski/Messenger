@@ -39,6 +39,7 @@ import 'modules/chats/domain/repositories/chats_repository.dart';
 import 'modules/chats/domain/usecase/get_category_chats.dart';
 import 'modules/chats/domain/usecase/get_chats.dart';
 import 'modules/chats/presentation/bloc/cubit/chats_cubit_cubit.dart';
+import 'modules/creation_module/presentation/bloc/contact_bloc/contact_bloc.dart';
 import 'modules/media/data/datasources/local_media_datasource.dart';
 import 'modules/media/data/repositories/media_repository_impl.dart';
 import 'modules/media/domain/repositories/media_repository.dart';
@@ -115,6 +116,12 @@ Future<void> init() async {
   sl.registerLazySingleton<ChatsDataSource>(
       () => ChatsDataSourceImpl(client: sl()));
   // CONTACT
+  
+  sl.registerLazySingleton<ContactBloc>(() => ContactBloc(
+    fetchContacts: sl(),
+    httpClient: sl()
+  ));
+  
   //USECASE
   sl.registerLazySingleton(() => FetchContacts(CreationModuleRepositoryImpl(networkInfo: sl(), dataSource: CreationModuleDataSourceImpl(client: sl()))));
   // CreateCategory
