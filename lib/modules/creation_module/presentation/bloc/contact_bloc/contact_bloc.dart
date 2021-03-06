@@ -39,7 +39,7 @@ class ContactBloc extends Bloc<ContactEvent, ContactState> {
   Future<ContactState> _mapPostFetchedToState(
     ContactState state, ContactStatus status
   ) async {
-    if (state.hasReachedMax) return state;
+    if (state.hasReachedMax) return state.copyWith(status: ContactStatus.success);
     try {
       if (status == ContactStatus.initial) {
         ContactResponse response = await _fetchContacts(_pagintaion);

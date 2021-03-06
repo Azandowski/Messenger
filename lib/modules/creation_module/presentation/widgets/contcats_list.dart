@@ -50,14 +50,14 @@ class _ContactsListState extends State<ContactsList> {
                 title: 'Ваши контакты: ${state.contacts.length}'
               );
             } else {
-              return index >= state.contacts.length ? 
+              return index >= state.contacts.length + 2 ? 
                 CellShimmerItem(circleSize: 35,) : 
-                  ContactCell(contactItem: state.contacts[index-1]);
+                  ContactCell(contactItem: state.contacts[index - 2]);
             }
           }, 
           separatorBuilder: (context, int index) => _buildSeparationFor(index: index), 
           itemCount: state.status != ContactStatus.loading ? 
-            state.contacts.length : state.contacts.length + 4,
+            state.contacts.length + 2 : state.contacts.length + 6,
         );
       },
     );
