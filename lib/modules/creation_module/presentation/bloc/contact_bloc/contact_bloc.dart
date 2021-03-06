@@ -24,7 +24,6 @@ class ContactBloc extends Bloc<ContactEvent, ContactState> {
   @override
   Stream<ContactState> mapEventToState(ContactEvent event) async* {
     if (event is ContactFetched) {
-      
       var status = state.status;
 
       yield state.copyWith(
@@ -32,9 +31,20 @@ class ContactBloc extends Bloc<ContactEvent, ContactState> {
       );
 
       yield await _mapPostFetchedToState(state, status);
+    } else if (event is RefreshContacts) {
+      var status = state.status;
+      _pagintaion = Pagination();
+      yield state.copyWith(
+        status: ContactStatus.loading,
+        contacts: [],
+        hasReachedMax: false
+      );
+      
+      yield await _mapPostFetchedToState(state, status);
     }
   }
-  final _pagintaion = Pagination();
+  
+  var _pagintaion = Pagination();
 
   Future<ContactState> _mapPostFetchedToState(
     ContactState state, ContactStatus status

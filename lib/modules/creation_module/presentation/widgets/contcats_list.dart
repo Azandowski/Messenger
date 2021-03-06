@@ -36,28 +36,33 @@ class _ContactsListState extends State<ContactsList> {
         }
       },
       builder: (context, state) {
-        return ListView.separated(
-          controller: _scrollController,
-          itemBuilder: (context, int index) {
-            if (index == 0) {
-              return ActionsContainer(
-                onTap: (CreationActions action) {
-                  _handleHeaderActions(action: action);
-                },
-              );
-            } else if (index == 1) {
-              return CellHeaderView(
-                title: 'Ваши контакты: ${state.contacts.length}'
-              );
-            } else {
-              return index >= state.contacts.length + 2 ? 
-                CellShimmerItem(circleSize: 35,) : 
-                  ContactCell(contactItem: state.contacts[index - 2]);
-            }
-          }, 
-          separatorBuilder: (context, int index) => _buildSeparationFor(index: index), 
-          itemCount: state.status != ContactStatus.loading ? 
-            state.contacts.length + 2 : state.contacts.length + 6,
+        return RefreshIndicator(
+          onRefresh: () async {
+            _contactBloc.add(RefreshContacts());
+          },
+          child: ListView.separated(
+            controller: _scrollController,
+            itemBuilder: (context, int index) {
+              if (index == 0) {
+                return ActionsContainer(
+                  onTap: (CreationActions action) {
+                    _handleHeaderActions(action: action);
+                  },
+                );
+              } else if (index == 1) {
+                return CellHeaderView(
+                  title: 'Ваши контакты: ${state.contacts.length}'
+                );
+              } else {
+                return index >= state.contacts.length + 2 ? 
+                  CellShimmerItem(circleSize: 35,) : 
+                    ContactCell(contactItem: state.contacts[index - 2]);
+              }
+            }, 
+            separatorBuilder: (context, int index) => _buildSeparationFor(index: index), 
+            itemCount: state.status != ContactStatus.loading ? 
+              state.contacts.length + 2 : state.contacts.length + 6,
+          ),
         );
       },
     );
@@ -91,15 +96,16 @@ class _ContactsListState extends State<ContactsList> {
   @override
   void dispose() {
     _scrollController.dispose();
+    _contactBloc.close();
     super.dispose();
   }
 
   void _onScroll() {
     if (_isPaginated) {
-      if (context.read<ContactBloc>().state != ContactStatus.loading) {
+      if (_contactBloc.state.status != ContactStatus.loading) {
         _contactBloc.add(ContactFetched());
       }
-    };
+    }
   }
 
   bool get _isPaginated {
