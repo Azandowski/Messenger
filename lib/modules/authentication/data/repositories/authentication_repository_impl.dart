@@ -4,16 +4,17 @@ import 'dart:io';
 
 import 'package:contacts_service/contacts_service.dart';
 import 'package:dartz/dartz.dart';
-import 'package:messenger_mobile/core/blocs/authorization/bloc/auth_bloc.dart';
-import 'package:messenger_mobile/modules/category/domain/usecases/get_categories.dart';
-import 'package:messenger_mobile/modules/chats/domain/entities/usecases/params.dart';
 import 'package:meta/meta.dart';
 import 'package:path_provider/path_provider.dart';
+
+import '../../../../core/blocs/authorization/bloc/auth_bloc.dart';
 import '../../../../core/config/auth_config.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/services/network/network_info.dart';
 import '../../../../core/usecases/usecase.dart';
 import '../../../../locator.dart';
+import '../../../category/domain/usecases/get_categories.dart';
+import '../../../chats/domain/entities/usecases/params.dart';
 import '../../../profile/domain/entities/user.dart';
 import '../../domain/entities/code_entity.dart';
 import '../../domain/entities/token_entity.dart';
@@ -27,13 +28,13 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
   final AuthenticationLocalDataSource localDataSource;
   final NetworkInfo networkInfo;
   final GetCategories getCategories;
+
   AuthenticationRepositiryImpl({
     @required this.remoteDataSource,
     @required this.networkInfo,
     @required this.localDataSource,
     @required this.getCategories,
   }) {
-    // localDataSource.deleteToken();
     initToken();
   }
 
@@ -47,8 +48,8 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
 
       final sentContacts = await localDataSource.getContacts();
 
-      if(!sentContacts){
-         sendConctacts();
+      if (!sentContacts) {
+        sendConctacts();
       }
 
       await getCurrentUser(token);
@@ -58,7 +59,6 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
       params.add(AuthParams(null, null));
     }
   }
-
 
   @override
   Future<Either<Failure, CodeEntity>> createCode(PhoneParams params) async {
@@ -88,7 +88,8 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
   @override
   Future<Either<Failure, TokenEntity>> login(params) async {
     try {
-      final token = await remoteDataSource.login(params.phoneNumber, params.code);
+      final token =
+          await remoteDataSource.login(params.phoneNumber, params.code);
       localDataSource.saveToken(token.token);
       getCategories(GetCategoriesParams(token: token.token));
       return Right(token);
@@ -125,7 +126,7 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
 
   @override
   StreamController<AuthParams> params =
-    StreamController<AuthParams>.broadcast();
+      StreamController<AuthParams>.broadcast();
 
   @override
   Future<Either<Failure, bool>> logout(NoParams params) async {
@@ -139,12 +140,12 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
   }
 
   Future sendConctacts() async {
-    Iterable<Contact> contacts = await ContactsService.getContacts(withThumbnails: false);
+    Iterable<Contact> contacts =
+        await ContactsService.getContacts(withThumbnails: false);
     var jsonNew = jsonEncode(contacts.map((e) => e.toJson()).toList());
     _writeJson(jsonNew);
   }
 
- 
   Future<String> get _localPath async {
     final directory = await getApplicationDocumentsDirectory();
     return directory.path;
@@ -162,25 +163,24 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
     file.writeAsString(newJson);
     print(file.path);
   }
-
 }
 
-extension on Contact{
+extension on Contact {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-      data['middleName'] = middleName;
-      data['displayName'] = displayName;
-      if(this.phones != null) {
-        data["phones"] =  this.phones.map((e) => e.toJson()).toList();
-      }
-      return data;
+    data['middleName'] = middleName;
+    data['displayName'] = displayName;
+    if (this.phones != null) {
+      data["phones"] = this.phones.map((e) => e.toJson()).toList();
+    }
+    return data;
   }
 }
 
-extension on Item{
+extension on Item {
   Map<String, dynamic> toJson() {
     return {
-       this.label: this.value,
+      this.label: this.value,
     };
   }
 }
