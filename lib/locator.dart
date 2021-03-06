@@ -72,7 +72,7 @@ Future<void> init() async {
 
 
   sl.registerFactory(() => ProfileCubit(getUser: sl()));
-  sl.registerFactory(() => ChatsCubit());
+  sl.registerFactory(() => ChatsCubit(sl()));
 
   // Use cases
   sl.registerLazySingleton(() => GetToken(sl()));

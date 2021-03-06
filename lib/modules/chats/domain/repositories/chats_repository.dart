@@ -1,5 +1,6 @@
 
 import 'dart:async';
+import 'dart:io';
 import 'package:dartz/dartz.dart';
 import 'package:messenger_mobile/core/error/failures.dart';
 import 'package:messenger_mobile/core/services/network/paginatedResult.dart';
@@ -18,4 +19,8 @@ abstract class ChatsRepository {
   List<ChatEntity> currentChats;
 
   StreamController<List<ChatEntity>> chatsController;
+
+  Future<File> getLocalWallpaper ();
+
+  Future<void> setLocalWallpaper(File file); 
 }
