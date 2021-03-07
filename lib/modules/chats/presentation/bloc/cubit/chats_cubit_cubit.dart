@@ -51,6 +51,7 @@ class ChatsCubit extends Cubit<ChatsCubitState> {
   void tabUpdate(int index) {
     emit(ChatsCubitStateNormal(
       currentTabIndex: index,
+      wallpaperFile: this.state.wallpaperFile
     ));
   }
 
@@ -58,7 +59,8 @@ class ChatsCubit extends Cubit<ChatsCubitState> {
     emit(
       ChatsCubitSelectedOne(
         currentTabIndex: this.state.currentTabIndex, 
-        selectedChatIndex: index
+        selectedChatIndex: index,
+        wallpaperFile: this.state.wallpaperFile
       )
     );
   }
@@ -66,7 +68,8 @@ class ChatsCubit extends Cubit<ChatsCubitState> {
   void didCancelChatSelection () {
     emit(
       ChatsCubitStateNormal(
-        currentTabIndex: this.state.currentTabIndex
+        currentTabIndex: this.state.currentTabIndex,
+        wallpaperFile: this.state.wallpaperFile
       )
     );
   }

@@ -76,7 +76,8 @@ class _ChatsScreenState extends State<ChatsScreen> {
                       image: state.wallpaperFile != null ? 
                         FileImage(state.wallpaperFile) : 
                           AssetImage('assets/images/bg-home.png'),
-                      fit: BoxFit.cover
+                      fit: BoxFit.cover,
+                      colorFilter: ColorFilter.mode(Colors.black87, BlendMode.lighten)
                     ) 
                   ),
                   child: ListView.separated(
