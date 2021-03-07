@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'dart:io';
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
 
@@ -70,5 +71,15 @@ class ChatsRepositoryImpl extends ChatsRepository {
     } else {
       return Left(ConnectionFailure());
     }
+  }
+
+  @override
+  Future<File> getLocalWallpaper() {
+    return chatsDataSource.getLocalWallpaper();
+  }
+
+  @override
+  Future<void> setLocalWallpaper(File file) {
+    return chatsDataSource.setLocalWallpaper(file);
   }
 }

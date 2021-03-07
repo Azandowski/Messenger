@@ -7,3 +7,5 @@ abstract class ContactEvent extends Equatable {
 }
 
 class ContactFetched extends ContactEvent {}
+
+class RefreshContacts extends ContactEvent {}

@@ -5,6 +5,10 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 import '../../../../core/config/auth_config.dart';
+import 'package:messenger_mobile/core/config/auth_config.dart';
+import 'package:messenger_mobile/core/services/network/Endpoints.dart';
+import 'package:messenger_mobile/core/utils/error_handler.dart';
+import 'package:messenger_mobile/locator.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/services/network/Endpoints.dart';
 import '../../../../core/utils/http_response_extension.dart';
@@ -29,7 +33,7 @@ abstract class CategoryDataSource {
 
   Future<void> transferChats (List<int> chatsIDs, int categoryID);
 
-  Future<List<CategoryEntity>> reorderCategories (Map<int, int> categoryUpdates);
+  Future<List<CategoryEntity>> reorderCategories (Map<String, int> categoryUpdates);
 }
 
 
@@ -79,7 +83,7 @@ class CategoryDataSourceImpl implements CategoryDataSource {
         .toList();
       return categories;
     } else {
-      throw ServerFailure(message: httpResponse.body.toString());
+      throw ServerFailure(message: ErrorHandler.getErrorMessage(httpResponse.body.toString()));
     }
   }
 
@@ -96,7 +100,7 @@ class CategoryDataSourceImpl implements CategoryDataSource {
 
       return categories;
     } else {
-      throw ServerFailure(message: response.body.toString());
+      throw ServerFailure(message: ErrorHandler.getErrorMessage(response.body.toString()));
     }
   }
 
@@ -112,7 +116,7 @@ class CategoryDataSourceImpl implements CategoryDataSource {
           .toList();
       return categories;
     } else {
-      throw ServerFailure(message: response.body.toString());
+      throw ServerFailure(message: ErrorHandler.getErrorMessage(response.body.toString()));
     }
   }
 
@@ -130,26 +134,28 @@ class CategoryDataSourceImpl implements CategoryDataSource {
     );
 
     if (!response.isSuccess) {
-      throw ServerFailure(message: response.body.toString());
+      throw ServerFailure(message: ErrorHandler.getErrorMessage(response.body.toString()));
     }
   }
 
   @override
-  Future<List<CategoryEntity>> reorderCategories(Map<int, int> categoryUpdates) async {
+  Future<List<CategoryEntity>> reorderCategories(Map<String, int> categoryUpdates) async {
     Endpoints endpoint = Endpoints.reorderCategories;
 
     http.Response response = await client.post(
       endpoint.buildURL(),
-      headers: endpoint.getHeaders(token: sl<AuthConfig>().token),
+      headers: endpoint.getHeaders(
+        token: sl<AuthConfig>().token,
+      ),
       body: json.encode({
-        'data': categoryUpdates
+        'orders': categoryUpdates
       })
     );
 
     if (!response.isSuccess) {
-      throw ServerFailure(message: response.body.toString());
+      throw ServerFailure(message: ErrorHandler.getErrorMessage(response.body.toString()));
     } else {
-      final categories =  (json.decode(response.body) as List)
+      final categories =  (json.decode(response.body)['categories'] as List)
         .map((e) => CategoryModel.fromJson(e))
         .toList();
       return categories;

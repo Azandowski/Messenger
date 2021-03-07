@@ -41,12 +41,14 @@ dependencies:
   flutter_secure_storage: ^3.3.1+1
   path_provider: ^1.6.27
 
-  image_picker: ^0.6.7+14
+  image_picker: ^0.6.7+22
   shimmer: ^1.1.2
   pin_input_text_field: ^3.3.1
   sembast: ^2.4.10+4
   # Permissions
   permission_handler: ^5.1.0+2
+  firebase_dynamic_links:
+  flutter_share: ^1.0.5
 
   # UI STUFF
   marquee: ^1.7.0

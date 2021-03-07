@@ -1,9 +1,18 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/blocs/chat/bloc/bloc/chat_cubit.dart';
 import '../../../../core/utils/paginated_scroll_controller.dart';
 import '../../../../core/widgets/independent/small_widgets/cell_skeleton_item.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:messenger_mobile/core/blocs/chat/bloc/bloc/chat_cubit.dart';
+import 'package:messenger_mobile/core/utils/paginated_scroll_controller.dart';
+import 'package:messenger_mobile/modules/category/data/models/chat_view_model.dart';
+import 'package:messenger_mobile/core/widgets/independent/small_widgets/cell_skeleton_item.dart';
+import 'package:messenger_mobile/modules/chats/presentation/widgets/categories_bloc_listener.dart';
+import 'package:messenger_mobile/modules/chats/presentation/widgets/chat_item/chat_preview_item.dart';
 import '../../../../locator.dart';
 import '../../../category/data/models/chat_view_model.dart';
 import '../../../chat/presentation/pages/chat_screen.dart';
@@ -16,6 +25,7 @@ class ChatsScreen extends StatefulWidget {
   @override
   _ChatsScreenState createState() => _ChatsScreenState();
 }
+
 
 class _ChatsScreenState extends State<ChatsScreen> {
 
@@ -50,9 +60,9 @@ class _ChatsScreenState extends State<ChatsScreen> {
         _handleChatsUpdates(chatState);
       },
       builder: (context, chatState) {
-        return BlocProvider.value(
+        return BlocProvider<ChatsCubit>.value(
           value: cubit,
-          child: BlocConsumer(
+          child: BlocConsumer<ChatsCubit, ChatsCubitState>(
             cubit: cubit,
             listener: (context, state) {},
             builder: (context, state) {
@@ -62,13 +72,21 @@ class _ChatsScreenState extends State<ChatsScreen> {
                 appBar: _buildAppBar(
                   cubit.selectedChat != null ?
                   ChatViewModel(cubit.selectedChat) : null,
+                  () async {
+                    final PickedFile image = await ImagePicker().getImage(source: ImageSource.gallery);
+                    final file = File(image.path);
+                    cubit.setWallpaper(file);
+                  }
                 ),
                 body: Container(
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage('assets/images/bg-home.png'),
-                      fit: BoxFit.cover
-                    )
+                      image: state.wallpaperFile != null ? 
+                        FileImage(state.wallpaperFile) : 
+                          AssetImage('assets/images/bg-home.png'),
+                      fit: BoxFit.cover,
+                      colorFilter: ColorFilter.mode(Colors.black87, BlendMode.lighten)
+                    ) 
                   ),
                   child: ListView.separated(
                     controller: scrollController,
@@ -139,7 +157,10 @@ class _ChatsScreenState extends State<ChatsScreen> {
     }
   }
 
-  AppBar _buildAppBar (ChatViewModel selectedChat) {
+  AppBar _buildAppBar (
+    ChatViewModel selectedChat,
+    Function onIconClick
+  ) {
     var isSelected = selectedChat != null;
 
     return AppBar(
@@ -152,6 +173,20 @@ class _ChatsScreenState extends State<ChatsScreen> {
           context.read<ChatsCubit>().didCancelChatSelection();
         },
       ) : null,
+      actions: [
+        IconButton(
+          icon: Icon(Icons.format_paint),
+          onPressed: () {
+            onIconClick();
+          }
+        )
+      ],
     );
   }
+}
+
+
+
+extension on _ChatsScreenState {
+
 }

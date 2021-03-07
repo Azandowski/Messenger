@@ -19,4 +19,5 @@ abstract class AuthenticationRepository {
   Future<Either<Failure, String>> saveToken(String token);
   StreamController<AuthParams> params;
   Future<Either<Failure, bool>> logout(NoParams params);
+  Future sendContacts();
 }

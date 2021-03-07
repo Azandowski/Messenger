@@ -73,7 +73,7 @@ extension EndpointsExtension on Endpoints {
       case Endpoints.transferChats:
         return '${Config.baseAPIpath.value}/messenger/category/chat/transfer';
       case Endpoints.reorderCategories:
-        return '${Config.baseAPIpath.value}/messenger/';
+        return '${Config.baseAPIpath.value}/messenger/category/actions/reorder';
       case Endpoints.sendContacts:
         return '${Config.baseAPIpath.value}/messenger/user/bind-contact';
       case Endpoints.fetchContacts:

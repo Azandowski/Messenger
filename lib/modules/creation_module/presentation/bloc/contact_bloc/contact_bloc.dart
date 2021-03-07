@@ -14,10 +14,11 @@ part 'contact_event.dart';
 part 'contact_state.dart';
 
 class ContactBloc extends Bloc<ContactEvent, ContactState> {
+  
   ContactBloc({
     @required this.httpClient,
     @required this.fetchContacts,
-    }) : super(const ContactState());
+  }) : super(const ContactState());
 
   final http.Client httpClient;
   final FetchContacts fetchContacts;
@@ -25,34 +26,56 @@ class ContactBloc extends Bloc<ContactEvent, ContactState> {
   @override
   Stream<ContactState> mapEventToState(ContactEvent event) async* {
     if (event is ContactFetched) {
-      yield await _mapPostFetchedToState(state);
+      var status = state.status;
+
+      yield state.copyWith(
+        status: ContactStatus.loading
+      );
+
+      yield await _mapPostFetchedToState(state, status);
+    } else if (event is RefreshContacts) {
+      var status = state.status;
+      _pagintaion = Pagination();
+      yield state.copyWith(
+        status: ContactStatus.loading,
+        contacts: [],
+        hasReachedMax: false
+      );
+      
+      yield await _mapPostFetchedToState(state, status);
     }
   }
-  final _pagintaion = Pagination();
+  
+  var _pagintaion = Pagination();
 
-  Future<ContactState> _mapPostFetchedToState(ContactState state) async {
-    if (state.hasReachedMax) return state;
+  Future<ContactState> _mapPostFetchedToState(
+    ContactState state, ContactStatus status
+  ) async {
+    if (state.hasReachedMax) return state.copyWith(status: ContactStatus.success);
     try {
-      if (state.status == ContactStatus.initial) {
+      if (status == ContactStatus.initial) {
         ContactResponse response = await _fetchContacts(_pagintaion);
         _pagintaion.next();
+        
         return state.copyWith(
           status: ContactStatus.success,
           contacts: response.contacts.data,
           hasReachedMax: _hasReachedMax(response.contacts.data.length, response.contacts.total),
           maxTotal: response.contacts.total,
         );
-      }
-      ContactResponse response = await _fetchContacts(_pagintaion);
-      if (response.contacts.data.isEmpty) {
-        return state.copyWith(hasReachedMax: true);
       } else {
-        _pagintaion.next();
-        return state.copyWith(
-              status: ContactStatus.success,
-              contacts: List.of(state.contacts)..addAll(response.contacts.data),
-              hasReachedMax: _hasReachedMax(response.contacts.data.length, state.maxTotal,)
-            );
+        ContactResponse response = await _fetchContacts(_pagintaion);
+        
+        if (response.contacts.data.isEmpty) {
+          return state.copyWith(hasReachedMax: true);
+        } else {
+          _pagintaion.next();
+          return state.copyWith(
+            status: ContactStatus.success,
+            contacts: List.of(state.contacts)..addAll(response.contacts.data),
+            hasReachedMax: _hasReachedMax(response.contacts.data.length, state.maxTotal,)
+          );
+        }
       }
     } on Exception {
       return state.copyWith(status: ContactStatus.failure);
@@ -62,9 +85,9 @@ class ContactBloc extends Bloc<ContactEvent, ContactState> {
   bool _hasReachedMax(int contactsCount, int totalCount) => contactsCount < totalCount ? false : true;
 
   Future<ContactResponse> _fetchContacts(Pagination pagination) async {
-   var failOrContacts =  await fetchContacts(pagination);
-   return failOrContacts.fold((l) => throw Exception, (r) {
-          return r;
-        });
-    }
+    var failOrContacts =  await fetchContacts(pagination);
+    return failOrContacts.fold((l) => throw Exception, (r) {
+      return r;
+    });
+  }
 }

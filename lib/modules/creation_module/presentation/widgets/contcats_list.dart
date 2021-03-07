@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:messenger_mobile/core/utils/paginated_scroll_controller.dart';
 
 import '../../../../core/widgets/independent/small_widgets/cell_skeleton_item.dart';
 import '../../../../core/widgets/independent/small_widgets/chat_count_view.dart';
@@ -8,14 +9,22 @@ import '../bloc/contact_bloc/contact_bloc.dart';
 import '../helpers/creation_actions.dart';
 import 'actions_builder.dart';
 import 'contact_cell.dart';
+import 'package:flutter_share/flutter_share.dart';
+import 'package:messenger_mobile/core/widgets/independent/small_widgets/cell_skeleton_item.dart';
+import 'package:messenger_mobile/core/widgets/independent/small_widgets/chat_count_view.dart';
+import 'package:messenger_mobile/modules/creation_module/presentation/bloc/contact_bloc/contact_bloc.dart';
+import 'package:messenger_mobile/modules/creation_module/presentation/helpers/creation_actions.dart';
+import 'package:messenger_mobile/modules/creation_module/presentation/widgets/actions_builder.dart';
+import 'package:messenger_mobile/modules/creation_module/presentation/widgets/contact_cell.dart';
 
 class ContactsList extends StatefulWidget {
+  
   @override
   _ContactsListState createState() => _ContactsListState();
 }
 
 class _ContactsListState extends State<ContactsList> {
-  final _scrollController = ScrollController();
+  final _scrollController = PaginatedScrollController();
   ContactBloc _contactBloc;
 
   @override
@@ -25,47 +34,65 @@ class _ContactsListState extends State<ContactsList> {
     _contactBloc = context.read<ContactBloc>();
   }
 
+  // * * UI
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<ContactBloc, ContactState>(
-    listener: (context, state) {
-      if(state.status == ContactStatus.failure){
-        Scaffold.of(context).showSnackBar(SnackBar(content: Text('Could not handle contacts')));
-      }
-    },
-    builder: (_, state) {
-      return ListView.separated(
-              controller: _scrollController,
-              itemBuilder: (_, int index) {
-                if (index == 0) {
-                  return ActionsContainer(
-                    onTap: (CreationActions action) {
-                     actionProcess(action, _);
-                    },
-                  );
-                } else if (index == 1) {
-                  return CellHeaderView(title: 'Ваши контакты: ${state.contacts.length}');
-                } else {
-                  return index >= state.contacts.length ? 
+      listener: (context, state) {
+        if(state.status == ContactStatus.failure){
+          Scaffold.of(context).showSnackBar(SnackBar(content: Text('Could not handle contacts')));
+        }
+      },
+      builder: (_, state) {
+        return RefreshIndicator(
+          onRefresh: () async {
+            _contactBloc.add(RefreshContacts());
+          },
+          child: ListView.separated(
+            controller: _scrollController,
+            itemBuilder: (context, int index) {
+              if (index == 0) {
+                return ActionsContainer(
+                  onTap: (CreationActions action) {
+                    actionProcess(action, context);
+                  },
+                );
+              } else if (index == 1) {
+                return CellHeaderView(
+                  title: 'Ваши контакты: ${state.contacts.length}'
+                );
+              } else {
+                return index >= state.contacts.length + 2 ? 
                   CellShimmerItem(circleSize: 35,) : 
-                  ContactCell(contactItem: state.contacts[index-1]);
-                }
-              }, 
-              separatorBuilder: (context, int index) {
-                if (index > 1) {
-                  return Divider();
-                } else {
-                  return Container();
-                }
-              }, itemCount: state.hasReachedMax
-                    ? state.contacts.length
-                    : state.contacts.length + 4,
-      );
-    },
-      );
+                    ContactCell(contactItem: state.contacts[index - 2]);
+              }
+            }, 
+            separatorBuilder: (context, int index) => _buildSeparationFor(index: index), 
+            itemCount: state.status != ContactStatus.loading ? 
+              state.contacts.length + 2 : state.contacts.length + 6,
+          ),
+        );
+      },
+    );
   }
   
-  actionProcess(CreationActions action, BuildContext context){
+    // * * UI Helpers
+
+  Widget _buildSeparationFor({ @required int index }) {
+    if (index > 1) {
+      return Divider();
+    } else {
+      return Container();
+    }
+  }
+
+  // * * Actions
+
+  Future<void> actionProcess(
+    CreationActions action, 
+    BuildContext context
+  ) async {
     switch (action){
       case CreationActions.createGroup:
         Navigator.pushNamed(context, CreateGroupPage.id);
@@ -80,24 +107,29 @@ class _ContactsListState extends State<ContactsList> {
         // TODO: Handle this case.
         break;
       case CreationActions.inviteFriends:
-        // TODO: Handle this case.
+        return await FlutterShare.share(
+          title: 'AIO Messenger',
+          text: 'Хэй, поскорее скачай мессенджер AIO!',
+          linkUrl: 'https://messengeraio.page.link/invite'
+        );
         break;
     }
   }
+
+  // * * Life-Cycle
+
   @override
   void dispose() {
     _scrollController.dispose();
+    _contactBloc.close();
     super.dispose();
   }
 
   void _onScroll() {
-    if (_isPaginated) _contactBloc.add(ContactFetched());
-  }
-
-  bool get _isPaginated {
-    if (!_scrollController.hasClients) return false;
-    final maxScroll = _scrollController.position.maxScrollExtent;
-    final currentScroll = _scrollController.offset;
-    return currentScroll >= (maxScroll * 0.7);
+    if (_scrollController.isPaginated) {
+      if (_contactBloc.state.status != ContactStatus.loading) {
+        _contactBloc.add(ContactFetched());
+      }
+    }
   }
 }

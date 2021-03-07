@@ -59,8 +59,10 @@ class _CategoryListState extends State<CategoryList> {
       body: BlocConsumer<CategoryBloc, CategoryState>(
         listener: (context, state) {
           if (state is CategoriesUpdating) {
+            Scaffold.of(context).hideCurrentSnackBar();
             Scaffold.of(context).showSnackBar(SnackBar(content: LinearProgressIndicator(), duration: Duration(days: 2),));
           } else if (state is CategoriesErrorHappened) {
+            Scaffold.of(context).hideCurrentSnackBar();
             Scaffold.of(context).showSnackBar(SnackBar(content: Text(state.message)));
           } else if (state is CategoryLoaded){
             Scaffold.of(context).hideCurrentSnackBar();
@@ -89,13 +91,14 @@ class _CategoryListState extends State<CategoryList> {
               if (_didReorderItems)
                 BottomActionButtonContainer(
                   title: 'Сохранить',
-                  isLoading: state is CategoriesUpdating,
                   onTap: () { 
+                    var updates = this.getCategoriesDifferences(
+                      oldIDS: state.categoryList.map((e) => e.id).toList(), 
+                      newIDS: reorderedCategories.map((e) => e.id).toList()
+                    );
+
                     context.read<CategoryBloc>().add(CategoriesReordered(
-                      categoryUpdated: this.getCategoriesDifferences(
-                        oldCategories: state.categoryList, 
-                        newCategories: reorderedCategories
-                      )
+                      categoryUpdated: updates
                     ));
                   }
                 )
@@ -110,14 +113,20 @@ class _CategoryListState extends State<CategoryList> {
   /// Body of Categories List
   Widget returnStateWidget(state, context) {
     if (reorderedCategories.length == 0) {
-      if ((state is CategoryLoaded || state is CategoriesUpdating)) {
-        var categories = (state.categoryList ?? []) as List<CategoryEntity>;
-        reorderedCategories = categories.map((e) => e.clone()).toList();
-      }
+      var categories = (state.categoryList ?? []) as List<CategoryEntity>;
+      reorderedCategories = categories.map((e) => e.clone()).toList();
     }
 
-    if (state is CategoryLoaded || state is CategoriesUpdating) {
-      return CategoriesList(
+    if (state is CategoryEmpty) {
+      return Expanded(
+        child: ListView.builder(
+          itemBuilder: (context, int index) {
+            return CellShimmerItem();
+          },
+          itemCount: 10,
+        )
+      );
+    } else return CategoriesList(
         items: reorderedCategories,
         cellType: widget.isMoveChat ? CategoryCellType.empty : CategoryCellType.withOptions,
         onSelectedOption: (CategoryCellActionType action, CategoryEntity entity) {
@@ -163,46 +172,30 @@ class _CategoryListState extends State<CategoryList> {
           });
         },
       );
-    } else if (state is CategoryEmpty) {
-      return Expanded(
-        child: ListView.builder(
-          itemBuilder: (context, int index) {
-            return CellShimmerItem();
-          },
-          itemCount: 10,
-        )
-      );
-    } else {
-      return Text('default');
-    }
   }
-
   // BottomBar
 }
 
 
 extension on _CategoryListState {
-  /// Returns Map of updated categories
-  /// Example: { categoryID: 4, categoryID2: 3 }
-  Map<int, int> getCategoriesDifferences ({
-    @required List<CategoryEntity> oldCategories, 
-    @required List<CategoryEntity> newCategories
+  /// Returns Map of updated categories for the Backend
+  /// Example: { orders[2]: 0 }
+  /// So [orders[id]]'s value is a current order
+  /// ! Order starts from 1 not zero
+  Map<String, int> getCategoriesDifferences ({
+    @required List oldIDS, 
+    @required List newIDS
   }) {
-    List<CategoryEntity> arr2 = newCategories.map((e) => e.clone()).toList();
-    Map<int, int> differences = {};
-    
-    oldCategories.asMap().forEach((index, item) {
-      if (item.id != arr2[index].id) {
-         
-        var temp = arr2[index].clone();
-         
-        arr2[index] = item.clone();
-        arr2[arr2.lastIndexWhere((e) => e.id == item.id)] = temp;
-        print('index::: $index');
-        print( arr2.lastIndexWhere((e) => e.id == item.id));
-        if (differences[temp.id] == null) {
-          differences[temp.id] = index;
-        }
+    List arr2 = newIDS;
+    Map<String, int> differences = {};
+
+    oldIDS.asMap().forEach((index, item) {
+      if (item != arr2[index]) {
+        var temp = arr2[index];
+          
+        arr2[index] = item;
+        arr2[arr2.lastIndexOf(item)] = temp;
+        differences['$temp'] = index + 1;
       }
     });
     

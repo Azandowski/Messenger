@@ -1,0 +1,138 @@
+{
+  "project_info": {
+    "project_number": "1003132045337",
+    "firebase_url": "https://messengeraio-default-rtdb.firebaseio.com",
+    "project_id": "messengeraio",
+    "storage_bucket": "messengeraio.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1003132045337:android:d0133a23482cf2bb8b4288",
+        "android_client_info": {
+          "package_name": "com.example.custom_push"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1003132045337-fbpf8kb75325ihtctg1fap2vbqo9pj6p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAY5s8VXo20lKZYbcF2J7U9hrt0ctvHp7w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1003132045337-fbpf8kb75325ihtctg1fap2vbqo9pj6p.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1003132045337-7qio9ovqna44ptu2pbvcr7ia4cetr76v.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "kz.aio.messenger",
+                "app_store_id": "89988988"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1003132045337:android:19a9800f64b1685b8b4288",
+        "android_client_info": {
+          "package_name": "com.test.test_call"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1003132045337-fbpf8kb75325ihtctg1fap2vbqo9pj6p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAY5s8VXo20lKZYbcF2J7U9hrt0ctvHp7w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1003132045337-fbpf8kb75325ihtctg1fap2vbqo9pj6p.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1003132045337-7qio9ovqna44ptu2pbvcr7ia4cetr76v.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "kz.aio.messenger",
+                "app_store_id": "89988988"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1003132045337:android:c742d37df53a0bfd8b4288",
+        "android_client_info": {
+          "package_name": "kz.messenger_aio.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1003132045337-srs5ir1tjihso299h8gsqeu3up97vp4m.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "kz.messenger_aio.app",
+            "certificate_hash": "11352521b56c9950f2a26edd471985376f6f8a3d"
+          }
+        },
+        {
+          "client_id": "1003132045337-ttb9tsuvk5mnmi0sq3789lmgk2mb2bv9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "kz.messenger_aio.app",
+            "certificate_hash": "016196a680b052737d19c2ebb25f4327569dfc87"
+          }
+        },
+        {
+          "client_id": "1003132045337-fbpf8kb75325ihtctg1fap2vbqo9pj6p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAY5s8VXo20lKZYbcF2J7U9hrt0ctvHp7w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1003132045337-fbpf8kb75325ihtctg1fap2vbqo9pj6p.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1003132045337-7qio9ovqna44ptu2pbvcr7ia4cetr76v.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "kz.aio.messenger",
+                "app_store_id": "89988988"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

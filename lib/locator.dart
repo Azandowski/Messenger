@@ -76,8 +76,8 @@ Future<void> init() async {
 
 
   sl.registerFactory(() => ProfileCubit(getUser: sl()));
-  sl.registerFactory(() => ChatsCubit());
-  
+  sl.registerFactory(() => ChatsCubit(sl()));
+
   // Use cases
   sl.registerLazySingleton(() => GetToken(sl()));
   sl.registerLazySingleton(() => Logout(sl()));
@@ -120,6 +120,12 @@ Future<void> init() async {
   sl.registerLazySingleton<ChatsDataSource>(
       () => ChatsDataSourceImpl(client: sl()));
   // CONTACT
+  
+  sl.registerLazySingleton<ContactBloc>(() => ContactBloc(
+    fetchContacts: sl(),
+    httpClient: sl()
+  ));
+  
   //USECASE
   sl.registerLazySingleton(() => FetchContacts(CreationModuleRepositoryImpl(networkInfo: sl(), dataSource: CreationModuleDataSourceImpl(client: sl()))));
   sl.registerLazySingleton(() => CreateChatGruopUseCase(repository: sl()));

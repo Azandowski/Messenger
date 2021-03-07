@@ -61,6 +61,7 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
             message: failure.message
           );
         }, (data) async* {
+          repository.categoryListController.add(data);
           yield CategoryLoaded(
             categoryList: data
           );

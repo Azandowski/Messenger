@@ -9,6 +9,13 @@ import '../../../../core/services/network/Endpoints.dart';
 import '../../../../core/utils/pagination.dart';
 import '../../../../locator.dart';
 import '../models/contact_response.dart';
+import 'package:messenger_mobile/core/config/auth_config.dart';
+import 'package:messenger_mobile/core/error/failures.dart';
+import 'package:messenger_mobile/core/services/network/Endpoints.dart';
+import 'package:messenger_mobile/core/utils/error_handler.dart';
+import 'package:messenger_mobile/core/utils/pagination.dart';
+import 'package:messenger_mobile/locator.dart';
+import 'package:messenger_mobile/modules/creation_module/data/models/contact_response.dart';
 
 abstract class CreationModuleDataSource {
   Future<ContactResponse> fetchContacts(Pagination pagination);
@@ -34,7 +41,7 @@ class CreationModuleDataSourceImpl implements CreationModuleDataSource {
       var jsonMap = json.decode(response.body);
       return ContactResponse.fromJson(jsonMap);
     } else {
-      throw ServerFailure(message: response.body.toString());
+      throw ServerFailure(message: ErrorHandler.getErrorMessage(response.body.toString()));
     }
   }
 }
