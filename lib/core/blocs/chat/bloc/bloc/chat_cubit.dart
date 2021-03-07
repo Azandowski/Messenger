@@ -23,7 +23,8 @@ class ChatGlobalCubit extends Cubit<ChatState> {
     this.chatsRepository,
     this.getChats
   ) : super(ChatLoading(
-      chats: PaginatedResult(data: []),
+      chats: [],
+      hasReachedMax: false,
       isPagination: false
     )) {
 
@@ -45,12 +46,12 @@ class ChatGlobalCubit extends Cubit<ChatState> {
   }) async {
     emit(ChatLoading(
       chats: this.state.chats, 
-      isPagination: false
+      isPagination: false,
+      hasReachedMax: false
     ));
 
     final response = await getChats(GetChatsParams(
-      paginationData: isPagination ? 
-        this.state.chats?.paginationData ?? PaginationData.defaultInit() : PaginationData.defaultInit(),
+      lastChatID: isPagination ? this.state.chats?.last?.chatId : null,
       token: sl<AuthConfig>().token
     ));
 
@@ -58,15 +59,15 @@ class ChatGlobalCubit extends Cubit<ChatState> {
       (failure) => emit(ChatsError(
         chats: this.state.chats, 
         errorMessage: failure.message, 
+        hasReachedMax: this.state.hasReachedMax
       )),
       (chatsResponse) {
-        List<ChatEntity> newChats = isPagination ? (this.state.chats?.data ?? []) + chatsResponse.data : chatsResponse.data;
+        List<ChatEntity> newChats = isPagination ? (this.state.chats ?? []) + chatsResponse.data : chatsResponse.data;
+        
         print('LOADED CHATS COUNT: ${newChats.length}');
         emit(ChatsLoaded( 
-          chats: PaginatedResult<ChatEntity> (
-            paginationData: chatsResponse.paginationData,
-            data: newChats
-          )
+          chats: newChats,
+          hasReachedMax: chatsResponse.hasReachMax ?? false
         ));
       }
     );

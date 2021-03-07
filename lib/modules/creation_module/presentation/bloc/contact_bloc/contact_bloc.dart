@@ -16,11 +16,9 @@ part 'contact_state.dart';
 class ContactBloc extends Bloc<ContactEvent, ContactState> {
   
   ContactBloc({
-    @required this.httpClient,
     @required this.fetchContacts,
   }) : super(const ContactState());
 
-  final http.Client httpClient;
   final FetchContacts fetchContacts;
   
   @override

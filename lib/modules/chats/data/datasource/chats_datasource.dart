@@ -22,9 +22,9 @@ import 'package:messenger_mobile/core/utils/http_response_extension.dart';
 import 'package:path_provider/path_provider.dart';
 
 abstract class ChatsDataSource {
-  Future<PaginatedResult<ChatEntity>> getUserChats ({
+  Future<PaginatedResultViaLastItem<ChatEntity>> getUserChats ({
     @required String token,
-    @required PaginationData paginationData
+    int lastChatId
   });
 
   Future<List<ChatEntity>> getCategoryChat ({
@@ -48,22 +48,26 @@ class ChatsDataSourceImpl extends ChatsDataSource {
   * * Loading List of user's all chats via token
   */
   @override
-  Future<PaginatedResult<ChatEntity>> getUserChats({
+  Future<PaginatedResultViaLastItem<ChatEntity>> getUserChats({
     @required String token,
-    @required PaginationData paginationData
+    int lastChatId
   }) async {
-    print(paginationData.nextPageUrl);
-
     http.Response response = await client.get(
-      paginationData.nextPageUrl == null ? 
-        Endpoints.getAllUserChats.buildURL() : paginationData.nextPageUrl,
-      headers: Endpoints.getAllUserChats.getHeaders(token: token)
+      Endpoints.getAllUserChats.buildURL(queryParameters: {
+        if (lastChatId != null)
+          'last_message_id': '$lastChatId'
+      }),
+      headers: Endpoints.getAllUserChats.getHeaders(token: token),
     );
     
     if (response.isSuccess) {
-      return PaginatedResult.fromJson(
-        json.decode(response.body)['chat'], 
-        (jsonData) => ChatEntityModel.fromJson(jsonData));
+      var responseJSON = json.decode(response.body);
+
+      return PaginatedResultViaLastItem<ChatEntity>(
+        data: ((responseJSON['chats'] ?? []) as List).map(
+          (e) => ChatEntityModel.fromJson(e)).toList(),
+        hasReachMax: responseJSON['has_more_results']
+      );
     } else {
       throw ServerFailure(message: ErrorHandler.getErrorMessage(response.body.toString()));
     }

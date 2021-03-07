@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen.dart';
 
 import '../../../../core/blocs/chat/bloc/bloc/chat_cubit.dart';
 import '../../../../core/utils/paginated_scroll_controller.dart';
@@ -15,7 +16,7 @@ import 'package:messenger_mobile/modules/chats/presentation/widgets/categories_b
 import 'package:messenger_mobile/modules/chats/presentation/widgets/chat_item/chat_preview_item.dart';
 import '../../../../locator.dart';
 import '../../../category/data/models/chat_view_model.dart';
-import '../../../chat/presentation/pages/chat_screen.dart';
+
 import '../bloc/cubit/chats_cubit_cubit.dart';
 import '../widgets/categories_bloc_listener.dart';
 import '../widgets/chat_item/chat_preview_item.dart';
@@ -37,13 +38,14 @@ class _ChatsScreenState extends State<ChatsScreen> {
     cubit = sl<ChatsCubit>();
     context.read<ChatGlobalCubit>().loadChats(isPagination: false);
     scrollController.addListener(() {
-      bool hasNextPage = context.read<ChatGlobalCubit>().state.chats?.paginationData?.hasNextPage ?? true;
+      bool hasNextPage = !context.read<ChatGlobalCubit>().state.hasReachedMax;
       bool viewIsLoading = context.read<ChatGlobalCubit>().state is ChatLoading;
 
       if (scrollController.isPaginated && hasNextPage && !viewIsLoading) {
         context.read<ChatGlobalCubit>().loadChats(isPagination: true);
       }
     });
+
     super.initState();
   }
 
@@ -66,7 +68,7 @@ class _ChatsScreenState extends State<ChatsScreen> {
             cubit: cubit,
             listener: (context, state) {},
             builder: (context, state) {
-              int chatsCount = chatState.chats?.data?.length ?? 0;
+              int chatsCount = chatState.chats?.length ?? 0;
 
               return Scaffold(
                 appBar: _buildAppBar(
@@ -102,12 +104,12 @@ class _ChatsScreenState extends State<ChatsScreen> {
                           },
                           onTap: (){
                             Navigator.push(
-                              context, MaterialPageRoute(builder: (context) => ChatScreen(chatEntity: chatState.chats.data[index - 1],)),
+                              context, MaterialPageRoute(builder: (context) => ChatScreen(chatEntity: chatState.chats[index - 1],)),
                             );
                           },
                           child: ChatPreviewItem(
                             ChatViewModel(
-                              chatState.chats.data[index - 1],
+                              chatState.chats[index - 1],
                               isSelected: cubit.selectedChatIndex != null 
                                 && cubit.selectedChatIndex == index - 1
                             )

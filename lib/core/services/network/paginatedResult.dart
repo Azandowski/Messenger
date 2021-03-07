@@ -32,7 +32,6 @@ class PaginatedResult <T> {
   }
 }
 
-
 class PaginationData extends Equatable {
   final Uri nextPageUrl;
   final bool isFirstPage;
@@ -63,4 +62,16 @@ class PaginationData extends Equatable {
 
   @override
   List<Object> get props => [nextPageUrl, isFirstPage];
+}
+
+
+
+class PaginatedResultViaLastItem<T> {
+  final List<T> data;
+  final bool hasReachMax;
+
+  PaginatedResultViaLastItem({
+    @required this.data,
+    @required this.hasReachMax
+  });
 }

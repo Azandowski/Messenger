@@ -30,19 +30,22 @@ class ChatsRepositoryImpl extends ChatsRepository {
   // * * Methods
 
   @override
-  Future<Either<Failure, PaginatedResult<ChatEntity>>> getUserChats(GetChatsParams params) async {
+  Future<Either<Failure, PaginatedResultViaLastItem<ChatEntity>>> getUserChats(GetChatsParams params) async {
     if (await networkInfo.isConnected) {
       try {
         final response = await chatsDataSource.getUserChats(
           token: params.token, 
-          paginationData: params.paginationData
+          lastChatId: params.lastChatID
         );
 
-        if (params.paginationData.isFirstPage) {
-          currentChats = response.data;
+        if (params.lastChatID != null) {
+          // Adding not first page
+          currentChats.addAll(response.data);
           chatsController.add(currentChats);
         } else {
-          currentChats.addAll(response.data);
+          // First page
+
+          currentChats = response.data;
           chatsController.add(currentChats);
         }
 

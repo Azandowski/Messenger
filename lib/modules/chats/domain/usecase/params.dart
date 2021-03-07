@@ -5,15 +5,15 @@ import '../../../../core/services/network/paginatedResult.dart';
 
 class GetChatsParams extends Equatable {
   final String token;
-  final PaginationData paginationData;
+  final int lastChatID;
 
   GetChatsParams({
-    @required this.paginationData, 
+    @required this.lastChatID, 
     @required this.token
   });
 
   @override
-  List<Object> get props => [token, paginationData];
+  List<Object> get props => [token, lastChatID];
 }
 
 class GetCategoryChatsParams extends Equatable {

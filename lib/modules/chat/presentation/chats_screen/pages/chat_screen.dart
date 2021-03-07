@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/modules/chat/presentation/widgets/chatHeading.dart';
-import '../../../category/domain/entities/chat_entity.dart';
+import 'package:messenger_mobile/app/appTheme.dart';
+import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chat_details/page/chat_detail_page.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chat_details/page/chat_detail_screen.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/chatHeading.dart';
 
-import '../../../../app/appTheme.dart';
+import '../../../../../main.dart';
+
 
 class ChatScreen extends StatefulWidget {
   final ChatEntity chatEntity;
@@ -14,6 +18,8 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
+  NavigatorState get _navigator => navigatorKey.currentState;
+  
   TextEditingController messageTextController = TextEditingController();
    
   String messageText;
@@ -26,7 +32,7 @@ class _ChatScreenState extends State<ChatScreen> {
       appBar: AppBar(
         centerTitle: false,
         title: ChatHeading(onTap: (){
-          //TODO GO TO CHATDETAILSCREEN
+          _navigator.push(ChatDetailPage.route(widget.chatEntity.chatId));
         },),
         actions: [
           Row(children: [

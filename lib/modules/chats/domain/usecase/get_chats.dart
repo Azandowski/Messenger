@@ -7,13 +7,13 @@ import '../../../category/domain/entities/chat_entity.dart';
 import '../repositories/chats_repository.dart';
 import 'params.dart';
 
-class GetChats extends UseCase<PaginatedResult<ChatEntity>, GetChatsParams> {
+class GetChats extends UseCase<PaginatedResultViaLastItem<ChatEntity>, GetChatsParams> {
   final ChatsRepository repository;
 
   GetChats(this.repository);
 
   @override
-  Future<Either<Failure, PaginatedResult<ChatEntity>>> call(GetChatsParams params) async {
+  Future<Either<Failure, PaginatedResultViaLastItem<ChatEntity>>> call(GetChatsParams params) async {
     return repository.getUserChats(params);
   }
 }

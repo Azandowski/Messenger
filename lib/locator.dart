@@ -1,6 +1,9 @@
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
+import 'package:messenger_mobile/modules/chat/data/datasources/chat_datasource.dart';
+import 'package:messenger_mobile/modules/chat/data/repositories/chat_repository.dart';
+import 'package:messenger_mobile/modules/chat/domain/usecases/get_chat_details.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'core/blocs/authorization/bloc/auth_bloc.dart';
@@ -30,6 +33,8 @@ import 'modules/category/domain/usecases/get_categories.dart';
 import 'modules/category/domain/usecases/reorder_category.dart';
 import 'modules/category/domain/usecases/transfer_chat.dart';
 import 'modules/category/presentation/create_category_main/bloc/create_category_cubit.dart';
+import 'modules/chat/domain/repositories/chat_repository.dart';
+import 'modules/chat/presentation/chat_details/cubit/chat_details_cubit.dart';
 import 'modules/chats/data/datasource/chats_datasource.dart';
 import 'modules/chats/data/repositories/chats_repository_impl.dart';
 import 'modules/chats/domain/repositories/chats_repository.dart';
@@ -87,6 +92,8 @@ Future<void> init() async {
   sl.registerLazySingleton(() => SaveToken(sl()));
   sl.registerLazySingleton(() => GetChats(sl()));
 
+  sl.registerLazySingleton(() => GetChatDetails(repository: sl()));
+
   // Repository
 
   sl.registerLazySingleton<AuthenticationRepository>(
@@ -119,18 +126,19 @@ Future<void> init() async {
 
   sl.registerLazySingleton<ChatsDataSource>(
       () => ChatsDataSourceImpl(client: sl()));
-  // CONTACT
-  
-  sl.registerLazySingleton<ContactBloc>(() => ContactBloc(
-    fetchContacts: sl(),
-    httpClient: sl()
-  ));
-  
+
+  sl.registerLazySingleton<ChatRepository>(
+    () => ChatRepositoryImpl(
+      chatDataSource: sl(),
+      networkInfo: sl()
+    )
+  );
+
   //USECASE
   sl.registerLazySingleton(() => FetchContacts(CreationModuleRepositoryImpl(networkInfo: sl(), dataSource: CreationModuleDataSourceImpl(client: sl()))));
   sl.registerLazySingleton(() => CreateChatGruopUseCase(repository: sl()));
   // Bloc
-  sl.registerFactory(() => ContactBloc(httpClient: sl(), fetchContacts: sl()));
+  sl.registerFactory(() => ContactBloc(fetchContacts: sl()));
 
   //Repository
   sl.registerLazySingleton<ChatGroupRepository>(
@@ -139,6 +147,11 @@ Future<void> init() async {
   // DataSources
   sl.registerLazySingleton<ChatGroupRemoteDataSource>(
       () => ChatGroupRemoteDataSourceImpl(client: sl(),multipartRequest: http.MultipartRequest('POST', Endpoints.createGroupChat.buildURL())));
+  
+  sl.registerLazySingleton<ChatDataSource>(
+    () => ChatDataSourceImpl(client: sl()) 
+  );
+  
   // CreateCategory
 
   //Bloc 

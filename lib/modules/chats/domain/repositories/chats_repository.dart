@@ -10,7 +10,7 @@ import '../../../category/domain/entities/chat_entity.dart';
 import '../usecase/params.dart';
 
 abstract class ChatsRepository {  
-  Future<Either<Failure, PaginatedResult<ChatEntity>>> getUserChats(
+  Future<Either<Failure, PaginatedResultViaLastItem<ChatEntity>>> getUserChats(
     GetChatsParams params
   );
 

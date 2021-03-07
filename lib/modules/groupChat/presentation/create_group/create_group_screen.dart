@@ -57,90 +57,87 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> implements Contac
     _nameController = TextEditingController();
     _descriptionController = TextEditingController();
     _groupCubit = context.read<CreateGroupCubit>();
-
-    // if (widget.mode == CreateCategoryScreenMode.edit) {
-    //   cubit.prepareEditing(widget.entity);
-    // }
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<CreateGroupCubit, CreateGroupState>(
-          cubit: _groupCubit,
-          listener: (context, state) {
-            if (state is CreateCategoryError) {
-              Scaffold.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(state.message, style: TextStyle(color: Colors.red)),
-                ), // SnackBar
-              );
-            } else if (state is CreateGroupSuccess) {
-              Navigator.of(context).popUntil((route) => route.isFirst);
-            } else if (state is CreateGroupNormal) {
-              contacts = (state.contacts ?? []).map((e) => ContactViewModel(entity: e)).toList();
-            }
-          },
-          builder: (_, state) {
-            return Container(
-              height: MediaQuery.of(context).size.height,
-              child: Stack(
-                children: [
-                  SingleChildScrollView(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        SizedBox(height: 30),
-                        CreateGroupHeader(
-                          descriptionController: _descriptionController,
-                          nameController: _nameController,
-                          imageProvider: state.imageFile != null ? 
-                            FileImage(state.imageFile) : _groupCubit.defaultImageUrl != null ? 
-                              NetworkImage(_groupCubit.defaultImageUrl) : null,
-                          selectImage: (file) {
-                            PhotoPicker().showImageSourceSelectionDialog(context,
-                              (imageSource) {
-                                _groupCubit.selectPhoto(imageSource);
-                              });
-                          },
-                          onAddContacts: () {
-                            Navigator.of(context).push(ChooseContactsPage.route(this));
-                          },
-                        ),
-                        CellHeaderView(
-                          title: 'Участники: ${state is CreateGroupContactsLoading ? "Загрузка ,,," : (contacts ?? []).length }'
-                        ),
-                        Flexible(
-                            child: ListView.builder(
-                            shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
-                            itemBuilder: (context, i){
-                              var contact = contacts[i].entity;
-                              return ContactCell(contactItem: contact, cellType: ContactCellType.delete,onTrilinIconTapped: (){
-                                _groupCubit.deleteContact(contact);
-                              },);
-                            },
-                            itemCount: contacts.length,
-                          ),
-                        )
-                      ],
+      cubit: _groupCubit,
+      listener: (context, state) {
+        if (state is CreateCategoryError) {
+          Scaffold.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.message, style: TextStyle(color: Colors.red)),
+            ), // SnackBar
+          );
+        } else if (state is CreateGroupSuccess) {
+          Navigator.of(context).popUntil((route) => route.isFirst);
+        } else if (state is CreateGroupNormal) {
+          contacts = (state.contacts ?? []).map((e) => ContactViewModel(entity: e)).toList();
+        }
+      },
+      builder: (_, state) {
+        return Container(
+          height: MediaQuery.of(context).size.height,
+          child: Stack(
+            children: [
+              SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(height: 30),
+                    CreateGroupHeader(
+                      descriptionController: _descriptionController,
+                      nameController: _nameController,
+                      imageProvider: state.imageFile != null ? 
+                        FileImage(state.imageFile) : _groupCubit.defaultImageUrl != null ? 
+                          NetworkImage(_groupCubit.defaultImageUrl) : null,
+                      selectImage: (file) {
+                        PhotoPicker().showImageSourceSelectionDialog(context,
+                          (imageSource) {
+                            _groupCubit.selectPhoto(imageSource);
+                          });
+                      },
+                      onAddContacts: () {
+                        Navigator.of(context).push(ChooseContactsPage.route(this));
+                      },
                     ),
-                  ),
-                  BottomActionButtonContainer(
-                    title: 'Создать группу',
-                    isLoading: state is CreateGroupLoading,
-                    onTap: () {
-                      _groupCubit.createChat(_nameController.text, _descriptionController.text);
-                    },
-                  )
-                ],
+                    CellHeaderView(
+                      title: 'Участники: ${state is CreateGroupContactsLoading ? "Загрузка ,,," : (contacts ?? []).length }'
+                    ),
+                    Flexible(
+                        child: ListView.builder(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemBuilder: (context, i){
+                          var contact = contacts[i].entity;
+                          return ContactCell(contactItem: contact, cellType: ContactCellType.delete,onTrilinIconTapped: (){
+                            _groupCubit.deleteContact(contact);
+                          },);
+                        },
+                        itemCount: contacts.length,
+                      ),
+                    )
+                  ],
+                ),
               ),
-            );
-          },
+              BottomActionButtonContainer(
+                title: 'Создать группу',
+                isLoading: state is CreateGroupLoading,
+                onTap: () {
+                  _groupCubit.createChat(_nameController.text, _descriptionController.text);
+                },
+              )
+            ],
+          ),
         );
+      },
+    );
   }
+
+
   @override
   void didSaveChats(List<ContactEntity> contacts) {
-    print(contacts.length);
     _groupCubit.addContacts(contacts);
   }
 }

@@ -33,7 +33,10 @@ class AuthenticationRemoteDataSourceImpl
   final http.Client client;
   final http.MultipartRequest request;
 
-  AuthenticationRemoteDataSourceImpl({@required this.client,@required this.request});
+  AuthenticationRemoteDataSourceImpl({
+    @required this.client,
+    @required this.request
+  });
 
   @override
   Future<CodeModel> createCode(String number) async {

@@ -43,7 +43,7 @@ class _ChooseChatsPageState extends State<ChooseChatsPage> {
   void initState() {
     super.initState();
     if (context.read<ChatGlobalCubit>().state is ChatsLoaded) {
-      assignEntities((context.read<ChatGlobalCubit>().state as ChatsLoaded).chats.data);
+      assignEntities((context.read<ChatGlobalCubit>().state as ChatsLoaded).chats);
     }
   }
 
@@ -54,7 +54,7 @@ class _ChooseChatsPageState extends State<ChooseChatsPage> {
     return BlocConsumer<ChatGlobalCubit, ChatState>(
       listener: (context, state) {
         if (state is ChatsLoaded) {
-          assignEntities(state.chats.data);
+          assignEntities(state.chats);
           _chatsCount = chatEntities.where((e) => e.isSelected).toList().length;
         } 
       },

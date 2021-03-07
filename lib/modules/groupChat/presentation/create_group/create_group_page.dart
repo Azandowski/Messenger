@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../main.dart';
-import '../../../creation_module/presentation/bloc/contact_bloc/contact_bloc.dart';
 import '../choose_contacts/cubit/choosecontact_cubit.dart';
-
 import '../../../../locator.dart';
 import 'create_group_screen.dart';
 import 'cubit/creategroup_cubit.dart';
@@ -15,7 +12,7 @@ class CreateGroupPage extends StatefulWidget {
 }
 
 class _CreateGroupPageState extends State<CreateGroupPage> {
-    @override
+  @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
@@ -24,13 +21,12 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
           createChatGruopUseCase: sl())),
         BlocProvider(create: (_) => ChooseContactCubit()),
       ],  
-          child: Scaffold(
-          appBar: AppBar(
+      child: Scaffold(
+        appBar: AppBar(
           title: Text('Создать категорию'),
         ),
         body: CreateGroupScreen(),
-        ),
-      );
-    
+      ),
+    );
   }
 }
