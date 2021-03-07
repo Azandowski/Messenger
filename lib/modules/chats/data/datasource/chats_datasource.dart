@@ -1,12 +1,14 @@
 import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
-import 'package:messenger_mobile/core/error/failures.dart';
-import 'package:messenger_mobile/core/services/network/Endpoints.dart';
-import 'package:messenger_mobile/core/services/network/paginatedResult.dart';
-import 'package:messenger_mobile/modules/category/data/models/chat_entity_model.dart';
-import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
-import 'package:messenger_mobile/core/utils/http_response_extension.dart';
+
+import '../../../../core/error/failures.dart';
+import '../../../../core/services/network/Endpoints.dart';
+import '../../../../core/services/network/paginatedResult.dart';
+import '../../../../core/utils/http_response_extension.dart';
+import '../../../category/data/models/chat_entity_model.dart';
+import '../../../category/domain/entities/chat_entity.dart';
 
 abstract class ChatsDataSource {
   Future<PaginatedResult<ChatEntity>> getUserChats ({

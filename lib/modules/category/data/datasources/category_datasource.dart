@@ -1,16 +1,17 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:http/http.dart' as http;
+
 import 'package:flutter/foundation.dart';
-import 'package:messenger_mobile/core/config/auth_config.dart';
-import 'package:messenger_mobile/core/services/network/Endpoints.dart';
-import 'package:messenger_mobile/locator.dart';
+import 'package:http/http.dart' as http;
+
+import '../../../../core/config/auth_config.dart';
 import '../../../../core/error/failures.dart';
+import '../../../../core/services/network/Endpoints.dart';
+import '../../../../core/utils/http_response_extension.dart';
 import '../../../../core/utils/multipart_request_helper.dart';
+import '../../../../locator.dart';
 import '../../../chats/data/model/category_model.dart';
 import '../../../chats/domain/entities/category.dart';
-import 'package:messenger_mobile/core/utils/http_response_extension.dart';
-import '../../../../core/utils/http_response_extension.dart';
 
 abstract class CategoryDataSource {
   Future<List<CategoryEntity>> createCategory({

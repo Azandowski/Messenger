@@ -1,20 +1,20 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'package:sembast/sembast.dart';
 
-import 'package:contacts_service/contacts_service.dart';
 import 'package:dartz/dartz.dart';
-import 'package:messenger_mobile/core/blocs/authorization/bloc/auth_bloc.dart';
-import 'package:messenger_mobile/modules/category/domain/usecases/get_categories.dart';
-import 'package:messenger_mobile/modules/chats/domain/entities/usecases/params.dart';
 import 'package:meta/meta.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:sembast/sembast.dart';
+
+import '../../../../core/blocs/authorization/bloc/auth_bloc.dart';
 import '../../../../core/config/auth_config.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/services/network/network_info.dart';
 import '../../../../core/usecases/usecase.dart';
 import '../../../../locator.dart';
+import '../../../category/domain/usecases/get_categories.dart';
+import '../../../chats/domain/entities/usecases/params.dart';
 import '../../../profile/domain/entities/user.dart';
 import '../../domain/entities/code_entity.dart';
 import '../../domain/entities/token_entity.dart';

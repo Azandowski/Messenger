@@ -1,13 +1,8 @@
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
-import 'package:messenger_mobile/modules/category/domain/usecases/delete_category.dart';
-import 'package:messenger_mobile/modules/category/domain/usecases/reorder_category.dart';
-import 'package:messenger_mobile/modules/creation_module/data/datasources/creation_module_datasource.dart';
-import 'package:messenger_mobile/modules/creation_module/data/repositories/creation_module_repository.dart';
-import 'package:messenger_mobile/modules/creation_module/domain/repositories/creation_module_repository.dart';
-import 'package:messenger_mobile/modules/creation_module/domain/usecases/fetch_contacts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import 'core/blocs/authorization/bloc/auth_bloc.dart';
 import 'core/blocs/category/bloc/category_bloc.dart';
 import 'core/blocs/chat/bloc/bloc/chat_cubit.dart';
@@ -30,7 +25,9 @@ import 'modules/category/data/datasources/category_datasource.dart';
 import 'modules/category/data/repositories/category_repository.dart';
 import 'modules/category/domain/repositories/category_repository.dart';
 import 'modules/category/domain/usecases/create_category.dart';
+import 'modules/category/domain/usecases/delete_category.dart';
 import 'modules/category/domain/usecases/get_categories.dart';
+import 'modules/category/domain/usecases/reorder_category.dart';
 import 'modules/category/domain/usecases/transfer_chat.dart';
 import 'modules/category/presentation/create_category_main/bloc/create_category_cubit.dart';
 import 'modules/chats/data/datasource/chats_datasource.dart';
@@ -39,6 +36,14 @@ import 'modules/chats/domain/repositories/chats_repository.dart';
 import 'modules/chats/domain/usecase/get_category_chats.dart';
 import 'modules/chats/domain/usecase/get_chats.dart';
 import 'modules/chats/presentation/bloc/cubit/chats_cubit_cubit.dart';
+import 'modules/creation_module/data/datasources/creation_module_datasource.dart';
+import 'modules/creation_module/data/repositories/creation_module_repository.dart';
+import 'modules/creation_module/domain/usecases/fetch_contacts.dart';
+import 'modules/creation_module/presentation/bloc/contact_bloc/contact_bloc.dart';
+import 'modules/groupChat/data/datasources/chat_group_remote_datasource.dart';
+import 'modules/groupChat/data/repositories/chat_group_repository_impl.dart';
+import 'modules/groupChat/domain/repositories/chat_group_repository.dart';
+import 'modules/groupChat/domain/usecases/create_chat_group.dart';
 import 'modules/media/data/datasources/local_media_datasource.dart';
 import 'modules/media/data/repositories/media_repository_impl.dart';
 import 'modules/media/domain/repositories/media_repository.dart';
@@ -72,7 +77,7 @@ Future<void> init() async {
 
   sl.registerFactory(() => ProfileCubit(getUser: sl()));
   sl.registerFactory(() => ChatsCubit());
-
+  
   // Use cases
   sl.registerLazySingleton(() => GetToken(sl()));
   sl.registerLazySingleton(() => Logout(sl()));
@@ -117,6 +122,17 @@ Future<void> init() async {
   // CONTACT
   //USECASE
   sl.registerLazySingleton(() => FetchContacts(CreationModuleRepositoryImpl(networkInfo: sl(), dataSource: CreationModuleDataSourceImpl(client: sl()))));
+  sl.registerLazySingleton(() => CreateChatGruopUseCase(repository: sl()));
+  // Bloc
+  sl.registerFactory(() => ContactBloc(httpClient: sl(), fetchContacts: sl()));
+
+  //Repository
+  sl.registerLazySingleton<ChatGroupRepository>(
+      () => ChatGroupRepositoryImpl(remoteDataSource: sl(),));
+
+  // DataSources
+  sl.registerLazySingleton<ChatGroupRemoteDataSource>(
+      () => ChatGroupRemoteDataSourceImpl(client: sl(),multipartRequest: http.MultipartRequest('POST', Endpoints.createGroupChat.buildURL())));
   // CreateCategory
 
   //Bloc 

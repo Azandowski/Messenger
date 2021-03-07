@@ -5,19 +5,19 @@ enum ContactStatus { initial, success, failure }
 class ContactState extends Equatable {
   const ContactState({
     this.status = ContactStatus.initial,
-    this.contacts = const <Contact>[],
+    this.contacts = const <ContactEntity>[],
     this.hasReachedMax = false,
     this.maxTotal,
   });
 
   final ContactStatus status;
-  final List<Contact> contacts;
+  final List<ContactEntity> contacts;
   final bool hasReachedMax;
   final int maxTotal;
 
   ContactState copyWith({
     ContactStatus status,
-    List<Contact> contacts,
+    List<ContactEntity> contacts,
     bool hasReachedMax,
     int maxTotal,
   }) {

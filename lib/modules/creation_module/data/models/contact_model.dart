@@ -1,7 +1,8 @@
 import 'package:flutter/foundation.dart';
-import 'package:messenger_mobile/modules/creation_module/domain/entities/contact.dart';
 
-class ContactModel extends Contact {
+import '../../domain/entities/contact.dart';
+
+class ContactModel extends ContactEntity {
   final int id;
   final String name;
   final String surname;

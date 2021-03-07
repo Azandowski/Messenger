@@ -1,10 +1,11 @@
 import 'package:flutter/foundation.dart';
-import 'package:messenger_mobile/modules/category/data/models/chat_permission_model.dart';
-import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
-import 'package:messenger_mobile/modules/category/domain/entities/chat_permissions.dart';
-import 'package:messenger_mobile/modules/chat/data/models/message_model.dart';
-import 'package:messenger_mobile/modules/chats/data/model/category_model.dart';
-import 'package:messenger_mobile/modules/chats/domain/entities/category.dart';
+
+import '../../../chat/data/models/message_model.dart';
+import '../../../chats/data/model/category_model.dart';
+import '../../../chats/domain/entities/category.dart';
+import '../../domain/entities/chat_entity.dart';
+import '../../domain/entities/chat_permissions.dart';
+import 'chat_permission_model.dart';
 
 class ChatEntityModel extends ChatEntity {
   final int chatId;

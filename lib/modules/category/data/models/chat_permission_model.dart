@@ -1,4 +1,4 @@
-import 'package:messenger_mobile/modules/category/domain/entities/chat_permissions.dart';
+import '../../domain/entities/chat_permissions.dart';
 
 class ChatPermissionModel extends ChatPermissions {
   final bool isSoundOn;

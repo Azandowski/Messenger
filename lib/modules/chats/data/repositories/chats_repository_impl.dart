@@ -1,12 +1,14 @@
 import 'dart:async';
+
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
-import 'package:messenger_mobile/core/services/network/paginatedResult.dart';
-import 'package:messenger_mobile/core/error/failures.dart';
-import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
-import 'package:messenger_mobile/modules/chats/domain/usecase/params.dart';
+
+import '../../../../core/error/failures.dart';
 import '../../../../core/services/network/network_info.dart';
+import '../../../../core/services/network/paginatedResult.dart';
+import '../../../category/domain/entities/chat_entity.dart';
 import '../../domain/repositories/chats_repository.dart';
+import '../../domain/usecase/params.dart';
 import '../datasource/chats_datasource.dart';
 
 class ChatsRepositoryImpl extends ChatsRepository {

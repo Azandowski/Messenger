@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:messenger_mobile/core/blocs/chat/bloc/bloc/chat_cubit.dart';
-import 'package:messenger_mobile/modules/category/data/models/chat_view_model.dart';
-import 'package:messenger_mobile/core/widgets/independent/small_widgets/cell_skeleton_item.dart';
+
 import '../../../../../app/appTheme.dart';
+import '../../../../../core/blocs/chat/bloc/bloc/chat_cubit.dart';
 import '../../../../../core/widgets/independent/buttons/gradient_main_button.dart';
+import '../../../../../core/widgets/independent/small_widgets/cell_skeleton_item.dart';
+import '../../../data/models/chat_view_model.dart';
 import '../../../domain/entities/chat_entity.dart';
 import '../../create_category_main/widgets/chat_list.dart';
 

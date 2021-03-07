@@ -1,10 +1,9 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:messenger_mobile/core/blocs/category/bloc/category_bloc.dart';
-import 'package:messenger_mobile/modules/category/presentation/category_list/category_list.dart';
-import 'package:messenger_mobile/modules/category/presentation/create_category_main/pages/create_category_screen.dart';
-import 'package:messenger_mobile/modules/chats/presentation/bloc/cubit/chats_cubit_cubit.dart';
 
+import '../../../../core/blocs/category/bloc/category_bloc.dart';
+import '../../../category/presentation/category_list/category_list.dart';
+import '../bloc/cubit/chats_cubit_cubit.dart';
 import 'category_items.dart';
 
 class ChatScreenCategoriesView extends StatelessWidget {

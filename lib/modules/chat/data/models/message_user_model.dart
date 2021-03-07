@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
-import 'package:messenger_mobile/core/services/network/config.dart';
-import 'package:messenger_mobile/modules/chat/domain/entities/message.dart';
+
+import '../../../../core/services/network/config.dart';
+import '../../domain/entities/message.dart';
 
 class MessageUserModel extends MessageUser {
   final String name;

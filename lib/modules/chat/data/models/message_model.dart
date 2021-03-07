@@ -1,5 +1,5 @@
-import 'package:messenger_mobile/modules/chat/data/models/message_user_model.dart';
-import 'package:messenger_mobile/modules/chat/domain/entities/message.dart';
+import '../../domain/entities/message.dart';
+import 'message_user_model.dart';
 
 class MessageModel extends Message {
   final int id;

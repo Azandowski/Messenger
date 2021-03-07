@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/app/appTheme.dart';
-import 'package:messenger_mobile/core/widgets/independent/images/ImageWithCorner.dart';
-import 'package:messenger_mobile/modules/chats/domain/entities/category.dart';
+
+import '../../../../../app/appTheme.dart';
+import '../../../../../core/widgets/independent/images/ImageWithCorner.dart';
+import '../../../../chats/domain/entities/category.dart';
 
 class CategoryCell extends StatelessWidget {
   const CategoryCell({

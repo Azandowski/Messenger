@@ -1,12 +1,13 @@
 
-import 'package:flutter/material.dart';
-import 'package:messenger_mobile/core/services/network/network_info.dart';
-import 'package:messenger_mobile/core/utils/pagination.dart';
-import 'package:messenger_mobile/core/error/failures.dart';
 import 'package:dartz/dartz.dart';
-import 'package:messenger_mobile/modules/creation_module/data/datasources/creation_module_datasource.dart';
-import 'package:messenger_mobile/modules/creation_module/data/models/contact_response.dart';
-import 'package:messenger_mobile/modules/creation_module/domain/repositories/creation_module_repository.dart';
+import 'package:flutter/material.dart';
+
+import '../../../../core/error/failures.dart';
+import '../../../../core/services/network/network_info.dart';
+import '../../../../core/utils/pagination.dart';
+import '../../domain/repositories/creation_module_repository.dart';
+import '../datasources/creation_module_datasource.dart';
+import '../models/contact_response.dart';
 
 class CreationModuleRepositoryImpl implements CreationModuleRepository {
   final NetworkInfo networkInfo; 

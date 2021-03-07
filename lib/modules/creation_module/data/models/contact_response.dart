@@ -1,4 +1,4 @@
-import 'package:messenger_mobile/modules/creation_module/data/models/contact_model.dart';
+import 'contact_model.dart';
 
 class ContactResponse {
   Contacts contacts;

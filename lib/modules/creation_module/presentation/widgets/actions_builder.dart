@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/app/appTheme.dart';
-import 'package:messenger_mobile/modules/creation_module/presentation/helpers/creation_actions.dart';
+
+import '../../../../app/appTheme.dart';
+import '../helpers/creation_actions.dart';
 
 class ActionsContainer extends StatelessWidget {
   

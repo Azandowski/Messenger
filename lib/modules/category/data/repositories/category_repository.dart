@@ -2,12 +2,12 @@ import 'dart:async';
 
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
-import 'package:messenger_mobile/core/usecases/usecase.dart';
-import 'package:messenger_mobile/modules/chats/domain/entities/usecases/params.dart';
 
 import '../../../../core/error/failures.dart';
 import '../../../../core/services/network/network_info.dart';
+import '../../../../core/usecases/usecase.dart';
 import '../../../chats/domain/entities/category.dart';
+import '../../../chats/domain/entities/usecases/params.dart';
 import '../../domain/repositories/category_repository.dart';
 import '../../domain/usecases/params.dart';
 import '../datasources/category_datasource.dart';

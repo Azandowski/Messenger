@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/core/services/network/config.dart';
 
 import '../../../../app/appTheme.dart';
 import '../../../../core/widgets/independent/images/ImageWithCorner.dart';

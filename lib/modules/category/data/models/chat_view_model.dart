@@ -1,5 +1,5 @@
-import 'package:messenger_mobile/core/services/network/config.dart';
-import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
+import '../../../../core/services/network/config.dart';
+import '../../domain/entities/chat_entity.dart';
 import 'package:intl/intl.dart';
 
 class ChatViewModel {

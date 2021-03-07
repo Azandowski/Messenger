@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/modules/category/presentation/category_list/widgets/category_cell.dart';
-import 'package:messenger_mobile/modules/chats/domain/entities/category.dart';
+
+import '../../../../chats/domain/entities/category.dart';
+import 'category_cell.dart';
 
 class CategoriesList extends StatelessWidget {
   final List<CategoryEntity> items;

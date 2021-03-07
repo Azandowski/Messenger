@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/app/appTheme.dart';
+import 'package:messenger_mobile/modules/chat/presentation/widgets/chatHeading.dart';
+import '../../../category/domain/entities/chat_entity.dart';
+
+import '../../../../app/appTheme.dart';
 
 class ChatScreen extends StatefulWidget {
+  final ChatEntity chatEntity;
+
+  const ChatScreen({Key key,@required this.chatEntity}) : super(key: key);
+
   @override
   _ChatScreenState createState() => _ChatScreenState();
 }
@@ -17,18 +24,10 @@ class _ChatScreenState extends State<ChatScreen> {
     var height = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
-        title: Row(children: [
-          CircleAvatar(backgroundImage: AssetImage(
-            'assets/images/default_user.jpg'
-          ),),
-          SizedBox(width: 8,),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-            Text('The Friends',style: AppFontStyles.headerMediumStyle,),
-            Text('Alice, Michael + 4...',style: AppFontStyles.placeholderStyle,),
-          ],)
-        ],),
+        centerTitle: false,
+        title: ChatHeading(onTap: (){
+          //TODO GO TO CHATDETAILSCREEN
+        },),
         actions: [
           Row(children: [
             IconButton(icon: Icon(Icons.video_call,color: AppColors.greyColor,),onPressed: (){

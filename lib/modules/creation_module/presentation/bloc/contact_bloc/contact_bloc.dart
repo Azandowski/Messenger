@@ -1,12 +1,14 @@
 import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:http/http.dart' as http;
-import 'package:messenger_mobile/core/utils/pagination.dart';
-import 'package:messenger_mobile/modules/creation_module/data/models/contact_response.dart';
-import 'package:messenger_mobile/modules/creation_module/domain/entities/contact.dart';
-import 'package:messenger_mobile/modules/creation_module/domain/usecases/fetch_contacts.dart';
 import 'package:meta/meta.dart';
+
+import '../../../../../core/utils/pagination.dart';
+import '../../../data/models/contact_response.dart';
+import '../../../domain/entities/contact.dart';
+import '../../../domain/usecases/fetch_contacts.dart';
 
 part 'contact_event.dart';
 part 'contact_state.dart';

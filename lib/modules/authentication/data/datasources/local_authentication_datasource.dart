@@ -1,10 +1,10 @@
-import 'dart:convert';
 
 import 'package:contacts_service/contacts_service.dart';
-import 'package:messenger_mobile/core/services/localdb/app_database.dart';
 import 'package:sembast/sembast.dart';
+
 import '../../../../core/config/storage.dart';
 import '../../../../core/error/failures.dart';
+import '../../../../core/services/localdb/app_database.dart';
 
 abstract class AuthenticationLocalDataSource {
   Future<void> saveToken(String token);

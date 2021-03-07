@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:messenger_mobile/core/widgets/independent/buttons/bottom_action_button.dart';
-import 'package:messenger_mobile/core/widgets/independent/pickers/photo_picker.dart';
-import 'package:messenger_mobile/modules/category/data/models/chat_view_model.dart';
-import 'package:messenger_mobile/core/widgets/independent/small_widgets/chat_count_view.dart';
-import 'package:messenger_mobile/modules/category/domain/entities/create_category_screen_params.dart';
-import 'package:messenger_mobile/modules/category/presentation/category_list/category_list.dart';
-import 'package:messenger_mobile/modules/category/presentation/create_category_main/widgets/chat_list.dart';
-import 'package:messenger_mobile/modules/chats/domain/entities/category.dart';
+
+import '../../../../../core/widgets/independent/buttons/bottom_action_button.dart';
+import '../../../../../core/widgets/independent/pickers/photo_picker.dart';
+import '../../../../../core/widgets/independent/small_widgets/chat_count_view.dart';
 import '../../../../../locator.dart';
 import '../../../../../main.dart';
+import '../../../../chats/domain/entities/category.dart';
+import '../../../data/models/chat_view_model.dart';
 import '../../../domain/entities/chat_entity.dart';
+import '../../../domain/entities/create_category_screen_params.dart';
+import '../../category_list/category_list.dart';
 import '../../chooseChats/presentation/chat_choose_page.dart';
 import '../bloc/create_category_cubit.dart';
+import '../widgets/chat_list.dart';
 import '../widgets/create_category_header.dart';
 
 class CreateCategoryScreen extends StatefulWidget {

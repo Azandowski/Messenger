@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:messenger_mobile/core/blocs/category/bloc/category_bloc.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:messenger_mobile/modules/chat/presentation/pages/chat_screen.dart';
+
 import 'app/appTheme.dart';
 import 'bloc_observer.dart';
 import 'core/blocs/authorization/bloc/auth_bloc.dart';
+import 'core/blocs/category/bloc/category_bloc.dart';
 import 'core/blocs/chat/bloc/bloc/chat_cubit.dart';
 import 'core/config/routes.dart';
 import 'core/screens/splash_screen.dart';
 import 'locator.dart' as serviceLocator;
+import 'modules/creation_module/presentation/bloc/contact_bloc/contact_bloc.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
 
@@ -37,7 +38,8 @@ class MainApp extends StatelessWidget {
       providers: [
         BlocProvider.value(value: serviceLocator.sl<ChatGlobalCubit>()),
         BlocProvider(create: (_) => serviceLocator.sl<CategoryBloc>()),
-        BlocProvider.value(value: serviceLocator.sl<AuthBloc>())
+        BlocProvider(create: (_) => serviceLocator.sl<ContactBloc>()..add(ContactFetched()),),
+        BlocProvider.value(value: serviceLocator.sl<AuthBloc>()),
       ],
       child: MaterialApp(
         home: SplashScreen(),

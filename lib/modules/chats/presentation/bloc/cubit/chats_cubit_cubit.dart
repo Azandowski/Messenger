@@ -2,8 +2,8 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
 
+import '../../../../category/domain/entities/chat_entity.dart';
 
 part 'chats_cubit_state.dart';
 

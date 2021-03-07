@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/app/appTheme.dart';
-import 'package:messenger_mobile/core/widgets/independent/dialogs/dialog_action_button.dart';
-import 'package:messenger_mobile/core/widgets/independent/dialogs/dialog_params.dart';
+
+import '../../../../app/appTheme.dart';
+import 'dialog_action_button.dart';
+import 'dialog_params.dart';
 
 /// * Reusable dialogs for the whole application
 

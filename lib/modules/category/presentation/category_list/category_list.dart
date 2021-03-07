@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:messenger_mobile/app/appTheme.dart';
-import 'package:messenger_mobile/core/blocs/category/bloc/category_bloc.dart';
-import 'package:messenger_mobile/core/widgets/independent/buttons/bottom_action_button.dart';
-import 'package:messenger_mobile/core/widgets/independent/dialogs/dialog_action_button.dart';
-import 'package:messenger_mobile/core/widgets/independent/dialogs/dialog_params.dart';
-import 'package:messenger_mobile/core/widgets/independent/dialogs/dialogs.dart';
-import 'package:messenger_mobile/modules/category/domain/entities/create_category_screen_params.dart';
-import 'package:messenger_mobile/modules/category/presentation/category_list/widgets/category_cell.dart';
-import 'package:messenger_mobile/modules/category/presentation/category_list/widgets/category_list_widget.dart';
-import 'package:messenger_mobile/modules/category/presentation/create_category_main/pages/create_category_screen.dart';
-import 'package:messenger_mobile/core/widgets/independent/small_widgets/cell_skeleton_item.dart';
-import 'package:messenger_mobile/modules/chats/data/model/category_model.dart';
-import 'package:messenger_mobile/modules/chats/domain/entities/category.dart';
 
+import '../../../../app/appTheme.dart';
+import '../../../../core/blocs/category/bloc/category_bloc.dart';
+import '../../../../core/widgets/independent/buttons/bottom_action_button.dart';
+import '../../../../core/widgets/independent/dialogs/dialog_action_button.dart';
+import '../../../../core/widgets/independent/dialogs/dialog_params.dart';
+import '../../../../core/widgets/independent/dialogs/dialogs.dart';
+import '../../../../core/widgets/independent/small_widgets/cell_skeleton_item.dart';
 import '../../../../main.dart';
+import '../../../chats/domain/entities/category.dart';
+import '../../domain/entities/create_category_screen_params.dart';
+import '../create_category_main/pages/create_category_screen.dart';
+import 'widgets/category_cell.dart';
+import 'widgets/category_list_widget.dart';
 
 class CategoryList extends StatefulWidget {
 

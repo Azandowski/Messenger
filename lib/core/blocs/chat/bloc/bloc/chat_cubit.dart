@@ -3,14 +3,15 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
-import 'package:messenger_mobile/core/config/auth_config.dart';
-import 'package:messenger_mobile/core/services/network/paginatedResult.dart';
-import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
-import 'package:messenger_mobile/modules/chats/domain/repositories/chats_repository.dart';
-import 'package:messenger_mobile/modules/chats/domain/usecase/get_chats.dart';
-import 'package:messenger_mobile/modules/chats/domain/usecase/params.dart';
 
 import '../../../../../locator.dart';
+import '../../../../../modules/category/domain/entities/chat_entity.dart';
+import '../../../../../modules/chats/domain/repositories/chats_repository.dart';
+import '../../../../../modules/chats/domain/usecase/get_chats.dart';
+import '../../../../../modules/chats/domain/usecase/params.dart';
+import '../../../../config/auth_config.dart';
+import '../../../../services/network/paginatedResult.dart';
+
 part 'chat_state.dart';
 
 class ChatGlobalCubit extends Cubit<ChatState> {

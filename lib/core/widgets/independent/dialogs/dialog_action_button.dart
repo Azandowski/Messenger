@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/core/widgets/independent/dialogs/dialog_params.dart';
+
+import 'dialog_params.dart';
 
 class DialogActionButton {
   
