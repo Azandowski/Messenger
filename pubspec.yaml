@@ -52,6 +52,7 @@ dependencies:
 
   #Soccet
   socket_io_client: ^0.9.12
+  laravel_echo: ^0.1.0
 
   # UI STUFF
   marquee: ^1.7.0
