@@ -1,8 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-
-import '../../../../../app/appTheme.dart';
+import 'package:messenger_mobile/core/widgets/independent/buttons/icon_text_button.dart';
 import '../../../../../core/widgets/independent/small_widgets/photo_picker_view.dart';
 import '../../../../../core/widgets/independent/textfields/customTextField.dart';
 
@@ -43,26 +42,12 @@ class CreateGroupHeader extends StatelessWidget {
           labelText: 'Описание (необязательно)',
           customPadding: EdgeInsets.symmetric(horizontal: 16,vertical: 0),
         ),
-        GestureDetector(
-          onTap: onAddContacts,
-          child: Container(
-            padding: const EdgeInsets.all(16),
-            child: Row(
-              children: [
-                Image(
-                  image: AssetImage('assets/images/chat_gradient_icon.png'),
-                  width: 35,
-                  height: 35,
-                ),
-                SizedBox(width: 10),
-                Text(
-                  'Добавить контакты',
-                  style: AppFontStyles.headerMediumStyle,
-                )
-              ],
-            ),
-          ),
-        ),],
+        IconTextButton(
+          imageAssetPath: 'assets/images/chat_gradient_icon.png',
+          onPress: onAddContacts,
+          title: 'Добавить контакты',
+        )
+      ],
     );
   }
 }
