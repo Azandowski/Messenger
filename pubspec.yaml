@@ -50,6 +50,9 @@ dependencies:
   firebase_dynamic_links:
   flutter_share: ^1.0.5
 
+  #Soccet
+  socket_io_client: ^0.9.12
+
   # UI STUFF
   marquee: ^1.7.0
 

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:messenger_mobile/app/appTheme.dart';
 import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chat_details/page/chat_detail_page.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chat_details/page/chat_detail_screen.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/chatHeading.dart';
 
 import '../../../../../main.dart';
