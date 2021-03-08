@@ -8,6 +8,7 @@ import '../../../bloc/authentication_bloc.dart';
 import '../../../bloc/index.dart';
 import '../../../widgets/offertText.dart';
 import '../cubit/typephone_cubit.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class TypePhonePage extends StatefulWidget {
   @override
@@ -16,7 +17,6 @@ class TypePhonePage extends StatefulWidget {
 
 class _TypePhonePageState extends State<TypePhonePage> {
   TextEditingController _phoneCtrl = TextEditingController();
-
   FocusNode focusNode = FocusNode();
 
   bool isFocused = false;
@@ -55,24 +55,25 @@ class _TypePhonePageState extends State<TypePhonePage> {
           child: Column(
             children: [
               Text(
-                'Введите номер телефона',
+                'enterPhone'.tr(),
                 style: AppFontStyles.headingBlackStyle,
               ),
               SizedBox(
                 height: height * 0.05,
               ),
               OutlineTextField(
-                  labelText: 'Номер телефона',
-                  prefixText: '+',
-                  focusNode: focusNode,
-                  textInputType: TextInputType.phone,
-                  textEditingController: _phoneCtrl,
-                  width: width,
-                  height: height),
+                labelText: 'phoneNumber'.tr(),
+                prefixText: '+',
+                focusNode: focusNode,
+                textInputType: TextInputType.phone,
+                textEditingController: _phoneCtrl,
+                width: width,
+                height: height,
+              ),
               OffertTextWidget(),
               ActionButton(
                 isLoading: state is SendingPhone,
-                text: 'Продолжить',
+                text: 'continue'.tr(),
                 onTap: () {
                   context.read<TypephoneCubit>().sendPhone(_phoneCtrl.text);
                 },

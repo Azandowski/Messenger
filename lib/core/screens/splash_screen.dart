@@ -11,20 +11,22 @@ class SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AuthBloc, AuthState>(
-    builder: (context, state) {
-      if (state is Unknown) {
-        return SplashPage();
-      } else if (state is Unauthenticated) {
-        return LoginPage();
-      } else if (state is Authenticated) {
-        return  AppScreen();
-      } else if (state is NeedsNamePhoto) {
-        return TypeNamePage(
-          user: state.user,
-        );
-      } else { return Container(); }
-    },
-      );
+      builder: (context, state) {
+        if (state is Unknown) {
+          return SplashPage();
+        } else if (state is Unauthenticated) {
+          return LoginPage();
+        } else if (state is Authenticated) {
+          return AppScreen();
+        } else if (state is NeedsNamePhoto) {
+          return TypeNamePage(
+            user: state.user,
+          );
+        } else {
+          return Container();
+        }
+      },
+    );
   }
 }
 
@@ -34,22 +36,26 @@ class SplashPage extends StatelessWidget {
     var w = MediaQuery.of(context).size.width;
     var h = MediaQuery.of(context).size.height;
     return Scaffold(
-      body:Container(
-        width: w,
-        height: h,
-        decoration: BoxDecoration(
-          gradient: AppGradinets.mainButtonGradient,
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Image.asset('assets/images/aiochat.png',width: w/2,),
-            SizedBox(height: 15,),
-            Text('AIO Messenger',style: AppFontStyles.logoHeadingStyle)
-          ],
-        ),
-      )
-    );
+        body: Container(
+      width: w,
+      height: h,
+      decoration: BoxDecoration(
+        gradient: AppGradinets.mainButtonGradient,
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Image.asset(
+            'assets/images/aiochat.png',
+            width: w / 2,
+          ),
+          SizedBox(
+            height: 15,
+          ),
+          Text('AIO Messenger', style: AppFontStyles.logoHeadingStyle)
+        ],
+      ),
+    ));
   }
 }

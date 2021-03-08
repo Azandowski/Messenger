@@ -17,7 +17,6 @@ class AppScreen extends StatefulWidget {
 }
 
 class _AppScreenState extends State<AppScreen> {
-
   @override
   void initState() {
     super.initState();
@@ -37,10 +36,9 @@ class _AppScreenState extends State<AppScreen> {
     PermissionStatus permission = await Permission.contacts.request();
     if (permission != PermissionStatus.granted &&
         permission != PermissionStatus.denied) {
-          Map<Permission, PermissionStatus> statuses = await [
-          Permission.contacts].request();
-          return statuses[Permission.contacts] ??
-          PermissionStatus.undetermined;
+      Map<Permission, PermissionStatus> statuses =
+          await [Permission.contacts].request();
+      return statuses[Permission.contacts] ?? PermissionStatus.undetermined;
     } else {
       return permission;
     }
@@ -59,7 +57,7 @@ class _AppScreenState extends State<AppScreen> {
           details: null);
     }
   }
-  
+
   final bucket = PageStorageBucket();
 
   NavigatorState get _navigator => navigatorKey.currentState;
@@ -79,15 +77,15 @@ class _AppScreenState extends State<AppScreen> {
       backgroundColor: Colors.white,
       extendBody: true,
       body: PageStorage(
-        bucket: bucket,
-        child: IndexedStack(children: pages, index: _viewIndex)),
+          bucket: bucket,
+          child: IndexedStack(children: pages, index: _viewIndex)),
       bottomNavigationBar: AppBottomBar(
-        currentIndex: _viewIndex,
-        onTap: (int index) {
-          setState(() {
-            _viewIndex = index;
-          });
-        }),
+          currentIndex: _viewIndex,
+          onTap: (int index) {
+            setState(() {
+              _viewIndex = index;
+            });
+          }),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: AddButton(
         onTap: () {
