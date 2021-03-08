@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:laravel_echo/laravel_echo.dart';
 import 'package:messenger_mobile/core/screens/splash_screen.dart';
 import 'app/appTheme.dart';
 import 'bloc_observer.dart';
@@ -61,6 +62,7 @@ class StreamSocket{
   Stream<String> get getResponse => _socketResponse.stream;
 
   void dispose(){
+    print('disposed');
     _socketResponse.close();
   }
 }
@@ -74,22 +76,59 @@ class _TestSoccetState extends State<TestSoccet> {
 
 StreamSocket streamSocket = StreamSocket();
 
+Echo echo;
+
 void connectAndListen(){
-  IO.Socket socket = IO.io('https://aio-test-vps.kulenkov-group.kz',
-      IO.OptionBuilder()
-       .setTransports(['websocket']).build());
 
-    socket.onConnect((_) {
-     print('connect');
-    });
+//   Echo echo = new Echo({
+//   'broadcaster': 'pusher',
+//   'client': IO.io('https://aio-test-vps.kulenkov-group.kz:6001'),
+// });
 
-     socket.on('message.edit.167', (data) {
-       print('some shit happened');
-       print(data);
-    });
+echo = new Echo({
+  'broadcaster': 'socket.io',
+  'client': IO.io('https://aio-test-vps.kulenkov-group.kz:6002'),
+  'headers': {
+        'Authorization': 'Bearer 991|JplDR2OggW9kxLY1OFvNqSvelyohP2NfmyAzJghZ'
+    }
+});
 
-    socket.on('event', (data) => streamSocket.addResponse);
-    socket.onDisconnect((_) => print('disconnect'));
+echo.connect();
+
+echo.join('laravel_database_private-messages.54')
+  .here((data) {
+    print('shit');
+    print(data);
+  }).joining((data) {
+    print(data);
+  }).leaving((data) {
+    print(data);
+  });
+  // .listen('NewMessage', (e) {
+  //   print(e);
+  // });
+  echo.private('laravel_database_private-messages.54').listen('.messages.54', (shit){
+     print(shit);
+  });
+
+  // print('INITING');
+  // IO.Socket socket = IO.io('https://aio-test-vps.kulenkov-group.kz:6002',
+  //     IO.OptionBuilder().setExtraHeaders({'Authorization': 'Bearer 991|JplDR2OggW9kxLY1OFvNqSvelyohP2NfmyAzJghZ'})
+  //     .setTransports(['websocket']).build());
+
+  //   socket.onConnect((_) {
+  //    print('connect');
+  //   });
+
+  //   socket.on('messages.54', (data) {
+  //      print('some shit happened');
+  //      print(data);
+  //   });
+
+  //   socket.connect();
+
+  //   socket.on('event', (data) => streamSocket.addResponse);
+  //   socket.onDisconnect((_) => print('disconnect'));
 
 }
 
