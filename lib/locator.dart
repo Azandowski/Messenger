@@ -57,12 +57,7 @@ Future<void> init() async {
     ),
   );
 
-  sl.registerFactory(
-    () => ChatGlobalCubit(
-      sl()
-    )
-  );
-
+  sl.registerFactory(() => ChatGlobalCubit(sl()));
 
   sl.registerFactory(() => ProfileCubit(getUser: sl()));
   sl.registerFactory(() => ChatsCubit());
@@ -84,6 +79,7 @@ Future<void> init() async {
       localDataSource: sl(),
       networkInfo: sl(),
       remoteDataSource: sl(),
+      authConfig: sl(),
     ),
   );
 
@@ -91,7 +87,7 @@ Future<void> init() async {
       () => ProfileRepositoryImpl(profileDataSource: sl(), networkInfo: sl()));
 
   sl.registerLazySingleton<ChatsRepository>(
-    () => ChatsRepositoryImpl(chatsDataSource: sl(), networkInfo: sl()));
+      () => ChatsRepositoryImpl(chatsDataSource: sl(), networkInfo: sl()));
 
   // Data sources
   sl.registerLazySingleton<AuthenticationLocalDataSource>(
@@ -107,16 +103,15 @@ Future<void> init() async {
 
   sl.registerLazySingleton<ChatsDataSource>(
       () => ChatsDataSourceImpl(client: sl()));
- 
+
   // CreateCategory
 
-  //Bloc 
+  //Bloc
   sl.registerFactory(() => CreateCategoryCubit(
-    createCategory: sl(), 
-    getImageUseCase: sl(),
-    transferChats: sl(),
-    getCategoryChats: sl()
-  ));
+      createCategory: sl(),
+      getImageUseCase: sl(),
+      transferChats: sl(),
+      getCategoryChats: sl()));
 
   //Use Cases
   sl.registerLazySingleton(() => CreateCategoryUseCase(sl()));
@@ -126,18 +121,15 @@ Future<void> init() async {
   sl.registerLazySingleton(() => DeleteCategory(repository: sl()));
 
   // Repoitory
-  sl.registerLazySingleton<CategoryRepository>(
-      () => CategoryRepositoryImpl(categoryDataSource: sl(), networkInfo: sl()));
-  
+  sl.registerLazySingleton<CategoryRepository>(() =>
+      CategoryRepositoryImpl(categoryDataSource: sl(), networkInfo: sl()));
+
   // Data Sources
-  
-   sl.registerLazySingleton<CategoryDataSource>(
-      () => CategoryDataSourceImpl(
-        multipartRequest: http.MultipartRequest('POST', Endpoints.createCategory.buildURL()),
-        client: sl())
-    );
 
-
+  sl.registerLazySingleton<CategoryDataSource>(() => CategoryDataSourceImpl(
+      multipartRequest:
+          http.MultipartRequest('POST', Endpoints.createCategory.buildURL()),
+      client: sl()));
 
   //! Core
 
@@ -166,12 +158,11 @@ Future<void> init() async {
 
   sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(sl()));
 
-  sl.registerLazySingleton(() => AuthConfig());
+  sl.registerLazySingleton<AuthConfig>(() => AuthConfig());
 
   sl.registerLazySingleton(() => DateHelper());
 
   sl.registerLazySingleton(() => http.Client());
-
 
   sl.registerLazySingleton(() => GetCurrentUser(sl()));
 
@@ -180,7 +171,7 @@ Future<void> init() async {
     () => MediaRepositoryImpl(
       mediaLocalDataSource: sl(),
     ),
-  );  
+  );
 
   // Data sources
 

@@ -25,4 +25,5 @@ class ConnectionFailure extends Failure {
 abstract class FailureMessages {
   static final String noConnection = "no_connection";
   static final String invalidPhone = "invalidPhone";
+  static final String invalidCode = "invalidCode";
 }
