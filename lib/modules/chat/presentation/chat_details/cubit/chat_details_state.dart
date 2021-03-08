@@ -7,11 +7,21 @@ abstract class ChatDetailsState extends Equatable {
     @required this.chatDetailed
   });
 
+  ChatDetailsState copyWith ({
+    ChatDetailed chatDetailed
+  });
+
   @override
   List<Object> get props => [chatDetailed];
 }
 
-class ChatDetailsLoading extends ChatDetailsState {}
+class ChatDetailsLoading extends ChatDetailsState {
+  
+  @override
+  ChatDetailsState copyWith({ChatDetailed chatDetailed}) {
+    return ChatDetailsLoading();
+  }
+}
 
 class ChatDetailsLoaded extends ChatDetailsState {
   final ChatDetailed chatDetailed;
@@ -24,6 +34,15 @@ class ChatDetailsLoaded extends ChatDetailsState {
   List<Object> get props => [
     chatDetailed
   ];
+
+  @override
+  ChatDetailsState copyWith({
+    ChatDetailed chatDetailed
+  }) {
+    return ChatDetailsLoaded(
+      chatDetailed: chatDetailed ?? this.chatDetailed
+    );
+  }
 }
 
 class ChatDetailsError extends ChatDetailsState {
@@ -40,8 +59,17 @@ class ChatDetailsError extends ChatDetailsState {
     chatDetailed, 
     message
   ];
-}
 
+  @override
+  ChatDetailsState copyWith({
+    ChatDetailed chatDetailed
+  }) {
+    return ChatDetailsError(
+      message: this.message,
+      chatDetailed: chatDetailed ?? this.chatDetailed
+    );
+  }
+}
 
 
 

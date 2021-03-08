@@ -1,6 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:messenger_mobile/core/widgets/independent/buttons/icon_text_button.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chat_details/cubit/chat_details_cubit.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chat_details/widgets/chat_detail_header.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chat_details/widgets/chat_media_block.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chat_details/widgets/chat_members_block.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chat_details/widgets/chat_setting_item.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chat_details/widgets/divider_wrapper.dart';
+import 'package:messenger_mobile/modules/creation_module/domain/entities/contact.dart';
+import 'package:messenger_mobile/modules/profile/presentation/widgets/profile_item.dart';
 
 class ChatDetailScreen extends StatefulWidget {
   final int id;
@@ -36,43 +44,76 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
         if (!(state is ChatDetailsLoading)) {
           return SingleChildScrollView(
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Container(
-                  child: Stack(
-                    children: [
-                      Container(
-                        color: Colors.red,
-                        child: Stack(
-                          children: [
-                            Positioned(
-                              top: 0,
-                              bottom: 115,
-                              child: Image(
-                                image: state.chatDetailed?.chat?.imageUrl == null ? AssetImage('assets/images/logo.png') : 
-                                  NetworkImage(state.chatDetailed?.chat?.imageUrl),
-                                width: MediaQuery.of(context).size.width,
-                                height: 286,
-                              )
-                            ),
-                            Positioned(
-                              bottom: 20,
-                              child: Container(
-                                width: 200,
-                                height: 140,
-                                color: Colors.green,
-                              )
-                            )
-                          ],
-                        ),
-                      )
-                    ],
+                ChatDetailHeader(chatDetailed: state.chatDetailed),
+                DividerWrapper(
+                  children: ChatSettings.values.map((e) => ChatSettingItem(
+                    chatSetting: e,
+                    isOn: e.getValue(state.chatDetailed?.settings),
+                    onToggle: (value) {
+                      _chatDetailsCubit.toggleChatSetting(e, value);
+                    },
+                  )).toList(),
+                ),
+                _buildSeparator(),
+                ChatMediaBlock(
+                  media: state.chatDetailed.media
+                ),
+                _buildSeparator(),
+                IconTextButton(
+                  imageAssetPath: 'assets/icons/create.png',
+                  onPress: () {
+                    // TODO: Implement it 
+                  },
+                  title: 'Добавить участников',
+                ),
+                _buildSeparator(),
+                ChatMembersBlock(
+                  members: getFirstContacts(state.chatDetailed.members), 
+                  membersCount: state.chatDetailed.membersCount, 
+                  onShowMoreClick: () {
+                    // TODO: Show All contacts list
+                  }
+                ),
+                _buildSeparator(),
+                ProfileItem(
+                  profileItemData: ProfileItemData(
+                    icon: Icons.exit_to_app,
+                    title: 'Выйти',
+                    isRed: true,
                   ),
-                )
+                  onTap: () {
+                    // TODO: Implement it
+                  },
+                ),
+                _buildSeparator(height: 200)
               ],
             ),
           );
+        } else {
+          return Container();
         }
       },
     );
+  }
+
+  Widget _buildSeparator ({double height}) {
+    return Container(
+      height: height ?? 20,
+      color: Colors.grey[200],
+    );
+  }
+
+  List<ContactEntity> getFirstContacts (List<ContactEntity> arr) {
+    List<ContactEntity> contacts = [];
+
+    for (int i in [0, 1, 2, 3, 4]) {
+      if (arr.length - 1 >= i) {
+        contacts.add(arr[i]);
+      }
+    }
+
+    return contacts;
   }
 }
