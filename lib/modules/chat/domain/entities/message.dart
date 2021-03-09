@@ -9,7 +9,7 @@ class Message extends Equatable {
   final String text;
   final MessageUser user;
   final ChatActions chatActions;
-
+  
   Message({
     this.text,
     this.dateTime,
@@ -35,13 +35,15 @@ class Message extends Equatable {
      DateTime dateTime,
      String text,
      MessageUser user,
+     ChatActions chatActions,
   }) {
     return Message(
       id: id ?? this.id,
       isRead: isRead ?? this.isRead,
       text: text ?? this.text,
       dateTime: dateTime ?? this.dateTime,
-      user: user ?? this.user
+      user: user ?? this.user,
+      chatActions: chatActions ?? null,
     );
   }
 }

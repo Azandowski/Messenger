@@ -10,6 +10,7 @@ abstract class AppColors {
   static get successGreenColor => Color(0xff3BE388);
   static get lightPinkColor => Color(0xff9357CD).withAlpha(15);
   static get pinkBackgroundColor => Color(0xffECE9F8);
+  static get messageBlueBackground => Color(0xff4C4FB4);
 }
 
 abstract class AppFontStyles {
@@ -72,6 +73,34 @@ abstract class AppFontStyles {
     color: AppColors.accentBlueColor,
     fontWeight: FontWeight.w400,
     fontSize: 14,
+  );
+
+   static get black14w400 => TextStyle(
+    color: Colors.black,
+    fontWeight: FontWeight.w400,
+    height: 1.4,
+    fontSize: 14,
+  );
+
+   static get white14w400 => TextStyle(
+    color: Colors.white,
+    fontWeight: FontWeight.w400,
+    height: 1.4,
+    fontSize: 14,
+  );
+
+   static get grey12w400 => TextStyle(
+    color: Color(0xff828282),
+    fontWeight: FontWeight.w400,
+    height: 0.75,
+    fontSize: 12,
+  );
+
+  static get white12w400 => TextStyle(
+    color: Colors.white,
+    fontWeight: FontWeight.w400,
+    height: 0.75,
+    fontSize: 12,
   );
 }
 

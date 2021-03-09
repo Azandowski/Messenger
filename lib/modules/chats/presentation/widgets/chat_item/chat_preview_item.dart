@@ -14,7 +14,6 @@ class ChatPreviewItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('REBUILDING ${viewModel.isSelected}');
     return Container(
       width: MediaQuery.of(context).size.width,
       color: Color.fromRGBO(147, 87, 205, viewModel.isSelected ? 0.15 : 0),

@@ -1,9 +1,6 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger_mobile/app/appTheme.dart';
-import 'package:messenger_mobile/core/config/auth_config.dart';
-import 'package:messenger_mobile/core/services/network/socket_service.dart';
 import 'package:messenger_mobile/locator.dart';
 import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
 import 'package:messenger_mobile/modules/chat/data/datasources/chat_datasource.dart';
@@ -11,7 +8,9 @@ import 'package:messenger_mobile/modules/chat/data/repositories/chat_repository.
 import 'package:messenger_mobile/modules/chat/domain/entities/message.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chat_details/page/chat_detail_page.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/bloc/chat_bloc.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/chatControlPanel.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/chatHeading.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/message_cell.dart';
 
 import '../../../../../main.dart';
 
@@ -30,9 +29,7 @@ class _ChatScreenState extends State<ChatScreen> {
   NavigatorState get _navigator => navigatorKey.currentState;
   
   TextEditingController messageTextController = TextEditingController();
-   
-  String messageText;
-  
+     
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
@@ -50,25 +47,24 @@ class _ChatScreenState extends State<ChatScreen> {
           )
         ),
       child:  BlocConsumer<ChatBloc, List<Message>>(
-        listener: (context, messages) {
-          // TODO: implement listener
-        },
+        listener: (context, messages) {},
         builder: (context, messages) {
           return Scaffold(
             appBar: AppBar(
-            centerTitle: false,
-            title: ChatHeading(onTap: (){
-              _navigator.push(ChatDetailPage.route(widget.chatEntity.chatId));
-            },),
+              centerTitle: false,
+              titleSpacing: 0.0,
+              title: ChatHeading(onTap: (){
+                _navigator.push(ChatDetailPage.route(widget.chatEntity.chatId));
+              },),
             actions: [
               Row(children: [
-                IconButton(icon: Icon(Icons.video_call,color: AppColors.greyColor,),onPressed: (){
+                IconButton(icon: Icon(Icons.video_call,color: AppColors.indicatorColor,),onPressed: (){
     
                 },),
-                IconButton(icon: Icon(Icons.call,color: AppColors.greyColor,),onPressed: (){
+                IconButton(icon: Icon(Icons.call,color: AppColors.indicatorColor,),onPressed: (){
     
                 },),
-                IconButton(icon: Icon(Icons.search,color: AppColors.indicatorColor,),onPressed: (){
+                IconButton(icon: Icon(Icons.more_vert_rounded,color: AppColors.indicatorColor,),onPressed: (){
     
                 },)
               ],)
@@ -79,95 +75,35 @@ class _ChatScreenState extends State<ChatScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Expanded(child: 
-                  Container(decoration: BoxDecoration(
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    decoration: BoxDecoration(
                     image: DecorationImage(image: AssetImage('assets/images/bg-home.png'),
-                    fit: BoxFit.cover),
-                  ),
-                  child: ListView.builder(itemBuilder: (context, i){
-                    return ListTile(title: Text(messages[i].text),);
-                  },
-                  scrollDirection: Axis.vertical,
-                  itemCount: messages.length,
-                  reverse: true,
-
-                  ),
-                ),),
-          ChatControlPanel(messageTextController: messageTextController, width: width, height: height),
-        ],
-        ),
-        );
-        
-        }));
-  }
-}
-
-class ChatControlPanel extends StatelessWidget {
-  const ChatControlPanel({
-    Key key,
-    @required this.messageTextController,
-    @required this.width,
-    @required this.height,
-  }) : super(key: key);
-
-  final TextEditingController messageTextController;
-  final double width;
-  final double height;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-     padding: EdgeInsets.symmetric(horizontal: 16,vertical: 5),
-     decoration: BoxDecoration(
-       color: AppColors.pinkBackgroundColor,
-       boxShadow: [
-         BoxShadow(
-         color: Colors.grey.withOpacity(0.3),
-     spreadRadius: 4, blurRadius: 7,
-                    offset: Offset(0, -4), // changes position of shadow
+                      fit: BoxFit.cover),
                     ),
-                 ],
-              ),
-              child: SafeArea(
-                  child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Expanded(
-                      child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 8),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(50)
-                      ),
-                      child: Row(
-                        children: [
-     Icon(Icons.emoji_emotions,color: Colors.grey,),
-     Expanded(
-       child: TextFormField(
-       controller: messageTextController,
-       decoration: InputDecoration(
-          border: InputBorder.none,
-          contentPadding: EdgeInsets.symmetric(
-          horizontal: width / (360 / 16), vertical: height / (724 / 18)),
-          hintText: 'Сообщение',
-          labelStyle: AppFontStyles.blueSmallStyle)),
-     ),
-     Icon(Icons.attach_file,color: Colors.grey,),
-                        ],
-                      ),
-                        )
+                    child: ListView.builder(
+                      itemBuilder: (context, i) {
+                        return messages[i].chatActions == null ? 
+                          MessageCell(message: messages[i]) : Text('action');
+                      },
+                      scrollDirection: Axis.vertical,
+                      itemCount: messages.length,
+                      reverse: true,
                     ),
-                    SizedBox(width: 5,),
-                    ClipOval(
-                      child: Container(
-                        decoration: BoxDecoration(
-     gradient: AppGradinets.mainButtonGradient,
-                        ),
-                        child: IconButton(icon: Icon(Icons.voice_chat_rounded,color: Colors.white),onPressed: (){
-                        },splashRadius: 5,splashColor: Colors.white,)
-                    ),)
-                  ],
+                  ),
                 ),
-              ),
-                );
+                ChatControlPanel(
+                  messageTextController: messageTextController, 
+                  width: width,
+                  height: height
+                ),
+              ],
+            ),
+          );
+        }
+      )
+    );
   }
 }
+
+

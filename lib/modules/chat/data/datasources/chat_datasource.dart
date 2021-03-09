@@ -35,7 +35,10 @@ class ChatDataSourceImpl implements ChatDataSource {
     @required this.client,
     @required this.socketService,
   }){
-      socketService.echo.channel(SocketChannels.getChatByID(id)).listen('.messages.$id', (updates) => _controller.add(MessageModel.fromJson(updates['message'])));
+      socketService.echo.channel(SocketChannels.getChatByID(id)).listen('.messages.$id', (updates) {
+         print(updates);
+        _controller.add(MessageModel.fromJson(updates['message']));
+      });
   }
 
   @override
