@@ -20,9 +20,15 @@ class SocketService {
     Map headers = { 'Authorization': 'Bearer ${authConfig.token}' };
 
     socket = IO.io('https://aio-test-vps.kulenkov-group.kz:6002',
-      IO.OptionBuilder().setExtraHeaders(headers)
+      IO.OptionBuilder().setExtraHeaders(new Map<String, dynamic>.from(headers))
         .setTransports(['websocket']).build());
-      
+
+    socket.connect();
+
+    socket.onConnect((data) {
+      print('connect');
+    });
+
     echo = new Echo({
       'broadcaster': 'socket.io',
       'client': socket,
@@ -37,10 +43,10 @@ class SocketService {
 
 
 abstract class SocketChannels {
-  
+
   /// New changes in chat room 
   /// [id] - id of the chat
   static String getChatByID (int id) {
-    return 'laravel_database_messages..$id';
+    return 'laravel_database_messages.$id';
   } 
 }

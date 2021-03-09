@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
@@ -37,10 +38,12 @@ abstract class ChatsDataSource {
   void handleMessages (Function(ChatEntity) onReceiveMessage, int id);
 
   void leaveChannel (int id);
+
+  Stream<ChatEntity>  messages(id);
 }
 
 
-class ChatsDataSourceImpl extends ChatsDataSource {
+class ChatsDataSourceImpl implements ChatsDataSource {
   final http.Client client;
   final SocketService socketService;
 
@@ -130,5 +133,19 @@ class ChatsDataSourceImpl extends ChatsDataSource {
 
   void leaveChannel (int id) {
     socketService.echo.leave(SocketChannels.getChatByID(id));
+  }  
+  
+  final _controller = StreamController<ChatEntity>();
+
+  @override
+  Stream<ChatEntity> messages(id) async* {
+     socketService.echo.channel(SocketChannels.getChatByID(id)).listen('.messages.$id', (updates) async* {
+        yield updates;
+        yield* _controller.stream;
+    });
   }
+ 
+
+ 
+ 
 }
