@@ -1,7 +1,6 @@
+import 'dart:async';
 import 'dart:io';
-import 'package:image_picker/image_picker.dart';
 import 'package:messenger_mobile/modules/chats/domain/repositories/chats_repository.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
@@ -14,7 +13,6 @@ part 'chats_cubit_state.dart';
 class ChatsCubit extends Cubit<ChatsCubitState> {
   
   final ChatsRepository repository;
-
   ChatsCubit(this.repository) : super(
     ChatsCubitStateNormal(
       currentTabIndex: 0,
@@ -22,7 +20,8 @@ class ChatsCubit extends Cubit<ChatsCubitState> {
   ) {
     _handleInit();
   }
-  
+
+
   // * * Methods
 
   void _handleInit () async {

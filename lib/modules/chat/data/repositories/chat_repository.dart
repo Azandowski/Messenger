@@ -6,6 +6,7 @@ import 'package:messenger_mobile/modules/chat/data/datasources/chat_datasource.d
 import 'package:messenger_mobile/modules/chat/domain/entities/chat_detailed.dart';
 import 'package:messenger_mobile/core/error/failures.dart';
 import 'package:dartz/dartz.dart';
+import 'package:messenger_mobile/modules/chat/domain/entities/message.dart';
 import 'package:messenger_mobile/modules/chat/domain/repositories/chat_repository.dart';
 import 'package:messenger_mobile/modules/creation_module/domain/entities/contact.dart';
 
@@ -47,5 +48,10 @@ class ChatRepositoryImpl extends ChatRepository {
     } else {
       return Left(ConnectionFailure());
     }
+  }
+  
+  @override
+  Stream<Message> get  message async*{
+    yield* chatDataSource.messages;
   }
 }
