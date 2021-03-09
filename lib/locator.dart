@@ -96,6 +96,7 @@ Future<void> init() async {
       localDataSource: sl(),
       networkInfo: sl(),
       remoteDataSource: sl(),
+      authConfig: sl(),
     ),
   );
 
@@ -122,6 +123,7 @@ Future<void> init() async {
 
   sl.registerLazySingleton<ChatsDataSource>(
       () => ChatsDataSourceImpl(client: sl()));
+
 
   sl.registerLazySingleton<ChatRepository>(
       () => ChatRepositoryImpl(chatDataSource: sl(), networkInfo: sl()));
@@ -202,7 +204,7 @@ Future<void> init() async {
 
   sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(sl()));
 
-  sl.registerLazySingleton(() => AuthConfig());
+  sl.registerLazySingleton<AuthConfig>(() => AuthConfig());
 
   sl.registerLazySingleton(() => DateHelper());
 
