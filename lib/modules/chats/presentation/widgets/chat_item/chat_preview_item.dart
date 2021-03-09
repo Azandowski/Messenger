@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/app/appTheme.dart';
-import 'package:messenger_mobile/core/widgets/independent/images/ImageWithCorner.dart';
-import 'package:messenger_mobile/modules/category/data/models/chat_view_model.dart';
-import 'package:messenger_mobile/modules/chats/presentation/widgets/chat_item/chat_notification_view.dart';
-import 'package:messenger_mobile/modules/chats/presentation/widgets/chat_item/chat_preview_settings.dart';
+
+import '../../../../../app/appTheme.dart';
+import '../../../../../core/widgets/independent/images/ImageWithCorner.dart';
+import '../../../../category/data/models/chat_view_model.dart';
+import 'chat_notification_view.dart';
+import 'chat_preview_settings.dart';
 
 class ChatPreviewItem extends StatelessWidget {
   

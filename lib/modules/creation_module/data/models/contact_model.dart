@@ -1,28 +1,50 @@
 import 'package:flutter/foundation.dart';
-import 'package:messenger_mobile/modules/creation_module/domain/entities/contact.dart';
 
-class ContactModel extends Contact {
-  final DateTime lastOnline;
+import '../../domain/entities/contact.dart';
+
+class ContactModel extends ContactEntity {
+  final int id;
   final String name;
-  final String avatarURL;
+  final String surname;
+  final String patronym;
+  final String avatar;
+  final DateTime lastVisit;
 
   ContactModel({
-    @required this.lastOnline,
-    this.name,
-    this.avatarURL
+    this.avatar,
+    @required this.name,
+    this.surname,
+    this.patronym,
+    this.lastVisit,
+    @required this.id,
   }) : super(
-    lastOnline: lastOnline,
+    lastVisit: lastVisit,
     name: name,
-    avatarURL: avatarURL
+    avatar: avatar,
+    surname: surname,
+    patronym: patronym,
+    id: id,
   );
 
-  // TODO: Update From Json Method
-
-  factory ContactModel.fromJson (Map<String, dynamic> json) {
+   factory ContactModel.fromJson(Map<String, dynamic> json) {
     return ContactModel(
-      lastOnline: DateTime.parse('2021-02-27T19:30:47.000000Z'),
-      name: 'Yelzhan Yerkebulan',
-      avatarURL: 'https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg'
-    );
+      id: json['id'],
+      name: json['name'],
+      patronym: json['patronym'] ?? '',
+      surname: json['surname'] ?? '',
+      lastVisit: json['last_visit'] != null ? DateTime.parse(json['last_visit']) : null,
+      avatar: json['avatar'],
+      );
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['name'] = this.name;
+    data['surname'] = this.surname;
+    data['patronym'] = this.patronym;
+    data['avatar'] = this.avatar;
+    data['last_visit'] = this.lastVisit;
+    return data;
   }
 }

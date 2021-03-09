@@ -2,11 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:contacts_service/contacts_service.dart';
 import 'package:dartz/dartz.dart';
 import 'package:meta/meta.dart';
 import 'package:path_provider/path_provider.dart';
-
+import 'package:sembast/sembast.dart';
 import '../../../../core/blocs/authorization/bloc/auth_bloc.dart';
 import '../../../../core/config/auth_config.dart';
 import '../../../../core/error/failures.dart';
@@ -47,12 +46,6 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
       authConfig.token = token;
 
       print('token=$token');
-
-      final sentContacts = await localDataSource.getContacts();
-
-      if (sentContacts != null && !sentContacts) {
-        sendConctacts();
-      }
 
       await getCurrentUser(token);
 
@@ -141,48 +134,59 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
     }
   }
 
-  Future sendConctacts() async {
-    Iterable<Contact> contacts =
-        await ContactsService.getContacts(withThumbnails: false);
-    var jsonNew = jsonEncode(contacts.map((e) => e.toJson()).toList());
-    _writeJson(jsonNew);
+  @override
+  Future sendContacts() async {
+    var deviceContacts = await localDataSource.getDeviceContacts();
+    List<RecordSnapshot> dbContacts =
+        await localDataSource.getDatabaseContacts();
+    var contactsShouldBeUpdated = [];
+
+    deviceContacts.forEach((e) {
+      var foundContact = dbContacts.firstWhere((d) {
+        var allPhonesMatch = true;
+
+        ((d.value['phones'] ?? []) as List).forEach((phoneMap) {
+          var result = ((e['phones'] ?? []) as List).firstWhere(
+              (k) => k['mobile'] == phoneMap['mobile'],
+              orElse: () => null);
+          if (result == null) {
+            allPhonesMatch = false;
+          }
+        });
+
+        return allPhonesMatch;
+      }, orElse: () => null);
+
+      if (foundContact == null) {
+        contactsShouldBeUpdated.add(_updatedContactToSendToBackend(e));
+      }
+    });
+
+    File file = await _writeJson(jsonEncode(contactsShouldBeUpdated));
+    var result = await remoteDataSource.sendContacts(file);
+
+
+    if (result) {
+      return localDataSource.saveContacts(deviceContacts);
+    }
   }
 
-  Future<String> get _localPath async {
-    final directory = await getApplicationDocumentsDirectory();
-    return directory.path;
-  }
-
-  Future<File> get _localFile async {
-    final path = await _localPath;
-    return File('$path/contacts');
-  }
-
-  void _writeJson(String newJson) async {
+  Future<File> _writeJson(String newJson) async {
     final String dir = (await getApplicationDocumentsDirectory()).path;
     final String path = '$dir/contacts.json';
     final File file = File(path);
-    file.writeAsString(newJson);
+    await file.writeAsString(newJson);
     print(file.path);
+    return file;
   }
-}
 
-extension on Contact {
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['middleName'] = middleName;
-    data['displayName'] = displayName;
-    if (this.phones != null) {
-      data["phones"] = this.phones.map((e) => e.toJson()).toList();
-    }
-    return data;
-  }
-}
+  Map _updatedContactToSendToBackend(Map inputContact) {
+    Map object = inputContact;
 
-extension on Item {
-  Map<String, dynamic> toJson() {
-    return {
-      this.label: this.value,
-    };
+    ['emails', 'postalAddresses'].forEach((key) {
+      object.remove(key);
+    });
+
+    return object;
   }
 }

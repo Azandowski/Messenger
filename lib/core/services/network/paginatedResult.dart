@@ -23,14 +23,14 @@ class PaginatedResult <T> {
     List jsonDataArray = (json['data'] ?? []) as List;
     return PaginatedResult(
       paginationData: PaginationData(
-        nextPageUrl: Uri.parse(json['next_page_url']),
-        isFirstPage: json['current_page'] == 1
+        nextPageUrl: json['next_page_url'] != null ?
+           Uri.parse(json['next_page_url']) : null,
+        isFirstPage: false
       ),
       data: jsonDataArray.map((e) => factory(e)).toList()
     );
   }
 }
-
 
 class PaginationData extends Equatable {
   final Uri nextPageUrl;
@@ -38,15 +38,21 @@ class PaginationData extends Equatable {
 
   PaginationData({
     @required this.nextPageUrl, 
-    @required this.isFirstPage
+    this.isFirstPage = true
   });
+
+  factory PaginationData.defaultInit () {
+    return PaginationData(
+      nextPageUrl: null,
+      isFirstPage: true
+    );
+  }
 
   factory PaginationData.fromJson(
     Map<String, dynamic> json
   ) {
     return PaginationData(
       nextPageUrl: json['next_page_url'],
-      isFirstPage: json['current_page'] == 1
     );
   }
   
@@ -56,4 +62,16 @@ class PaginationData extends Equatable {
 
   @override
   List<Object> get props => [nextPageUrl, isFirstPage];
+}
+
+
+
+class PaginatedResultViaLastItem<T> {
+  final List<T> data;
+  final bool hasReachMax;
+
+  PaginatedResultViaLastItem({
+    @required this.data,
+    @required this.hasReachMax
+  });
 }

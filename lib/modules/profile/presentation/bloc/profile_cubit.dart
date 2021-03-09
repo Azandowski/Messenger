@@ -1,10 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:messenger_mobile/modules/authentication/domain/usecases/get_current_user.dart';
-import 'package:messenger_mobile/modules/profile/domain/usecases/profile_params.dart';
 
 import '../../../../core/config/auth_config.dart';
 import '../../../../locator.dart';
+import '../../../authentication/domain/usecases/get_current_user.dart';
 import 'index.dart';
 
 class ProfileCubit extends Cubit<ProfileState> {

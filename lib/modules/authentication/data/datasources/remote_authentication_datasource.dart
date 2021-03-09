@@ -1,11 +1,19 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
+import 'package:messenger_mobile/core/config/auth_config.dart';
+import 'package:messenger_mobile/core/utils/error_handler.dart';
+import 'package:messenger_mobile/core/utils/multipart_request_helper.dart';
+import 'package:messenger_mobile/locator.dart';
 
+import '../../../../core/config/auth_config.dart';
 import '../../../../core/config/settings.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/services/network/Endpoints.dart';
+import '../../../../core/utils/multipart_request_helper.dart';
+import '../../../../locator.dart';
 import '../../../profile/data/models/user_model.dart';
 import '../../../profile/domain/entities/user.dart';
 import '../../domain/entities/code_entity.dart';
@@ -17,13 +25,16 @@ abstract class AuthenticationRemoteDataSource {
   Future<CodeEntity> createCode(String number);
   Future<TokenEntity> login(String number, String code);
   Future<User> getCurrentUser(String token);
+  Future<bool> sendContacts(File contacts);
 }
 
 class AuthenticationRemoteDataSourceImpl
     implements AuthenticationRemoteDataSource {
   final http.Client client;
+  final http.MultipartRequest request;
 
-  AuthenticationRemoteDataSourceImpl({@required this.client});
+  AuthenticationRemoteDataSourceImpl(
+      {@required this.client, @required this.request});
 
   @override
   Future<CodeModel> createCode(String number) async {
@@ -36,7 +47,8 @@ class AuthenticationRemoteDataSourceImpl
       var jsonMap = json.decode(response.body);
       return CodeModel.fromJson(jsonMap);
     } else {
-      throw ServerFailure(message: response.body.toString());
+      throw ServerFailure(
+          message: ErrorHandler.getErrorMessage(response.body.toString()));
     }
   }
 
@@ -67,26 +79,36 @@ class AuthenticationRemoteDataSourceImpl
     var url = Endpoints.getCurrentUser.buildURL();
     var headers = Endpoints.getCurrentUser.getHeaders(token: token);
     final response = await client.post(url,
-      body: json.encode({
-        'application_id': APP_ID,
-      }),
-      headers: headers
-    );
+        body: json.encode({
+          'application_id': APP_ID,
+        }),
+        headers: headers);
 
     if (response.statusCode >= 200 && response.statusCode <= 299) {
       var jsonMap = json.decode(response.body);
       return UserModel.fromJson(jsonMap);
     } else {
-      var errorMessage = '';
-      
-      try {
-        var jsonMap = json.decode(response.body.toString());
-        errorMessage = jsonMap['message'] ?? jsonMap.toString();
-      } catch (e) {
-        errorMessage = response.body.toString();
-      }
-      
-      throw ServerFailure(message: errorMessage);
+      throw ServerFailure(
+          message: ErrorHandler.getErrorMessage(response.body.toString()));
+    }
+  }
+
+  @override
+  Future<bool> sendContacts(File contacts) async {
+    http.StreamedResponse response = await MultipartRequestHelper.postData(
+        token: sl<AuthConfig>().token,
+        request: request,
+        data: {},
+        files: contacts != null ? [contacts] : [],
+        keyName: 'contacts');
+
+    print(response.statusCode);
+
+    if (response.statusCode >= 200 && response.statusCode <= 299) {
+      print("that was good");
+      return true;
+    } else {
+      return false;
     }
   }
 }

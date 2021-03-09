@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:messenger_mobile/core/utils/error_handler.dart';
 
 import '../../../../core/error/failures.dart';
 import '../../../../core/utils/multipart_request_helper.dart';
@@ -34,7 +35,7 @@ class EditProfileDataSourceImpl implements EditProfileDataSource {
     if (response.statusCode >= 200 && response.statusCode <= 299) {
       return true;
     } else {
-      throw ServerFailure(message: response.stream.bytesToString().toString());
+      throw ServerFailure(message: ErrorHandler.getErrorMessage(response.stream.bytesToString().toString()));
     }
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/core/widgets/independent/buttons/gradient_main_button.dart';
+
+import 'gradient_main_button.dart';
 
 class BottomActionButtonContainer extends StatelessWidget {
   final Function onTap;

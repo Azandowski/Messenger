@@ -1,7 +1,8 @@
 import 'dart:async';
 
 import 'package:dartz/dartz.dart';
-import 'package:messenger_mobile/core/blocs/authorization/bloc/auth_bloc.dart';
+
+import '../../../../core/blocs/authorization/bloc/auth_bloc.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/usecases/usecase.dart';
 import '../../../profile/domain/entities/user.dart';
@@ -18,4 +19,5 @@ abstract class AuthenticationRepository {
   Future<Either<Failure, String>> saveToken(String token);
   StreamController<AuthParams> params;
   Future<Either<Failure, bool>> logout(NoParams params);
+  Future sendContacts();
 }

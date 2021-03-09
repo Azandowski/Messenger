@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/app/appTheme.dart';
-import 'package:messenger_mobile/modules/category/data/models/chat_view_model.dart';
+
+import '../../../../../app/appTheme.dart';
+import '../../../../category/data/models/chat_view_model.dart';
 
 
 extension ChatSettingTypeExtension on ChatSettingType {

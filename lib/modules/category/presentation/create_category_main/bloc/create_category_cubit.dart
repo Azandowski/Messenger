@@ -5,17 +5,18 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:messenger_mobile/core/config/auth_config.dart';
-import 'package:messenger_mobile/modules/category/domain/entities/create_category_screen_params.dart';
-import 'package:messenger_mobile/modules/category/domain/usecases/params.dart';
-import 'package:messenger_mobile/modules/category/domain/usecases/transfer_chat.dart';
-import 'package:messenger_mobile/modules/chats/domain/usecase/get_category_chats.dart';
-import 'package:messenger_mobile/modules/chats/domain/usecase/params.dart';
-import 'package:messenger_mobile/modules/media/domain/usecases/get_image.dart';
+
+import '../../../../../core/config/auth_config.dart';
 import '../../../../../locator.dart';
 import '../../../../chats/domain/entities/category.dart';
+import '../../../../chats/domain/usecase/get_category_chats.dart';
+import '../../../../chats/domain/usecase/params.dart';
+import '../../../../media/domain/usecases/get_image.dart';
 import '../../../domain/entities/chat_entity.dart';
+import '../../../domain/entities/create_category_screen_params.dart';
 import '../../../domain/usecases/create_category.dart';
+import '../../../domain/usecases/params.dart';
+import '../../../domain/usecases/transfer_chat.dart';
 
 part 'create_category_state.dart';
 

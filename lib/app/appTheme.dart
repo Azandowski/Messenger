@@ -86,7 +86,7 @@ abstract class AppTheme {
     bottomAppBarTheme: BottomAppBarTheme(
       color: Colors.white,
     ),
-    appBarTheme: AppBarTheme(color: Colors.white),
+    appBarTheme: AppBarTheme(color: Color(0xffFAF9FF)),
     textTheme: TextTheme(
       bodyText1: TextStyle(
           color: Colors.black, fontWeight: FontWeight.w400, fontSize: 14),

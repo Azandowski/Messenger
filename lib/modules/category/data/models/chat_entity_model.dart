@@ -1,9 +1,11 @@
 import 'package:flutter/foundation.dart';
-import 'package:messenger_mobile/modules/category/data/models/chat_permission_model.dart';
-import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
-import 'package:messenger_mobile/modules/category/domain/entities/chat_permissions.dart';
-import 'package:messenger_mobile/modules/chats/data/model/category_model.dart';
-import 'package:messenger_mobile/modules/chats/domain/entities/category.dart';
+
+import '../../../chat/data/models/message_model.dart';
+import '../../../chats/data/model/category_model.dart';
+import '../../../chats/domain/entities/category.dart';
+import '../../domain/entities/chat_entity.dart';
+import '../../domain/entities/chat_permissions.dart';
+import 'chat_permission_model.dart';
 
 class ChatEntityModel extends ChatEntity {
   final int chatId;
@@ -12,6 +14,7 @@ class ChatEntityModel extends ChatEntity {
   final String imageUrl;
   final DateTime date;
   final ChatPermissions permissions;
+  final MessageModel lastMessage;
 
   ChatEntityModel({
     @required this.chatId, 
@@ -19,14 +22,16 @@ class ChatEntityModel extends ChatEntity {
     @required this.title, 
     @required this.imageUrl,
     @required this.date,
-    @required this.permissions
+    @required this.permissions,
+    this.lastMessage
   }) : super(
     chatId: chatId,
     chatCategory: chatCategory,
     title: title,
     imageUrl: imageUrl,
     date: date,
-    permissions: permissions
+    permissions: permissions,
+    lastMessage: lastMessage
   );
 
   factory ChatEntityModel.fromJson(
@@ -40,7 +45,8 @@ class ChatEntityModel extends ChatEntity {
       date: json['created_at'] != null ? 
         DateTime.parse(json['created_at']).toLocal() : null,
       permissions: json['settings'] != null ? 
-        ChatPermissionModel.fromJson(json['settings']) : ChatPermissionModel()
+        ChatPermissionModel.fromJson(json['settings']) : ChatPermissionModel(),
+      lastMessage: json['last_message'] != null ? MessageModel.fromJson(json['last_message']) : null
     );
   }
 }

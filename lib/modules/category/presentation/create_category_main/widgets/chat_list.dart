@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/core/widgets/independent/placeholders/load_widget.dart';
-import 'package:messenger_mobile/core/widgets/independent/small_widgets/cell_skeleton_item.dart';
-import 'package:messenger_mobile/modules/category/data/models/chat_view_model.dart';
 
 import '../../../../../app/appTheme.dart';
+import '../../../../../core/widgets/independent/placeholders/load_widget.dart';
+import '../../../../../core/widgets/independent/small_widgets/cell_skeleton_item.dart';
+import '../../../data/models/chat_view_model.dart';
 import '../../../domain/entities/chat_entity.dart';
 
 class ChatsList extends StatelessWidget {

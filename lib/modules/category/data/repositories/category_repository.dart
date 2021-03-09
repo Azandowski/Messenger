@@ -2,12 +2,12 @@ import 'dart:async';
 
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
-import 'package:messenger_mobile/core/usecases/usecase.dart';
-import 'package:messenger_mobile/modules/chats/domain/entities/usecases/params.dart';
 
 import '../../../../core/error/failures.dart';
 import '../../../../core/services/network/network_info.dart';
+import '../../../../core/usecases/usecase.dart';
 import '../../../chats/domain/entities/category.dart';
+import '../../../chats/domain/entities/usecases/params.dart';
 import '../../domain/repositories/category_repository.dart';
 import '../../domain/usecases/params.dart';
 import '../datasources/category_datasource.dart';
@@ -83,8 +83,22 @@ class CategoryRepositoryImpl implements CategoryRepository {
   Future<Either<Failure, NoParams>> transferChats(List<int> chatsIDs, int categoryID) async {
     if (await networkInfo.isConnected) {
       try {
-        final response = await categoryDataSource.transferChats(chatsIDs, categoryID);
+        await categoryDataSource.transferChats(chatsIDs, categoryID);
         return Right(NoParams());
+      } catch (e) {
+        return Left(e);
+      }
+    } else {
+      return Left(ConnectionFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<CategoryEntity>>> reorderCategories(Map<String, int> categoryUpdates) async {
+    if (await networkInfo.isConnected) { 
+      try {
+        final response = await categoryDataSource.reorderCategories(categoryUpdates);
+        return Right(response);
       } catch (e) {
         return Left(e);
       }

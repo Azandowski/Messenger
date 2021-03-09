@@ -16,7 +16,16 @@ enum Endpoints {
   getAllUserChats,
   deleteCategory,
   transferChats,
-  categoryChats
+  categoryChats,
+  reorderCategories,
+
+  //contacts
+  sendContacts,
+  fetchContacts,
+
+  //Group chat
+  createGroupChat,
+  getChatDetails
 }
 
 extension EndpointsExtension on Endpoints {
@@ -30,16 +39,18 @@ extension EndpointsExtension on Endpoints {
 
   Map<String, String> getHeaders({String token, Map defaultHeaders}) {
     return {
-      if (defaultHeaders != null) ...defaultHeaders, 
+      if (defaultHeaders != null) ...defaultHeaders,
       if (token != null && token != "") ...{"Authorization": "Bearer $token"},
-      if (defaultHeaders == null && this != Endpoints.updateCurrentUser)  ...{'Content-Type' : 'application/json; charset=utf-8'},
+      if (defaultHeaders == null && this != Endpoints.updateCurrentUser) ...{
+        'Content-Type': 'application/json; charset=utf-8'
+      },
       if (this == Endpoints.updateCurrentUser) ...{
         "Accept": "text/html,application/xml"
       }
     };
   }
 
-  String getPath (List<String> params) {
+  String getPath(List<String> params) {
     switch (this) {
       case Endpoints.createCode:
         return "${Config.baseAPIpath.value}/createCode";
@@ -63,17 +74,24 @@ extension EndpointsExtension on Endpoints {
         return '${Config.baseAPIpath.value}/messenger/category/${params[0]}';
       case Endpoints.transferChats:
         return '${Config.baseAPIpath.value}/messenger/category/chat/transfer';
+      case Endpoints.reorderCategories:
+        return '${Config.baseAPIpath.value}/messenger/category/actions/reorder';
+      case Endpoints.sendContacts:
+        return '${Config.baseAPIpath.value}/messenger/user/bind-contact';
+      case Endpoints.fetchContacts:
+        return '${Config.baseAPIpath.value}/messenger/user/get-contacts';
+      case Endpoints.createGroupChat:
+        return '${Config.baseAPIpath.value}/messenger/chat';
+      case Endpoints.getChatDetails:
+        return '${Config.baseAPIpath.value}/messenger/chat/${params[0]}';
     }
   }
 
-  Uri buildURL({
-    Map<String, dynamic> queryParameters,
-    List<String> urlParams
-  }) {
+  Uri buildURL({Map<String, dynamic> queryParameters, List<String> urlParams}) {
     return Uri(
-      scheme: this.scheme,
-      host: this.hostName,
-      path: this.getPath(urlParams),
-      queryParameters: queryParameters ?? {});
+        scheme: this.scheme,
+        host: this.hostName,
+        path: this.getPath(urlParams),
+        queryParameters: queryParameters ?? {});
   }
 }

@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:messenger_mobile/app/appTheme.dart';
-import 'package:messenger_mobile/core/blocs/category/bloc/category_bloc.dart';
-import 'package:messenger_mobile/core/widgets/independent/dialogs/dialog_action_button.dart';
-import 'package:messenger_mobile/core/widgets/independent/dialogs/dialog_params.dart';
-import 'package:messenger_mobile/core/widgets/independent/dialogs/dialogs.dart';
-import 'package:messenger_mobile/modules/category/domain/entities/create_category_screen_params.dart';
-import 'package:messenger_mobile/modules/category/presentation/category_list/widgets/category_cell.dart';
-import 'package:messenger_mobile/modules/category/presentation/category_list/widgets/category_list_widget.dart';
-import 'package:messenger_mobile/modules/category/presentation/create_category_main/pages/create_category_screen.dart';
-import 'package:messenger_mobile/core/widgets/independent/small_widgets/cell_skeleton_item.dart';
-import 'package:messenger_mobile/modules/chats/domain/entities/category.dart';
 
+import '../../../../app/appTheme.dart';
+import '../../../../core/blocs/category/bloc/category_bloc.dart';
+import '../../../../core/widgets/independent/buttons/bottom_action_button.dart';
+import '../../../../core/widgets/independent/dialogs/dialog_action_button.dart';
+import '../../../../core/widgets/independent/dialogs/dialog_params.dart';
+import '../../../../core/widgets/independent/dialogs/dialogs.dart';
+import '../../../../core/widgets/independent/small_widgets/cell_skeleton_item.dart';
 import '../../../../main.dart';
+import '../../../chats/domain/entities/category.dart';
+import '../../domain/entities/create_category_screen_params.dart';
+import '../create_category_main/pages/create_category_screen.dart';
+import 'widgets/category_cell.dart';
+import 'widgets/category_list_widget.dart';
 
 class CategoryList extends StatefulWidget {
 
@@ -35,60 +36,98 @@ class CategoryList extends StatefulWidget {
 class _CategoryListState extends State<CategoryList> {
   NavigatorState get _navigator => navigatorKey.currentState;
 
+  List<CategoryEntity> reorderedCategories = [];
+  bool _didReorderItems = false;
+
   @override
   Widget build(BuildContext context) {
-        return Scaffold(
-          appBar: AppBar(
-            title: Text(
-              widget.isMoveChat ? 'Переместить чат' : 'Категории чатов'
-            ),
-            actions: [
-              IconButton(
-                icon: Icon(Icons.add,),
-                onPressed: () {
-                  Navigator.pushNamed(context, CreateCategoryScreen.id);
-                },
-              )
-            ],
-          ),
-          backgroundColor: AppColors.pinkBackgroundColor,
-          body: BlocConsumer<CategoryBloc, CategoryState>(
-            listener: (context, state) {
-             if(state is CategoriesUpdating){
-               Scaffold.of(context).showSnackBar(SnackBar(content: LinearProgressIndicator(),duration:Duration(days: 2),));
-             }else if(state is CategoriesErrorHappened){
-               Scaffold.of(context).showSnackBar(SnackBar(content: Text(state.message)));
-             }
-             if(state is CategoryLoaded){
-               Scaffold.of(context).hideCurrentSnackBar();
-             }
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          widget.isMoveChat ? 'Переместить чат' : 'Категории чатов'
+        ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.add,),
+            onPressed: () {
+              Navigator.pushNamed(context, CreateCategoryScreen.id);
             },
-            builder: (context, state) {
-              return Column(
+          )
+        ],
+      ),
+      backgroundColor: AppColors.pinkBackgroundColor,
+      body: BlocConsumer<CategoryBloc, CategoryState>(
+        listener: (context, state) {
+          if (state is CategoriesUpdating) {
+            Scaffold.of(context).hideCurrentSnackBar();
+            Scaffold.of(context).showSnackBar(SnackBar(content: LinearProgressIndicator(), duration: Duration(days: 2),));
+          } else if (state is CategoriesErrorHappened) {
+            Scaffold.of(context).hideCurrentSnackBar();
+            Scaffold.of(context).showSnackBar(SnackBar(content: Text(state.message)));
+          } else if (state is CategoryLoaded){
+            Scaffold.of(context).hideCurrentSnackBar();
+          }
+        },
+        builder: (context, state) {
+          return Stack(
+            children: [
+              Column(
                 children: [
                   Container(
-                  width: MediaQuery.of(context).size.width,
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 15),
-                  color: Colors.white,
-                  child: Text(widget.isMoveChat ? 'Выберите категорию для переноса' :
-                      'Вы можете создавать свои категории с нужными чатами, для быстрого переключения между ними.',
-                            style: AppFontStyles.placeholderStyle,
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                        SizedBox(height: 15,),
-                        returnStateWidget(state, context),
-                      ],
-               );
-            },
-          ),
-       );
+                    width: MediaQuery.of(context).size.width,
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 15),
+                    color: Colors.white,
+                    child: Text(
+                      widget.isMoveChat ? 'Выберите категорию для переноса' :
+                        'Вы можете создавать свои категории с нужными чатами, для быстрого переключения между ними.',
+                      style: AppFontStyles.placeholderStyle,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  SizedBox(height: 15,),
+                  returnStateWidget(state, context),
+                ],
+              ),
+              if (_didReorderItems)
+                BottomActionButtonContainer(
+                  title: 'Сохранить',
+                  onTap: () { 
+                    var updates = this.getCategoriesDifferences(
+                      oldIDS: state.categoryList.map((e) => e.id).toList(), 
+                      newIDS: reorderedCategories.map((e) => e.id).toList()
+                    );
+
+                    context.read<CategoryBloc>().add(CategoriesReordered(
+                      categoryUpdated: updates
+                    ));
+                  }
+                )
+            ],
+          );
+        },
+      ),
+    );
   }
 
+
+  /// Body of Categories List
   Widget returnStateWidget(state, context) {
-    if (state is CategoryLoaded || state is CategoriesUpdating) {
-      return CategoriesList(
-        items: state.categoryList,
+    if (reorderedCategories.length == 0) {
+      var categories = (state.categoryList ?? []) as List<CategoryEntity>;
+      reorderedCategories = categories.map((e) => e.clone()).toList();
+    }
+
+    if (state is CategoryEmpty) {
+      return Expanded(
+        child: ListView.builder(
+          itemBuilder: (context, int index) {
+            return CellShimmerItem();
+          },
+          itemCount: 10,
+        )
+      );
+    } else return CategoriesList(
+        items: reorderedCategories,
         cellType: widget.isMoveChat ? CategoryCellType.empty : CategoryCellType.withOptions,
         onSelectedOption: (CategoryCellActionType action, CategoryEntity entity) {
           if (action == CategoryCellActionType.delete) {
@@ -122,19 +161,45 @@ class _CategoryListState extends State<CategoryList> {
         onSelect: (item) {
           Navigator.of(context).pop(item);
         },
+        onReorderCategories: (oldIndex, newIndex) {
+          var tempItem = reorderedCategories[oldIndex];
+          _didReorderItems = true;
+
+          setState(() {
+            reorderedCategories.insert(newIndex, tempItem);
+            var oldUpdatedIndex = newIndex > oldIndex ? oldIndex : oldIndex + 1;
+            reorderedCategories.removeAt(oldUpdatedIndex);
+          });
+        },
       );
-    } else if (state is CategoryEmpty) {
-      return Expanded(
-        child: ListView.builder(
-          itemBuilder: (context, int index) {
-            return CellShimmerItem();
-          },
-          itemCount: 10,
-        )
-      );
-    } else {
-      return Text('default');
-    }
+  }
+  // BottomBar
+}
+
+
+extension on _CategoryListState {
+  /// Returns Map of updated categories for the Backend
+  /// Example: { orders[2]: 0 }
+  /// So [orders[id]]'s value is a current order
+  /// ! Order starts from 1 not zero
+  Map<String, int> getCategoriesDifferences ({
+    @required List oldIDS, 
+    @required List newIDS
+  }) {
+    List arr2 = newIDS;
+    Map<String, int> differences = {};
+
+    oldIDS.asMap().forEach((index, item) {
+      if (item != arr2[index]) {
+        var temp = arr2[index];
+          
+        arr2[index] = item;
+        arr2[arr2.lastIndexOf(item)] = temp;
+        differences['$temp'] = index + 1;
+      }
+    });
+    
+    return differences;
   }
 }
 
