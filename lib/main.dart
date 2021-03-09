@@ -1,11 +1,7 @@
-import 'dart:async';
-
-import 'package:dartz/dartz_streaming.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:laravel_echo/laravel_echo.dart';
 import 'package:messenger_mobile/core/screens/splash_screen.dart';
 import 'app/appTheme.dart';
 import 'bloc_observer.dart';
@@ -15,7 +11,7 @@ import 'core/blocs/chat/bloc/bloc/chat_cubit.dart';
 import 'core/config/routes.dart';
 import 'locator.dart' as serviceLocator;
 import 'modules/creation_module/presentation/bloc/contact_bloc/contact_bloc.dart';
-import 'package:socket_io_client/socket_io_client.dart' as IO;
+
 
 final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
 
@@ -46,7 +42,7 @@ class MainApp extends StatelessWidget {
         BlocProvider.value(value: serviceLocator.sl<AuthBloc>()),
       ],
       child: MaterialApp(
-        home: TestSoccet(),
+        home: SplashScreen(),
         theme: AppTheme.light,
         navigatorKey: navigatorKey,
         routes: routes,
@@ -54,79 +50,67 @@ class MainApp extends StatelessWidget {
     );
   }
 }
-class StreamSocket{
-  final _socketResponse= StreamController<String>();
 
-  void Function(String) get addResponse => _socketResponse.sink.add;
+// class TestSoccet extends StatefulWidget {
+//   @override
+//   _TestSoccetState createState() => _TestSoccetState();
+// }
 
-  Stream<String> get getResponse => _socketResponse.stream;
+// class _TestSoccetState extends State<TestSoccet> {
 
-  void dispose(){
-    print('disposed');
-    _socketResponse.close();
-  }
-}
+// StreamSocket streamSocket = StreamSocket();
 
-class TestSoccet extends StatefulWidget {
-  @override
-  _TestSoccetState createState() => _TestSoccetState();
-}
+// Echo echo;
 
-class _TestSoccetState extends State<TestSoccet> {
+// void connectAndListen(){
 
-StreamSocket streamSocket = StreamSocket();
-
-Echo echo;
-
-void connectAndListen(){
-
-IO.Socket socket = IO.io('https://aio-test-vps.kulenkov-group.kz:6002',
-      IO.OptionBuilder().setExtraHeaders({'Authorization': 'Bearer 991|JplDR2OggW9kxLY1OFvNqSvelyohP2NfmyAzJghZ'})
-      .setTransports(['websocket']).build());
+// IO.Socket socket = IO.io('https://aio-test-vps.kulenkov-group.kz:6002',
+//       IO.OptionBuilder().setExtraHeaders({'Authorization': 'Bearer 991|JplDR2OggW9kxLY1OFvNqSvelyohP2NfmyAzJghZ'})
+//       .setTransports(['websocket']).build());
       
-    socket.onConnect((_) {
-     print('connect');
-    });
+//     socket.onConnect((_) {
+//      print('connect');
+//     });
 
-echo = new Echo({
-  'broadcaster': 'socket.io',
-  'client': socket,
-  'auth': {
-  'headers': {
-    'Authorization': 'Bearer 991|JplDR2OggW9kxLY1OFvNqSvelyohP2NfmyAzJghZ'
-  }
-  }
-});
+// echo = new Echo({
+//   'broadcaster': 'socket.io',
+//   'client': socket,
+//   'auth': {
+//   'headers': {
+//     'Authorization': 'Bearer 991|JplDR2OggW9kxLY1OFvNqSvelyohP2NfmyAzJghZ'
+//   }
+//   }
+// });
 
-echo.connect();
+// echo.connect();
 
-echo.join('messages.54')
-  .here((data) {
-    print('shit');
-    print(data);
-  }).joining((data) {
-    print(data);
-  }).leaving((data) {
-    print(data);
-  });
+// echo.join('messages.54')
+//   .here((data) {
+//     print('shit');
+//     print(data);
+//   }).joining((data) {
+//     print(data);
+//   }).leaving((data) {
+//     print(data);
+//   });
 
-  echo.channel('laravel_database_messages.54').listen('.messages.54', (shit){
-     print(shit);
-  });
-  echo.leave('laravel_database_messages.54');
+//   echo.channel('laravel_database_messages.54').listen('.messages.54', (shit){
+//      print(shit);
+//   });
+//   echo.leave('laravel_database_messages.54');
 
-}
+// }
 
- @override
-  void initState() {
-    super.initState();
-    connectAndListen();
-  }
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(),
+//  @override
+//   void initState() {
+//     super.initState();
+//     connectAndListen();
+//   }
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       body: Container(),
       
-    );
-  }
-}
+//     );
+//   }
+// }
