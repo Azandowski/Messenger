@@ -122,10 +122,10 @@ Future<void> init() async {
   );
 
   sl.registerLazySingleton<ProfileDataSource>(
-      () => ProfileDataSourceImpl(client: sl()));
+    () => ProfileDataSourceImpl(client: sl()));
 
   sl.registerLazySingleton<ChatsDataSource>(
-      () => ChatsDataSourceImpl(client: sl()));
+    () => ChatsDataSourceImpl(client: sl()));
 
   sl.registerLazySingleton<ChatRepository>(
     () => ChatRepositoryImpl(

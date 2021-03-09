@@ -31,7 +31,7 @@ abstract class CategoryDataSource {
 
   Future<List<CategoryEntity>> deleteCatefory(int id);
 
-  Future<void> transferChats (List<int> chatsIDs, int categoryID);
+  Future<List<CategoryEntity>> transferChats (List<int> chatsIDs, int categoryID);
 
   Future<List<CategoryEntity>> reorderCategories (Map<String, int> categoryUpdates);
 }
@@ -121,7 +121,7 @@ class CategoryDataSourceImpl implements CategoryDataSource {
   }
 
   @override
-  Future<void> transferChats(List<int> chatsIDs, int categoryID) async {
+  Future<List<CategoryEntity>> transferChats(List<int> chatsIDs, int categoryID) async {
     Endpoints endpoint = Endpoints.transferChats;
 
     http.Response response = await client.post(
@@ -135,6 +135,11 @@ class CategoryDataSourceImpl implements CategoryDataSource {
 
     if (!response.isSuccess) {
       throw ServerFailure(message: ErrorHandler.getErrorMessage(response.body.toString()));
+    } else {
+      final categories =  (json.decode(response.body)['category'] as List)
+        .map((e) => CategoryModel.fromJson(e))
+        .toList();
+      return categories;
     }
   }
 

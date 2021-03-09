@@ -5,7 +5,6 @@ import 'package:flutter/foundation.dart';
 
 import '../../../../core/error/failures.dart';
 import '../../../../core/services/network/network_info.dart';
-import '../../../../core/usecases/usecase.dart';
 import '../../../chats/domain/entities/category.dart';
 import '../../../chats/domain/entities/usecases/params.dart';
 import '../../domain/repositories/category_repository.dart';
@@ -80,11 +79,12 @@ class CategoryRepositoryImpl implements CategoryRepository {
   }
 
   @override
-  Future<Either<Failure, NoParams>> transferChats(List<int> chatsIDs, int categoryID) async {
+  Future<Either<Failure, List<CategoryEntity>>> transferChats(List<int> chatsIDs, int categoryID) async {
     if (await networkInfo.isConnected) {
       try {
-        await categoryDataSource.transferChats(chatsIDs, categoryID);
-        return Right(NoParams());
+        var categories = await categoryDataSource.transferChats(chatsIDs, categoryID);
+        categoryListController.add(categories);
+        return Right(categories);
       } catch (e) {
         return Left(e);
       }

@@ -1,12 +1,13 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
+import 'package:messenger_mobile/modules/chats/domain/entities/category.dart';
 
 import '../../../../core/error/failures.dart';
 import '../../../../core/usecases/usecase.dart';
 import '../repositories/category_repository.dart';
 import 'params.dart';
 
-class TransferChats implements UseCase<NoParams, TransferChatsParams> {
+class TransferChats implements UseCase<List<CategoryEntity>, TransferChatsParams> {
   final CategoryRepository repository;
 
   TransferChats({
@@ -14,8 +15,7 @@ class TransferChats implements UseCase<NoParams, TransferChatsParams> {
   });
 
   @override
-  Future<Either<Failure, NoParams>> call(TransferChatsParams params) async {
+  Future<Either<Failure, List<CategoryEntity>>> call(TransferChatsParams params) async {
     return await repository.transferChats(params.chatsIDs, params.newCategoryId);
   }
-  
 }

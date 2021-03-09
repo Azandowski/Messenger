@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:messenger_mobile/core/widgets/independent/images/ImageWithCorner.dart';
 
 import '../../../../../app/appTheme.dart';
 import '../../../../../core/widgets/independent/placeholders/load_widget.dart';
@@ -57,9 +58,10 @@ class ChatsList extends StatelessWidget {
                 fit: BoxFit.scaleDown,
                 child: Stack(
                   children: [
-                    CircleAvatar(
-                      backgroundImage: NetworkImage(item.imageURL),
-                      minRadius: 30,
+                    AvatarImage(
+                      path: item.imageURL,
+                      isFromAsset: false,
+                      width: 60, height: 60,
                     ),
                     if (isSelected) 
                       Positioned(
