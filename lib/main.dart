@@ -54,6 +54,7 @@ class MainApp extends StatelessWidget {
     );
   }
 }
+
 class StreamSocket{
   final _socketResponse= StreamController<String>();
 
@@ -94,26 +95,39 @@ echo = new Echo({
   'auth': {
   'headers': {
     'Authorization': 'Bearer 991|JplDR2OggW9kxLY1OFvNqSvelyohP2NfmyAzJghZ'
-  }
+    }
   }
 });
 
 echo.connect();
 
-echo.join('messages.54')
+// echo.join('messages.54')
+//   .here((data) {
+//     print('shit');
+//     print(data);
+//   }).joining((data) {
+//     print(data);
+//   }).leaving((data) {
+//     print(data);
+//   });
+
+echo.join('online')
   .here((data) {
     print('shit');
     print(data);
   }).joining((data) {
     print(data);
+    print('join');
   }).leaving((data) {
+    print('leave');
     print(data);
   });
 
-  echo.channel('laravel_database_messages.54').listen('.messages.54', (shit){
-     print(shit);
-  });
-  echo.leave('laravel_database_messages.54');
+  // echo.channel('laravel_database_messages.54').listen('.messages.54', (shit){
+  //    print(shit);
+  // });
+  
+  // echo.leave('laravel_database_messages.54');
 
 }
 
