@@ -1,6 +1,7 @@
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
+import 'package:messenger_mobile/core/services/network/socket_service.dart';
 import 'package:messenger_mobile/modules/chat/data/datasources/chat_datasource.dart';
 import 'package:messenger_mobile/modules/chat/data/repositories/chat_repository.dart';
 import 'package:messenger_mobile/modules/chat/domain/usecases/get_chat_details.dart';
@@ -125,12 +126,18 @@ Future<void> init() async {
     () => ProfileDataSourceImpl(client: sl()));
 
   sl.registerLazySingleton<ChatsDataSource>(
-    () => ChatsDataSourceImpl(client: sl()));
+      () => ChatsDataSourceImpl(client: sl(), socketService: sl()));
 
   sl.registerLazySingleton<ChatRepository>(
     () => ChatRepositoryImpl(
       chatDataSource: sl(),
       networkInfo: sl()
+    )
+  );
+
+  sl.registerLazySingleton<SocketService>(
+    () =>  SocketService(
+      authConfig: sl()
     )
   );
 
@@ -147,10 +154,7 @@ Future<void> init() async {
   // DataSources
   sl.registerLazySingleton<ChatGroupRemoteDataSource>(
       () => ChatGroupRemoteDataSourceImpl(client: sl(),multipartRequest: http.MultipartRequest('POST', Endpoints.createGroupChat.buildURL())));
-  
-  sl.registerLazySingleton<ChatDataSource>(
-    () => ChatDataSourceImpl(client: sl()) 
-  );
+
   
   // CreateCategory
 

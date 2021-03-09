@@ -24,6 +24,22 @@ class Message extends Equatable {
     isRead,
     id
   ];
+
+   Message copyWith({
+     int id,
+     bool isRead,
+     DateTime dateTime,
+     String text,
+     MessageUser user,
+  }) {
+    return Message(
+      id: id ?? this.id,
+      isRead: isRead ?? this.isRead,
+      text: text ?? this.text,
+      dateTime: dateTime ?? this.dateTime,
+      user: user ?? this.user
+    );
+  }
 }
 
 class MessageUser extends Equatable {
@@ -43,4 +59,6 @@ class MessageUser extends Equatable {
 
   @override
   List<Object> get props => [id, name, surname, phone, avatarURL];
+
+
 }

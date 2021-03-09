@@ -85,4 +85,9 @@ class ChatsRepositoryImpl extends ChatsRepository {
   Future<void> setLocalWallpaper(File file) {
     return chatsDataSource.setLocalWallpaper(file);
   }
+
+  @override
+  Stream<ChatEntity> message(id) async*{
+     yield* chatsDataSource.messages(id);
+  }
 }
