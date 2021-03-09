@@ -80,22 +80,27 @@ Echo echo;
 
 void connectAndListen(){
 
-//   Echo echo = new Echo({
-//   'broadcaster': 'pusher',
-//   'client': IO.io('https://aio-test-vps.kulenkov-group.kz:6001'),
-// });
+IO.Socket socket = IO.io('https://aio-test-vps.kulenkov-group.kz:6002',
+      IO.OptionBuilder().setExtraHeaders({'Authorization': 'Bearer 991|JplDR2OggW9kxLY1OFvNqSvelyohP2NfmyAzJghZ'})
+      .setTransports(['websocket']).build());
+      
+    socket.onConnect((_) {
+     print('connect');
+    });
 
 echo = new Echo({
   'broadcaster': 'socket.io',
-  'client': IO.io('https://aio-test-vps.kulenkov-group.kz:6002'),
+  'client': socket,
+  'auth': {
   'headers': {
-        'Authorization': 'Bearer 991|JplDR2OggW9kxLY1OFvNqSvelyohP2NfmyAzJghZ'
-    }
+    'Authorization': 'Bearer 991|JplDR2OggW9kxLY1OFvNqSvelyohP2NfmyAzJghZ'
+  }
+  }
 });
 
 echo.connect();
 
-echo.join('laravel_database_private-messages.54')
+echo.join('messages.54')
   .here((data) {
     print('shit');
     print(data);
@@ -104,31 +109,11 @@ echo.join('laravel_database_private-messages.54')
   }).leaving((data) {
     print(data);
   });
-  // .listen('NewMessage', (e) {
-  //   print(e);
-  // });
-  echo.private('laravel_database_private-messages.54').listen('.messages.54', (shit){
+
+  echo.channel('laravel_database_messages.54').listen('.messages.54', (shit){
      print(shit);
   });
-
-  // print('INITING');
-  // IO.Socket socket = IO.io('https://aio-test-vps.kulenkov-group.kz:6002',
-  //     IO.OptionBuilder().setExtraHeaders({'Authorization': 'Bearer 991|JplDR2OggW9kxLY1OFvNqSvelyohP2NfmyAzJghZ'})
-  //     .setTransports(['websocket']).build());
-
-  //   socket.onConnect((_) {
-  //    print('connect');
-  //   });
-
-  //   socket.on('messages.54', (data) {
-  //      print('some shit happened');
-  //      print(data);
-  //   });
-
-  //   socket.connect();
-
-  //   socket.on('event', (data) => streamSocket.addResponse);
-  //   socket.onDisconnect((_) => print('disconnect'));
+  echo.leave('laravel_database_messages.54');
 
 }
 
