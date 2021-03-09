@@ -22,6 +22,7 @@ enum Endpoints {
   //contacts
   sendContacts,
   fetchContacts,
+  chatMembers,
 
   //Group chat
   createGroupChat,
@@ -83,6 +84,8 @@ extension EndpointsExtension on Endpoints {
         return '${Config.baseAPIpath.value}/messenger/chat';
       case Endpoints.getChatDetails:
         return '${Config.baseAPIpath.value}/messenger/chat/${params[0]}';
+      case Endpoints.chatMembers:
+        return '${Config.baseAPIpath.value}/messenger/chat/${params[0]}/full-members';
     }
   }
 

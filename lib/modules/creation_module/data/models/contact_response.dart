@@ -7,8 +7,8 @@ class ContactResponse {
 
   ContactResponse.fromJson(Map<String, dynamic> json) {
     contacts = json['contacts'] != null
-        ? new Contacts.fromJson(json['contacts'])
-        : null;
+      ? new Contacts.fromJson(json['contacts'])
+      : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -36,7 +36,7 @@ class Contacts {
   int total;
 
   Contacts(
-      {this.currentPage,
+{this.currentPage,
       this.data,
       this.firstPageUrl,
       this.from,

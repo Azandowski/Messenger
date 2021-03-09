@@ -1,8 +1,13 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:contacts_service/contacts_service.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
+import 'package:messenger_mobile/core/services/network/paginatedResult.dart';
+import 'package:messenger_mobile/modules/chat/domain/usecases/get_chat_members.dart';
+import 'package:messenger_mobile/modules/chat/domain/usecases/params.dart';
 import 'package:meta/meta.dart';
 
 import '../../../../../core/utils/pagination.dart';
@@ -13,14 +18,33 @@ import '../../../domain/usecases/fetch_contacts.dart';
 part 'contact_event.dart';
 part 'contact_state.dart';
 
+
+abstract class ContactMode {}
+
+class GetChatMembersMode implements ContactMode {
+  final int id;
+
+  GetChatMembersMode(this.id);
+}
+
+class GetUserContactsMode implements ContactMode {}
+
 class ContactBloc extends Bloc<ContactEvent, ContactState> {
   
   ContactBloc({
-    @required this.fetchContacts,
-  }) : super(const ContactState());
+    this.fetchContacts,
+    this.getChatMembers,
+    this.mode,
+  }) : super(const ContactState()) {
+    if (this.mode == null) {
+      mode = GetUserContactsMode();
+    } 
+  }
 
+  ContactMode mode;
   final FetchContacts fetchContacts;
-  
+  final GetChatMembers getChatMembers;
+
   @override
   Stream<ContactState> mapEventToState(ContactEvent event) async* {
     if (event is ContactFetched) {
@@ -52,26 +76,26 @@ class ContactBloc extends Bloc<ContactEvent, ContactState> {
     if (state.hasReachedMax) return state.copyWith(status: ContactStatus.success);
     try {
       if (status == ContactStatus.initial) {
-        ContactResponse response = await _fetchContacts(_pagintaion);
+        PaginatedResult<ContactEntity> response = await _getData(_pagintaion);
         _pagintaion.next();
         
         return state.copyWith(
           status: ContactStatus.success,
-          contacts: response.contacts.data,
-          hasReachedMax: _hasReachedMax(response.contacts.data.length, response.contacts.total),
-          maxTotal: response.contacts.total,
+          contacts: response.data,
+          hasReachedMax: response.paginationData.hasNextPage,
+          maxTotal: response.paginationData.total
         );
       } else {
-        ContactResponse response = await _fetchContacts(_pagintaion);
+        PaginatedResult<ContactEntity> response = await _getData(_pagintaion);
         
-        if (response.contacts.data.isEmpty) {
+        if (response.data.isEmpty) {
           return state.copyWith(hasReachedMax: true);
         } else {
           _pagintaion.next();
           return state.copyWith(
             status: ContactStatus.success,
-            contacts: List.of(state.contacts)..addAll(response.contacts.data),
-            hasReachedMax: _hasReachedMax(response.contacts.data.length, state.maxTotal,)
+            contacts: List.of(state.contacts)..addAll(response.data),
+            hasReachedMax: response.paginationData.hasNextPage
           );
         }
       }
@@ -80,10 +104,27 @@ class ContactBloc extends Bloc<ContactEvent, ContactState> {
     }
   }
 
-  bool _hasReachedMax(int contactsCount, int totalCount) => contactsCount < totalCount ? false : true;
+  Future<PaginatedResult<ContactEntity>> _getData (Pagination pagination) async {
+    if (mode is GetChatMembersMode) {
+      return _getChatMembers(pagination);
+    } else {
+      return _fetchContacts(pagination);
+    }
+  }
 
-  Future<ContactResponse> _fetchContacts(Pagination pagination) async {
+  Future<PaginatedResult<ContactEntity>> _fetchContacts(Pagination pagination) async {
     var failOrContacts =  await fetchContacts(pagination);
+    return failOrContacts.fold((l) => throw Exception, (r) {
+      return r;
+    });
+  }
+
+  Future<PaginatedResult<ContactEntity>> _getChatMembers (Pagination pagination) async {
+    var failOrContacts =  await getChatMembers(GetChatMembersParams(
+      id: (mode as GetChatMembersMode).id, 
+      pagination: pagination)
+    );
+
     return failOrContacts.fold((l) => throw Exception, (r) {
       return r;
     });

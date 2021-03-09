@@ -14,6 +14,7 @@ class ActionsContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: CreationActions.values.map((e) => _buildItem(e)).toList(),
     );
   }

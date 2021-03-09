@@ -44,12 +44,13 @@ class ChatDetailHeader extends StatelessWidget {
                 borderRadius: BorderRadius.circular(16)
               ),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: [
                       Expanded(
                         child: Text(
-                          'Чат Алматы для общения жителей города',
+                          chatDetailed.chat.title,
                           style: TextStyle(
                             color: Colors.black,
                             fontWeight: FontWeight.w500,
@@ -81,9 +82,10 @@ class ChatDetailHeader extends StatelessWidget {
                   ),
                   Divider(),
                   Text(
-                    'Это описание группы, которое могут видеть',
+                    chatDetailed.chat.description,
                     overflow: TextOverflow.ellipsis,
                     maxLines: 2,
+                    textAlign: TextAlign.left,
                   )
                 ],
               )

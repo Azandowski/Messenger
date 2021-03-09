@@ -15,6 +15,8 @@ class ChatEntityModel extends ChatEntity {
   final DateTime date;
   final ChatPermissions permissions;
   final MessageModel lastMessage;
+  final int unreadCount;
+  final String description;
 
   ChatEntityModel({
     @required this.chatId, 
@@ -23,7 +25,9 @@ class ChatEntityModel extends ChatEntity {
     @required this.imageUrl,
     @required this.date,
     @required this.permissions,
-    this.lastMessage
+    @required this.description,
+    this.lastMessage,
+    this.unreadCount = 0,
   }) : super(
     chatId: chatId,
     chatCategory: chatCategory,
@@ -31,7 +35,9 @@ class ChatEntityModel extends ChatEntity {
     imageUrl: imageUrl,
     date: date,
     permissions: permissions,
-    lastMessage: lastMessage
+    lastMessage: lastMessage,
+    unreadCount: unreadCount,
+    description: description
   );
 
   factory ChatEntityModel.fromJson(
@@ -46,7 +52,9 @@ class ChatEntityModel extends ChatEntity {
         DateTime.parse(json['created_at']).toLocal() : null,
       permissions: json['settings'] != null ? 
         ChatPermissionModel.fromJson(json['settings']) : ChatPermissionModel(),
-      lastMessage: json['last_message'] != null ? MessageModel.fromJson(json['last_message']) : null
+      lastMessage: json['last_message'] != null ? MessageModel.fromJson(json['last_message']) : null,
+      unreadCount: json['no_read_message'] ?? 0,
+      description: json['description']
     );
   }
 }

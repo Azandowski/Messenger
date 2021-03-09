@@ -1,6 +1,7 @@
 import '../../../../core/services/network/config.dart';
 import '../../domain/entities/chat_entity.dart';
 import 'package:intl/intl.dart';
+import 'package:messenger_mobile/modules/chat/domain/entities/chat_actions.dart';
 
 class ChatViewModel {
   final ChatEntity entity;
@@ -28,9 +29,14 @@ class ChatViewModel {
     if (isInLive) {
       return 'Сейчас в прямом эфире'.toUpperCase();
     } else if (entity.lastMessage != null) {
+      if (entity.lastMessage.chatActions != null) {
+        return entity.lastMessage.chatActions.key;
+      }
       return entity.lastMessage.text ?? '';
+    } else if (entity.chatCategory != null){
+      return entity.chatCategory.name ?? '';
     } else {
-      return entity.chatCategory?.name ?? '';
+      return entity.description ?? '';
     }
   }
 
@@ -53,7 +59,7 @@ class ChatViewModel {
   }
 
   int get unreadMessages {
-    return 0;
+    return entity.unreadCount;
   }
 
   ChatBottomPin get bottomPin {

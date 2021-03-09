@@ -41,6 +41,6 @@ abstract class SocketChannels {
   /// New changes in chat room 
   /// [id] - id of the chat
   static String getChatByID (int id) {
-    return 'laravel_database_messages..$id';
+    return 'laravel_database_messages.$id';
   } 
 }

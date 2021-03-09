@@ -7,8 +7,11 @@ import 'package:messenger_mobile/modules/chat/presentation/chat_details/widgets/
 import 'package:messenger_mobile/modules/chat/presentation/chat_details/widgets/chat_members_block.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chat_details/widgets/chat_setting_item.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chat_details/widgets/divider_wrapper.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chat_members/chat_members_screen.dart';
 import 'package:messenger_mobile/modules/creation_module/domain/entities/contact.dart';
 import 'package:messenger_mobile/modules/profile/presentation/widgets/profile_item.dart';
+
+import '../../../../../main.dart';
 
 class ChatDetailScreen extends StatefulWidget {
   final int id;
@@ -24,6 +27,8 @@ class ChatDetailScreen extends StatefulWidget {
 class _ChatDetailScreenState extends State<ChatDetailScreen> {
   
   ChatDetailsCubit _chatDetailsCubit;
+
+  NavigatorState get _navigator => navigatorKey.currentState;
 
   @override
   void initState() {
@@ -70,10 +75,10 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                 ),
                 _buildSeparator(),
                 ChatMembersBlock(
-                  members: getFirstContacts(state.chatDetailed.members), 
+                  members: state.chatDetailed.members, 
                   membersCount: state.chatDetailed.membersCount, 
                   onShowMoreClick: () {
-                    // TODO: Show All contacts list
+                    _navigator.push(ChatMembersScreen.route(state.chatDetailed.chat.chatId));
                   }
                 ),
                 _buildSeparator(),
@@ -103,17 +108,5 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
       height: height ?? 20,
       color: Colors.grey[200],
     );
-  }
-
-  List<ContactEntity> getFirstContacts (List<ContactEntity> arr) {
-    List<ContactEntity> contacts = [];
-
-    for (int i in [0, 1, 2, 3, 4]) {
-      if (arr.length - 1 >= i) {
-        contacts.add(arr[i]);
-      }
-    }
-
-    return contacts;
   }
 }

@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
+import 'package:messenger_mobile/modules/chat/domain/entities/chat_actions.dart';
 
 class Message extends Equatable {
   final int id;
@@ -7,13 +8,15 @@ class Message extends Equatable {
   final DateTime dateTime;
   final String text;
   final MessageUser user;
+  final ChatActions chatActions;
 
   Message({
     this.text,
     this.dateTime,
     this.user,
     this.id,
-    this.isRead
+    this.isRead,
+    this.chatActions
   });
 
   @override
@@ -22,7 +25,8 @@ class Message extends Equatable {
     text, 
     user,
     isRead,
-    id
+    id, 
+    chatActions
   ];
 }
 

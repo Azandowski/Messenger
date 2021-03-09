@@ -1,3 +1,5 @@
+import 'package:messenger_mobile/modules/chat/domain/entities/chat_actions.dart';
+
 import '../../domain/entities/message.dart';
 import 'message_user_model.dart';
 
@@ -7,19 +9,22 @@ class MessageModel extends Message {
   final DateTime dateTime;
   final String text;
   final MessageUser user;
+  final ChatActions chatActions;
 
   MessageModel({
     this.id,
     this.isRead,
     this.dateTime,
     this.text,
-    this.user
+    this.user,
+    this.chatActions
   }) : super(
     id: id,
     isRead: isRead,
     text: text,
     dateTime: dateTime,
-    user: user
+    user: user,
+    chatActions: chatActions
   );
 
   factory MessageModel.fromJson(Map json) {
@@ -28,7 +33,8 @@ class MessageModel extends Message {
       user: json['from_contact'] != null ? MessageUserModel.fromJson(json['from_contact']) : null,
       text: json['text'],
       isRead: json['is_read'] == 1,
-      dateTime: DateTime.parse(json['created_at'])
+      dateTime: DateTime.parse(json['created_at']),
+      chatActions: ChatActions.values.firstWhere((e) => e.key == json['action'], orElse: () => null)
     );
   }
 }

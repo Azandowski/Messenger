@@ -13,6 +13,8 @@ class ChatEntity extends Equatable {
   final DateTime date;
   final ChatPermissions permissions;
   final MessageModel lastMessage;
+  final int unreadCount;
+  final String description;
 
   ChatEntity({
     @required this.chatCategory,
@@ -21,6 +23,8 @@ class ChatEntity extends Equatable {
     @required this.chatId,
     @required this.date,
     @required this.permissions,
+    @required this.unreadCount,
+    @required this.description,
     this.lastMessage
   });
 
@@ -32,7 +36,9 @@ class ChatEntity extends Equatable {
     chatId,
     lastMessage,
     permissions, 
-    date
+    date,
+    unreadCount,
+    description
   ];
 
   ChatEntity clone() {
@@ -45,7 +51,9 @@ class ChatEntity extends Equatable {
       permissions: ChatPermissions(
         isSoundOn: this.permissions.isSoundOn
       ),
-      lastMessage: this.lastMessage
+      lastMessage: this.lastMessage,
+      unreadCount: this.unreadCount,
+      description: description
     );
   }
 }

@@ -1,5 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
+import 'package:messenger_mobile/core/services/network/paginatedResult.dart';
+import 'package:messenger_mobile/modules/creation_module/domain/entities/contact.dart';
 import 'package:meta/meta.dart';
 
 import '../../../../core/error/failures.dart';
@@ -8,13 +10,13 @@ import '../../../../core/utils/pagination.dart';
 import '../../data/models/contact_response.dart';
 import '../repositories/creation_module_repository.dart';
 
-class FetchContacts implements UseCase<ContactResponse, Pagination> {
+class FetchContacts implements UseCase<PaginatedResult<ContactEntity>, Pagination> {
   final CreationModuleRepository repository;
 
   FetchContacts(this.repository);
 
   @override
-  Future<Either<Failure, ContactResponse>> call(Pagination pagination) async {
+  Future<Either<Failure, PaginatedResult<ContactEntity>>> call(Pagination pagination) async {
     return await repository.fetchContacts(pagination);
   }
 }

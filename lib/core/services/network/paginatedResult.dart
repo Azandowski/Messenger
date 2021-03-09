@@ -35,10 +35,12 @@ class PaginatedResult <T> {
 class PaginationData extends Equatable {
   final Uri nextPageUrl;
   final bool isFirstPage;
+  final int total;
 
   PaginationData({
     @required this.nextPageUrl, 
-    this.isFirstPage = true
+    this.isFirstPage = true,
+    this.total
   });
 
   factory PaginationData.defaultInit () {
@@ -53,6 +55,7 @@ class PaginationData extends Equatable {
   ) {
     return PaginationData(
       nextPageUrl: json['next_page_url'],
+      total: json['total']
     );
   }
   

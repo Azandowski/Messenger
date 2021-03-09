@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_share/flutter_share.dart';
+import 'package:messenger_mobile/modules/creation_module/presentation/helpers/creation_actions.dart';
+import 'package:messenger_mobile/modules/creation_module/presentation/widgets/actions_builder.dart';
+import 'package:messenger_mobile/modules/groupChat/presentation/create_group/create_group_page.dart';
 
 import '../../../../app/appTheme.dart';
 import '../widgets/contcats_list.dart';
@@ -27,7 +31,53 @@ class _CreationModuleScreenState extends State<CreationModuleScreen> {
           style: AppFontStyles.headingTextSyle,
         ),
       ),
-      body: ContactsList(),
+      body: Container(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ActionsContainer(
+                onTap: (CreationActions action) {
+                  actionProcess(action, context);
+                },
+              ),
+              ContactsList(isScrollable: false,)
+            ],
+          )
+        ),
+      ),
     );
+  }
+
+    // * * Actions
+
+  Future<void> actionProcess(
+    CreationActions action, 
+    BuildContext context
+  ) async {
+    switch (action){
+      case CreationActions.createGroup:
+        Navigator.pushNamed(context, CreateGroupPage.id);
+        break;
+      case CreationActions.createSecretChat:
+        // TODO: Handle this case.
+        break;
+      case CreationActions.startVideo:
+        // TODO: Handle this case.
+        break;
+      case CreationActions.startLive:
+        // TODO: Handle this case.
+        break;
+      case CreationActions.inviteFriends:
+        return await FlutterShare.share(
+          title: 'AIO Messenger',
+          text: 'Хэй, поскорее скачай мессенджер AIO!',
+          linkUrl: 'https://messengeraio.page.link/invite'
+        );
+        break;
+    }
   }
 }
