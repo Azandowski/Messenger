@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
-
+import 'package:messenger_mobile/core/services/network/socket_service.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/services/network/Endpoints.dart';
 import '../../../../core/services/network/paginatedResult.dart';
@@ -10,8 +10,6 @@ import '../../../../core/utils/http_response_extension.dart';
 import '../../../category/data/models/chat_entity_model.dart';
 import '../../../category/domain/entities/chat_entity.dart';
 import 'dart:io';
-import 'package:flutter/foundation.dart';
-import 'package:http/http.dart' as http;
 import 'package:messenger_mobile/core/error/failures.dart';
 import 'package:messenger_mobile/core/services/network/Endpoints.dart';
 import 'package:messenger_mobile/core/services/network/paginatedResult.dart';
@@ -35,13 +33,20 @@ abstract class ChatsDataSource {
   Future<File> getLocalWallpaper ();
 
   Future<void> setLocalWallpaper(File file); 
+
+  void handleMessages (Function(ChatEntity) onReceiveMessage, int id);
+
+  void leaveChannel (int id);
 }
+
 
 class ChatsDataSourceImpl extends ChatsDataSource {
   final http.Client client;
+  final SocketService socketService;
 
   ChatsDataSourceImpl({
-    @required this.client
+    @required this.client,
+    @required this.socketService
   });
 
   /**
@@ -112,4 +117,18 @@ class ChatsDataSourceImpl extends ChatsDataSource {
     String filePath = '$appDocumentsPath/wallpaper.png';
     file.copy(filePath);
   } 
+
+  /// MARK: - Handling messages from the Socket
+  /// [onReceiveMessage] - callback to retrieve new messages
+
+  void handleMessages (Function(ChatEntity) onReceiveMessage, int id) {
+    socketService.echo.channel(SocketChannels.getChatByID(id)).listen('.messages.$id', (updates) {
+      // TODO: decode json and call onReceiveMessage
+      print(updates);
+    });
+  }
+
+  void leaveChannel (int id) {
+    socketService.echo.leave(SocketChannels.getChatByID(id));
+  }
 }

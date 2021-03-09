@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:messenger_mobile/core/widgets/independent/buttons/icon_text_button.dart';
 
 import '../../../../../app/appTheme.dart';
 import '../../../../../core/widgets/independent/small_widgets/photo_picker_view.dart';
@@ -35,26 +36,12 @@ class CreateCategoryHeader extends StatelessWidget {
           textCtr: nameController,
           labelText: 'Название категории',
         ),
-        GestureDetector(
-          onTap: onAddChats,
-          child: Container(
-            padding: const EdgeInsets.all(16),
-            child: Row(
-              children: [
-                Image(
-                  image: AssetImage('assets/images/chat_gradient_icon.png'),
-                  width: 35,
-                  height: 35,
-                ),
-                SizedBox(width: 10),
-                Text(
-                  'Добавить чаты',
-                  style: AppFontStyles.headerMediumStyle,
-                )
-              ],
-            ),
-          ),
-        ),],
+        IconTextButton(
+          imageAssetPath: 'assets/images/chat_gradient_icon.png',
+          onPress: onAddChats,
+          title: 'Добавить чаты',
+        )
+      ],
     );
   }
 }
