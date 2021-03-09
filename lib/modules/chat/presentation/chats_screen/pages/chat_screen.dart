@@ -56,7 +56,7 @@ class _ChatScreenState extends State<ChatScreen> {
               title: ChatHeading(onTap: (){
                 _navigator.push(ChatDetailPage.route(widget.chatEntity.chatId));
               },),
-            actions: [
+              actions: [
               Row(children: [
                 IconButton(icon: Icon(Icons.video_call,color: AppColors.indicatorColor,),onPressed: (){
     
@@ -66,9 +66,9 @@ class _ChatScreenState extends State<ChatScreen> {
                 },),
                 IconButton(icon: Icon(Icons.more_vert_rounded,color: AppColors.indicatorColor,),onPressed: (){
     
-                },)
-              ],)
-            ],),
+                  },)
+                ],)
+              ],),
             backgroundColor: AppColors.pinkBackgroundColor,
             body: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
