@@ -1,84 +1,82 @@
 import 'package:flutter/material.dart';
 import 'package:messenger_mobile/app/appTheme.dart';
-import 'package:messenger_mobile/core/config/auth_config.dart';
-import 'package:messenger_mobile/locator.dart';
+import 'package:messenger_mobile/modules/chat/data/models/message_view_model.dart';
 import 'package:messenger_mobile/modules/chat/domain/entities/message.dart';
 
 class MessageCell extends StatelessWidget {
-  final Message message;
+  final MessageViewModel messageViewModel;
+  final int nextMessageUserID;
+  final int prevMessageUserID;
 
   const MessageCell({
+    @required this.messageViewModel,
+    this.nextMessageUserID,
+    this.prevMessageUserID,
     Key key, 
-    @required this.message
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    
     var w = MediaQuery.of(context).size.width;
-    var isMine = sl<AuthConfig>().user.id == message.user.id;
-    
-    var cellDecoration = BoxDecoration(
-      color: !isMine ? Colors.white : (isMine && message.messageStatus == MessageStatus.sending) ? AppColors.greyColor :   AppColors.messageBlueBackground ,
-      borderRadius: BorderRadius.only(
-        topLeft: Radius.circular(10),
-        bottomLeft: Radius.circular(!isMine ? 0 : 10),
-        bottomRight: Radius.circular(isMine ? 0 : 10),
-        topRight: Radius.circular(10),
-      ),
-      border: Border.all(color: AppColors.indicatorColor)
-    );
     
     return Padding(
       padding: const EdgeInsets.only(top: 10),
       child: Row(
         mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: isMine ? MainAxisAlignment.end : MainAxisAlignment.start,
+        mainAxisAlignment: messageViewModel.isMine ?
+          MainAxisAlignment.end : MainAxisAlignment.start,
         children: [
           LimitedBox(
             maxWidth: w * 0.8,
             child: Container(
-            padding: EdgeInsets.all(8),
-            decoration: cellDecoration,
+              padding: EdgeInsets.all(8),
+              decoration: messageViewModel.getCellDecoration(
+                previousMessageUserID: prevMessageUserID, 
+                nextMessageUserID: nextMessageUserID
+              ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: isMine ?  CrossAxisAlignment.end : CrossAxisAlignment.start,
+                crossAxisAlignment: messageViewModel.isMine ? 
+                  CrossAxisAlignment.end : CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: [
-                      if (!isMine) 
+                      if (!messageViewModel.isMine) 
                         Text(
-                          message.user.name,
+                          messageViewModel.userNameText,
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
                             height: 1.4,
-                            color: message.color,
+                            color: messageViewModel.color,
                           ),
                           textAlign: TextAlign.left,
                         ),
 
-                      if (isMine) Padding(
-                          padding: const EdgeInsets.only(right: 4),
-                          child: Icon(
-                            Icons.check, 
-                            color: message.isRead ? AppColors.successGreenColor : AppColors.greyColor
-                          ),
-                      ),
+                      if (messageViewModel.isMine) 
+                        Padding(
+                          padding: const EdgeInsets.only(right: 8),
+                          child: Image.asset(
+                            messageViewModel.readImageName, width: 20, height: 8
+                          )
+                        ),
 
                       Text(
-                        '10:02',
-                        style: isMine ? AppFontStyles.white12w400 : AppFontStyles.grey12w400, 
+                        messageViewModel.time,
+                        style: messageViewModel.isMine ? 
+                          AppFontStyles.whiteGrey12w400 : AppFontStyles.grey12w400, 
                         textAlign: TextAlign.right
                       )
                     ],
-                    mainAxisSize: isMine ? MainAxisSize.min : MainAxisSize.min,
-                    mainAxisAlignment: !isMine ? MainAxisAlignment.spaceBetween : MainAxisAlignment.spaceBetween,
+                    mainAxisSize:  MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   ),
-                  if (message.text != null) 
+
+                  if (messageViewModel.messageText != null) 
                     Text(
-                      message.text, 
-                      style: !isMine ? AppFontStyles.black14w400 : AppFontStyles.white14w400,
+                      messageViewModel.messageText, 
+                      style: !messageViewModel.isMine ? 
+                        AppFontStyles.black14w400 : AppFontStyles.white14w400,
                       textAlign: TextAlign.left,
                     ),
                 ],
@@ -90,3 +88,4 @@ class MessageCell extends StatelessWidget {
     );
   }
 }
+

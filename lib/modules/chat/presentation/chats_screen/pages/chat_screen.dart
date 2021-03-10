@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger_mobile/app/appTheme.dart';
+import 'package:messenger_mobile/core/widgets/independent/placeholders/load_widget.dart';
 import 'package:messenger_mobile/locator.dart';
 import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
 import 'package:messenger_mobile/modules/chat/data/datasources/chat_datasource.dart';
+import 'package:messenger_mobile/modules/chat/data/models/message_view_model.dart';
 import 'package:messenger_mobile/modules/chat/data/repositories/chat_repository.dart';
+import 'package:messenger_mobile/modules/chat/domain/entities/message.dart';
 import 'package:messenger_mobile/modules/chat/domain/repositories/chat_repository.dart';
 import 'package:messenger_mobile/modules/chat/domain/usecases/get_messages.dart';
 import 'package:messenger_mobile/modules/chat/domain/usecases/send_message.dart';
@@ -73,59 +76,73 @@ class _ChatScreenState extends State<ChatScreen> {
         listener: (context, state) {},
         
         builder: (context, state) {
-          if (state is ChatLoading) {
-            return Scaffold(
-              body: Center(child: CircularProgressIndicator())
-            );
-          } else {
-            return Scaffold(
-              appBar: AppBar(
-                centerTitle: false,
-                titleSpacing: 0.0,
-                title: ChatHeading(
-                  onTap: () {
+          return Scaffold(
+            appBar: AppBar(
+              centerTitle: false,
+              titleSpacing: 0.0,
+              title: ChatHeading(
+                onTap: () {
                   _navigator.push(ChatDetailPage.route(widget.chatEntity.chatId));
-                  }
-                ),
-                actions: [
-                  ChatScreenActions()
-                ],
+                }
               ),
-              backgroundColor: AppColors.pinkBackgroundColor,
-              body: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Expanded(
-                    child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 16),
-                      decoration: BoxDecoration(
-                      image: DecorationImage(image: AssetImage('assets/images/bg-home.png'),
-                        fit: BoxFit.cover),
-                      ),
+              actions: [
+                ChatScreenActions()
+              ],
+            ),
+            backgroundColor: AppColors.pinkBackgroundColor,
+            body: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    decoration: BoxDecoration(
+                    image: DecorationImage(image: AssetImage('assets/images/bg-home.png'),
+                      fit: BoxFit.cover),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 20.0),
                       child: ListView.builder(
                         controller: _chatBloc.scrollController,
-                        itemBuilder: (context, i) {
-                          return state.messages[i].chatActions == null ? 
-                            MessageCell(message: state.messages[i]) : Text('action');
+                        itemBuilder: (context, int index) {
+                          if (state is ChatLoading && getItemsCount(state) - 1 == index) {
+                            return LoadWidget(size: 20);
+                          } else {
+                            Message currentMessage = state.messages[state is ChatLoading ? index - 1 : index];
+                            return currentMessage.chatActions == null ? 
+                              MessageCell(
+                                messageViewModel: MessageViewModel(currentMessage)
+                              ) : Text('action');
+                          }
                         },
                         scrollDirection: Axis.vertical,
-                        itemCount: state.messages.length,
+                        itemCount: getItemsCount(state),
                         reverse: true,
                       ),
                     ),
                   ),
-                  ChatControlPanel(
-                    messageTextController: messageTextController, 
-                    width: width,
-                    height: height
-                  ),
-                ],
-              ),
-            );
-          }
+                ),
+                ChatControlPanel(
+                  messageTextController: messageTextController, 
+                  width: width,
+                  height: height
+                ),
+              ],
+            ),
+          );
         }
       )
     );
+  }
+
+
+  // * * Helpers
+
+  int getItemsCount (ChatState state) {
+    return state is ChatLoading ? 
+      // Нужен +1 индекс чтобы показать загрузку
+      state.messages.length + 1 : 
+        state.messages.length;
   }
 }

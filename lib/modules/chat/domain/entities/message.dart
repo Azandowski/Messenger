@@ -15,14 +15,14 @@ class Message extends Equatable {
   final ChatActions chatActions;
   MessageStatus messageStatus;
   int identificator;
-  final Color color;
+  final int colorId;
   
   Message({
     this.text,
     this.identificator,
     this.dateTime,
     this.user,
-    this.color,
+    this.colorId,
     this.id,
     this.isRead,
     this.chatActions,
@@ -39,7 +39,7 @@ class Message extends Equatable {
     chatActions,
     messageStatus,
     identificator,
-    color,
+    colorId,
   ];
 
    Message copyWith({
@@ -50,13 +50,13 @@ class Message extends Equatable {
      MessageUser user,
      ChatActions chatActions,
      MessageStatus status,
-     Color color,
+     int colorId,
      int identificator,
   }) {
     return Message(
       id: id ?? this.id,
       isRead: isRead ?? this.isRead,
-      color: color ?? this.color,
+      colorId: colorId ?? this.colorId,
       text: text ?? this.text,
       dateTime: dateTime ?? this.dateTime,
       user: user ?? this.user,
