@@ -24,7 +24,7 @@ abstract class ChatDataSource {
   Future<ChatDetailed> getChatDetails (int id);
   Future<PaginatedResult<ContactEntity>> getChatMembers (int id, Pagination pagination);
   Stream<Message> get messages;
-  Future<bool> sendMessage(SendMessageParams params);
+  Future<Message> sendMessage(SendMessageParams params);
 }
 
 class ChatDataSourceImpl implements ChatDataSource {
@@ -38,7 +38,6 @@ class ChatDataSourceImpl implements ChatDataSource {
     @required this.socketService,
   }){
       socketService.echo.channel(SocketChannels.getChatByID(id)).listen('.messages.$id', (updates) {
-         print(updates);
         _controller.add(MessageModel.fromJson(updates['message']));
       });
   }
@@ -91,16 +90,20 @@ class ChatDataSourceImpl implements ChatDataSource {
   }
 
   @override
-  Future<bool> sendMessage(SendMessageParams params) async {
+  Future<Message> sendMessage(SendMessageParams params) async {
     http.Response response = await client.post(
-      Endpoints.chatMembers.buildURL(urlParams: [
+      Endpoints.sendMessages.buildURL(urlParams: [
         params.chatID.toString(),
-      ]),
+      ],queryParameters: {
+        'text': params.text ?? ''
+      }),
       headers: Endpoints.getCurrentUser.getHeaders(token: sl<AuthConfig>().token),
     );
 
     if (response.isSuccess) {
-      return true;
+      Message message = MessageModel.fromJson(json.decode(response.body));
+      message.identificator = params.identificator;
+      return message;
     } else {
       throw ServerFailure(message: ErrorHandler.getErrorMessage(response.body.toString()));
     }

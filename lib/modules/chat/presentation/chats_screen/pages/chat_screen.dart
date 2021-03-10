@@ -5,10 +5,11 @@ import 'package:messenger_mobile/locator.dart';
 import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
 import 'package:messenger_mobile/modules/chat/data/datasources/chat_datasource.dart';
 import 'package:messenger_mobile/modules/chat/data/repositories/chat_repository.dart';
-import 'package:messenger_mobile/modules/chat/domain/entities/message.dart';
+import 'package:messenger_mobile/modules/chat/domain/repositories/chat_repository.dart';
+import 'package:messenger_mobile/modules/chat/domain/usecases/send_message.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chat_details/page/chat_detail_page.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/bloc/chat_bloc.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/chatControlPanel.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/chatControlPanel/chatControlPanel.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/chatHeading.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/message_cell.dart';
 
@@ -34,21 +35,23 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.width;
+    final ChatRepository chatRepository = ChatRepositoryImpl(
+      networkInfo: sl(),
+      chatDataSource: ChatDataSourceImpl(
+        id: widget.chatEntity.chatId,
+        socketService: sl(),
+        client: sl())
+      );
     return BlocProvider(
       lazy: false,
       create: (context) => ChatBloc(
         chatId: widget.chatEntity.chatId,
-        chatRepository: ChatRepositoryImpl(
-          networkInfo: sl(),
-          chatDataSource: ChatDataSourceImpl(
-            id: widget.chatEntity.chatId,
-            socketService: sl(),
-            client: sl())
-          )
+        chatRepository: chatRepository,
+          sendMessage: SendMessage(repository: chatRepository)
         ),
-      child:  BlocConsumer<ChatBloc, List<Message>>(
-        listener: (context, messages) {},
-        builder: (context, messages) {
+      child:  BlocConsumer<ChatBloc, ChatState>(
+        listener: (context, state) {},
+        builder: (context, state) {
           return Scaffold(
             appBar: AppBar(
               centerTitle: false,
@@ -83,11 +86,11 @@ class _ChatScreenState extends State<ChatScreen> {
                     ),
                     child: ListView.builder(
                       itemBuilder: (context, i) {
-                        return messages[i].chatActions == null ? 
-                          MessageCell(message: messages[i]) : Text('action');
+                        return state.messages.reversed.toList()[i].chatActions == null ? 
+                          MessageCell(message: state.messages[i]) : Text('action');
                       },
                       scrollDirection: Axis.vertical,
-                      itemCount: messages.length,
+                      itemCount: state.messages.length,
                       reverse: true,
                     ),
                   ),

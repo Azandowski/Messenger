@@ -1,6 +1,9 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:messenger_mobile/modules/chat/domain/entities/chat_actions.dart';
+import 'package:messenger_mobile/modules/profile/domain/entities/user.dart';
+
+enum MessageStatus {sending, sent,}
 
 class Message extends Equatable {
   final int id;
@@ -9,14 +12,18 @@ class Message extends Equatable {
   final String text;
   final MessageUser user;
   final ChatActions chatActions;
+  MessageStatus messageStatus;
+  int identificator;
   
   Message({
     this.text,
+    this.identificator,
     this.dateTime,
     this.user,
     this.id,
     this.isRead,
-    this.chatActions
+    this.chatActions,
+    this.messageStatus,
   });
 
   @override
@@ -26,7 +33,9 @@ class Message extends Equatable {
     user,
     isRead,
     id, 
-    chatActions
+    chatActions,
+    messageStatus,
+    identificator,
   ];
 
    Message copyWith({
@@ -36,6 +45,8 @@ class Message extends Equatable {
      String text,
      MessageUser user,
      ChatActions chatActions,
+     MessageStatus status,
+     int identificator,
   }) {
     return Message(
       id: id ?? this.id,
@@ -44,11 +55,13 @@ class Message extends Equatable {
       dateTime: dateTime ?? this.dateTime,
       user: user ?? this.user,
       chatActions: chatActions ?? null,
+      messageStatus: messageStatus ?? this.messageStatus,
+      identificator: identificator ?? this.identificator,
     );
   }
 }
 
-class MessageUser extends Equatable {
+class MessageUser extends Equatable{
   final String name;
   final int id;
   final String avatarURL;
@@ -65,6 +78,4 @@ class MessageUser extends Equatable {
 
   @override
   List<Object> get props => [id, name, surname, phone, avatarURL];
-
-
 }

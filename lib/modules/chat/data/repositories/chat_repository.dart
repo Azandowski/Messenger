@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:messenger_mobile/core/services/network/network_info.dart';
 import 'package:messenger_mobile/core/services/network/paginatedResult.dart';
@@ -57,11 +59,13 @@ class ChatRepositoryImpl extends ChatRepository {
   }
 
   @override
-  Future<Either<Failure, bool>> sendMessage(SendMessageParams params) async {
+  Future<Either<Failure, Message>> sendMessage(SendMessageParams params) async {
     try{
-      await chatDataSource.sendMessage(params);
-      return Right(true);
-    } catch (e) {
+      final message = await chatDataSource.sendMessage(params);
+      return Right(message);
+    } on SocketException catch(e){
+      return Left(ServerFailure(message: 'no_internet'));
+    } catch (e){
       return Left(e);
     }
   }

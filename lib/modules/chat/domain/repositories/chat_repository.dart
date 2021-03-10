@@ -12,6 +12,6 @@ import '../../../../core/error/failures.dart';
 abstract class ChatRepository {
   Future<Either<Failure, ChatDetailed>> getChatDetails (int id);
   Future<Either<Failure, PaginatedResult<ContactEntity>>> getChatMembers (int id, Pagination pagination);
-  Future<Either<Failure, bool>> sendMessage(SendMessageParams params);
+  Future<Either<Failure, Message>> sendMessage(SendMessageParams params);
   Stream<Message> message;
 }

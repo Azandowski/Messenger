@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:messenger_mobile/app/appTheme.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chats_screen/bloc/chat_bloc.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/chatControlPanel/panel_bloc.dart';
+import 'package:provider/provider.dart';
 
-class ChatControlPanel extends StatelessWidget {
+class ChatControlPanel extends StatefulWidget {
   const ChatControlPanel({
     Key key,
     @required this.messageTextController,
@@ -12,6 +15,21 @@ class ChatControlPanel extends StatelessWidget {
   final TextEditingController messageTextController;
   final double width;
   final double height;
+
+  @override
+  _ChatControlPanelState createState() => _ChatControlPanelState();
+}
+
+class _ChatControlPanelState extends State<ChatControlPanel> {
+
+  PanelBloc _panelBloc = PanelBloc();
+  ChatBloc _chatBloc;
+  
+  @override
+  void initState() {
+    super.initState();
+    _chatBloc = context.read<ChatBloc>();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,11 +64,12 @@ class ChatControlPanel extends StatelessWidget {
                     ),
                     Expanded(
                       child: TextFormField(
-                      controller: messageTextController,
+                      controller: widget.messageTextController,
+                      onChanged: (String text) => _panelBloc.updateText(text),
                       decoration: InputDecoration(
                           border: InputBorder.none,
                           contentPadding: EdgeInsets.symmetric(
-                          horizontal: width / (360 / 16), vertical: height / (724 / 18)),
+                          horizontal: widget.width / (360 / 16), vertical: widget.height / (724 / 18)),
                           hintText: 'Сообщение',
                           labelStyle: AppFontStyles.blueSmallStyle)),
                     ),
@@ -60,18 +79,33 @@ class ChatControlPanel extends StatelessWidget {
               )
             ),
             SizedBox(width: 5,),
-            ClipOval(
-              child: Container(
-                decoration: BoxDecoration(
-                  gradient: AppGradinets.mainButtonGradient,
-                ),
-                child: IconButton(
-                  icon: Icon(Icons.voice_chat_rounded,color: Colors.white),
-                  onPressed: () {},
-                  splashRadius: 5,
-                  splashColor: Colors.white,
-                )
-              ),
+            StreamBuilder(
+              stream: _panelBloc.textStream,
+              builder: (context, AsyncSnapshot<String> textStream) {
+                return ClipOval(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: AppGradinets.mainButtonGradient,
+                    ),
+                    child: IconButton(
+                      icon: Icon(
+                        textStream.hasError ? Icons.mic : Icons.send,
+                        color: Colors.white),
+                        onPressed: () {
+                          if (!textStream.hasError) {
+                            _panelBloc.clear();
+                            widget.messageTextController.clear();
+                            _chatBloc.add(MessageSend(message: textStream.data));
+                          } else {
+                            //TODO MICRO SEND
+                          }
+                        },
+                        splashRadius: 5,
+                        splashColor: Colors.white,
+                    )
+                  ),
+                );
+              }
             )
           ],
         ),
