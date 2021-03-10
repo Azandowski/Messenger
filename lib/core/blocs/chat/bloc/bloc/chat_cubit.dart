@@ -12,6 +12,7 @@ import '../../../../../modules/chats/domain/usecase/get_chats.dart';
 import '../../../../../modules/chats/domain/usecase/params.dart';
 import '../../../../config/auth_config.dart';
 import '../../../../services/network/paginatedResult.dart';
+import 'package:messenger_mobile/core/utils/list_helper.dart';
 
 part 'chat_state.dart';
 
@@ -52,7 +53,7 @@ class ChatGlobalCubit extends Cubit<ChatState> {
     ));
 
     final response = await getChats(GetChatsParams(
-      lastChatID: isPagination ? this.state.chats?.last?.chatId : null,
+      lastChatID: isPagination ? this.state.chats?.lastItem?.chatId : null,
       token: sl<AuthConfig>().token
     ));
 

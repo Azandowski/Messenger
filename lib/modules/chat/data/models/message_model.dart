@@ -35,7 +35,8 @@ class MessageModel extends Message {
     return MessageModel(
       id: json['id'],
       colorId: json['color'],
-      user: json['from_contact'] != null ? MessageUserModel.fromJson(json['from_contact']) : null,
+      user: json['from_contact'] != null ? 
+        MessageUserModel.fromJson(json['from_contact']) : null,
       text: json['text'],
       isRead: json['is_read'] == 1,
       dateTime: DateTime.parse(json['created_at']),
@@ -43,7 +44,7 @@ class MessageModel extends Message {
     );
   }
 
-  static getColor(int colorId){
+  static getColor(int colorId) {
     switch(colorId){
       case 1:
         return Colors.deepOrange.shade400;

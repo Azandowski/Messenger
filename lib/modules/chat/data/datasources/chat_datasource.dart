@@ -9,6 +9,7 @@ import 'package:messenger_mobile/core/services/network/socket_service.dart';
 import 'package:messenger_mobile/core/utils/error_handler.dart';
 import 'package:messenger_mobile/core/utils/pagination.dart';
 import 'package:messenger_mobile/modules/category/data/models/chat_permission_model.dart';
+import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
 import 'package:messenger_mobile/modules/category/domain/entities/chat_permissions.dart';
 import 'package:messenger_mobile/modules/chat/data/models/chat_detailed_model.dart';
 import 'package:messenger_mobile/modules/chat/data/models/message_model.dart';
@@ -33,6 +34,7 @@ abstract class ChatDataSource {
     Map chatUpdates,
     int id
   });
+  Future<PaginatedResultViaLastItem<Message>> getChatMessages (int lastMessageId);
 }
 
 
@@ -170,6 +172,34 @@ class ChatDataSourceImpl implements ChatDataSource {
 
     if (response.isSuccess) {
       return ChatPermissionModel.fromJson(json.decode(response.body));
+    } else {
+      throw ServerFailure(message: ErrorHandler.getErrorMessage(response.body.toString()));
+    }
+  }
+
+  @override 
+  Future<PaginatedResultViaLastItem<Message>> getChatMessages (int lastMessageId) async {
+    http.Response response = await client.get(
+      Endpoints.getChatMessages.buildURL(
+        urlParams: [
+          '$id'
+        ],
+        queryParameters: {
+          if (lastMessageId != null)
+            'last_message_id': '$lastMessageId'
+        }
+      ),
+      headers: Endpoints.changeChatSettings.getHeaders(token: sl<AuthConfig>().token),
+    );
+
+    if (response.isSuccess) {
+      var responseJSON = json.decode(response.body);
+
+      return PaginatedResultViaLastItem<Message>(
+        data: ((responseJSON['messages'] ?? []) as List).map(
+          (e) => MessageModel.fromJson(e)).toList(),
+        hasReachMax: !responseJSON['hasMoreResults']
+      );
     } else {
       throw ServerFailure(message: ErrorHandler.getErrorMessage(response.body.toString()));
     }

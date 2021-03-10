@@ -53,7 +53,11 @@ class ChatRepositoryImpl extends ChatRepository {
         final response = await chatDataSource.getChatMembers(id, pagination);
         return Right(response);
       } catch (e) {
-        return Left(e);
+        if (e is Failure) {
+          return Left(e);
+        } else {
+          return Left(ServerFailure(message: e.toString()));
+        }
       }
     } else {
       return Left(ConnectionFailure());
@@ -74,7 +78,11 @@ class ChatRepositoryImpl extends ChatRepository {
     } on SocketException catch(e){
       return Left(ServerFailure(message: 'no_internet'));
     } catch (e){
-      return Left(e);
+      if (e is Failure) {
+        return Left(e);
+      } else {
+        return Left(ServerFailure(message: e.toString()));
+      }
     }
   }
   
@@ -100,7 +108,11 @@ class ChatRepositoryImpl extends ChatRepository {
         final response = await chatDataSource.leaveChat(id);
         return Right(NoParams());
       } catch (e) {
-        return Left(e);
+        if (e is Failure) {
+          return Left(e);
+        } else {
+          return Left(ServerFailure(message: e.toString()));
+        }
       }
     } else {
       return Left(ConnectionFailure());
@@ -121,7 +133,29 @@ class ChatRepositoryImpl extends ChatRepository {
         
         return Right(response);
       } catch (e) {
-        return Left(e);
+        if (e is Failure) {
+          return Left(e);
+        } else {
+          return Left(ServerFailure(message: e.toString()));
+        }
+      }
+    } else {
+      return Left(ConnectionFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, PaginatedResultViaLastItem<Message>>> getChatMessages(int lastMessageId) async {
+    if (await networkInfo.isConnected) {
+      try {
+        final response = await chatDataSource.getChatMessages(lastMessageId);
+        return Right(response);
+      } catch (e) {
+        if (e is Failure) {
+          return Left(e);
+        } else {
+          return Left(ServerFailure(message: e.toString()));
+        }
       }
     } else {
       return Left(ConnectionFailure());

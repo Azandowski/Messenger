@@ -31,7 +31,8 @@ enum Endpoints {
   sendMessages,
 
   addMembersToChat,
-  leaveChat
+  leaveChat,
+  getChatMessages
 }
 
 extension EndpointsExtension on Endpoints {
@@ -98,6 +99,8 @@ extension EndpointsExtension on Endpoints {
         return '${Config.baseAPIpath.value}/messenger/chat/leave/${params[0]}';
       case Endpoints.changeChatSettings:
         return '${Config.baseAPIpath.value}/messenger/chat/settings/${params[0]}';
+      case Endpoints.getChatMessages:
+        return '${Config.baseAPIpath.value}/messenger/chat/${params[0]}/get-message';
     }
   }
 

@@ -17,6 +17,7 @@ class MessageCell extends StatelessWidget {
     
     var w = MediaQuery.of(context).size.width;
     var isMine = sl<AuthConfig>().user.id == message.user.id;
+    
     var cellDecoration = BoxDecoration(
       color: !isMine ? Colors.white : (isMine && message.messageStatus == MessageStatus.sending) ? AppColors.greyColor :   AppColors.messageBlueBackground ,
       borderRadius: BorderRadius.only(
