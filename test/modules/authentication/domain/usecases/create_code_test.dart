@@ -10,27 +10,25 @@ class MockAuthenticationRepository extends Mock
 
 void main() {
   CreateCode usecase;
-  AuthenticationRepository mockAuthRepository;
+  MockAuthenticationRepository mockAuthRepository;
 
   setUp(() {
     mockAuthRepository = MockAuthenticationRepository();
     usecase = CreateCode(mockAuthRepository);
   });
 
-  test('should get code when there is a code', () async {
-    final phone = '+77055946560';
-    final CodeEntity codeEntity =
-        CodeEntity(id: 12, phone: phone, attempts: 0);
+  test('should get CodeEntity from repository when given phone number',
+      () async {
+    final phone = '+77777777777';
+    final CodeEntity codeEntity = CodeEntity(id: 12, phone: phone, attempts: 0);
     //arrange
-    when(mockAuthRepository
-            .createCode(PhoneParams(phoneNumber: '+77055946560')))
+    when(mockAuthRepository.createCode(PhoneParams(phoneNumber: phone)))
         .thenAnswer((_) async => Right(codeEntity));
     //act
-    final result = await usecase(PhoneParams(phoneNumber: '+77055946560'));
+    final result = await usecase(PhoneParams(phoneNumber: phone));
     //verify
     expect(result, Right(codeEntity));
-    verify(mockAuthRepository
-        .createCode(PhoneParams(phoneNumber: '+77055946560')));
+    verify(mockAuthRepository.createCode(PhoneParams(phoneNumber: phone)));
     verifyNoMoreInteractions(mockAuthRepository);
   });
 }
