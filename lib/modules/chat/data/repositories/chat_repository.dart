@@ -8,6 +8,7 @@ import 'package:messenger_mobile/core/error/failures.dart';
 import 'package:dartz/dartz.dart';
 import 'package:messenger_mobile/modules/chat/domain/entities/message.dart';
 import 'package:messenger_mobile/modules/chat/domain/repositories/chat_repository.dart';
+import 'package:messenger_mobile/modules/chat/domain/usecases/params.dart';
 import 'package:messenger_mobile/modules/creation_module/domain/entities/contact.dart';
 
 class ChatRepositoryImpl extends ChatRepository {
@@ -53,5 +54,15 @@ class ChatRepositoryImpl extends ChatRepository {
   @override
   Stream<Message> get  message async*{
     yield* chatDataSource.messages;
+  }
+
+  @override
+  Future<Either<Failure, bool>> sendMessage(SendMessageParams params) async {
+    try{
+      await chatDataSource.sendMessage(params);
+      return Right(true);
+    } catch (e) {
+      return Left(e);
+    }
   }
 }

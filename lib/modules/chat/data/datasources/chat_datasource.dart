@@ -13,6 +13,7 @@ import 'package:messenger_mobile/modules/chat/data/models/message_model.dart';
 import 'package:messenger_mobile/modules/chat/domain/entities/chat_detailed.dart';
 import 'package:http/http.dart' as http;
 import 'package:messenger_mobile/core/utils/http_response_extension.dart';
+import 'package:messenger_mobile/modules/chat/domain/usecases/params.dart';
 import 'package:messenger_mobile/modules/creation_module/data/models/contact_model.dart';
 import 'package:messenger_mobile/modules/creation_module/domain/entities/contact.dart';
 import 'package:messenger_mobile/modules/chat/domain/entities/message.dart';
@@ -23,6 +24,7 @@ abstract class ChatDataSource {
   Future<ChatDetailed> getChatDetails (int id);
   Future<PaginatedResult<ContactEntity>> getChatMembers (int id, Pagination pagination);
   Stream<Message> get messages;
+  Future<bool> sendMessage(SendMessageParams params);
 }
 
 class ChatDataSourceImpl implements ChatDataSource {
@@ -86,5 +88,21 @@ class ChatDataSourceImpl implements ChatDataSource {
   @override
   Stream<Message> get messages async* {
     yield* _controller.stream;
+  }
+
+  @override
+  Future<bool> sendMessage(SendMessageParams params) async {
+    http.Response response = await client.post(
+      Endpoints.chatMembers.buildURL(urlParams: [
+        params.chatID.toString(),
+      ]),
+      headers: Endpoints.getCurrentUser.getHeaders(token: sl<AuthConfig>().token),
+    );
+
+    if (response.isSuccess) {
+      return true;
+    } else {
+      throw ServerFailure(message: ErrorHandler.getErrorMessage(response.body.toString()));
+    }
   }
 }

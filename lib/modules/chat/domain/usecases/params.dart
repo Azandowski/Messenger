@@ -10,3 +10,14 @@ class GetChatMembersParams {
     @required this.pagination
   });
 }
+
+class SendMessageParams{
+  final text;
+  final chatID;
+
+  SendMessageParams({
+    @required this.chatID,
+    this.text
+  });
+
+}
