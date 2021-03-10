@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:messenger_mobile/modules/chats/domain/entities/category.dart';
 
 import '../../../../core/blocs/category/bloc/category_bloc.dart';
 import '../../../category/presentation/category_list/category_list.dart';

@@ -18,4 +18,11 @@ class ChatPermissionModel extends ChatPermissions {
       isMediaSendOn: json['admin_media_send'] == 1
     );
   }
+
+  Map toJson () {
+    return {
+      'sound': isSoundOn ? 1 : 0,
+      'admin_media_send': isMediaSendOn ? 1 : 0
+    };
+  }
 }

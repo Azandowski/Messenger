@@ -81,15 +81,6 @@ class _ChatsScreenState extends State<ChatsScreen> {
                   }
                 ),
                 body: Container(
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: state.wallpaperFile != null ? 
-                        FileImage(state.wallpaperFile) : 
-                          AssetImage('assets/images/bg-home.png'),
-                      fit: BoxFit.cover,
-                      colorFilter: ColorFilter.mode(Colors.black87, BlendMode.lighten)
-                    ) 
-                  ),
                   child: ListView.separated(
                     controller: scrollController,
                     itemBuilder: (context, int index) {

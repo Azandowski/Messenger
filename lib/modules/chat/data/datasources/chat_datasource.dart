@@ -8,6 +8,8 @@ import 'package:messenger_mobile/core/services/network/paginatedResult.dart';
 import 'package:messenger_mobile/core/services/network/socket_service.dart';
 import 'package:messenger_mobile/core/utils/error_handler.dart';
 import 'package:messenger_mobile/core/utils/pagination.dart';
+import 'package:messenger_mobile/modules/category/data/models/chat_permission_model.dart';
+import 'package:messenger_mobile/modules/category/domain/entities/chat_permissions.dart';
 import 'package:messenger_mobile/modules/chat/data/models/chat_detailed_model.dart';
 import 'package:messenger_mobile/modules/chat/data/models/message_model.dart';
 import 'package:messenger_mobile/modules/chat/domain/entities/chat_detailed.dart';
@@ -22,8 +24,15 @@ import '../../../../locator.dart';
 abstract class ChatDataSource {
   Future<ChatDetailed> getChatDetails (int id);
   Future<PaginatedResult<ContactEntity>> getChatMembers (int id, Pagination pagination);
+  Future<ChatDetailed> addMembers (int id, List<int> userIDs);
   Stream<Message> get messages;
+  Future<void> leaveChat (int id);
+  Future<ChatPermissions> updateChatSettings ({
+    Map chatUpdates,
+    int id
+  });
 }
+
 
 class ChatDataSourceImpl implements ChatDataSource {
   
@@ -34,8 +43,8 @@ class ChatDataSourceImpl implements ChatDataSource {
     @required this.id,
     @required this.client,
     @required this.socketService,
-  }){
-      socketService.echo.channel(SocketChannels.getChatByID(id)).listen('.messages.$id', (updates) => _controller.add(MessageModel.fromJson(updates['message'])));
+  }) {
+    socketService.echo.channel(SocketChannels.getChatByID(id)).listen('.messages.$id', (updates) => _controller.add(MessageModel.fromJson(updates['message'])));
   }
 
   @override
@@ -78,10 +87,64 @@ class ChatDataSourceImpl implements ChatDataSource {
     }
   }
 
+  @override 
   final StreamController _controller = StreamController<Message>();
 
   @override
   Stream<Message> get messages async* {
     yield* _controller.stream;
+  }
+
+  @override
+  Future<ChatDetailed> addMembers(int id, List<int> userIDs) async {
+    http.Response response = await client.post(
+      Endpoints.addMembersToChat.buildURL(urlParams: [
+        '$id'
+      ]),
+      headers: Endpoints.addMembersToChat.getHeaders(token: sl<AuthConfig>().token),
+      body: json.encode({
+        'contact': userIDs.join(',')
+      })
+    );
+
+    if (response.isSuccess) {
+      return ChatDetailedModel.fromJson(json.decode(response.body));
+    } else {
+      throw ServerFailure(message: ErrorHandler.getErrorMessage(response.body.toString()));
+    }
+  }
+
+  @override
+  Future<void> leaveChat(int id) async {
+    http.Response response = await client.post(
+      Endpoints.leaveChat.buildURL(urlParams: [
+        '$id'
+      ]),
+      headers: Endpoints.addMembersToChat.getHeaders(token: sl<AuthConfig>().token),
+    );
+
+    if (!response.isSuccess) {
+      throw ServerFailure(message: ErrorHandler.getErrorMessage(response.body.toString()));
+    } 
+  }
+
+  @override
+  Future<ChatPermissions> updateChatSettings({
+    @required Map chatUpdates, 
+    @required int id
+  }) async {
+    http.Response response = await client.post(
+      Endpoints.changeChatSettings.buildURL(urlParams: [
+        '$id'
+      ]),
+      headers: Endpoints.changeChatSettings.getHeaders(token: sl<AuthConfig>().token),
+      body: json.encode(chatUpdates)
+    );
+
+    if (response.isSuccess) {
+      return ChatPermissionModel.fromJson(json.decode(response.body));
+    } else {
+      throw ServerFailure(message: ErrorHandler.getErrorMessage(response.body.toString()));
+    }
   }
 }

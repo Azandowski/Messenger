@@ -2,7 +2,7 @@ part of 'chat_details_cubit.dart';
 
 abstract class ChatDetailsState extends Equatable {
   final ChatDetailed chatDetailed;
-  
+
   const ChatDetailsState({
     @required this.chatDetailed
   });
@@ -20,6 +20,28 @@ class ChatDetailsLoading extends ChatDetailsState {
   @override
   ChatDetailsState copyWith({ChatDetailed chatDetailed}) {
     return ChatDetailsLoading();
+  }
+}
+
+class ChatDetailsLeave extends ChatDetailsState {
+  final  ChatDetailed chatDetailed;
+
+  ChatDetailsLeave({
+    @required this.chatDetailed
+  }) : super(chatDetailed: chatDetailed);
+
+  @override
+  List<Object> get props => [
+    chatDetailed
+  ];
+
+  @override
+  ChatDetailsState copyWith({
+    ChatDetailed chatDetailed
+  }) {
+    return ChatDetailsLeave(
+      chatDetailed: chatDetailed ?? this.chatDetailed
+    );
   }
 }
 
@@ -71,5 +93,27 @@ class ChatDetailsError extends ChatDetailsState {
   }
 }
 
+
+class ChatDetailsProccessing extends ChatDetailsState {
+  final ChatDetailed chatDetailed;
+
+  ChatDetailsProccessing({
+    @required this.chatDetailed
+  }) : super(chatDetailed: chatDetailed);
+
+  @override
+  List<Object> get props => [
+    chatDetailed, 
+  ];
+
+  @override
+  ChatDetailsState copyWith({
+    ChatDetailed chatDetailed
+  }) {
+    return ChatDetailsProccessing(
+      chatDetailed: chatDetailed ?? this.chatDetailed
+    );
+  }
+}
 
 
