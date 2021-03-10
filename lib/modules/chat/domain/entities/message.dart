@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:messenger_mobile/modules/chat/domain/entities/chat_actions.dart';
 import 'package:messenger_mobile/modules/profile/domain/entities/user.dart';
 
@@ -14,12 +15,14 @@ class Message extends Equatable {
   final ChatActions chatActions;
   MessageStatus messageStatus;
   int identificator;
+  final Color color;
   
   Message({
     this.text,
     this.identificator,
     this.dateTime,
     this.user,
+    this.color,
     this.id,
     this.isRead,
     this.chatActions,
@@ -36,6 +39,7 @@ class Message extends Equatable {
     chatActions,
     messageStatus,
     identificator,
+    color,
   ];
 
    Message copyWith({
@@ -46,11 +50,13 @@ class Message extends Equatable {
      MessageUser user,
      ChatActions chatActions,
      MessageStatus status,
+     Color color,
      int identificator,
   }) {
     return Message(
       id: id ?? this.id,
       isRead: isRead ?? this.isRead,
+      color: color ?? this.color,
       text: text ?? this.text,
       dateTime: dateTime ?? this.dateTime,
       user: user ?? this.user,

@@ -14,6 +14,7 @@ class MessageCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
     var w = MediaQuery.of(context).size.width;
     var isMine = sl<AuthConfig>().user.id == message.user.id;
     var cellDecoration = BoxDecoration(
@@ -51,7 +52,7 @@ class MessageCell extends StatelessWidget {
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
                             height: 1.4,
-                            color: Colors.blue,
+                            color: message.color,
                           ),
                           textAlign: TextAlign.left,
                         ),
