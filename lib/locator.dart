@@ -93,8 +93,6 @@ Future<void> init() async {
   sl.registerLazySingleton(() => SaveToken(sl()));
   sl.registerLazySingleton(() => GetChats(sl()));
 
-  sl.registerLazySingleton(() => GetChatDetails(repository: sl()));
-
   // Repository
 
   sl.registerLazySingleton<AuthenticationRepository>(
@@ -127,13 +125,6 @@ Future<void> init() async {
 
   sl.registerLazySingleton<ChatsDataSource>(
       () => ChatsDataSourceImpl(client: sl(), socketService: sl()));
-
-  sl.registerLazySingleton<ChatRepository>(
-    () => ChatRepositoryImpl(
-      chatDataSource: sl(),
-      networkInfo: sl()
-    )
-  );
 
   sl.registerLazySingleton<SocketService>(
     () =>  SocketService(

@@ -82,7 +82,7 @@ class ContactBloc extends Bloc<ContactEvent, ContactState> {
         return state.copyWith(
           status: ContactStatus.success,
           contacts: response.data,
-          hasReachedMax: response.paginationData.hasNextPage,
+          hasReachedMax: !response.paginationData.hasNextPage,
           maxTotal: response.paginationData.total
         );
       } else {
@@ -95,7 +95,7 @@ class ContactBloc extends Bloc<ContactEvent, ContactState> {
           return state.copyWith(
             status: ContactStatus.success,
             contacts: List.of(state.contacts)..addAll(response.data),
-            hasReachedMax: response.paginationData.hasNextPage
+            hasReachedMax: !response.paginationData.hasNextPage
           );
         }
       }

@@ -9,7 +9,6 @@ import '../../../../core/services/network/network_info.dart';
 import '../../../../core/utils/pagination.dart';
 import '../../domain/repositories/creation_module_repository.dart';
 import '../datasources/creation_module_datasource.dart';
-import '../models/contact_response.dart';
 
 class CreationModuleRepositoryImpl implements CreationModuleRepository {
   final NetworkInfo networkInfo; 

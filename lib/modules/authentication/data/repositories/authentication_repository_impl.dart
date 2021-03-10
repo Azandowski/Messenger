@@ -35,7 +35,6 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
     @required this.localDataSource,
     @required this.getCategories,
   }) {
-    // localDataSource.deleteToken();
     initToken();
   }
 
@@ -47,10 +46,12 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
       sl<AuthConfig>().token = token;
 
       print(token);  
+      // print(sl<AuthConfig>().user.id);
 
       await getCurrentUser(token);
 
       getCategories(GetCategoriesParams(token: token));
+
     } on StorageFailure {
       params.add(AuthParams(null, null));
     }

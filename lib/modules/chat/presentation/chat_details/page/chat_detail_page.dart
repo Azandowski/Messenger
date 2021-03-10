@@ -29,7 +29,9 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => ChatDetailsCubit(
-        getChatDetails: sl<GetChatDetails>()
+        getChatDetails: GetChatDetails(
+          
+        )
       ),
       child: Scaffold(
         body: ChatDetailScreen(id: widget.id,),
