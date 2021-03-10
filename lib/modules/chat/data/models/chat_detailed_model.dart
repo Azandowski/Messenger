@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:messenger_mobile/modules/category/data/models/chat_entity_model.dart';
 import 'package:messenger_mobile/modules/category/data/models/chat_permission_model.dart';
 import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
+import 'package:messenger_mobile/modules/category/domain/entities/chat_permissions.dart';
 import 'package:messenger_mobile/modules/chat/domain/entities/chat_detailed.dart';
 import 'package:messenger_mobile/modules/creation_module/data/models/contact_model.dart';
 import 'package:messenger_mobile/modules/creation_module/domain/entities/contact.dart';
@@ -34,7 +35,8 @@ class ChatDetailedModel extends ChatDetailed {
       membersCount: json['count_member'],
       members: ((json['members'] ?? []) as List).map(
         (e) => ContactModel.fromJson(e)
-      ).toList()
+      ).toList(),
+      settings: ChatPermissionModel.fromJson(json['settings'])
     );
   }
 }

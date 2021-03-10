@@ -12,14 +12,14 @@ class CategoriesSection extends StatelessWidget {
   final Function(int) onItemSelect;
   final bool isLoading;
 
-  const CategoriesSection(
-      {@required this.categories,
+  const CategoriesSection({
+      @required this.categories,
       @required this.currentSelectedItemId,
       @required this.onNextClick,
       @required this.isLoading,
       @required this.onItemSelect,
-      Key key})
-      : super(key: key);
+      Key key
+    }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -45,9 +45,9 @@ class CategoriesSection extends StatelessWidget {
             CategoryShimmerItems()
           else
             CategoryItemsScroll(
-                categories: categories,
-                currentSelectedItemId: currentSelectedItemId,
-                onItemSelect: onItemSelect)
+              categories: categories,
+              currentSelectedItemId: currentSelectedItemId,
+              onItemSelect: onItemSelect)
         ],
       ),
     );
@@ -72,18 +72,33 @@ class CategoryItemsScroll extends StatelessWidget {
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Row(
-          children: categories
+          children: [
+            CategoryItem(
+              isAvatarFromAssets: true,
+              isSelected: currentSelectedItemId == 0,
+              entity: CategoryEntity(
+                id: 0, totalChats: 0,
+                avatar: 'assets/images/logo.png',
+                name: 'Все'
+              ),
+              onSelect: () {
+                onItemSelect(0);
+              }
+            ),
+            SizedBox(width: 20),
+            ...categories
               .map((e) => Padding(
-                    padding: const EdgeInsets.only(right: 20),
-                    child: CategoryItem(
-                      entity: e,
-                      isSelected: currentSelectedItemId == e.id,
-                      onSelect: () {
-                        onItemSelect(e.id);
-                      },
-                    ),
-                  ))
-              .toList(),
+                padding: const EdgeInsets.only(right: 20),
+                child: CategoryItem(
+                  entity: e,
+                  isSelected: currentSelectedItemId == e.id,
+                  onSelect: () {
+                    onItemSelect(e.id);
+                  },
+                ),
+              ))
+            .toList(),
+          ]
         ),
       ),
     );

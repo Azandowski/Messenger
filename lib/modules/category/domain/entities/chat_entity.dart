@@ -41,15 +41,18 @@ class ChatEntity extends Equatable {
     description
   ];
 
-  ChatEntity clone() {
+  ChatEntity clone({
+    ChatPermissions permissions
+  }) {
     return ChatEntity(
       chatId: this.chatId,
       title: this.title,
       chatCategory: this.chatCategory,
       imageUrl: this.imageUrl,
       date: this.date,
-      permissions: ChatPermissions(
-        isSoundOn: this.permissions.isSoundOn
+      permissions: permissions ?? ChatPermissions(
+        isSoundOn: this.permissions.isSoundOn,
+        isMediaSendOn: this.permissions.isMediaSendOn
       ),
       lastMessage: this.lastMessage,
       unreadCount: this.unreadCount,

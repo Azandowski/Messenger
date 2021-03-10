@@ -8,11 +8,13 @@ class CategoryItem extends StatelessWidget {
   final CategoryEntity entity;
   bool isSelected;
   final Function onSelect;
+  final bool isAvatarFromAssets;
 
   CategoryItem({
     @required this.entity,
     @required this.onSelect,
     this.isSelected = false,
+    this.isAvatarFromAssets = false,
     Key key,
   }) : super(key: key);
 
@@ -28,7 +30,7 @@ class CategoryItem extends StatelessWidget {
             AvatarImage(
               borderRadius: BorderRadius.circular(15),
               path: entity.avatar,
-              isFromAsset: false,
+              isFromAsset: isAvatarFromAssets,
               width: 80,
               height: 80,
             ),

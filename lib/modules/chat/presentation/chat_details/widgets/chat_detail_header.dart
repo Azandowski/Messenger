@@ -82,7 +82,7 @@ class ChatDetailHeader extends StatelessWidget {
                   ),
                   Divider(),
                   Text(
-                    chatDetailed.chat.description,
+                    chatDetailed.chat.description ?? '',
                     overflow: TextOverflow.ellipsis,
                     maxLines: 2,
                     textAlign: TextAlign.left,

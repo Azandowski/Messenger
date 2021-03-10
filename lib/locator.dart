@@ -93,7 +93,6 @@ Future<void> init() async {
   sl.registerLazySingleton(() => SaveToken(sl()));
   sl.registerLazySingleton(() => GetChats(sl()));
 
-  sl.registerLazySingleton(() => GetChatDetails(repository: sl()));
 
   // Repository
 
@@ -128,13 +127,6 @@ Future<void> init() async {
   sl.registerLazySingleton<ChatsDataSource>(
       () => ChatsDataSourceImpl(client: sl(), socketService: sl()));
 
-  sl.registerLazySingleton<ChatRepository>(
-    () => ChatRepositoryImpl(
-      chatDataSource: sl(),
-      networkInfo: sl()
-    )
-  );
-
   sl.registerLazySingleton<SocketService>(
     () =>  SocketService(
       authConfig: sl()
@@ -156,7 +148,6 @@ Future<void> init() async {
   sl.registerLazySingleton<ChatGroupRemoteDataSource>(
       () => ChatGroupRemoteDataSourceImpl(client: sl(),multipartRequest: http.MultipartRequest('POST', Endpoints.createGroupChat.buildURL())));
 
-  
   // CreateCategory
 
   //Bloc 

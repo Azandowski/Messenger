@@ -84,7 +84,7 @@ class AuthenticationLocalDataSourceImpl implements AuthenticationLocalDataSource
   Future<List<Map>> getDeviceContacts() async{
     Iterable<Contact> contacts = await ContactsService.getContacts(withThumbnails: false);
     
-    var items =  (contacts ?? []).map((e) {
+    var items =  (contacts ?? []).map((e) {      
       Map object = e.toMap();
       
       ['emails', 'postalAddresses'].forEach((key) { 
@@ -111,12 +111,12 @@ class AuthenticationLocalDataSourceImpl implements AuthenticationLocalDataSource
 extension on Contact{
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-      data['middleName'] = middleName;
-      data['displayName'] = displayName;
-      if(this.phones != null) {
-        data["phones"] =  this.phones.map((e) => e.toJson()).toList();
-      }
-      return data;
+    data['middleName'] = middleName;
+    data['displayName'] = displayName;
+    if (this.phones != null) {
+      data["phones"] =  this.phones.map((e) => e.toJson()).toList();
+    }
+    return data;
   }
 }
 
