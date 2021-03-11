@@ -10,6 +10,7 @@ import '../../../../domain/entities/code_entity.dart';
 import '../../../widgets/pin_field.dart';
 import '../../type_phone_page/cubit/typephone_cubit.dart';
 import '../cubit/cubit/typecode_cubit.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class TypeCodePage extends StatefulWidget {
   const TypeCodePage({Key key, @required this.codeEntity}) : super(key: key);
@@ -72,7 +73,7 @@ class _TypeCodePageState extends State<TypeCodePage> {
             Scaffold.of(context)
               ..hideCurrentSnackBar()
               ..showSnackBar(
-                SnackBar(content: Text('TOOOOOOOP')),
+                SnackBar(content: Text('welcome'.tr())),
               );
           }
         },
@@ -82,10 +83,9 @@ class _TypeCodePageState extends State<TypeCodePage> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text('Введите полученный код',
-                    style: AppFontStyles.headingBlackStyle),
+                Text('enterCode'.tr(), style: AppFontStyles.headingBlackStyle),
                 SizedBox(height: 8),
-                Text('Код отправлен на ${widget.codeEntity.phone}',
+                Text('codeSentTo'.tr() + ' ${widget.codeEntity.phone}',
                     style: AppFontStyles.placeholderStyle),
                 SizedBox(height: 20),
                 PinField(
@@ -103,7 +103,9 @@ class _TypeCodePageState extends State<TypeCodePage> {
                 ),
                 Center(
                     child: timer > 0
-                        ? Text('Получить код повторно через: $timer сек',
+                        ? Text(
+                            'receiveCodeAgainAnnounce'
+                                .tr(args: [timer.toString()]),
                             style: AppFontStyles.placeholderStyle)
                         : GestureDetector(
                             onTap: () {
@@ -114,14 +116,14 @@ class _TypeCodePageState extends State<TypeCodePage> {
                                 _pinPutController.clear();
                               });
                             },
-                            child: Text('Получить код повторно',
+                            child: Text('receiveCodeAgain'.tr(),
                                 style: AppFontStyles.placeholderStyle),
                           )),
                 SizedBox(
                   height: height * 0.1,
                 ),
                 ActionButton(
-                  text: 'Подтвердить',
+                  text: 'confirm'.tr(),
                   isLoading: state is SendingCode,
                   onTap: () {
                     if (_pinPutController.value.text != null &&
@@ -135,7 +137,7 @@ class _TypeCodePageState extends State<TypeCodePage> {
                       Scaffold.of(context)
                         ..hideCurrentSnackBar()
                         ..showSnackBar(
-                          SnackBar(content: Text('Type Valid Code')),
+                          SnackBar(content: Text('typeValidCode'.tr())),
                         );
                     }
                   },

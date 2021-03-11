@@ -7,12 +7,11 @@ import '../bloc/cubit/chats_cubit_cubit.dart';
 import 'category_items.dart';
 
 class ChatScreenCategoriesView extends StatelessWidget {
-  
   final ChatsCubitState chatsState;
 
   const ChatScreenCategoriesView({
     @required this.chatsState,
-    Key key, 
+    Key key,
   }) : super(key: key);
 
   @override
@@ -25,7 +24,7 @@ class ChatScreenCategoriesView extends StatelessWidget {
         return CategoriesSection(
           isLoading: categoryState is CategoryEmpty,
           categories: categoryState.categoryList,
-          currentSelectedItemId: chatsState.currentTabIndex, 
+          currentSelectedItemId: chatsState.currentTabIndex,
           onNextClick: () {
             Navigator.pushNamed(context, CategoryList.id);
           },

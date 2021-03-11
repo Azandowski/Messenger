@@ -35,7 +35,7 @@ class _ChatsScreenState extends State<ChatsScreen> {
 
   @override
   void initState() {
-    language = sl<SharedPreferences>().getString('language') ?? 'English';
+    language = sl<SharedPreferences>().getString('language') ?? 'Русский';
     cubit = sl<ChatsCubit>();
     context.read<ChatGlobalCubit>().loadChats(isPagination: false);
     scrollController.addListener(() {
@@ -185,24 +185,21 @@ class _ChatsScreenState extends State<ChatsScreen> {
             //await sl<SharedPreferences>().setString('language', newLanguage);
             setState(() => language = newLanguage);
           },
-          items: <String>['English', 'Русский', 'Kazakh']
+          items: <String>['English', 'Русский', 'Қазақ']
               .map<DropdownMenuItem<String>>(
                 (String value) => DropdownMenuItem(
                   child: Text(value),
                   value: value,
                   onTap: () async {
                     if (value == 'English') {
-                      EasyLocalization.of(context)
-                          .setLocale(Locale('en', 'US'));
-                      ;
-                    } else if (value == 'Kazakh') {
-                      EasyLocalization.of(context)
-                          .setLocale(Locale('kk', 'KZ'));
-                      ;
+                      EasyLocalization.of(context).locale =
+                          (Locale('en', 'US'));
+                    } else if (value == 'Қазақ') {
+                      EasyLocalization.of(context).locale =
+                          (Locale('kk', 'KZ'));
                     } else {
-                      EasyLocalization.of(context)
-                          .setLocale(Locale('ru', 'RU'));
-                      ;
+                      EasyLocalization.of(context).locale =
+                          (Locale('ru', 'RU'));
                     }
                   },
                 ),

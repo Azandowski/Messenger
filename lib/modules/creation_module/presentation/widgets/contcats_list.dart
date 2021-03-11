@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger_mobile/core/utils/paginated_scroll_controller.dart';
 
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../core/widgets/independent/small_widgets/cell_skeleton_item.dart';
 import '../../../../core/widgets/independent/small_widgets/chat_count_view.dart';
 import '../../../groupChat/presentation/create_group/create_group_page.dart';
@@ -18,7 +19,6 @@ import 'package:messenger_mobile/modules/creation_module/presentation/widgets/ac
 import 'package:messenger_mobile/modules/creation_module/presentation/widgets/contact_cell.dart';
 
 class ContactsList extends StatefulWidget {
-  
   @override
   _ContactsListState createState() => _ContactsListState();
 }
@@ -40,8 +40,9 @@ class _ContactsListState extends State<ContactsList> {
   Widget build(BuildContext context) {
     return BlocConsumer<ContactBloc, ContactState>(
       listener: (context, state) {
-        if(state.status == ContactStatus.failure){
-          Scaffold.of(context).showSnackBar(SnackBar(content: Text('Could not handle contacts')));
+        if (state.status == ContactStatus.failure) {
+          Scaffold.of(context).showSnackBar(
+              SnackBar(content: Text('Could not handle contacts')));
         }
       },
       builder: (_, state) {
@@ -60,26 +61,30 @@ class _ContactsListState extends State<ContactsList> {
                 );
               } else if (index == 1) {
                 return CellHeaderView(
-                  title: 'Ваши контакты: ${state.contacts.length}'
-                );
+                    title: 'yourContacts'
+                        .tr(args: [state.contacts.length.toString()]));
               } else {
-                return index >= state.contacts.length + 2 ? 
-                  CellShimmerItem(circleSize: 35,) : 
-                    ContactCell(contactItem: state.contacts[index - 2]);
+                return index >= state.contacts.length + 2
+                    ? CellShimmerItem(
+                        circleSize: 35,
+                      )
+                    : ContactCell(contactItem: state.contacts[index - 2]);
               }
-            }, 
-            separatorBuilder: (context, int index) => _buildSeparationFor(index: index), 
-            itemCount: state.status != ContactStatus.loading ? 
-              state.contacts.length + 2 : state.contacts.length + 6,
+            },
+            separatorBuilder: (context, int index) =>
+                _buildSeparationFor(index: index),
+            itemCount: state.status != ContactStatus.loading
+                ? state.contacts.length + 2
+                : state.contacts.length + 6,
           ),
         );
       },
     );
   }
-  
-    // * * UI Helpers
 
-  Widget _buildSeparationFor({ @required int index }) {
+  // * * UI Helpers
+
+  Widget _buildSeparationFor({@required int index}) {
     if (index > 1) {
       return Divider();
     } else {
@@ -90,10 +95,8 @@ class _ContactsListState extends State<ContactsList> {
   // * * Actions
 
   Future<void> actionProcess(
-    CreationActions action, 
-    BuildContext context
-  ) async {
-    switch (action){
+      CreationActions action, BuildContext context) async {
+    switch (action) {
       case CreationActions.createGroup:
         Navigator.pushNamed(context, CreateGroupPage.id);
         break;
@@ -109,8 +112,8 @@ class _ContactsListState extends State<ContactsList> {
       case CreationActions.inviteFriends:
         return await FlutterShare.share(
           title: 'AIO Messenger',
-          text: 'Хэй, поскорее скачай мессенджер AIO!',
-          linkUrl: 'https://messengeraio.page.link/invite'
+          text: 'downloadAIO'.tr(),
+          linkUrl: 'https://messengeraio.page.link/invite',
         );
         break;
     }

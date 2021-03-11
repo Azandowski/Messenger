@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../app/appTheme.dart';
 import '../../../../core/blocs/category/bloc/category_bloc.dart';
 import '../../../../core/widgets/independent/buttons/bottom_action_button.dart';
@@ -16,18 +17,18 @@ import 'widgets/category_cell.dart';
 import 'widgets/category_list_widget.dart';
 
 class CategoryList extends StatefulWidget {
-
   static var id = 'categorylist';
 
-  static Route route({ isMoveChat = false }) {
-    return MaterialPageRoute<void>(builder: (_) => CategoryList(isMoveChat: isMoveChat,));
+  static Route route({isMoveChat = false}) {
+    return MaterialPageRoute<void>(
+        builder: (_) => CategoryList(
+              isMoveChat: isMoveChat,
+            ));
   }
 
   final bool isMoveChat;
 
-  CategoryList({
-    this.isMoveChat = false
-  });
+  CategoryList({this.isMoveChat = false});
 
   @override
   _CategoryListState createState() => _CategoryListState();
@@ -43,12 +44,13 @@ class _CategoryListState extends State<CategoryList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          widget.isMoveChat ? 'Переместить чат' : 'Категории чатов'
-        ),
+        title:
+            Text(widget.isMoveChat ? 'moveChat'.tr() : 'chatCategories'.tr()),
         actions: [
           IconButton(
-            icon: Icon(Icons.add,),
+            icon: Icon(
+              Icons.add,
+            ),
             onPressed: () {
               Navigator.pushNamed(context, CreateCategoryScreen.id);
             },
@@ -60,11 +62,15 @@ class _CategoryListState extends State<CategoryList> {
         listener: (context, state) {
           if (state is CategoriesUpdating) {
             Scaffold.of(context).hideCurrentSnackBar();
-            Scaffold.of(context).showSnackBar(SnackBar(content: LinearProgressIndicator(), duration: Duration(days: 2),));
+            Scaffold.of(context).showSnackBar(SnackBar(
+              content: LinearProgressIndicator(),
+              duration: Duration(days: 2),
+            ));
           } else if (state is CategoriesErrorHappened) {
             Scaffold.of(context).hideCurrentSnackBar();
-            Scaffold.of(context).showSnackBar(SnackBar(content: Text(state.message)));
-          } else if (state is CategoryLoaded){
+            Scaffold.of(context)
+                .showSnackBar(SnackBar(content: Text(state.message)));
+          } else if (state is CategoryLoaded) {
             Scaffold.of(context).hideCurrentSnackBar();
           }
         },
@@ -78,37 +84,38 @@ class _CategoryListState extends State<CategoryList> {
                     padding: EdgeInsets.symmetric(horizontal: 16, vertical: 15),
                     color: Colors.white,
                     child: Text(
-                      widget.isMoveChat ? 'Выберите категорию для переноса' :
-                        'Вы можете создавать свои категории с нужными чатами, для быстрого переключения между ними.',
+                      widget.isMoveChat
+                          ? 'selectCategoryToMove'.tr()
+                          : 'createCategoriesWithChatsInfo'.tr(),
                       style: AppFontStyles.placeholderStyle,
                       textAlign: TextAlign.center,
                     ),
                   ),
-                  SizedBox(height: 15,),
+                  SizedBox(
+                    height: 15,
+                  ),
                   returnStateWidget(state, context),
                 ],
               ),
               if (_didReorderItems)
                 BottomActionButtonContainer(
-                  title: 'Сохранить',
-                  onTap: () { 
-                    var updates = this.getCategoriesDifferences(
-                      oldIDS: state.categoryList.map((e) => e.id).toList(), 
-                      newIDS: reorderedCategories.map((e) => e.id).toList()
-                    );
+                    title: 'save'.tr(),
+                    onTap: () {
+                      var updates = this.getCategoriesDifferences(
+                          oldIDS: state.categoryList.map((e) => e.id).toList(),
+                          newIDS:
+                              reorderedCategories.map((e) => e.id).toList());
 
-                    context.read<CategoryBloc>().add(CategoriesReordered(
-                      categoryUpdated: updates
-                    ));
-                  }
-                )
+                      context
+                          .read<CategoryBloc>()
+                          .add(CategoriesReordered(categoryUpdated: updates));
+                    })
             ],
           );
         },
       ),
     );
   }
-
 
   /// Body of Categories List
   Widget returnStateWidget(state, context) {
@@ -119,43 +126,48 @@ class _CategoryListState extends State<CategoryList> {
 
     if (state is CategoryEmpty) {
       return Expanded(
-        child: ListView.builder(
-          itemBuilder: (context, int index) {
-            return CellShimmerItem();
-          },
-          itemCount: 10,
-        )
-      );
-    } else return CategoriesList(
+          child: ListView.builder(
+        itemBuilder: (context, int index) {
+          return CellShimmerItem();
+        },
+        itemCount: 10,
+      ));
+    } else
+      return CategoriesList(
         items: reorderedCategories,
-        cellType: widget.isMoveChat ? CategoryCellType.empty : CategoryCellType.withOptions,
-        onSelectedOption: (CategoryCellActionType action, CategoryEntity entity) {
+        cellType: widget.isMoveChat
+            ? CategoryCellType.empty
+            : CategoryCellType.withOptions,
+        onSelectedOption:
+            (CategoryCellActionType action, CategoryEntity entity) {
           if (action == CategoryCellActionType.delete) {
-           showDialog(context: context,builder: (_){
-             return DialogsView( 
-                title: 'Убрать чат из категории?',
-                description: 'Чаты внутри категории не будут удалены.',
-                actionButton: [
-                  DialogActionButton(
-                  title: 'Отмена', 
-                  buttonStyle: DialogActionButtonStyle.cancel,
-                  onPress: () {
-                    Navigator.pop(context);
-                  }),
-                 DialogActionButton(
-                  title: 'Удалить', 
-                  buttonStyle: DialogActionButtonStyle.dangerous,
-                  onPress: () {
-                    Navigator.pop(context);
-                    BlocProvider.of<CategoryBloc>(context).add(CategoryRemoving(categoryId: entity.id));                    
-                  }),
-               ],);
-           }); 
+            showDialog(
+                context: context,
+                builder: (_) {
+                  return DialogsView(
+                    title: 'removeChatFromCategory'.tr(),
+                    description: 'chatInCategoryWontDelete'.tr(),
+                    actionButton: [
+                      DialogActionButton(
+                          title: 'cancel'.tr(),
+                          buttonStyle: DialogActionButtonStyle.cancel,
+                          onPress: () {
+                            Navigator.pop(context);
+                          }),
+                      DialogActionButton(
+                          title: 'delete'.tr(),
+                          buttonStyle: DialogActionButtonStyle.dangerous,
+                          onPress: () {
+                            Navigator.pop(context);
+                            BlocProvider.of<CategoryBloc>(context)
+                                .add(CategoryRemoving(categoryId: entity.id));
+                          }),
+                    ],
+                  );
+                });
           } else {
             _navigator.push(CreateCategoryScreen.route(
-              mode: CreateCategoryScreenMode.edit,
-              category: entity
-            ));
+                mode: CreateCategoryScreenMode.edit, category: entity));
           }
         },
         onSelect: (item) {
@@ -176,30 +188,26 @@ class _CategoryListState extends State<CategoryList> {
   // BottomBar
 }
 
-
 extension on _CategoryListState {
   /// Returns Map of updated categories for the Backend
   /// Example: { orders[2]: 0 }
   /// So [orders[id]]'s value is a current order
   /// ! Order starts from 1 not zero
-  Map<String, int> getCategoriesDifferences ({
-    @required List oldIDS, 
-    @required List newIDS
-  }) {
+  Map<String, int> getCategoriesDifferences(
+      {@required List oldIDS, @required List newIDS}) {
     List arr2 = newIDS;
     Map<String, int> differences = {};
 
     oldIDS.asMap().forEach((index, item) {
       if (item != arr2[index]) {
         var temp = arr2[index];
-          
+
         arr2[index] = item;
         arr2[arr2.lastIndexOf(item)] = temp;
         differences['$temp'] = index + 1;
       }
     });
-    
+
     return differences;
   }
 }
-

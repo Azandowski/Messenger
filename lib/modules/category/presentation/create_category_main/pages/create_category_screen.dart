@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../../core/widgets/independent/buttons/bottom_action_button.dart';
 import '../../../../../core/widgets/independent/pickers/photo_picker.dart';
 import '../../../../../core/widgets/independent/small_widgets/chat_count_view.dart';
@@ -23,19 +24,21 @@ class CreateCategoryScreen extends StatefulWidget {
   final CategoryEntity entity;
 
   CreateCategoryScreen({
-    this.mode = CreateCategoryScreenMode.create, 
+    this.mode = CreateCategoryScreenMode.create,
     this.entity,
-    Key key, 
+    Key key,
   }) : super(key: key) {
     if (mode == CreateCategoryScreenMode.edit) {
       assert(entity != null, 'entity of edit model should not be null');
     }
   }
 
-  static Route route({ CreateCategoryScreenMode mode, CategoryEntity category }) {
-    return MaterialPageRoute<void>(builder: (_) => CreateCategoryScreen(
-      mode: mode, entity: category,
-    ));
+  static Route route({CreateCategoryScreenMode mode, CategoryEntity category}) {
+    return MaterialPageRoute<void>(
+        builder: (_) => CreateCategoryScreen(
+              mode: mode,
+              entity: category,
+            ));
   }
 
   @override
@@ -44,7 +47,8 @@ class CreateCategoryScreen extends StatefulWidget {
 
 // * * State
 
-class _CreateCategoryScreenState extends State<CreateCategoryScreen> implements ChatChooseDelegate {
+class _CreateCategoryScreenState extends State<CreateCategoryScreen>
+    implements ChatChooseDelegate {
   NavigatorState get _navigator => navigatorKey.currentState;
   final CreateCategoryCubit cubit = sl<CreateCategoryCubit>();
   List<ChatViewModel> chats = [];
@@ -63,7 +67,7 @@ class _CreateCategoryScreenState extends State<CreateCategoryScreen> implements 
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Создать категорию'),
+        title: Text('createCategory'.tr()),
       ),
       body: BlocConsumer<CreateCategoryCubit, CreateCategoryState>(
         cubit: cubit,
@@ -71,8 +75,9 @@ class _CreateCategoryScreenState extends State<CreateCategoryScreen> implements 
           if (state is CreateCategoryError) {
             Scaffold.of(context).showSnackBar(
               SnackBar(
-                content: Text(state.message, style: TextStyle(color: Colors.red)),
-              ), // SnackBar
+                content:
+                    Text(state.message, style: TextStyle(color: Colors.red)),
+              ),
             );
           } else if (state is CreateCategorySuccess) {
             Navigator.of(context).pop(state.updatedCategories);
@@ -91,35 +96,44 @@ class _CreateCategoryScreenState extends State<CreateCategoryScreen> implements 
                     children: [
                       SizedBox(height: 30),
                       CreateCategoryHeader(
-                        nameController: cubit.nameController,
-                        imageProvider: state.imageFile != null ? 
-                          FileImage(state.imageFile) : cubit.defaultImageUrl != null ? 
-                            NetworkImage(cubit.defaultImageUrl) : null,
-                        selectImage: (file) {
-                          PhotoPicker().showImageSourceSelectionDialog(context,
-                            (imageSource) {
+                          nameController: cubit.nameController,
+                          imageProvider: state.imageFile != null
+                              ? FileImage(state.imageFile)
+                              : cubit.defaultImageUrl != null
+                                  ? NetworkImage(cubit.defaultImageUrl)
+                                  : null,
+                          selectImage: (file) {
+                            PhotoPicker().showImageSourceSelectionDialog(
+                                context, (imageSource) {
                               cubit.selectPhoto(imageSource);
                             });
-                        },
-                        onAddChats: () {
-                          _navigator.push(ChooseChatsPage.route(this));
-                        } 
-                      ),
+                          },
+                          onAddChats: () {
+                            _navigator.push(ChooseChatsPage.route(this));
+                          }),
                       CellHeaderView(
-                        title: 'Чаты: ${state is CreateCategoryChatsLoading ? "Загрузка ,,," : (chats ?? []).length }'
-                      ),
+                          title:
+                              // 'Чаты: ${state is CreateCategoryChatsLoading ? "Загрузка ,,," : (chats ?? []).length}'
+                              'chats'.tr(args: [
+                        state is CreateCategoryChatsLoading
+                            ? 'loading'.tr()
+                            : (chats ?? []).length
+                      ])),
                       ChatsList(
                         showSpinner: state is CreateCategoryChatsLoading,
                         isScrollable: false,
                         items: chats ?? [],
-                        loadingItemsIDS: state is CreateCategoryTransferLoading ? 
-                          state.chatsIDs : [],
+                        loadingItemsIDS: state is CreateCategoryTransferLoading
+                            ? state.chatsIDs
+                            : [],
                         cellType: ChatCellType.optionsWithChat,
-                        onSelectedOption: (ChatCellActionType action, ChatEntity entity) async {
+                        onSelectedOption: (ChatCellActionType action,
+                            ChatEntity entity) async {
                           if (action == ChatCellActionType.delete) {
                             cubit.deleteChat(entity);
                           } else {
-                            var response = await _navigator.push(CategoryList.route(isMoveChat: true));
+                            var response = await _navigator
+                                .push(CategoryList.route(isMoveChat: true));
 
                             if (response is CategoryEntity) {
                               cubit.movingChats = [entity.chatId];
@@ -132,10 +146,9 @@ class _CreateCategoryScreenState extends State<CreateCategoryScreen> implements 
                   ),
                 ),
                 BottomActionButtonContainer(
-                  title: 'Сохранить',
+                  title: 'save'.tr(),
                   isLoading: state is CreateCategoryLoading,
                   onTap: () {
-
                     // TODO: Put here Validation
                     cubit.sendData(widget.mode, widget.entity.id);
                   },

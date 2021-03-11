@@ -35,13 +35,13 @@ dependencies:
   data_connection_checker: ^0.3.4
   http: ^0.12.0+3
   # Local cache
-  shared_preferences: ^2.0.3
+  shared_preferences: ^0.5.12+4
   contacts_service: ^0.4.6
   # Setup Language
-  easy_localization: ^3.0.0
+  easy_localization: ^2.3.2
   # Storage secure
   flutter_secure_storage: ^3.3.1+1
-  path_provider: ^2.0.1
+  path_provider: ^1.6.27
 
   image_picker: ^0.6.7+22
   shimmer: ^1.1.2

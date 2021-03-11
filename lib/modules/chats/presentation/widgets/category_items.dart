@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../app/appTheme.dart';
 import '../../domain/entities/category.dart';
 import 'category_item.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'category_shimmer_items.dart';
 
 class CategoriesSection extends StatelessWidget {
@@ -31,8 +32,9 @@ class CategoriesSection extends StatelessWidget {
         children: [
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
             Text(
-              'Категории чатов', 
-              style: AppFontStyles.headerMediumStyle),
+              'chatCategories'.tr(),
+              style: AppFontStyles.headerMediumStyle,
+            ),
             GestureDetector(
               child: Icon(Icons.chevron_right),
               onTap: onNextClick,

@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../../../app/appTheme.dart';
 import '../../../../../../core/services/network/Endpoints.dart';
 import '../../../../../../core/widgets/independent/buttons/gradient_main_button.dart';
@@ -86,13 +87,13 @@ class _TypeNamePageState extends State<TypeNamePage> {
             child: Column(
               children: [
                 Text(
-                  'Почти готово!',
+                  'almostReady'.tr(),
                   style: AppFontStyles.headingBlackStyle,
                 ),
                 SizedBox(
                   height: 24,
                 ),
-                Text('Добавьте фото и укажите свое имя',
+                Text('addPhotoAndName'.tr(),
                     style: AppFontStyles.placeholderMedium),
                 SizedBox(
                   height: 24,
@@ -104,10 +105,15 @@ class _TypeNamePageState extends State<TypeNamePage> {
                     }
 
                     return PhotoPickerView(
-                      defaultPhotoProvider: _image != null ? 
-                        FileImage(_image) : widget.user?.profileImage != null ? NetworkImage(widget.user?.profileImage) : null,
+                      defaultPhotoProvider: _image != null
+                          ? FileImage(_image)
+                          : widget.user?.profileImage != null
+                              ? NetworkImage(widget.user?.profileImage)
+                              : null,
                       onSelectPhoto: () {
-                        context.read<TypeNameCubit>().getImage(ImageSource.camera);
+                        context
+                            .read<TypeNameCubit>()
+                            .getImage(ImageSource.camera);
                       },
                     );
                   },
@@ -116,7 +122,7 @@ class _TypeNamePageState extends State<TypeNamePage> {
                   height: height * 0.05,
                 ),
                 OutlineTextField(
-                    labelText: 'Ваше имя',
+                    labelText: 'yourName'.tr(),
                     focusNode: focusNode,
                     textEditingController: cubit.nameCtrl,
                     width: width,
@@ -126,7 +132,7 @@ class _TypeNamePageState extends State<TypeNamePage> {
                 ),
                 ActionButton(
                   isLoading: state is UpdatingUser,
-                  text: 'Продолжить',
+                  text: 'continue'.tr(),
                   onTap: () {
                     if (!(state is UpdatingUser)) {
                       cubit.updateProfile(_image);

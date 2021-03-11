@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../../app/appTheme.dart';
 import '../../../../../core/blocs/chat/bloc/bloc/chat_cubit.dart';
 import '../../../../../core/widgets/independent/buttons/gradient_main_button.dart';
@@ -9,18 +10,20 @@ import '../../../data/models/chat_view_model.dart';
 import '../../../domain/entities/chat_entity.dart';
 import '../../create_category_main/widgets/chat_list.dart';
 
-abstract class ChatChooseDelegate{
+abstract class ChatChooseDelegate {
   void didSaveChats(List<ChatEntity> chats);
 }
 
 class ChooseChatsPage extends StatefulWidget {
-
   static Route route(ChatChooseDelegate delegate) {
-    return MaterialPageRoute<void>(builder: (_) => ChooseChatsPage(delegate: delegate,));
+    return MaterialPageRoute<void>(
+        builder: (_) => ChooseChatsPage(
+              delegate: delegate,
+            ));
   }
 
   final ChatChooseDelegate delegate;
-  
+
   ChooseChatsPage({
     @required this.delegate,
     Key key,
@@ -31,9 +34,8 @@ class ChooseChatsPage extends StatefulWidget {
 }
 
 class _ChooseChatsPageState extends State<ChooseChatsPage> {
-  
   // * * Props
-  
+
   int _chatsCount = 0;
   List<ChatViewModel> chatEntities = [];
 
@@ -43,7 +45,8 @@ class _ChooseChatsPageState extends State<ChooseChatsPage> {
   void initState() {
     super.initState();
     if (context.read<ChatGlobalCubit>().state is ChatsLoaded) {
-      assignEntities((context.read<ChatGlobalCubit>().state as ChatsLoaded).chats);
+      assignEntities(
+          (context.read<ChatGlobalCubit>().state as ChatsLoaded).chats);
     }
   }
 
@@ -51,17 +54,15 @@ class _ChooseChatsPageState extends State<ChooseChatsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<ChatGlobalCubit, ChatState>(
-      listener: (context, state) {
-        if (state is ChatsLoaded) {
-          assignEntities(state.chats);
-          _chatsCount = chatEntities.where((e) => e.isSelected).toList().length;
-        } 
-      },
-      builder: (context, state) {
-        return Scaffold(
+    return BlocConsumer<ChatGlobalCubit, ChatState>(listener: (context, state) {
+      if (state is ChatsLoaded) {
+        assignEntities(state.chats);
+        _chatsCount = chatEntities.where((e) => e.isSelected).toList().length;
+      }
+    }, builder: (context, state) {
+      return Scaffold(
           appBar: AppBar(
-            title: Text('Выбрано: $_chatsCount'),
+            title: Text('selectedChats'.tr(args: [_chatsCount.toString()])),
           ),
           body: Stack(
             alignment: Alignment.center,
@@ -69,10 +70,11 @@ class _ChooseChatsPageState extends State<ChooseChatsPage> {
               Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 16),
                     child: Container(
                       child: Text(
-                        'Выберите те чаты, которые вы хотите добавить',
+                        'selectChatsToAdd'.tr(),
                         style: AppFontStyles.placeholderStyle,
                       ),
                     ),
@@ -80,36 +82,37 @@ class _ChooseChatsPageState extends State<ChooseChatsPage> {
                   returnStateWidget(state, context),
                 ],
               ),
-              if (state is ChatsLoaded)  
+              if (state is ChatsLoaded)
                 Positioned(
                   bottom: 40,
                   child: ActionButton(
-                    text: 'Добавить чаты', 
-                    onTap: () {
-                      List<ChatEntity> selectedChats = [];
-                      if (state is ChatsLoaded) {
-                        selectedChats = chatEntities.where((e) => e.isSelected).map((e) => e.entity).toList();
-                      }
+                      text: 'addChats'.tr(),
+                      onTap: () {
+                        List<ChatEntity> selectedChats = [];
+                        if (state is ChatsLoaded) {
+                          selectedChats = chatEntities
+                              .where((e) => e.isSelected)
+                              .map((e) => e.entity)
+                              .toList();
+                        }
 
-                      widget.delegate.didSaveChats(selectedChats);
-                      Navigator.pop(context);
-                    }
-                  ),
+                        widget.delegate.didSaveChats(selectedChats);
+                        Navigator.pop(context);
+                      }),
                 ),
             ],
-          )
-       );
-     }
-    );
+          ));
+    });
   }
 
-  Widget returnStateWidget(state, context){
+  Widget returnStateWidget(state, context) {
     if (state is ChatsLoaded) {
       return ChatsList(
         items: chatEntities,
         cellType: ChatCellType.addChat,
         onSelect: (ChatEntity chatEntity) {
-          var index = chatEntities.indexWhere((e) => e.entity.chatId == chatEntity.chatId);
+          var index = chatEntities
+              .indexWhere((e) => e.entity.chatId == chatEntity.chatId);
           if (index != null) {
             setState(() {
               chatEntities[index].isSelected = !chatEntities[index].isSelected;
@@ -119,13 +122,12 @@ class _ChooseChatsPageState extends State<ChooseChatsPage> {
       );
     } else if (state is ChatLoading) {
       return Expanded(
-        child: ListView.builder(
-          itemBuilder: (context, int index) {
-            return CellShimmerItem();
-          },
-          itemCount: 10,
-        )
-      );
+          child: ListView.builder(
+        itemBuilder: (context, int index) {
+          return CellShimmerItem();
+        },
+        itemCount: 10,
+      ));
     } else {
       return Text('default');
     }
@@ -133,10 +135,7 @@ class _ChooseChatsPageState extends State<ChooseChatsPage> {
 
   // * * Methods
 
-  void assignEntities (List<ChatEntity> entities) {
-    chatEntities = entities.map(
-      (e) => ChatViewModel(e)
-    ).toList();
+  void assignEntities(List<ChatEntity> entities) {
+    chatEntities = entities.map((e) => ChatViewModel(e)).toList();
   }
 }
-

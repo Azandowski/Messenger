@@ -3,9 +3,8 @@ import 'package:messenger_mobile/app/appTheme.dart';
 
 import 'marqueText.dart';
 
-
 class ChatHeading extends StatelessWidget {
-  final Function onTap; 
+  final Function onTap;
   const ChatHeading({
     @required this.onTap,
     Key key,
@@ -20,10 +19,12 @@ class ChatHeading extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          CircleAvatar(backgroundImage: AssetImage(
-            'assets/images/default_user.jpg'
-          ),),
-          SizedBox(width: 8,),
+          CircleAvatar(
+            backgroundImage: AssetImage('assets/images/default_user.jpg'),
+          ),
+          SizedBox(
+            width: 8,
+          ),
           Expanded(
             child: Container(
               child: Column(
@@ -36,14 +37,14 @@ class ChatHeading extends StatelessWidget {
                       text: 'Alex and Someone adas',
                       style: AppFontStyles.mediumStyle,
                     ),
-                  ), 
+                  ),
                   Container(
                     height: 18,
                     child: MarqueText(
                       text: 'Alex and Someone',
                       style: AppFontStyles.placeholderStyle,
                     ),
-                  ), 
+                  ),
                 ],
               ),
             ),

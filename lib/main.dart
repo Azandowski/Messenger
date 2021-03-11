@@ -19,7 +19,6 @@ final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await serviceLocator.init();
-  await EasyLocalization.ensureInitialized();
   // initializeDateFormatting('ru', null);
 
   Bloc.observer = SimpleBlocObserver();
@@ -69,7 +68,7 @@ class MainApp extends StatelessWidget {
             navigatorKey: navigatorKey,
             localizationsDelegates: context.localizationDelegates,
             supportedLocales: context.supportedLocales,
-            locale: context.deviceLocale,
+            locale: context.locale,
             routes: routes,
           );
         },

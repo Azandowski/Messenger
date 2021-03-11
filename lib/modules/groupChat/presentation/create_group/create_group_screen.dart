@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:easy_localization/easy_localization.dart';
 import '../../../creation_module/presentation/widgets/contact_cell.dart';
 import '../choose_contacts/choose_contacts_page.dart';
 import '../../../../core/widgets/independent/buttons/bottom_action_button.dart';
@@ -21,19 +23,21 @@ class CreateGroupScreen extends StatefulWidget {
   final CategoryEntity entity;
 
   CreateGroupScreen({
-    this.mode = CreateCategoryScreenMode.create, 
+    this.mode = CreateCategoryScreenMode.create,
     this.entity,
-    Key key, 
+    Key key,
   }) : super(key: key) {
     if (mode == CreateCategoryScreenMode.edit) {
       assert(entity != null, 'entity of edit model should not be null');
     }
   }
 
-  static Route route({ CreateCategoryScreenMode mode, CategoryEntity category }) {
-    return MaterialPageRoute<void>(builder: (_) => CreateGroupScreen(
-      mode: mode, entity: category,
-    ));
+  static Route route({CreateCategoryScreenMode mode, CategoryEntity category}) {
+    return MaterialPageRoute<void>(
+        builder: (_) => CreateGroupScreen(
+              mode: mode,
+              entity: category,
+            ));
   }
 
   @override
@@ -42,7 +46,8 @@ class CreateGroupScreen extends StatefulWidget {
 
 // * * State
 
-class _CreateGroupScreenState extends State<CreateGroupScreen> implements ContactChooseDelegate {
+class _CreateGroupScreenState extends State<CreateGroupScreen>
+    implements ContactChooseDelegate {
   NavigatorState get _navigator => navigatorKey.currentState;
   CreateGroupCubit _groupCubit;
   List<ContactViewModel> contacts = [];
@@ -73,7 +78,9 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> implements Contac
         } else if (state is CreateGroupSuccess) {
           Navigator.of(context).popUntil((route) => route.isFirst);
         } else if (state is CreateGroupNormal) {
-          contacts = (state.contacts ?? []).map((e) => ContactViewModel(entity: e)).toList();
+          contacts = (state.contacts ?? [])
+              .map((e) => ContactViewModel(entity: e))
+              .toList();
         }
       },
       builder: (_, state) {
@@ -89,31 +96,41 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> implements Contac
                     CreateGroupHeader(
                       descriptionController: _descriptionController,
                       nameController: _nameController,
-                      imageProvider: state.imageFile != null ? 
-                        FileImage(state.imageFile) : _groupCubit.defaultImageUrl != null ? 
-                          NetworkImage(_groupCubit.defaultImageUrl) : null,
+                      imageProvider: state.imageFile != null
+                          ? FileImage(state.imageFile)
+                          : _groupCubit.defaultImageUrl != null
+                              ? NetworkImage(_groupCubit.defaultImageUrl)
+                              : null,
                       selectImage: (file) {
                         PhotoPicker().showImageSourceSelectionDialog(context,
-                          (imageSource) {
-                            _groupCubit.selectPhoto(imageSource);
-                          });
+                            (imageSource) {
+                          _groupCubit.selectPhoto(imageSource);
+                        });
                       },
                       onAddContacts: () {
-                        Navigator.of(context).push(ChooseContactsPage.route(this));
+                        Navigator.of(context)
+                            .push(ChooseContactsPage.route(this));
                       },
                     ),
                     CellHeaderView(
-                      title: 'Участники: ${state is CreateGroupContactsLoading ? "Загрузка ,,," : (contacts ?? []).length }'
-                    ),
+                        title: 'participants'.tr(args: [
+                      state is CreateGroupContactsLoading
+                          ? 'loading'.tr()
+                          : (contacts ?? []).length.toString()
+                    ])),
                     Flexible(
-                        child: ListView.builder(
+                      child: ListView.builder(
                         shrinkWrap: true,
                         physics: NeverScrollableScrollPhysics(),
-                        itemBuilder: (context, i){
+                        itemBuilder: (context, i) {
                           var contact = contacts[i].entity;
-                          return ContactCell(contactItem: contact, cellType: ContactCellType.delete,onTrilinIconTapped: (){
-                            _groupCubit.deleteContact(contact);
-                          },);
+                          return ContactCell(
+                            contactItem: contact,
+                            cellType: ContactCellType.delete,
+                            onTrilinIconTapped: () {
+                              _groupCubit.deleteContact(contact);
+                            },
+                          );
                         },
                         itemCount: contacts.length,
                       ),
@@ -122,10 +139,11 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> implements Contac
                 ),
               ),
               BottomActionButtonContainer(
-                title: 'Создать группу',
+                title: 'createGroup'.tr(),
                 isLoading: state is CreateGroupLoading,
                 onTap: () {
-                  _groupCubit.createChat(_nameController.text, _descriptionController.text);
+                  _groupCubit.createChat(
+                      _nameController.text, _descriptionController.text);
                 },
               )
             ],
@@ -134,7 +152,6 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> implements Contac
       },
     );
   }
-
 
   @override
   void didSaveChats(List<ContactEntity> contacts) {

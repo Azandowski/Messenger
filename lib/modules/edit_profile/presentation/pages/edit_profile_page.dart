@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
 
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../core/config/auth_config.dart';
 import '../../../../core/services/network/Endpoints.dart';
 import '../../../../core/services/network/network_info.dart';
@@ -48,7 +49,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     return Scaffold(
         appBar: AppBar(
             title: Text(
-              "Редактировать",
+              'edit'.tr(),
               style: TextStyle(color: Colors.black),
             ),
             backgroundColor: Color.fromRGBO(250, 249, 255, 1)),
@@ -75,12 +76,16 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   children: [
                     SizedBox(height: 12),
                     PhotoPickerView(
-                      defaultPhotoProvider: cubit.imageFile != null ? 
-                        FileImage(cubit.imageFile) : user?.profileImage != null ? NetworkImage(user?.profileImage) : null,
+                      defaultPhotoProvider: cubit.imageFile != null
+                          ? FileImage(cubit.imageFile)
+                          : user?.profileImage != null
+                              ? NetworkImage(user?.profileImage)
+                              : null,
                       onSelectPhoto: () {
                         PhotoPicker().showImageSourceSelectionDialog(context,
                             (imageSource) {
-                          cubit.pickProfileImage(PickProfileImage(imageSource: imageSource));
+                          cubit.pickProfileImage(
+                              PickProfileImage(imageSource: imageSource));
                         });
                       },
                     ),
@@ -94,7 +99,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                               child: CustomTextField(
                                 customPadding:
                                     const EdgeInsets.only(left: 16, right: 16),
-                                labelText: "Фамилия",
+                                labelText: 'surname'.tr(),
                                 textCtr: cubit.nameTextController,
                               ),
                             ),
@@ -103,7 +108,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                               child: CustomTextField(
                                 customPadding:
                                     const EdgeInsets.only(left: 16, right: 16),
-                                labelText: "Имя",
+                                labelText: 'name'.tr(),
                                 textCtr: cubit.surnameTextController,
                               ),
                             ),
@@ -112,7 +117,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                               child: CustomTextField(
                                 customPadding:
                                     const EdgeInsets.only(left: 16, right: 16),
-                                labelText: "Отчество",
+                                labelText: 'middleName'.tr(),
                                 textCtr: cubit.patronymTextController,
                               ),
                             ),
@@ -121,15 +126,16 @@ class _EditProfilePageState extends State<EditProfilePage> {
                             ),
                             ActionButton(
                               isLoading: state is EditProfileLoading,
-                              text: 'Сохранить',
+                              text: 'save'.tr(),
                               onTap: () {
                                 if (!(state is EditProfileLoading)) {
                                   cubit.updateProfile(EditProfileUpdateUser(
-                                    token: token,
-                                    image: cubit.imageFile,
-                                    name: cubit.nameTextController.text,
-                                    surname: cubit.surnameTextController.text,
-                                    patronym: cubit.patronymTextController.text));
+                                      token: token,
+                                      image: cubit.imageFile,
+                                      name: cubit.nameTextController.text,
+                                      surname: cubit.surnameTextController.text,
+                                      patronym:
+                                          cubit.patronymTextController.text));
                                 }
                               },
                             )
