@@ -1,4 +1,8 @@
+import 'dart:io';
+
+import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:messenger_mobile/core/error/failures.dart';
 import 'package:messenger_mobile/modules/edit_profile/presentation/bloc/edit_profile_cubit.dart';
 import 'package:messenger_mobile/modules/edit_profile/presentation/bloc/edit_profile_event.dart';
@@ -31,24 +35,68 @@ void main() {
     expect(cubit.state, equals(EditProfileLoading()));
   });
 
-  group('updateProfile', () {});
+  group('updateProfile', () {
+    final event = EditProfileUpdateUser(token: 'token');
 
-  test('should return error if there is an error', () {
-    when(mockEditUser(any))
-        .thenAnswer((_) async => Left(ServerFailure(message: 'ERROR')));
+    blocTest(
+      'Should emit [EditProfileSuccess] on success',
+      build: () => cubit,
+      act: (EditProfileCubit editProfileCubit) {
+        when(mockEditUser(any)).thenAnswer((_) async => Right(true));
 
-    // assert layer
-    final expected = [EditProfileLoading(), EditProfileError(message: 'ERROR')];
+        editProfileCubit.updateProfile(event);
+      },
+      expect: [
+        isA<EditProfileLoading>(),
+        isA<EditProfileSuccess>(),
+      ],
+    );
 
-    cubit.updateProfile(EditProfileUpdateUser(token: ''));
+    blocTest(
+      'Should emit [EditProfileError] on any Failure',
+      build: () => cubit,
+      act: (EditProfileCubit editProfileCubit) {
+        when(mockEditUser(any))
+            .thenAnswer((_) async => Left(ConnectionFailure()));
+
+        editProfileCubit.updateProfile(event);
+      },
+      expect: [
+        isA<EditProfileLoading>(),
+        isA<EditProfileError>(),
+      ],
+    );
   });
 
-  test('If success state becomes success', () {
-    when(mockEditUser(any)).thenAnswer((_) async => Right(true));
+  group('pickProfileImage', () {
+    final event = PickProfileImage(imageSource: ImageSource.gallery);
 
-    // assert layer
-    final expected = [EditProfileLoading(), EditProfileSuccess()];
+    blocTest(
+      'Should emit [EditProfileNormal] on success',
+      build: () => cubit,
+      act: (EditProfileCubit editProfileCubit) {
+        when(mockGetImage(any))
+            .thenAnswer((_) async => Right(File('image.jpg')));
 
-    cubit.updateProfile(EditProfileUpdateUser(token: ''));
+        editProfileCubit.pickProfileImage(event);
+      },
+      expect: [
+        isA<EditProfileNormal>(),
+      ],
+    );
+
+    blocTest(
+      'Should emit [EditProfileError] on any Failure',
+      build: () => cubit,
+      act: (EditProfileCubit editProfileCubit) {
+        when(mockGetImage(any))
+            .thenAnswer((_) async => Left(ConnectionFailure()));
+
+        editProfileCubit.pickProfileImage(event);
+      },
+      expect: [
+        isA<EditProfileError>(),
+      ],
+    );
   });
 }
