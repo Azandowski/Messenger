@@ -21,10 +21,11 @@ class ChatDetailHeader extends StatelessWidget {
             children: [
               FadeInImage(
                 placeholder: AssetImage("assets/images/logo.png"),
-                image: chatDetailed?.chat?.imageUrl == null ? AssetImage('assets/images/placeholder.png') : 
-                  NetworkImage(chatDetailed?.chat?.imageUrl),
-                  height: 286,
-                  fit: BoxFit.cover,
+                image: chatDetailed?.chat?.imageUrl == null ? AssetImage(
+                  'assets/images/placeholder.png', 
+                ) : NetworkImage(chatDetailed?.chat?.imageUrl),
+                height: 286,
+                fit: BoxFit.cover,
               ),
               Container(
                 height: 115, 

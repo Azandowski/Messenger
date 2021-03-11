@@ -13,10 +13,14 @@ class ChatPermissionModel extends ChatPermissions {
   );
 
   factory ChatPermissionModel.fromJson(Map<String, dynamic> json) {
-    return ChatPermissionModel(
-      isSoundOn: json['sound'] == 1,
-      isMediaSendOn: json['admin_media_send'] == 1
-    );
+    if (json == null) {
+      return ChatPermissionModel();
+    } else {
+      return ChatPermissionModel(
+        isSoundOn: json['sound'] == 1,
+        isMediaSendOn: json['admin_media_send'] == 1
+      ); 
+    }
   }
 
   Map toJson () {

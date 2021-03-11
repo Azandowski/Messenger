@@ -75,7 +75,15 @@ class _ChatScreenState extends State<ChatScreen> {
       lazy: false,
       create: (context) => _chatBloc,
       child: BlocConsumer<ChatBloc, ChatState>(
-        listener: (context, state) {},
+        listener: (context, state) {
+          if (state is ChatError) {
+            Scaffold.of(context)
+              ..hideCurrentSnackBar()
+              ..showSnackBar(
+                SnackBar(content: Text(state.message)),
+              );
+          }
+        },
         
         builder: (context, state) {
           return Scaffold(
@@ -83,6 +91,9 @@ class _ChatScreenState extends State<ChatScreen> {
               centerTitle: false,
               titleSpacing: 0.0,
               title: ChatHeading(
+                title: widget.chatEntity.title ?? '',
+                description: widget.chatEntity.description ?? 'no_description',
+                avatarURL: widget.chatEntity.imageUrl,
                 onTap: () {
                   _navigator.push(ChatDetailPage.route(widget.chatEntity.chatId));
                 }
@@ -100,7 +111,8 @@ class _ChatScreenState extends State<ChatScreen> {
                   child: Container(
                     padding: EdgeInsets.symmetric(horizontal: 16),
                     decoration: BoxDecoration(
-                    image: DecorationImage(image: AssetImage('assets/images/bg-home.png'),
+                    image: DecorationImage(
+                      image: AssetImage('assets/images/bg-home.png'),
                       fit: BoxFit.cover),
                     ),
                     child: Padding(
@@ -110,6 +122,15 @@ class _ChatScreenState extends State<ChatScreen> {
                         itemBuilder: (context, int index) {
                           if (state is ChatLoading && getItemsCount(state) - 1 == index) {
                             return LoadWidget(size: 20);
+                          } else if (getItemsCount(state) - 1 == index) {
+                            var item = state.messages.getItemAt(index);
+                            if (state.messages.getItemAt(index - 1) != null) {
+                              return ChatDateItem(
+                                dateTime: state.messages[index - 1].dateTime
+                              );
+                            } 
+
+                            return Container();
                           } else {
                             int nextMessageUserID = state.messages.getItemAt(index - 1)?.user?.id;
                             int prevMessageUserID = state.messages.getItemAt(index + 1)?.user?.id;
@@ -150,21 +171,20 @@ class _ChatScreenState extends State<ChatScreen> {
   // * * Helpers
 
   int getItemsCount (ChatState state) {
-    return state is ChatLoading ? 
-      // Нужен +1 индекс чтобы показать загрузку
-      state.messages.length + 1 : 
-        state.messages.length;
+    return state.messages.length + 1;
   }
 
 
   Widget _buildSeparator (int index, ChatState state) {
-    print(index);
-    if (index == getItemsCount(state) - 1 ) {
-      return ChatDateItem(dateTime: state.messages[index].dateTime);
-    } else if (!(state is ChatLoading && getItemsCount(state) - 1 == index)) {
+    if (!(state is ChatLoading && getItemsCount(state) - 1 == index)) {
       Message nextMessage = state.messages.getItemAt(index + 1);
 
-      if (nextMessage != null && nextMessage.dateTime?.day != state.messages[index].dateTime?.day) {
+      if (
+        nextMessage != null && 
+        nextMessage.dateTime?.day != null && 
+        state.messages[index].dateTime?.day != null && 
+        nextMessage.dateTime?.day != state.messages[index].dateTime?.day
+      ) {
         return ChatDateItem(dateTime: state.messages[index].dateTime,);
       } 
     } 

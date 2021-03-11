@@ -1,13 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:messenger_mobile/app/appTheme.dart';
+import 'package:messenger_mobile/core/widgets/independent/images/ImageWithCorner.dart';
 
 import 'marqueText.dart';
 
 
 class ChatHeading extends StatelessWidget {
   final Function onTap; 
+  final String avatarURL;
+  final String title;
+  final String description;
+  
+  
   const ChatHeading({
     @required this.onTap,
+    this.title,
+    this.description,
+    this.avatarURL,
     Key key,
   }) : super(key: key);
 
@@ -20,9 +29,13 @@ class ChatHeading extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          CircleAvatar(backgroundImage: AssetImage(
-            'assets/images/default_user.jpg'
-          ),),
+          AvatarImage(
+            isFromAsset: false,
+            path: avatarURL,
+            width: 35,
+            height: 35,
+            borderRadius: BorderRadius.circular(17.5)
+          ),
           SizedBox(width: 8,),
           Expanded(
             child: Container(
@@ -33,14 +46,14 @@ class ChatHeading extends StatelessWidget {
                   Container(
                     height: 18,
                     child: MarqueText(
-                      text: 'Alex and Someone adas',
+                      text: title ?? '',
                       style: AppFontStyles.mediumStyle,
                     ),
                   ), 
                   Container(
                     height: 18,
                     child: MarqueText(
-                      text: 'Alex and Someone',
+                      text: description ?? '',
                       style: AppFontStyles.placeholderStyle,
                     ),
                   ), 
