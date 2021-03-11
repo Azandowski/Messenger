@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:messenger_mobile/core/widgets/independent/small_widgets/image_text_view.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -89,30 +90,34 @@ class _ChatsScreenState extends State<ChatsScreen> {
                         return ChatScreenCategoriesView(
                           chatsState: state,
                         );
-                      } else if (index <= chatsCount) {
-                        return GestureDetector(
-                          onLongPressStart: (d) {
-                            cubit.didSelectChat(index - 1);
-                          },
-                          onTap: (){
-                            Navigator.push(
-                              context, MaterialPageRoute(builder: (context) => ChatScreen(chatEntity: chatState.chats[index - 1],)),
-                            );
-                          },
-                          child: ChatPreviewItem(
-                            ChatViewModel(
-                              chatState.chats[index - 1],
-                              isSelected: cubit.selectedChatIndex != null 
-                                && cubit.selectedChatIndex == index - 1
-                            )
-                          ),
-                        );
+                      } else if (index <= (chatsCount == 0 ? 1 : chatsCount)) {
+                        if (chatsCount != 0) {
+                          return GestureDetector(
+                            onLongPressStart: (d) {
+                              cubit.didSelectChat(index - 1);
+                            },
+                            onTap: (){
+                              Navigator.push(
+                                context, MaterialPageRoute(builder: (context) => ChatScreen(chatEntity: chatState.chats[index - 1],)),
+                              );
+                            },
+                            child: ChatPreviewItem(
+                              ChatViewModel(
+                                chatState.chats[index - 1],
+                                isSelected: cubit.selectedChatIndex != null 
+                                  && cubit.selectedChatIndex == index - 1
+                              )
+                            ),
+                          );
+                        } else {
+                          return Center(child: EmptyView());
+                        }
                       } else {
                         return CellShimmerItem();
                       }
                     },
                     itemCount: chatState is ChatLoading ? 6 + chatsCount :
-                      chatsCount + 1,
+                      chatsCount == 0 ? 2 : chatsCount + 1,
                     separatorBuilder: (context, int index) {
                       return _buildSeparators(index);
                     }

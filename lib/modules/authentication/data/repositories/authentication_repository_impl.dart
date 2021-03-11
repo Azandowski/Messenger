@@ -45,12 +45,8 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
 
       authConfig.token = token;
 
-<<<<<<< HEAD
       print(token);  
       // print(sl<AuthConfig>().user.id);
-=======
-      print('token=$token');
->>>>>>> 65fd42ed91581e5432d64e7a6d035e785c05f8ab
 
       await getCurrentUser(token);
 

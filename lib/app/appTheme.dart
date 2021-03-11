@@ -95,11 +95,17 @@ abstract class AppFontStyles {
     fontSize: 14,
   );
 
-   static get grey12w400 => TextStyle(
+  static get grey12w400 => TextStyle(
     color: Color(0xff828282),
     fontWeight: FontWeight.w400,
     height: 0.75,
     fontSize: 12,
+  );
+
+  static get grey14w400 => TextStyle(
+    color: Color(0xff828282),
+    fontWeight: FontWeight.w400,
+    fontSize: 14,
   );
 
   static get white12w400 => TextStyle(

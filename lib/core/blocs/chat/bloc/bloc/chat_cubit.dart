@@ -68,7 +68,7 @@ class ChatGlobalCubit extends Cubit<ChatState> {
         
         print('LOADED CHATS COUNT: ${newChats.length}');
         emit(ChatsLoaded( 
-          chats: newChats,
+          chats: [],//newChats,
           hasReachedMax: chatsResponse.hasReachMax ?? false
         ));
       }

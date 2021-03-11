@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger_mobile/app/appTheme.dart';
@@ -55,7 +57,8 @@ class _ChatScreenState extends State<ChatScreen> {
       chatId: widget.chatEntity.chatId,
       chatRepository: chatRepository,
       sendMessage: SendMessage(repository: chatRepository),
-      getMessages: GetMessages(repository: chatRepository)
+      getMessages: GetMessages(repository: chatRepository),
+      chatsRepository: sl()
     )..add(LoadMessages(isPagination: true));
     super.initState();
   }
@@ -112,7 +115,8 @@ class _ChatScreenState extends State<ChatScreen> {
                     padding: EdgeInsets.symmetric(horizontal: 16),
                     decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage('assets/images/bg-home.png'),
+                      image: state.wallpaperPath != null ? 
+                        FileImage(File(state.wallpaperPath)) : AssetImage('assets/images/bg-home.png'),
                       fit: BoxFit.cover),
                     ),
                     child: Padding(
@@ -123,7 +127,7 @@ class _ChatScreenState extends State<ChatScreen> {
                           if (state is ChatLoading && getItemsCount(state) - 1 == index) {
                             return LoadWidget(size: 20);
                           } else if (getItemsCount(state) - 1 == index) {
-                            var item = state.messages.getItemAt(index);
+
                             if (state.messages.getItemAt(index - 1) != null) {
                               return ChatDateItem(
                                 dateTime: state.messages[index - 1].dateTime
