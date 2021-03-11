@@ -43,8 +43,10 @@ class _ChatsScreenState extends State<ChatsScreen> {
       bool hasNextPage = !context.read<ChatGlobalCubit>().state.hasReachedMax;
       bool viewIsLoading = context.read<ChatGlobalCubit>().state is ChatLoading;
 
-      if (scrollController.isPaginated && hasNextPage && !viewIsLoading) {
-        context.read<ChatGlobalCubit>().loadChats(isPagination: true);
+      if (scrollController.isPaginated) {
+        if (hasNextPage && !viewIsLoading) {
+          context.read<ChatGlobalCubit>().loadChats(isPagination: true);
+        }
       }
     });
 
@@ -90,7 +92,7 @@ class _ChatsScreenState extends State<ChatsScreen> {
                         return ChatScreenCategoriesView(
                           chatsState: state,
                         );
-                      } else if (index <= (chatsCount == 0 ? 1 : chatsCount)) {
+                      } else if (index <= (chatsCount == 0 && !(chatState is ChatLoading) ? 1 : chatsCount)) {
                         if (chatsCount != 0) {
                           return GestureDetector(
                             onLongPressStart: (d) {

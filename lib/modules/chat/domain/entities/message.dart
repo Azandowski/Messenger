@@ -65,6 +65,18 @@ class Message extends Equatable {
       identificator: identificator ?? this.identificator,
     );
   }
+
+  Map toJson () {
+    return {
+      'id': id,
+      'color': colorId,
+      'from_contact': user?.toJson(),
+      'text': text,
+      'is_read': isRead ? 1 : 0,
+      'created_at': dateTime.toIso8601String(),
+      'action': chatActions?.key
+    };
+  }
 }
 
 class MessageUser extends Equatable{
@@ -84,4 +96,13 @@ class MessageUser extends Equatable{
 
   @override
   List<Object> get props => [id, name, surname, phone, avatarURL];
+
+  Map toJson () {
+    return {
+      'id': id,
+      'name': name,
+      'surname': surname,
+      'avatarURL': avatarURL
+    };
+  }
 }

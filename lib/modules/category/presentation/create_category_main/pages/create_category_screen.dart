@@ -137,7 +137,7 @@ class _CreateCategoryScreenState extends State<CreateCategoryScreen> implements 
                   onTap: () {
 
                     // TODO: Put here Validation
-                    cubit.sendData(widget.mode, widget.entity.id);
+                    cubit.sendData(widget.mode, widget.entity?.id ?? null);
                   },
                 )
               ],

@@ -14,7 +14,7 @@ abstract class ChatsRepository {
     GetChatsParams params
   );
 
-  Future<Either<Failure, List<ChatEntity>>> getCategoryChats (
+  Future<Either<Failure, PaginatedResultViaLastItem<ChatEntity>>> getCategoryChats (
     GetCategoryChatsParams params
   );
 

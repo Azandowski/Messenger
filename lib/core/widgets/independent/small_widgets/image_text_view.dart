@@ -31,6 +31,7 @@ class ImageTextView extends StatelessWidget {
         children: [
           Image(
             image: imageProvider,
+            fit: BoxFit.cover,
           ),
           SizedBox(height: 12),
           Text(

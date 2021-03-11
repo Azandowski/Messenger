@@ -5,6 +5,7 @@ import 'package:messenger_mobile/core/services/network/socket_service.dart';
 import 'package:messenger_mobile/modules/chat/data/datasources/chat_datasource.dart';
 import 'package:messenger_mobile/modules/chat/data/repositories/chat_repository.dart';
 import 'package:messenger_mobile/modules/chat/domain/usecases/get_chat_details.dart';
+import 'package:messenger_mobile/modules/chats/data/datasource/local_chats_datasource.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'core/blocs/authorization/bloc/auth_bloc.dart';
@@ -73,7 +74,11 @@ Future<void> init() async {
     ),
   );
 
-  sl.registerFactory(() => ChatGlobalCubit(sl(), sl()));
+  sl.registerFactory(() => ChatGlobalCubit(
+    sl(), 
+    sl(),
+    sl()
+  ));
 
   sl.registerFactory(() => ProfileCubit(getUser: sl()));
   sl.registerFactory(() => ChatsCubit(sl()));
@@ -103,7 +108,12 @@ Future<void> init() async {
       () => ProfileRepositoryImpl(profileDataSource: sl(), networkInfo: sl()));
 
   sl.registerLazySingleton<ChatsRepository>(
-      () => ChatsRepositoryImpl(chatsDataSource: sl(), networkInfo: sl()));
+    () => ChatsRepositoryImpl(
+      chatsDataSource: sl(), 
+      networkInfo: sl(),
+      localChatsDataSource: sl()
+    )
+  );
 
   // Data sources
   sl.registerLazySingleton<AuthenticationLocalDataSource>(
@@ -122,6 +132,10 @@ Future<void> init() async {
 
   sl.registerLazySingleton<ChatsDataSource>(
       () => ChatsDataSourceImpl(client: sl(), socketService: sl()));
+
+  sl.registerLazySingleton<LocalChatsDataSource>(
+    () => LocalChatsDataSourceImpl()
+  );
 
   sl.registerLazySingleton<SocketService>(
     () =>  SocketService(

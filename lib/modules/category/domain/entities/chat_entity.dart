@@ -59,4 +59,28 @@ class ChatEntity extends Equatable {
       description: description
     );
   }
+
+  Map toJson () {
+    return {
+      'id': chatId,
+      'name': title,
+      'avatar': imageUrl,
+      'chatCategory': chatCategory == null ? null : {
+        'id': chatCategory.id,
+        'name': chatCategory.name,
+        'avatar': chatCategory.avatar,
+        'full_link': chatCategory.avatar,
+        'total_chats': chatCategory.totalChats,
+      },
+      'created_at': date == null ? null : date.toIso8601String(),
+      'settings': {
+        'sound': permissions.isSoundOn ? 1 : 0,
+        'admin_media_send': permissions.isSoundOn ? 1 : 0
+      },
+      'last_message': lastMessage?.toJson(),
+      'no_read_message': unreadCount,
+      'description': description
+    };
+  }
 }
+

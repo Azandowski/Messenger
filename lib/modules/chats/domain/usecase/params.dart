@@ -19,12 +19,14 @@ class GetChatsParams extends Equatable {
 class GetCategoryChatsParams extends Equatable {
   final String token;
   final int categoryID;
+  final int lastChatID;
 
   GetCategoryChatsParams({
     @required this.token,
-    @required this.categoryID
+    @required this.categoryID,
+    this.lastChatID
   });
 
   @override
-  List<Object> get props => [token, categoryID];
+  List<Object> get props => [token, categoryID, lastChatID];
 }

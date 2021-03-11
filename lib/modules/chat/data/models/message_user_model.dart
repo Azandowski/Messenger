@@ -29,7 +29,17 @@ class MessageUserModel extends MessageUser {
       id: json['id'],
       name: json['name'],
       surname: json['surname'],
-      avatarURL: json['avatar'] != null ? ConfigExtension.buildURLHead() + json['avatar'] : null
+      avatarURL: json['avatar'] != null ? (json['avatar'] as String).contains('://') ? json['avatar'] : 
+        ConfigExtension.buildURLHead() + json['avatar'] : null
     );
+  }
+
+  Map toJson () {
+    return {
+      'id': id,
+      'name': name,
+      'surname': surname,
+      'avatarURL': avatarURL
+    };
   }
 }

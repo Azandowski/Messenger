@@ -45,11 +45,6 @@ class ChatViewModel {
     return false;
   }
 
-  bool get isGroup {
-     // TODO: Добавить property для групп
-    return false;
-  }
-
   String get dateTime {
     return new DateFormat("Hm").format(entity.date); 
   }
@@ -77,7 +72,7 @@ class ChatViewModel {
   // MARK: - Chat Options 
 
   bool get isPinned {
-    return true;
+    return false;
   }
 
   bool get isMuted {
@@ -85,7 +80,7 @@ class ChatViewModel {
   }
 
   bool get isHideImages {
-    return false;
+    return !entity.permissions.isMediaSendOn;
   }
 
   List<ChatSettingType> get chatSettings {

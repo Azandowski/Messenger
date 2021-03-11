@@ -94,7 +94,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       
       yield ChatInitial(
         messages: list,
-        hasReachedMax: this.state.hasReachedMax
+        hasReachedMax: this.state.hasReachedMax,
+        wallpaperPath: this.state.wallpaperPath
       );
     } else if (event is MessageSend) {
       var list = getCopyMessages();

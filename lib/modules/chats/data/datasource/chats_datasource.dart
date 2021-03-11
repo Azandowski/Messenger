@@ -26,9 +26,10 @@ abstract class ChatsDataSource {
     int lastChatId
   });
 
-  Future<List<ChatEntity>> getCategoryChat ({
+  Future<PaginatedResultViaLastItem<ChatEntity>> getCategoryChat ({
     @required String token,
-    @required int categoryID
+    @required int categoryID,
+    int lastChatId
   });
 
   Future<File> getLocalWallpaper ();
@@ -63,7 +64,7 @@ class ChatsDataSourceImpl implements ChatsDataSource {
     http.Response response = await client.get(
       Endpoints.getAllUserChats.buildURL(queryParameters: {
         if (lastChatId != null)
-          'last_message_id': '$lastChatId'
+          'last_chat_id': '$lastChatId'
       }),
       headers: Endpoints.getAllUserChats.getHeaders(token: token),
     );
@@ -74,7 +75,7 @@ class ChatsDataSourceImpl implements ChatsDataSource {
       return PaginatedResultViaLastItem<ChatEntity>(
         data: ((responseJSON['chats'] ?? []) as List).map(
           (e) => ChatEntityModel.fromJson(e)).toList(),
-        hasReachMax: responseJSON['has_more_results']
+        hasReachMax: !responseJSON['has_more_results']
       );
     } else {
       throw ServerFailure(message: ErrorHandler.getErrorMessage(response.body.toString()));
@@ -82,18 +83,30 @@ class ChatsDataSourceImpl implements ChatsDataSource {
   }
 
   @override
-  Future<List<ChatEntity>> getCategoryChat({
+  Future<PaginatedResultViaLastItem<ChatEntity>> getCategoryChat({
     @required String token, 
-    @required int categoryID
+    @required int categoryID,
+    int lastChatId
   }) async {
       http.Response response = await client.get(
-        Endpoints.categoryChats.buildURL(urlParams: ['$categoryID']),
-        headers: Endpoints.getAllUserChats.getHeaders(token: token),
+        Endpoints.categoryChats.buildURL(
+          urlParams: ['$categoryID'],
+          queryParameters: {
+            if (lastChatId != null)
+              'last_chat_id': '$lastChatId'
+          }
+        ),
+        headers: Endpoints.categoryChats.getHeaders(token: token),
       );
 
     if (response.isSuccess) { 
-      List chats = (json.decode(response.body)['chats'] as List);
-      return chats.map((e) => ChatEntityModel.fromJson(e)).toList();
+      var responseJSON = json.decode(response.body);
+
+      return PaginatedResultViaLastItem<ChatEntity>(
+        data: ((responseJSON['chats'] ?? []) as List).map(
+          (e) => ChatEntityModel.fromJson(e)).toList(),
+        hasReachMax: !responseJSON['hasMoreResults']
+      );
     } else {
       throw ServerFailure(message: ErrorHandler.getErrorMessage(response.body.toString()));
     }
@@ -144,8 +157,4 @@ class ChatsDataSourceImpl implements ChatsDataSource {
         yield* _controller.stream;
     });
   }
- 
-
- 
- 
 }

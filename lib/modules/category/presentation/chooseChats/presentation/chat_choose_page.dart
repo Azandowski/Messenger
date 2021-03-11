@@ -41,10 +41,18 @@ class _ChooseChatsPageState extends State<ChooseChatsPage> {
 
   @override
   void initState() {
-    super.initState();
-    if (context.read<ChatGlobalCubit>().state is ChatsLoaded) {
-      assignEntities((context.read<ChatGlobalCubit>().state as ChatsLoaded).chats);
+    ChatGlobalCubit _cubit = context.read<ChatGlobalCubit>();
+    if (_cubit.state.currentCategory != 0) {
+      
+      // Load All Chats
+      _cubit.loadChats(isPagination: false);
     }
+
+    if (_cubit.state is ChatsLoaded) {
+      assignEntities((_cubit.state as ChatsLoaded).chats);
+    }
+
+    super.initState();
   }
 
   // * * UI
