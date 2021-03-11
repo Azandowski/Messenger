@@ -32,12 +32,6 @@ class _CreationModuleScreenState extends State<CreationModuleScreen> {
     _scrollController.addListener(_onScroll);
     super.initState();
   }
-  
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -102,6 +96,7 @@ class _CreationModuleScreenState extends State<CreationModuleScreen> {
   void _onScroll() {
     if (_scrollController.isPaginated) {
       var _contactBloc = context.read<ContactBloc>();
+      
       if (_contactBloc.state.status != ContactStatus.loading) {
         _contactBloc.add(ContactFetched());
       }

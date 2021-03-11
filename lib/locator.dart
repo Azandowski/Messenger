@@ -87,7 +87,6 @@ Future<void> init() async {
   sl.registerLazySingleton(() => SaveToken(sl()));
   sl.registerLazySingleton(() => GetChats(sl()));
 
-
   // Repository
 
   sl.registerLazySingleton<AuthenticationRepository>(
