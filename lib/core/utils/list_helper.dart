@@ -6,4 +6,12 @@ extension AdvancedList<T> on List<T> {
       return this.last;
     }
   }
+
+  T getItemAt (int index) {
+    if (this.length - 1 >= index && index >= 0) {
+      return this[index];
+    } else {
+      return null;
+    }
+  }
 }

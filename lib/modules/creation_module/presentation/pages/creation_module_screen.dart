@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_share/flutter_share.dart';
+import 'package:messenger_mobile/core/utils/paginated_scroll_controller.dart';
+import 'package:messenger_mobile/modules/creation_module/presentation/bloc/contact_bloc/contact_bloc.dart';
 import 'package:messenger_mobile/modules/creation_module/presentation/helpers/creation_actions.dart';
 import 'package:messenger_mobile/modules/creation_module/presentation/widgets/actions_builder.dart';
 import 'package:messenger_mobile/modules/groupChat/presentation/create_group/create_group_page.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../app/appTheme.dart';
 import '../widgets/contcats_list.dart';
@@ -22,6 +25,20 @@ class CreationModuleScreen extends StatefulWidget {
 
 class _CreationModuleScreenState extends State<CreationModuleScreen> {
   
+  PaginatedScrollController _scrollController = PaginatedScrollController();
+
+  @override
+  void initState() {
+    _scrollController.addListener(_onScroll);
+    super.initState();
+  }
+  
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,6 +52,7 @@ class _CreationModuleScreenState extends State<CreationModuleScreen> {
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
         child: SingleChildScrollView(
+          controller: _scrollController,
           scrollDirection: Axis.vertical,
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -44,7 +62,7 @@ class _CreationModuleScreenState extends State<CreationModuleScreen> {
                   actionProcess(action, context);
                 },
               ),
-              ContactsList(isScrollable: false,)
+              ContactsList(isScrollable: false)
             ],
           )
         ),
@@ -78,6 +96,15 @@ class _CreationModuleScreenState extends State<CreationModuleScreen> {
           linkUrl: 'https://messengeraio.page.link/invite'
         );
         break;
+    }
+  }
+
+  void _onScroll() {
+    if (_scrollController.isPaginated) {
+      var _contactBloc = context.read<ContactBloc>();
+      if (_contactBloc.state.status != ContactStatus.loading) {
+        _contactBloc.add(ContactFetched());
+      }
     }
   }
 }

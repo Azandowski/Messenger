@@ -15,10 +15,12 @@ import 'package:messenger_mobile/modules/chat/presentation/chat_details/page/cha
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/bloc/chat_bloc.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/chatControlPanel/chatControlPanel.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/chatHeading.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/chat_date_item.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/chat_screen_actions.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/message_cell.dart';
-
+import 'package:messenger_mobile/core/utils/list_helper.dart';
 import '../../../../../main.dart';
+import 'package:intl/intl.dart';
 
 
 class ChatScreen extends StatefulWidget {
@@ -103,22 +105,30 @@ class _ChatScreenState extends State<ChatScreen> {
                     ),
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 20.0),
-                      child: ListView.builder(
+                      child: ListView.separated(
                         controller: _chatBloc.scrollController,
                         itemBuilder: (context, int index) {
                           if (state is ChatLoading && getItemsCount(state) - 1 == index) {
                             return LoadWidget(size: 20);
                           } else {
-                            Message currentMessage = state.messages[state is ChatLoading ? index - 1 : index];
+                            int nextMessageUserID = state.messages.getItemAt(index - 1)?.user?.id;
+                            int prevMessageUserID = state.messages.getItemAt(index + 1)?.user?.id;
+                            Message currentMessage = state.messages[index];
+                            
                             return currentMessage.chatActions == null ? 
                               MessageCell(
-                                messageViewModel: MessageViewModel(currentMessage)
+                                messageViewModel: MessageViewModel(currentMessage),
+                                nextMessageUserID: nextMessageUserID,
+                                prevMessageUserID: prevMessageUserID,
                               ) : Text('action');
                           }
                         },
                         scrollDirection: Axis.vertical,
                         itemCount: getItemsCount(state),
                         reverse: true,
+                        separatorBuilder: (_, int index) {
+                          return _buildSeparator(index, state);
+                        }
                       ),
                     ),
                   ),
@@ -144,5 +154,21 @@ class _ChatScreenState extends State<ChatScreen> {
       // Нужен +1 индекс чтобы показать загрузку
       state.messages.length + 1 : 
         state.messages.length;
+  }
+
+
+  Widget _buildSeparator (int index, ChatState state) {
+    print(index);
+    if (index == getItemsCount(state) - 1 ) {
+      return ChatDateItem(dateTime: state.messages[index].dateTime);
+    } else if (!(state is ChatLoading && getItemsCount(state) - 1 == index)) {
+      Message nextMessage = state.messages.getItemAt(index + 1);
+
+      if (nextMessage != null && nextMessage.dateTime?.day != state.messages[index].dateTime?.day) {
+        return ChatDateItem(dateTime: state.messages[index].dateTime,);
+      } 
+    } 
+ 
+    return Container();
   }
 }

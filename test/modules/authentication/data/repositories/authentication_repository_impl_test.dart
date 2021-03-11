@@ -58,7 +58,7 @@ void main() {
       profileImage: 'image',
     );
     when(mockLocalDataSource.getToken()).thenAnswer((_) async => 'test');
-    when(mockLocalDataSource.getContacts()).thenAnswer((_) async => true);
+    // when(mockLocalDataSource.getContacts()).thenAnswer((_) async => true);
     when(mockRemoteDataSource.getCurrentUser(any))
         .thenAnswer((_) async => tUser);
   });
@@ -81,7 +81,7 @@ void main() {
         repository.initToken();
 
         // assert
-        verify(mockLocalDataSource.getContacts());
+        // verify(mockLocalDataSource.getContacts());
       },
     );
   });

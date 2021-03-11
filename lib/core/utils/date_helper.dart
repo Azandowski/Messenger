@@ -35,4 +35,16 @@ class DateHelper {
       return 'Был(а) ' + DateFormat.yMMMMd('ru-RU').format(dateTime);
     }
   }
+
+  String getChatDay (DateTime dateTime) {
+    if (dateTime.isToday()) { 
+      return 'Сегодня';
+    } else if (dateTime.isYesterday()) {
+      return 'Вчера';
+    } else if (dateTime.isThisYear()) { 
+      return DateFormat.MMMMd('ru-RU').format(dateTime);
+    } else {
+      return DateFormat.yMMMMd('ru-RU').format(dateTime);
+    }
+  } 
 }
