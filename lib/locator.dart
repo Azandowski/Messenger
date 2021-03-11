@@ -75,7 +75,7 @@ Future<void> init() async {
 
   sl.registerFactory(() => ChatGlobalCubit(sl(), sl()));
 
-  sl.registerFactory(() => ProfileCubit(getUser: sl()));
+  sl.registerFactory(() => ProfileCubit(getUser: sl(), authConfig: sl()));
   sl.registerFactory(() => ChatsCubit(sl()));
 
   // Use cases

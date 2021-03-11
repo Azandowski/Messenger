@@ -8,11 +8,10 @@ import '../../../../core/error/failures.dart';
 import '../../../../core/utils/multipart_request_helper.dart';
 
 abstract class EditProfileDataSource {
-  Future<bool> updateUser({
-    @required File file,
-    @required Map<String, String> data,
-    @required String token
-  });
+  Future<bool> updateUser(
+      {@required File file,
+      @required Map<String, String> data,
+      @required String token});
 }
 
 class EditProfileDataSourceImpl implements EditProfileDataSource {
@@ -21,21 +20,21 @@ class EditProfileDataSourceImpl implements EditProfileDataSource {
   EditProfileDataSourceImpl({@required this.request});
 
   @override
-  Future<bool> updateUser({
-    File file, Map<String, String> data, String token
-  }) async {
+  Future<bool> updateUser(
+      {File file, Map<String, String> data, String token}) async {
     http.StreamedResponse response = await MultipartRequestHelper.postData(
-      token: token, 
-      request: request, 
-      data: data,
-      files: file != null ? [file] : [],
-      keyName: 'avatar'
-    );
-  
+        token: token,
+        request: request,
+        data: data,
+        files: file != null ? [file] : [],
+        keyName: 'avatar');
+
     if (response.statusCode >= 200 && response.statusCode <= 299) {
       return true;
     } else {
-      throw ServerFailure(message: ErrorHandler.getErrorMessage(response.stream.bytesToString().toString()));
+      throw ServerFailure(
+          message: ErrorHandler.getErrorMessage(
+              response.stream.bytesToString().toString()));
     }
   }
 }

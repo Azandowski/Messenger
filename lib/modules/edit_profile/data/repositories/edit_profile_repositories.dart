@@ -11,8 +11,8 @@ class EditUserRepositoryImpl extends EditUserRepository {
   final EditProfileDataSource editProfileDataSource;
   final NetworkInfo networkInfo;
 
-  EditUserRepositoryImpl({
-    @required this.editProfileDataSource, @required this.networkInfo});
+  EditUserRepositoryImpl(
+      {@required this.editProfileDataSource, @required this.networkInfo});
 
   @override
   Future<Either<Failure, bool>> updateUser(

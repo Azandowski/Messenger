@@ -17,7 +17,7 @@ class User extends Equatable {
 
   @override
   List<Object> get props =>
-      [name, surname, patronym, phoneNumber, profileImage,id];
+      [name, surname, patronym, phoneNumber, profileImage, id];
 
   static const empty = null;
 

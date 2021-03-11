@@ -3,49 +3,52 @@ import 'package:messenger_mobile/core/error/failures.dart';
 import 'package:messenger_mobile/modules/edit_profile/presentation/bloc/edit_profile_cubit.dart';
 import 'package:messenger_mobile/modules/edit_profile/presentation/bloc/edit_profile_event.dart';
 import 'package:messenger_mobile/modules/edit_profile/presentation/bloc/edit_profile_state.dart';
+import 'package:messenger_mobile/modules/media/domain/usecases/get_image.dart';
 import 'package:messenger_mobile/modules/profile/domain/usecases/edit_user.dart';
 import 'package:mockito/mockito.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 class MockEditUser extends Mock implements EditUser {}
 
-void main () { 
+class MockGetImage extends Mock implements GetImage {}
+
+void main() {
   EditProfileCubit cubit;
   MockEditUser mockEditUser;
-  
-  setUp(() { 
+  MockGetImage mockGetImage;
+
+  setUp(() {
     mockEditUser = MockEditUser();
+    mockGetImage = MockGetImage();
     cubit = EditProfileCubit(
-      editUser: mockEditUser
+      editUser: mockEditUser,
+      getImageUseCase: mockGetImage,
     );
   });
 
-  test('initialState should be Normal State', () {
+  test('initialState should be EditProfileLoading', () {
     // assert
     expect(cubit.state, equals(EditProfileLoading()));
   });
 
-  test ('should return error if there is an error', () {
-    when(mockEditUser(any)).thenAnswer((_) async => Left(ServerFailure(message: 'ERROR')));
+  group('updateProfile', () {});
+
+  test('should return error if there is an error', () {
+    when(mockEditUser(any))
+        .thenAnswer((_) async => Left(ServerFailure(message: 'ERROR')));
 
     // assert layer
-    final expected = [ 
-      EditProfileLoading(),
-      EditProfileError(message: 'ERROR')
-    ];
+    final expected = [EditProfileLoading(), EditProfileError(message: 'ERROR')];
 
     cubit.updateProfile(EditProfileUpdateUser(token: ''));
   });
 
-  test ('If success state becomes success', () {
-    when(mockEditUser(any )).thenAnswer((_) async => Right(true));
+  test('If success state becomes success', () {
+    when(mockEditUser(any)).thenAnswer((_) async => Right(true));
 
     // assert layer
-    final expected = [ 
-      EditProfileLoading(),
-      EditProfileSuccess()
-    ];
+    final expected = [EditProfileLoading(), EditProfileSuccess()];
 
     cubit.updateProfile(EditProfileUpdateUser(token: ''));
-  }); 
+  });
 }
