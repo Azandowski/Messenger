@@ -24,7 +24,7 @@ class MessageUserModel extends MessageUser {
     avatarURL: avatarURL
   );
 
-  factory MessageUserModel.fromJson (Map json) {
+  factory MessageUserModel.fromJson (Map json) {    
     return MessageUserModel(
       id: json['id'],
       name: json['name'],

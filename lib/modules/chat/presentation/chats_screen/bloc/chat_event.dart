@@ -5,7 +5,20 @@ abstract class ChatEvent extends Equatable {
   const ChatEvent();
 }
 
-class MessageAdded extends ChatEvent{
+class LoadMessages extends ChatEvent {
+  final bool isPagination;
+
+  LoadMessages({
+    @required this.isPagination
+  });
+
+  @override
+  List<Object> get props => [
+    isPagination
+  ];
+}
+
+class MessageAdded extends ChatEvent {
   final Message message;
 
   MessageAdded({
@@ -14,15 +27,15 @@ class MessageAdded extends ChatEvent{
 
   @override
   List<Object> get props => [message];
-
 }
 
-class MessageSend extends ChatEvent{
+class MessageSend extends ChatEvent {
   final String message;
 
-  MessageSend({this.message});
+  MessageSend({
+    this.message
+  });
 
   @override
   List<Object> get props => [message];
-  
 }

@@ -14,7 +14,8 @@ class ChooseContactsPage extends StatefulWidget {
 
   const ChooseContactsPage({
     @required this.delegate,
-    });
+  });
+  
   @override
   _ChooseContactsPageState createState() => _ChooseContactsPageState();
 }
@@ -23,10 +24,10 @@ class _ChooseContactsPageState extends State<ChooseContactsPage> {
     @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-           providers: [
-             BlocProvider(create: (BuildContext context) => ChooseContactCubit()),
-           ],
-            child: ChooseContactsScreen(delegate: widget.delegate,),
-      );
+      providers: [
+        BlocProvider(create: (BuildContext context) => ChooseContactCubit()),
+      ],
+      child: ChooseContactsScreen(delegate: widget.delegate,),
+    );
   }
 }

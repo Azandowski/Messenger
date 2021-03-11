@@ -56,7 +56,7 @@ class _CreationModuleScreenState extends State<CreationModuleScreen> {
                   actionProcess(action, context);
                 },
               ),
-              ContactsList(isScrollable: false,)
+              ContactsList(isScrollable: false)
             ],
           )
         ),

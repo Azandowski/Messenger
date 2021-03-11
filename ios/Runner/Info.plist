@@ -18,6 +18,12 @@
 	<string>$(FLUTTER_BUILD_NAME)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>en</string>
+		<string>ru</string>
+		<string>kk</string>
+	</array>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>

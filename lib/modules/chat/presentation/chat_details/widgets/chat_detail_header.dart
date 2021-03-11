@@ -19,12 +19,12 @@ class ChatDetailHeader extends StatelessWidget {
         children: [
           Column(
             children: [
-              Image(
+              FadeInImage(
+                placeholder: AssetImage("assets/images/logo.png"),
                 image: chatDetailed?.chat?.imageUrl == null ? AssetImage('assets/images/placeholder.png') : 
                   NetworkImage(chatDetailed?.chat?.imageUrl),
-                width: MediaQuery.of(context).size.width,
-                height: 286,
-                fit: BoxFit.cover,
+                  height: 286,
+                  fit: BoxFit.cover,
               ),
               Container(
                 height: 115, 
@@ -82,7 +82,7 @@ class ChatDetailHeader extends StatelessWidget {
                   ),
                   Divider(),
                   Text(
-                    chatDetailed.chat.description,
+                    chatDetailed.chat.description ?? '',
                     overflow: TextOverflow.ellipsis,
                     maxLines: 2,
                     textAlign: TextAlign.left,

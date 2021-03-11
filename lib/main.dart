@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:messenger_mobile/core/screens/splash_screen.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'app/appTheme.dart';
 import 'bloc_observer.dart';
 import 'core/blocs/authorization/bloc/auth_bloc.dart';
@@ -18,7 +19,8 @@ final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await serviceLocator.init();
-  initializeDateFormatting('ru', null);
+  await EasyLocalization.ensureInitialized();
+  // initializeDateFormatting('ru', null);
 
   Bloc.observer = SimpleBlocObserver();
   await SystemChrome.setPreferredOrientations([
@@ -27,8 +29,20 @@ void main() async {
   ]);
 
   SystemChrome.setEnabledSystemUIOverlays([]);
-
-  runApp(MainApp());
+  runApp(
+    EasyLocalization(
+      child: MainApp(),
+      supportedLocales: [
+        Locale('ru', 'RU'),
+        Locale('en', 'US'),
+        Locale('kk', 'KZ'),
+        Locale('tr', 'TR'),
+        Locale('zh', 'CN'),
+      ],
+      path: 'assets/translations',
+      fallbackLocale: Locale('ru', 'RU'),
+    ),
+  );
 }
 
 class MainApp extends StatelessWidget {
@@ -38,15 +52,28 @@ class MainApp extends StatelessWidget {
       providers: [
         BlocProvider.value(value: serviceLocator.sl<ChatGlobalCubit>()),
         BlocProvider(create: (_) => serviceLocator.sl<CategoryBloc>()),
-        BlocProvider(create: (_) => serviceLocator.sl<ContactBloc>()..add(ContactFetched()),),
-        BlocProvider.value(value: serviceLocator.sl<AuthBloc>()),
+        BlocProvider(
+          create: (_) =>
+              serviceLocator.sl<ContactBloc>()..add(ContactFetched()),
+        ),
+        BlocProvider.value(
+          value: serviceLocator.sl<AuthBloc>(),
+        ),
       ],
-      child: MaterialApp(
-        home: SplashScreen(),
-        theme: AppTheme.light,
-        navigatorKey: navigatorKey,
-        routes: routes,
-      )
+      child: Builder(
+        builder: (BuildContext context) {
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            home: SplashScreen(),
+            theme: AppTheme.light,
+            navigatorKey: navigatorKey,
+            localizationsDelegates: context.localizationDelegates,
+            supportedLocales: context.supportedLocales,
+            locale: context.deviceLocale,
+            routes: routes,
+          );
+        },
+      ),
     );
   }
 }

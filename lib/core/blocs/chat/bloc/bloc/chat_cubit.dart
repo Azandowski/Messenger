@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
+import 'package:messenger_mobile/modules/category/domain/entities/chat_permissions.dart';
 
 import '../../../../../locator.dart';
 import '../../../../../modules/category/domain/entities/chat_entity.dart';
@@ -11,6 +12,7 @@ import '../../../../../modules/chats/domain/usecase/get_chats.dart';
 import '../../../../../modules/chats/domain/usecase/params.dart';
 import '../../../../config/auth_config.dart';
 import '../../../../services/network/paginatedResult.dart';
+import 'package:messenger_mobile/core/utils/list_helper.dart';
 
 part 'chat_state.dart';
 
@@ -51,7 +53,7 @@ class ChatGlobalCubit extends Cubit<ChatState> {
     ));
 
     final response = await getChats(GetChatsParams(
-      lastChatID: isPagination ? this.state.chats?.last?.chatId : null,
+      lastChatID: isPagination ? this.state.chats?.lastItem?.chatId : null,
       token: sl<AuthConfig>().token
     ));
 
@@ -71,5 +73,33 @@ class ChatGlobalCubit extends Cubit<ChatState> {
         ));
       }
     );
+  }
+
+  void leaveFromChat ({
+    @required int id
+  }) {
+    var chats = this.state.chats.where((e) => e.chatId != id).map((e) => e.clone()).toList();
+
+    emit(ChatsLoaded(
+      hasReachedMax: this.state.hasReachedMax ?? false,
+      chats: chats
+    ));
+  }
+
+  void updateChatSettings ({
+    @required ChatPermissions chatPermissions,
+    @required int id
+  }) {
+    var newChat = this.state.chats.firstWhere((e) => e.chatId == id, orElse: () => null);
+    if (newChat != null) {
+      var updatedChat = newChat.clone(permissions: chatPermissions);
+
+      var chats = this.state.chats.map((e) => e.chatId == id ? updatedChat : e.clone()).toList();
+
+      emit(ChatsLoaded(
+        hasReachedMax: this.state.hasReachedMax ?? false,
+        chats: chats
+      ));
+    }
   }
 }

@@ -1,8 +1,10 @@
 import 'dart:io';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../core/blocs/chat/bloc/bloc/chat_cubit.dart';
 import '../../../../core/utils/paginated_scroll_controller.dart';
@@ -21,20 +23,19 @@ import '../bloc/cubit/chats_cubit_cubit.dart';
 import '../widgets/categories_bloc_listener.dart';
 import '../widgets/chat_item/chat_preview_item.dart';
 
-
 class ChatsScreen extends StatefulWidget {
   @override
   _ChatsScreenState createState() => _ChatsScreenState();
 }
 
-
 class _ChatsScreenState extends State<ChatsScreen> {
-
   PaginatedScrollController scrollController = PaginatedScrollController();
   ChatsCubit cubit;
+  String language;
 
   @override
   void initState() {
+    language = sl<SharedPreferences>().getString('language') ?? 'English';
     cubit = sl<ChatsCubit>();
     context.read<ChatGlobalCubit>().loadChats(isPagination: false);
     scrollController.addListener(() {
@@ -81,15 +82,6 @@ class _ChatsScreenState extends State<ChatsScreen> {
                   }
                 ),
                 body: Container(
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: state.wallpaperFile != null ? 
-                        FileImage(state.wallpaperFile) : 
-                          AssetImage('assets/images/bg-home.png'),
-                      fit: BoxFit.cover,
-                      colorFilter: ColorFilter.mode(Colors.black87, BlendMode.lighten)
-                    ) 
-                  ),
                   child: ListView.separated(
                     controller: scrollController,
                     itemBuilder: (context, int index) {
@@ -136,59 +128,83 @@ class _ChatsScreenState extends State<ChatsScreen> {
 
   // * * Methods
 
-  void _handleChatsUpdates (ChatState state) {
+  void _handleChatsUpdates(ChatState state) {
     if (state is ChatsError) {
       Scaffold.of(context).showSnackBar(
         SnackBar(
-          content: Text(state.errorMessage,
-          style: TextStyle(color: Colors.red)),
+          content:
+              Text(state.errorMessage, style: TextStyle(color: Colors.red)),
         ), // SnackBar
       );
     }
   }
 
-  Widget _buildSeparators (int index) {
+  Widget _buildSeparators(int index) {
     if (index == 0) {
       return Container();
     } else {
       return Container(
         height: 2,
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: Divider(color: Colors.grey,),
+        child: Divider(
+          color: Colors.grey,
+        ),
       );
     }
   }
 
-  AppBar _buildAppBar (
-    ChatViewModel selectedChat,
-    Function onIconClick
-  ) {
+  AppBar _buildAppBar(ChatViewModel selectedChat, Function onIconClick) {
     var isSelected = selectedChat != null;
 
     return AppBar(
-      title: Text(
-        !isSelected ? 'Главная' : 'Выбрано: 1'
-      ),
-      leading: isSelected ? IconButton(
-        icon: Icon(Icons.arrow_back),
-        onPressed: () {
-          context.read<ChatsCubit>().didCancelChatSelection();
-        },
-      ) : null,
+      title: Text(!isSelected ? 'appBarTitle'.tr() : 'selectedChats'.tr()),
+      leading: isSelected
+        ? IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              context.read<ChatsCubit>().didCancelChatSelection();
+            },
+          )
+        : null,
       actions: [
+        DropdownButton(
+          value: language,
+          icon: Icon(Icons.language_outlined),
+          iconSize: 24,
+          elevation: 15,
+          onChanged: (String newLanguage) async {
+            setState(() => language = newLanguage);
+          },
+          items: <String>['English', 'Русский', 'Kazakh']
+            .map<DropdownMenuItem<String>>(
+              (String value) => DropdownMenuItem(
+                child: Text(value),
+                value: value,
+                onTap: () async {
+                  if (value == 'English') {
+                    EasyLocalization.of(context)
+                      .setLocale(Locale('en', 'US'));
+                  } else if (value == 'Kazakh') {
+                    EasyLocalization.of(context)
+                      .setLocale(Locale('kk', 'KZ'));
+                    ;
+                  } else {
+                    EasyLocalization.of(context)
+                      .setLocale(Locale('ru', 'RU'));
+                  }
+                },
+              ),
+            )
+            .toList(),
+        ),
         IconButton(
           icon: Icon(Icons.format_paint),
           onPressed: () {
             onIconClick();
-          }
+          },
         )
       ],
     );
   }
 }
 
-
-
-extension on _ChatsScreenState {
-
-}
