@@ -13,17 +13,17 @@ class MarqueText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Marquee(
-    text:text,
-    style: style,
-    scrollAxis: Axis.horizontal,
-    crossAxisAlignment: CrossAxisAlignment.start,
-    blankSpace: 8.0,
-    velocity: 50.0,
-    pauseAfterRound: Duration(seconds: 1),
-    accelerationDuration: Duration(seconds: 1),
-    accelerationCurve: Curves.linear,
-    decelerationDuration: Duration(milliseconds: 500),
-    decelerationCurve: Curves.easeOut,
-               );
+      text:text,
+      style: style,
+      scrollAxis: Axis.horizontal,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      blankSpace: 8.0,
+      velocity: 15.0,
+      showFadingOnlyWhenScrolling: false,
+      accelerationDuration: Duration(seconds: 1),
+      accelerationCurve: Curves.bounceOut,
+      decelerationDuration: Duration(milliseconds: 500),
+      decelerationCurve: Curves.easeOut,
+    );
   }
 }
