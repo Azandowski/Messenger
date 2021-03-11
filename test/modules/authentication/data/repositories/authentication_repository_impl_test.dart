@@ -29,6 +29,7 @@ class MockAuthConfig extends Mock implements AuthConfig {}
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   AuthenticationRepositiryImpl repository;
+
   MockRemoteDataSource mockRemoteDataSource;
   MockLocalDataSource mockLocalDataSource;
   MockNetworkInfo mockNetworkInfo;
@@ -58,7 +59,7 @@ void main() {
       profileImage: 'image',
     );
     when(mockLocalDataSource.getToken()).thenAnswer((_) async => 'test');
-    when(mockLocalDataSource.getContacts()).thenAnswer((_) async => true);
+    // when(mockLocalDataSource.getContacts()).thenAnswer((_) async => true);
     when(mockRemoteDataSource.getCurrentUser(any))
         .thenAnswer((_) async => tUser);
   });
@@ -72,16 +73,6 @@ void main() {
 
         // assert
         verify(mockLocalDataSource.getToken());
-      },
-    );
-    test(
-      'should get contacts from localDataSource',
-      () async {
-        // act
-        repository.initToken();
-
-        // assert
-        verify(mockLocalDataSource.getContacts());
       },
     );
   });

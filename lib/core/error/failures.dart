@@ -19,11 +19,11 @@ class StorageFailure extends Failure {
 }
 
 class ConnectionFailure extends Failure {
-  ConnectionFailure() : super(message: 'no_connection');
+  ConnectionFailure() : super(message: FailureMessages.noConnection);
 }
 
 abstract class FailureMessages {
-  static final String noConnection = "no_connection";
+  static final String noConnection = "noConnection";
   static final String invalidPhone = "invalidPhone";
   static final String invalidCode = "invalidCode";
 }

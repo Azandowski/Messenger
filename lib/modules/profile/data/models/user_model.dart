@@ -9,14 +9,14 @@ class UserModel extends User {
   final String profileImage;
   final int id;
 
-  UserModel(
-      {this.name,
-      this.surname,
-      this.patronym,
-      this.phoneNumber,
-      this.id,
-      this.profileImage})
-      : super(
+  UserModel({
+    this.name,
+    this.surname,
+    this.patronym,
+    this.phoneNumber,
+    this.id,
+    this.profileImage,
+  }) : super(
             name: name,
             surname: surname,
             patronym: patronym,
