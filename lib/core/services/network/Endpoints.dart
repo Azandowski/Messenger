@@ -33,7 +33,8 @@ enum Endpoints {
 
   addMembersToChat,
   leaveChat,
-  getChatMessages
+  getChatMessages,
+  setTimeDeleted
 }
 
 extension EndpointsExtension on Endpoints {
@@ -106,6 +107,8 @@ extension EndpointsExtension on Endpoints {
         return '${Config.baseAPIpath.value}/messenger/chat/${params[0]}/get-message';
       case Endpoints.getCategoryChats:
         return '${Config.baseAPIpath.value}/messenger/category/${params[0]}';
+      case Endpoints.setTimeDeleted:
+        return '${Config.baseAPIpath.value}/messenger/chat/${params[0]}/set-time-deleted';
     }
   }
 

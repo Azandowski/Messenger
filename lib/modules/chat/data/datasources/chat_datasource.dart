@@ -35,6 +35,9 @@ abstract class ChatDataSource {
     int id
   });
   Future<PaginatedResultViaLastItem<Message>> getChatMessages (int lastMessageId);
+  Future<void> setTimeDeleted ({
+    int id, int timeInSeconds
+  });
 }
 
 
@@ -49,12 +52,22 @@ class ChatDataSourceImpl implements ChatDataSource {
     @required this.client,
     @required this.socketService,
   }) {
-    socketService.echo.channel(SocketChannels.getChatByID(id))
+    socketService.echo.channel(SocketChannels.getChatByID(44))
       .listen(
-        '.messages.$id', 
+        'messages.44', 
         (updates) => _controller.add(MessageModel.fromJson(updates['message']))
       );
-  }
+
+    print("CHANNNNNEEEEL NAME: ${SocketChannels.getChatByID(44)}");
+    socketService.echo.join(SocketChannels.getChatByID(44))
+      .here((users) {
+        print(users);
+      }).joining((user) {
+        print(user);
+      }).leaving((user) {
+        print(user);
+      });
+    }
 
   @override
   Future<ChatDetailed> getChatDetails(int id) async {
@@ -204,6 +217,26 @@ class ChatDataSourceImpl implements ChatDataSource {
         hasReachMax: !responseJSON['hasMoreResults']
       );
     } else {
+      throw ServerFailure(message: ErrorHandler.getErrorMessage(response.body.toString()));
+    }
+  }
+
+  @override 
+  Future<void> setTimeDeleted ({
+    @required int timeInSeconds,
+    @required int id
+  }) async {
+    http.Response response = await client.post(
+      Endpoints.setTimeDeleted.buildURL(urlParams: [
+        '$id'
+      ]),
+      headers: Endpoints.changeChatSettings.getHeaders(token: sl<AuthConfig>().token),
+      body: json.encode({
+        'time_deleted': '$timeInSeconds'
+      })
+    );
+
+    if (!response.isSuccess) { 
       throw ServerFailure(message: ErrorHandler.getErrorMessage(response.body.toString()));
     }
   }

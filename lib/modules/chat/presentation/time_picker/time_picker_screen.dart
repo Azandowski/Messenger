@@ -94,4 +94,23 @@ extension TimeRangesUIExtension on TimeOptions {
         return '1 неделя';
     }
   }
+
+  num get seconds {
+    switch (this) {
+      case TimeOptions.off:
+        return null;
+      case TimeOptions.oneMinute:
+        return 60;
+      case TimeOptions.tenMinutes:
+        return 600;
+      case TimeOptions.thirtyMinutes:
+        return 1800;
+      case TimeOptions.oneHour:
+        return 3600;
+      case TimeOptions.oneDay:
+        return 86400;
+      case TimeOptions.oneWeek:
+        return 604800;
+    }
+  }
 }

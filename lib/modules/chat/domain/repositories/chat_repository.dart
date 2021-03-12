@@ -21,4 +21,7 @@ abstract class ChatRepository {
   Future<Either<Failure, NoParams>> leaveChat (int id);
   Future<Either<Failure, ChatPermissions>> updateChatSettings({ ChatPermissionModel permissions, int id }); 
   Future<Either<Failure, PaginatedResultViaLastItem<Message>>> getChatMessages (int lastMessageId);
+  Future<Either<Failure, NoParams>> setTimeDeleted ({
+    int id, int timeInSeconds
+  });
 }

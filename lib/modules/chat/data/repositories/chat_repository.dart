@@ -161,4 +161,22 @@ class ChatRepositoryImpl extends ChatRepository {
       return Left(ConnectionFailure());
     }
   }
+
+  @override
+  Future<Either<Failure, NoParams>> setTimeDeleted({int id, int timeInSeconds}) async {
+    if (await networkInfo.isConnected) { 
+      try {
+        final response = await chatDataSource.setTimeDeleted(id: id, timeInSeconds: timeInSeconds);
+        return Right(NoParams());
+      } catch (e) {
+        if (e is Failure) {
+          return Left(e);
+        } else {
+          return Left(ServerFailure(message: e.toString()));
+        }
+      }
+    } else {
+      return Left(ConnectionFailure());
+    }
+  }
 }

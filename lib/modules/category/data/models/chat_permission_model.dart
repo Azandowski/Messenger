@@ -9,7 +9,7 @@ class ChatPermissionModel extends ChatPermissions {
     this.isMediaSendOn = true
   }) : super(
     isSoundOn: isSoundOn,
-    isMediaSendOn: isMediaSendOn
+    isMediaSendOn: isMediaSendOn,
   );
 
   factory ChatPermissionModel.fromJson(Map<String, dynamic> json) {
@@ -18,7 +18,7 @@ class ChatPermissionModel extends ChatPermissions {
     } else {
       return ChatPermissionModel(
         isSoundOn: json['sound'] == 1,
-        isMediaSendOn: json['admin_media_send'] == 1
+        isMediaSendOn: json['admin_media_send'] == 1,
       ); 
     }
   }

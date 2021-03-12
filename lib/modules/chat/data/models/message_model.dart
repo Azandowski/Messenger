@@ -11,6 +11,8 @@ class MessageModel extends Message {
   final MessageUser user;
   final ChatActions chatActions;
   final int colorId;
+  final int deletionSeconds;
+  final DateTime willBeDeletedAt;
 
   MessageModel({
     this.id,
@@ -19,7 +21,9 @@ class MessageModel extends Message {
     this.text,
     this.user,
     this.colorId,
-    this.chatActions
+    this.chatActions,
+    this.deletionSeconds,
+    this.willBeDeletedAt
   }) : super(
     id: id,
     isRead: isRead,
@@ -27,7 +31,9 @@ class MessageModel extends Message {
     text: text,
     dateTime: dateTime,
     user: user,
-    chatActions: chatActions
+    chatActions: chatActions,
+    willBeDeletedAt: willBeDeletedAt,
+    deletionSeconds: deletionSeconds
   );
 
   factory MessageModel.fromJson(Map json) {
@@ -39,7 +45,10 @@ class MessageModel extends Message {
       text: json['text'],
       isRead: json['is_read'] == 1,
       dateTime: DateTime.parse(json['created_at']),
-      chatActions: ChatActions.values.firstWhere((e) => e.key == json['action'], orElse: () => null)
+      chatActions: ChatActions.values.firstWhere((e) => e.key == json['action'], orElse: () => null),
+      willBeDeletedAt: json['deleted_at']  != null ? 
+        DateTime.parse(json['deleted_at']) : null,
+      deletionSeconds: json['time_deleted']
     );
   }
 

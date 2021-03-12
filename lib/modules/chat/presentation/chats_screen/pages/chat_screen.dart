@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger_mobile/app/appTheme.dart';
 import 'package:messenger_mobile/core/widgets/independent/placeholders/load_widget.dart';
@@ -13,6 +14,7 @@ import 'package:messenger_mobile/modules/chat/domain/entities/message.dart';
 import 'package:messenger_mobile/modules/chat/domain/repositories/chat_repository.dart';
 import 'package:messenger_mobile/modules/chat/domain/usecases/get_messages.dart';
 import 'package:messenger_mobile/modules/chat/domain/usecases/send_message.dart';
+import 'package:messenger_mobile/modules/chat/domain/usecases/set_time_deleted.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chat_details/page/chat_detail_page.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/bloc/chat_bloc.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/chatControlPanel/chatControlPanel.dart';
@@ -59,7 +61,8 @@ class _ChatScreenState extends State<ChatScreen> implements TimePickerDelegate {
       chatRepository: chatRepository,
       sendMessage: SendMessage(repository: chatRepository),
       getMessages: GetMessages(repository: chatRepository),
-      chatsRepository: sl()
+      chatsRepository: sl(),
+      setTimeDeleted: SetTimeDeleted(repository: chatRepository)
     )..add(LoadMessages(isPagination: true));
     super.initState();
   }
@@ -75,39 +78,33 @@ class _ChatScreenState extends State<ChatScreen> implements TimePickerDelegate {
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.width;
     
-    return BlocProvider(
-      lazy: false,
-      create: (context) => _chatBloc,
-      child: BlocConsumer<ChatBloc, ChatState>(
-        listener: (context, state) {
-          if (state is ChatError) {
-            Scaffold.of(context)
-              ..hideCurrentSnackBar()
-              ..showSnackBar(
-                SnackBar(content: Text(state.message)),
-              );
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: false,
+        titleSpacing: 0.0,
+        title: ChatHeading(
+          title: widget.chatEntity.title ?? '',
+          description: widget.chatEntity.description ?? 'no_description',
+          avatarURL: widget.chatEntity.imageUrl,
+          onTap: () {
+            _navigator.push(ChatDetailPage.route(widget.chatEntity.chatId));
           }
-        },
-        
-        builder: (context, state) {
-          return Scaffold(
-            appBar: AppBar(
-              centerTitle: false,
-              titleSpacing: 0.0,
-              title: ChatHeading(
-                title: widget.chatEntity.title ?? '',
-                description: widget.chatEntity.description ?? 'no_description',
-                avatarURL: widget.chatEntity.imageUrl,
-                onTap: () {
-                  _navigator.push(ChatDetailPage.route(widget.chatEntity.chatId));
-                }
-              ),
-              actions: [
-                ChatScreenActions(timePickerDelegate: this,)
-              ],
-            ),
-            backgroundColor: AppColors.pinkBackgroundColor,
-            body: Column(
+        ),
+        actions: [
+          ChatScreenActions(timePickerDelegate: this,)
+        ],
+      ),
+      backgroundColor: AppColors.pinkBackgroundColor,
+      body: BlocProvider(
+        lazy: false,
+        create: (context) => _chatBloc,
+        child: BlocConsumer<ChatBloc, ChatState>(
+          listener: (context, state) {
+            _handleListener(state);
+          },
+          
+          builder: (context, state) {
+            return Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -165,10 +162,10 @@ class _ChatScreenState extends State<ChatScreen> implements TimePickerDelegate {
                   height: height
                 ),
               ],
-            ),
-          );
-        }
-      )
+            );
+          }
+        )
+      ),
     );
   }
 
@@ -179,11 +176,30 @@ class _ChatScreenState extends State<ChatScreen> implements TimePickerDelegate {
     return state.messages.length + 1;
   }
 
+  void _handleListener (ChatState state) {
+    if (state is ChatError) {
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(content: Text(state.message)),
+        );
+    } else if (state is ChatLoadingSilently) {
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(SnackBar(
+          content: LinearProgressIndicator(), 
+          duration: Duration(days: 2),
+        ));
+    } else {
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    }
+  }
+
 
   Widget _buildSeparator (int index, ChatState state) {
     if (!(state is ChatLoading && getItemsCount(state) - 1 == index)) {
       Message nextMessage = state.messages.getItemAt(index + 1);
-
+    
       if (
         nextMessage != null && 
         nextMessage.dateTime?.day != null && 
@@ -199,6 +215,7 @@ class _ChatScreenState extends State<ChatScreen> implements TimePickerDelegate {
 
   @override
   void didSelectTimeOption(TimeOptions option) {
-    
+    Navigator.of(context).pop();
+    _chatBloc.add(SetInitialTime(option: option));
   }
 }

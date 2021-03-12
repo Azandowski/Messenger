@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:messenger_mobile/core/config/auth_config.dart';
 import 'package:messenger_mobile/core/error/failures.dart';
 import 'package:messenger_mobile/core/services/network/paginatedResult.dart';
+import 'package:messenger_mobile/core/usecases/usecase.dart';
 import 'package:messenger_mobile/core/utils/paginated_scroll_controller.dart';
 import 'package:messenger_mobile/locator.dart';
 import 'package:messenger_mobile/modules/chat/domain/entities/message.dart';
@@ -16,9 +17,9 @@ import 'package:messenger_mobile/modules/chat/domain/usecases/get_messages.dart'
 import 'package:messenger_mobile/modules/chat/domain/usecases/params.dart';
 import 'package:messenger_mobile/modules/chat/domain/usecases/send_message.dart';
 import 'package:messenger_mobile/core/utils/list_helper.dart';
+import 'package:messenger_mobile/modules/chat/domain/usecases/set_time_deleted.dart';
 import 'package:messenger_mobile/modules/chat/presentation/time_picker/time_picker_screen.dart';
 import 'package:messenger_mobile/modules/chats/domain/repositories/chats_repository.dart';
-
 part 'chat_event.dart';
 part 'chat_state.dart';
 
@@ -28,6 +29,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   final ChatRepository chatRepository;
   final SendMessage sendMessage;
   final GetMessages getMessages;
+  final SetTimeDeleted setTimeDeleted;
   final int chatId;
 
   var _random = Random();
@@ -38,13 +40,16 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   // Timer left for the messages
   int currentLeftTime = 0;
+  Timer _timerDeletion;
+
 
   ChatBloc({
     @required this.chatRepository,
     @required this.chatsRepository,
     @required this.chatId,
     @required this.sendMessage,
-    @required this.getMessages
+    @required this.getMessages,
+    @required this.setTimeDeleted
   }) : super(
     ChatInitial(
       messages: [],
@@ -128,6 +133,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         chatID: chatId,
         text: event.message,
         identificator: randomID,
+        timeLeft: currentLeftTime == 0 ? null : currentLeftTime
       ));
 
       yield* _eitherSentOrErrorState(response);
@@ -143,8 +149,18 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
       yield* _eitherMessagesOrErrorState(response, event.isPagination);
     } else if (event is SetInitialTime) {
-      // TODO: Update it
-      currentLeftTime = 10;
+      yield ChatLoadingSilently(
+        messages: this.state.messages, 
+        hasReachedMax: this.state.hasReachedMax, 
+        wallpaperPath: this.state.wallpaperPath)
+      ;
+
+      final response = await setTimeDeleted(SetTimeDeletedParams(
+        id: chatId, 
+        seconds: event.option.seconds
+      ));
+
+      yield* _eitherSentWithTimerOrFailure(response, event);
     }
   }
 
@@ -161,7 +177,10 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       ),
       (message) {
         var i = list.indexWhere((element) => element.identificator == message.identificator);
-        list[i]= message.copyWith(identificator: message.id);
+        list[i]= message.copyWith(
+          identificator: message.id,
+          status: list[i].messageStatus
+        );
         return ChatInitial(
           messages: list,
           hasReachedMax: this.state.hasReachedMax,
@@ -193,6 +212,48 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         );
       }
     );
+  }
+
+
+  // * * Time Deletion
+
+  Stream<ChatState> _eitherSentWithTimerOrFailure(
+    Either<Failure, NoParams> failureOrNoParams,
+    SetInitialTime event
+  ) async* {
+    yield failureOrNoParams.fold(
+      (failure) => ChatInitial(
+        messages: this.state.messages,
+        hasReachedMax: this.state.hasReachedMax,
+        wallpaperPath: this.state.wallpaperPath
+      ),
+      (_) {
+        _handleTimerNewValue(event);
+        return ChatInitial(
+          messages: this.state.messages,
+          hasReachedMax: this.state.hasReachedMax,
+          wallpaperPath: this.state.wallpaperPath
+        );
+      }
+    );
+  }
+
+
+  void _handleTimerNewValue (SetInitialTime event) {
+    currentLeftTime = event.option.seconds;
+  
+    if (currentLeftTime == null || currentLeftTime == 0) {
+      _timerDeletion.cancel();
+    } else {
+      _timerDeletion = new Timer.periodic(
+      Duration(seconds: 1), 
+      (Timer t) { 
+        currentLeftTime -= 1;
+        if (currentLeftTime == 0) {
+          _timerDeletion.cancel();
+        }
+      });
+    }
   }
 
   List<Message> getCopyMessages() => state.messages.map((e) => e.copyWith()).toList();

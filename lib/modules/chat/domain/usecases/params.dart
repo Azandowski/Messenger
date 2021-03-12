@@ -46,3 +46,14 @@ class UpdateChatSettingsParams {
     @required this.permissionModel
   });
 }
+
+
+class SetTimeDeletedParams {
+  final int id;
+  final int seconds;
+
+  SetTimeDeletedParams({
+    @required this.id,
+    @required this.seconds
+  });
+}

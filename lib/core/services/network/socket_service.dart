@@ -28,14 +28,6 @@ class SocketService {
       print('connect');
     });
 
-    socket.onDisconnect((data) {
-      print(data);
-    }); 
-
-    socket.onError((data) {
-      print(data);
-    });
-
     echo = new Echo({
       'broadcaster': 'socket.io',
       'client': socket,
@@ -43,12 +35,7 @@ class SocketService {
         'headers': headers
       }
     });
-
     echo.connect();
-
-    echo.listen('laravel_database_get.index', 'get.index', (d) {
-      print(d);
-    });
   }
 }
 

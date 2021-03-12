@@ -16,6 +16,8 @@ class Message extends Equatable {
   MessageStatus messageStatus;
   int identificator;
   final int colorId;
+  final int deletionSeconds;
+  final DateTime willBeDeletedAt;
   
   Message({
     this.text,
@@ -27,6 +29,8 @@ class Message extends Equatable {
     this.isRead,
     this.chatActions,
     this.messageStatus,
+    this.willBeDeletedAt,
+    this.deletionSeconds
   });
 
   @override
@@ -40,6 +44,8 @@ class Message extends Equatable {
     messageStatus,
     identificator,
     colorId,
+    willBeDeletedAt,
+    deletionSeconds
   ];
 
    Message copyWith({
@@ -52,6 +58,8 @@ class Message extends Equatable {
      MessageStatus status,
      int colorId,
      int identificator,
+     int deletionSeconds,
+     DateTime willBeDeletedAt
   }) {
     return Message(
       id: id ?? this.id,
@@ -61,8 +69,10 @@ class Message extends Equatable {
       dateTime: dateTime ?? this.dateTime,
       user: user ?? this.user,
       chatActions: chatActions ?? null,
-      messageStatus: messageStatus ?? this.messageStatus,
+      messageStatus: status ?? this.messageStatus,
       identificator: identificator ?? this.identificator,
+      willBeDeletedAt: willBeDeletedAt ?? this.willBeDeletedAt,
+      deletionSeconds: deletionSeconds ?? this.deletionSeconds
     );
   }
 
@@ -74,7 +84,7 @@ class Message extends Equatable {
       'text': text,
       'is_read': isRead ? 1 : 0,
       'created_at': dateTime.toIso8601String(),
-      'action': chatActions?.key
+      'action': chatActions?.key,
     };
   }
 }
