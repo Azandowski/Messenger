@@ -4,7 +4,7 @@ class PaginatedScrollController extends ScrollController {
   
   bool isReversed = false;
 
-  PaginatedScrollController({ this.isReversed });
+  PaginatedScrollController({ this.isReversed = false });
   
   bool get isPaginated {
     if (!isReversed) {

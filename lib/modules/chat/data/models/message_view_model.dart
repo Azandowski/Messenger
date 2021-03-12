@@ -14,11 +14,11 @@ class MessageViewModel {
   // MARK: - For UI
 
   String get userNameText {
-    return message.user.name;
+    return message.user.name ?? '';
   }
 
   String get messageText {
-    return message.text;
+    return message.text ?? '';
   }
 
   String get time {

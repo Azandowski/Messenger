@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dartz/dartz.dart';
+import 'package:messenger_mobile/core/services/network/socket_service.dart';
 import 'package:meta/meta.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sembast/sembast.dart';
@@ -44,8 +45,11 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
       final token = await localDataSource.getToken();
 
       authConfig.token = token;
-
-      print('token=$token');
+      if (token != null && token != '') {
+        sl<SocketService>().init();
+      }
+      print(token);  
+      // print(sl<AuthConfig>().user.id);
 
       await getCurrentUser(token);
 
@@ -98,6 +102,10 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
   Future<Either<Failure, String>> saveToken(String token) async {
     await localDataSource.saveToken(token);
     authConfig.token = token;
+    if (token != null && token != '') {
+      sl<SocketService>().init();
+    }
+
     await initToken();
     return Right(token);
   }

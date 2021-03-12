@@ -13,10 +13,9 @@ class SocketService {
 
   SocketService({
     @required this.authConfig
-  }) {
-    
-    // MARK: - Init
+  });
 
+  void init () {
     Map headers = { 'Authorization': 'Bearer ${authConfig.token}' };
 
     socket = IO.io('https://aio-test-vps.kulenkov-group.kz:6002',
@@ -30,6 +29,14 @@ class SocketService {
       print('connected');
     });
 
+    socket.onDisconnect((data) {
+      print(data);
+    }); 
+
+    socket.onError((data) {
+      print(data);
+    });
+
     echo = new Echo({
       'broadcaster': 'socket.io',
       'client': socket,
@@ -39,6 +46,10 @@ class SocketService {
     });
 
     echo.connect();
+
+    echo.listen('laravel_database_get.index', 'get.index', (d) {
+      print(d);
+    });
   }
 }
 
@@ -49,4 +60,8 @@ abstract class SocketChannels {
   static String getChatByID (int id) {
     return 'laravel_database_messages.$id';
   } 
+
+  static String getChatsUpdates (int id) {
+    return 'laravel_database_get.index$id';
+  }
 }

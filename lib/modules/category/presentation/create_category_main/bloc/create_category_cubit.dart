@@ -71,7 +71,7 @@ class CreateCategoryCubit extends Cubit<CreateCategoryState> {
       token: sl<AuthConfig>().token, 
       avatarFile: this.state.imageFile,
       name: nameController.text, 
-      chatIds: this.state.chats.map((e) => e.chatId).toList(),
+      chatIds: (this.state.chats ?? []).map((e) => e.chatId).toList(),
       isCreate: mode == CreateCategoryScreenMode.create,
       categoryID: categoryId
     ));
@@ -148,7 +148,7 @@ class CreateCategoryCubit extends Cubit<CreateCategoryState> {
       (chats) => emit(
         CreateCategoryNormal(
           imageFile: this.state.imageFile,
-          chats: chats
+          chats: chats.data
         )
       )
     );

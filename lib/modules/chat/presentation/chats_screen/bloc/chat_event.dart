@@ -1,8 +1,13 @@
 part of 'chat_bloc.dart';
 
 abstract class ChatEvent extends Equatable {
-  
   const ChatEvent();
+}
+
+
+class ChatScreenStarted extends ChatEvent {
+  @override
+  List<Object> get props => [];
 }
 
 class LoadMessages extends ChatEvent {
@@ -40,4 +45,15 @@ class MessageSend extends ChatEvent {
 
   @override
   List<Object> get props => [message, forwardMessage];
+}
+
+class SetInitialTime extends ChatEvent {
+  final TimeOptions option;
+
+  SetInitialTime({
+    this.option
+  });
+
+  @override
+  List<Object> get props => [option];
 }

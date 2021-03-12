@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:messenger_mobile/core/utils/feedbac_taptic_helper.dart';
+import 'package:vibrate/vibrate.dart';
 
 import '../../../../app/appTheme.dart';
 import 'dialog_action_button.dart';
@@ -213,22 +215,33 @@ class DialogsView extends StatelessWidget {
           )
         ),
         child: GestureDetector(
-          onTap: buttonDetails.onPress,
-          child: ListTile(
-            leading: buttonDetails.iconData != null ? 
-              Icon(
-                buttonDetails.iconData,
-                color: buttonDetails.buttonStyle.textColor,
-              ) : null,
-            title: Text(
-              buttonDetails.title,
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-                color: buttonDetails.buttonStyle.textColor
-              )
+          onTap: () {
+            FeedbackEngine.showFeedback(FeedbackType.selection);
+            buttonDetails.onPress();
+          },
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+            child: Row(
+              children: [
+                if (buttonDetails.iconData != null)
+                  ...[
+                    Icon(
+                      buttonDetails.iconData,
+                      color: buttonDetails.buttonStyle.textColor,
+                    ),
+                    SizedBox(width: 12),
+                  ],
+                Text(
+                  buttonDetails.title,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: buttonDetails.buttonStyle.textColor
+                  ),
+                ),
+              ],
             ),
-          ),
+          )
         ),
       );
     }

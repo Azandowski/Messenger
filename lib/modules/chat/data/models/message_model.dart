@@ -47,6 +47,18 @@ class MessageModel extends Message {
       chatActions: ChatActions.values.firstWhere((e) => e.key == json['action'], orElse: () => null)
     );
   }
+
+  Map toJson () {
+    return {
+      'id': id,
+      'color': colorId,
+      'from_contact': user?.toJson(),
+      'text': text,
+      'is_read': isRead ? 1 : 0,
+      'created_at': dateTime.toIso8601String(),
+      'action': chatActions?.key,
+    };
+  }
 }
 
 class Transfer extends Message {

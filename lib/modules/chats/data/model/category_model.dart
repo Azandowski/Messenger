@@ -35,6 +35,7 @@ class CategoryModel extends CategoryEntity {
       'id': id,
       'name': name,
       'avatar': avatar,
+      'full_link': avatar,
       'total_chats': totalChats
     };
   }

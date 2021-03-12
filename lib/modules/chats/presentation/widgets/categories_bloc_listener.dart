@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:messenger_mobile/core/blocs/chat/bloc/bloc/chat_cubit.dart';
 import 'package:messenger_mobile/modules/chats/domain/entities/category.dart';
 
 import '../../../../core/blocs/category/bloc/category_bloc.dart';
@@ -32,6 +33,9 @@ class ChatScreenCategoriesView extends StatelessWidget {
           },
           onItemSelect: (int id) {
             context.read<ChatsCubit>().tabUpdate(id);
+            context.read<ChatGlobalCubit>().loadChats(
+              isPagination: false, categoryID: id == 0 ? null : id
+            );
           },
         );
       },

@@ -15,8 +15,13 @@ class ChatDateItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(top: 16),
-      color: Colors.white,
+      margin: const EdgeInsets.only(top: 8),
+      width: MediaQuery.of(context).size.width,
+      padding: const EdgeInsets.only(top: 8, bottom: 8),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10)
+      ),
       child: Center(
         child: Text(
           sl<DateHelper>().getChatDay(dateTime)

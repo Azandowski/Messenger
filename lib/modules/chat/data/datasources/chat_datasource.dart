@@ -115,7 +115,9 @@ class ChatDataSourceImpl implements ChatDataSource {
       ],),
       body: {
         'text': params.text ?? '',
-        'forward': json.encode(params.forwardIds.map((e) => e.toString()).toList())
+        'forward': json.encode(params.forwardIds.map((e) => e.toString()).toList()),
+        if (params.timeLeft != null)
+          ...{'time_deleted': params.timeLeft}
       },
       headers: Endpoints.getCurrentUser.getHeaders(token: sl<AuthConfig>().token),
     );

@@ -61,7 +61,7 @@ class ChatPreviewItem extends StatelessWidget {
                           color: AppColors.indicatorColor, fontSize: 12, fontWeight: FontWeight.w500
                         ) : AppFontStyles.mediumStyle,
                         overflow: TextOverflow.ellipsis,
-                        maxLines: viewModel.isGroup ? 1 : 2,
+                        maxLines: 2,
                       ),
                     ),
                     _bottomPinBuilder()

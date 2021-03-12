@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:messenger_mobile/modules/chat/data/repositories/chat_repository.dart';
+import 'package:messenger_mobile/modules/chats/data/repositories/chats_repository_impl.dart';
 import 'package:messenger_mobile/modules/chats/domain/repositories/chats_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -26,11 +28,12 @@ class ChatsCubit extends Cubit<ChatsCubitState> {
 
   void _handleInit () async {
     File wallpaperFile = await repository.getLocalWallpaper();
+    (repository as ChatsRepositoryImpl).init();
+
     if (wallpaperFile != null) {
       emit(
         ChatsCubitStateNormal(
           currentTabIndex: this.state.currentTabIndex,
-          wallpaperFile: wallpaperFile
         )
       );
     }
@@ -40,7 +43,6 @@ class ChatsCubit extends Cubit<ChatsCubitState> {
     emit(
       ChatsCubitStateNormal(
         currentTabIndex: this.state.currentTabIndex,
-        wallpaperFile: file
       )
     );
     
@@ -50,7 +52,6 @@ class ChatsCubit extends Cubit<ChatsCubitState> {
   void tabUpdate(int index) {
     emit(ChatsCubitStateNormal(
       currentTabIndex: index,
-      wallpaperFile: this.state.wallpaperFile
     ));
   }
 
@@ -59,7 +60,6 @@ class ChatsCubit extends Cubit<ChatsCubitState> {
       ChatsCubitSelectedOne(
         currentTabIndex: this.state.currentTabIndex, 
         selectedChatIndex: index,
-        wallpaperFile: this.state.wallpaperFile
       )
     );
   }
@@ -68,7 +68,6 @@ class ChatsCubit extends Cubit<ChatsCubitState> {
     emit(
       ChatsCubitStateNormal(
         currentTabIndex: this.state.currentTabIndex,
-        wallpaperFile: this.state.wallpaperFile
       )
     );
   }

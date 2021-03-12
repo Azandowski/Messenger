@@ -14,7 +14,7 @@ abstract class ChatsRepository {
     GetChatsParams params
   );
 
-  Future<Either<Failure, List<ChatEntity>>> getCategoryChats (
+  Future<Either<Failure, PaginatedResultViaLastItem<ChatEntity>>> getCategoryChats (
     GetCategoryChatsParams params
   );
 
@@ -25,6 +25,4 @@ abstract class ChatsRepository {
   Future<File> getLocalWallpaper ();
 
   Future<void> setLocalWallpaper(File file); 
-
-  Stream<ChatEntity> message(id);
 }
