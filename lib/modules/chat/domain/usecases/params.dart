@@ -13,14 +13,16 @@ class GetChatMembersParams {
 }
 
 class SendMessageParams{
-  final text;
-  final chatID; 
+  final String text;
+  final int chatID; 
+  final int timeLeft;
   final int identificator;
 
 
   SendMessageParams({
     @required this.identificator,
     @required this.chatID,
+    this.timeLeft,
     this.text
   });
 }

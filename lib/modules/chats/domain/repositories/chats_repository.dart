@@ -25,6 +25,4 @@ abstract class ChatsRepository {
   Future<File> getLocalWallpaper ();
 
   Future<void> setLocalWallpaper(File file); 
-
-  Stream<ChatEntity> message(id);
 }

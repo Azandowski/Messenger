@@ -21,6 +21,7 @@ import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/chat_screen_actions.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/message_cell.dart';
 import 'package:messenger_mobile/core/utils/list_helper.dart';
+import 'package:messenger_mobile/modules/chat/presentation/time_picker/time_picker_screen.dart';
 import '../../../../../main.dart';
 import 'package:intl/intl.dart';
 
@@ -34,7 +35,7 @@ class ChatScreen extends StatefulWidget {
   _ChatScreenState createState() => _ChatScreenState();
 }
 
-class _ChatScreenState extends State<ChatScreen> {
+class _ChatScreenState extends State<ChatScreen> implements TimePickerDelegate {
 
   NavigatorState get _navigator => navigatorKey.currentState;
   
@@ -102,7 +103,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 }
               ),
               actions: [
-                ChatScreenActions()
+                ChatScreenActions(timePickerDelegate: this,)
               ],
             ),
             backgroundColor: AppColors.pinkBackgroundColor,
@@ -194,5 +195,10 @@ class _ChatScreenState extends State<ChatScreen> {
     } 
  
     return Container();
+  }
+
+  @override
+  void didSelectTimeOption(TimeOptions option) {
+    
   }
 }

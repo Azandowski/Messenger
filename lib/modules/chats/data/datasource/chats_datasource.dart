@@ -3,11 +3,13 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:messenger_mobile/core/config/auth_config.dart';
 import 'package:messenger_mobile/core/services/network/socket_service.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/services/network/Endpoints.dart';
 import '../../../../core/services/network/paginatedResult.dart';
 import '../../../../core/utils/http_response_extension.dart';
+import '../../../../locator.dart';
 import '../../../category/data/models/chat_entity_model.dart';
 import '../../../category/domain/entities/chat_entity.dart';
 import 'dart:io';
@@ -35,12 +37,6 @@ abstract class ChatsDataSource {
   Future<File> getLocalWallpaper ();
 
   Future<void> setLocalWallpaper(File file); 
-
-  void handleMessages (Function(ChatEntity) onReceiveMessage, int id);
-
-  void leaveChannel (int id);
-
-  Stream<ChatEntity>  messages(id);
 }
 
 
@@ -52,6 +48,19 @@ class ChatsDataSourceImpl implements ChatsDataSource {
     @required this.client,
     @required this.socketService
   });
+
+  void init () {
+    int userID = sl<AuthConfig>().user.id;
+    socketService.echo.join(SocketChannels.getChatsUpdates(userID)).here((d) {
+      print(d);
+    });
+
+    socketService.echo.channel(SocketChannels.getChatsUpdates(userID)).listen(
+      'get.index.$userID', 
+      (updates) {
+        print(updates);
+      });
+  }
 
   /**
   * * Loading List of user's all chats via token
@@ -132,29 +141,8 @@ class ChatsDataSourceImpl implements ChatsDataSource {
     String appDocumentsPath = appDocumentsDirectory.path; 
     String filePath = '$appDocumentsPath/wallpaper.png';
     file.copy(filePath);
-  } 
-
-  /// MARK: - Handling messages from the Socket
-  /// [onReceiveMessage] - callback to retrieve new messages
-
-  void handleMessages (Function(ChatEntity) onReceiveMessage, int id) {
-    socketService.echo.channel(SocketChannels.getChatByID(id)).listen('.messages.$id', (updates) {
-      // TODO: decode json and call onReceiveMessage
-      print(updates);
-    });
   }
-
-  void leaveChannel (int id) {
-    socketService.echo.leave(SocketChannels.getChatByID(id));
-  }  
-  
-  final _controller = StreamController<ChatEntity>();
 
   @override
-  Stream<ChatEntity> messages(id) async* {
-     socketService.echo.channel(SocketChannels.getChatByID(id)).listen('.messages.$id', (updates) async* {
-        yield updates;
-        yield* _controller.stream;
-    });
-  }
+  Stream<ChatEntity> get chats => throw UnimplementedError(); 
 }

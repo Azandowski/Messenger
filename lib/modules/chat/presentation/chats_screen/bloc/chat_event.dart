@@ -44,3 +44,14 @@ class MessageSend extends ChatEvent {
   @override
   List<Object> get props => [message];
 }
+
+class SetInitialTime extends ChatEvent {
+  final TimeOptions option;
+
+  SetInitialTime({
+    this.option
+  });
+
+  @override
+  List<Object> get props => [option];
+}

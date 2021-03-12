@@ -16,12 +16,14 @@ import 'package:messenger_mobile/modules/chat/domain/usecases/get_messages.dart'
 import 'package:messenger_mobile/modules/chat/domain/usecases/params.dart';
 import 'package:messenger_mobile/modules/chat/domain/usecases/send_message.dart';
 import 'package:messenger_mobile/core/utils/list_helper.dart';
+import 'package:messenger_mobile/modules/chat/presentation/time_picker/time_picker_screen.dart';
 import 'package:messenger_mobile/modules/chats/domain/repositories/chats_repository.dart';
 
 part 'chat_event.dart';
 part 'chat_state.dart';
 
 class ChatBloc extends Bloc<ChatEvent, ChatState> {
+  
   final ChatsRepository chatsRepository;
   final ChatRepository chatRepository;
   final SendMessage sendMessage;
@@ -33,6 +35,9 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   PaginatedScrollController scrollController = PaginatedScrollController(
     isReversed: true
   );
+
+  // Timer left for the messages
+  int currentLeftTime = 0;
 
   ChatBloc({
     @required this.chatRepository,
@@ -137,6 +142,9 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       final response = await getMessages(event.isPagination ? this.state.messages?.lastItem?.id : null);
 
       yield* _eitherMessagesOrErrorState(response, event.isPagination);
+    } else if (event is SetInitialTime) {
+      // TODO: Update it
+      currentLeftTime = 10;
     }
   }
 

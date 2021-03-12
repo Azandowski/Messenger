@@ -109,10 +109,13 @@ class ChatDataSourceImpl implements ChatDataSource {
     http.Response response = await client.post(
       Endpoints.sendMessages.buildURL(urlParams: [
         params.chatID.toString(),
-      ],queryParameters: {
-        'text': params.text ?? ''
-      }),
+      ]),
       headers: Endpoints.getCurrentUser.getHeaders(token: sl<AuthConfig>().token),
+      body: json.encode({
+        'text': params.text,
+        if (params.timeLeft != null)
+          ...{'time_deleted': params.timeLeft}
+      })
     );
 
     if (response.isSuccess) {

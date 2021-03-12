@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:messenger_mobile/modules/chat/data/repositories/chat_repository.dart';
+import 'package:messenger_mobile/modules/chats/data/repositories/chats_repository_impl.dart';
 import 'package:messenger_mobile/modules/chats/domain/repositories/chats_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -26,6 +28,8 @@ class ChatsCubit extends Cubit<ChatsCubitState> {
 
   void _handleInit () async {
     File wallpaperFile = await repository.getLocalWallpaper();
+    (repository as ChatsRepositoryImpl).init();
+
     if (wallpaperFile != null) {
       emit(
         ChatsCubitStateNormal(

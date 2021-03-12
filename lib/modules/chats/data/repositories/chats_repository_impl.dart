@@ -28,6 +28,11 @@ class ChatsRepositoryImpl extends ChatsRepository {
     initRepository();
   }
 
+  // Screen mounted
+  void init () {
+    (chatsDataSource as ChatsDataSourceImpl).init();
+  }
+
 
   void initRepository () async {
     if (await networkInfo.isConnected) {
@@ -136,10 +141,5 @@ class ChatsRepositoryImpl extends ChatsRepository {
   @override
   Future<void> setLocalWallpaper(File file) {
     return chatsDataSource.setLocalWallpaper(file);
-  }
-
-  @override
-  Stream<ChatEntity> message(id) async*{
-     yield* chatsDataSource.messages(id);
   }
 }

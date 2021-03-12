@@ -51,6 +51,7 @@ dependencies:
   permission_handler: ^5.1.0+2
   firebase_dynamic_links:
   flutter_share: ^1.0.5
+  vibrate: ^0.0.4  
 
   #Soccet
   socket_io_client: ^0.9.12
