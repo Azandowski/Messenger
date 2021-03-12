@@ -55,6 +55,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
     _chatSubscription = chatRepository.message.listen(
       (message) {
+        print(message.messageStatus);
+        print('satuto'); 
         add(MessageAdded(message: message));
       }
     );
@@ -94,7 +96,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       if (i != -1) {
         list.removeAt(i);
       }
-
+      print('holy shit');
+      print(event.message.messageStatus);
       list.insert(0, event.message);
       
       yield ChatInitial(
@@ -124,6 +127,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         hasReachedMax: this.state.hasReachedMax,
         wallpaperPath: this.state.wallpaperPath
       );
+      
       List<int> forwardArray = [];
       if(event.forwardMessage != null){
         forwardArray.add(event.forwardMessage.id);
@@ -167,7 +171,9 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       ),
       (message) {
         var i = list.indexWhere((element) => element.identificator == message.identificator);
-        list[i]= message.copyWith(identificator: message.id);
+        list[i]= message.copyWith(
+          identificator: message.id, status: list[i].messageStatus
+        );
         return ChatInitial(
           messages: list,
           hasReachedMax: this.state.hasReachedMax,

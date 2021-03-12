@@ -27,7 +27,7 @@ class Message extends Equatable {
     this.id,
     this.isRead,
     this.chatActions,
-    this.messageStatus,
+    this.messageStatus = MessageStatus.sent,
     this.transfer,
   });
 
@@ -65,7 +65,7 @@ class Message extends Equatable {
       dateTime: dateTime ?? this.dateTime,
       user: user ?? this.user,
       chatActions: chatActions ?? null,
-      messageStatus: messageStatus ?? this.messageStatus,
+      messageStatus: status ?? this.messageStatus,
       identificator: identificator ?? this.identificator,
       transfer: transfer ?? this.transfer,
     );

@@ -12,6 +12,7 @@ class MessageModel extends Message {
   final ChatActions chatActions;
   final int colorId;
   final List<Message> transfers;
+  final MessageStatus messageStatus;
 
   MessageModel({
     this.id,
@@ -21,7 +22,8 @@ class MessageModel extends Message {
     this.text,
     this.user,
     this.colorId,
-    this.chatActions
+    this.chatActions,
+    this.messageStatus
   }) : super(
     id: id,
     isRead: isRead,
@@ -30,7 +32,8 @@ class MessageModel extends Message {
     dateTime: dateTime,
     transfer: transfers,
     user: user,
-    chatActions: chatActions
+    chatActions: chatActions,
+    messageStatus: messageStatus
   );
 
   factory MessageModel.fromJson(Map json) {

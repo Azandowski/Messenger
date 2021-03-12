@@ -51,7 +51,10 @@ class ChatDataSourceImpl implements ChatDataSource {
     socketService.echo.channel(SocketChannels.getChatByID(id))
       .listen(
         '.messages.$id', 
-        (updates) => _controller.add(MessageModel.fromJson(updates['message']))
+        (updates) {
+          print(updates);
+          _controller.add(MessageModel.fromJson(updates['message']));
+        }
       );
   }
 
@@ -122,14 +125,10 @@ class ChatDataSourceImpl implements ChatDataSource {
     );
 
     if (response.isSuccess) {
-      print('success');
       Message message = MessageModel.fromJson(json.decode(response.body));
       message.identificator = params.identificator;
       return message;
     } else {
-      print(response.statusCode);
-      print(response.body);
-      print('errror shit');
       throw ServerFailure(message: ErrorHandler.getErrorMessage(response.body.toString()));
     }
   }
