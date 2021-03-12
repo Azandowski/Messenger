@@ -48,15 +48,11 @@ class ChatDataSourceImpl implements ChatDataSource {
     @required this.client,
     @required this.socketService,
   }) {
-    socketService.echo.join(SocketChannels.getChatByID(id)).joining((param)=> print('listen')).here((p)=>print('some shit'));
     socketService.echo.channel(SocketChannels.getChatByID(id))
       .listen(
         '.messages.$id', 
-        (updates) {
-          print(updates);
-          _controller.add(MessageModel.fromJson(updates['message']));
-        }
-        );
+        (updates) => _controller.add(MessageModel.fromJson(updates['message']))
+      );
   }
 
   @override
@@ -109,24 +105,31 @@ class ChatDataSourceImpl implements ChatDataSource {
   
   @override
   Future<Message> sendMessage(SendMessageParams params) async {
+    var forward = params.forwardIds.map((e) => e.toString()).join(',');
+    var body =  {
+        'text': params.text ?? '',
+        'forward': forward,
+        if (params.timeLeft != null)
+          ...{'time_deleted': params.timeLeft}
+      };
     http.Response response = await client.post(
       Endpoints.sendMessages.buildURL(urlParams: [
         params.chatID.toString(),
-      ],),
-      body: {
-        'text': params.text ?? '',
-        'forward': json.encode(params.forwardIds.map((e) => e.toString()).toList()),
-        if (params.timeLeft != null)
-          ...{'time_deleted': params.timeLeft}
-      },
+      ],
+    ),
+      body: json.encode(body),
       headers: Endpoints.getCurrentUser.getHeaders(token: sl<AuthConfig>().token),
     );
 
     if (response.isSuccess) {
+      print('success');
       Message message = MessageModel.fromJson(json.decode(response.body));
       message.identificator = params.identificator;
       return message;
     } else {
+      print(response.statusCode);
+      print(response.body);
+      print('errror shit');
       throw ServerFailure(message: ErrorHandler.getErrorMessage(response.body.toString()));
     }
   }

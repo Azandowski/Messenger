@@ -46,10 +46,6 @@ class SocketService {
     });
 
     echo.connect();
-
-    echo.listen('laravel_database_get.index', 'get.index', (d) {
-      print(d);
-    });
   }
 }
 
@@ -62,6 +58,6 @@ abstract class SocketChannels {
   } 
 
   static String getChatsUpdates (int id) {
-    return 'laravel_database_get.index$id';
+    return 'laravel_database_get.index.$id';
   }
 }
