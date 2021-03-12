@@ -1,8 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:messenger_mobile/modules/chat/data/models/message_model.dart';
 import 'package:messenger_mobile/modules/chat/domain/entities/chat_actions.dart';
-import 'package:messenger_mobile/modules/profile/domain/entities/user.dart';
 
 enum MessageStatus {sending, sent,}
 
@@ -14,6 +14,7 @@ class Message extends Equatable {
   final MessageUser user;
   final ChatActions chatActions;
   MessageStatus messageStatus;
+  List<Message> transfer;
   int identificator;
   final int colorId;
   
@@ -27,6 +28,7 @@ class Message extends Equatable {
     this.isRead,
     this.chatActions,
     this.messageStatus,
+    this.transfer,
   });
 
   @override
@@ -40,6 +42,7 @@ class Message extends Equatable {
     messageStatus,
     identificator,
     colorId,
+    transfer,
   ];
 
    Message copyWith({
@@ -50,6 +53,7 @@ class Message extends Equatable {
      MessageUser user,
      ChatActions chatActions,
      MessageStatus status,
+     List<Message> transfer,
      int colorId,
      int identificator,
   }) {
@@ -63,6 +67,7 @@ class Message extends Equatable {
       chatActions: chatActions ?? null,
       messageStatus: messageStatus ?? this.messageStatus,
       identificator: identificator ?? this.identificator,
+      transfer: transfer ?? this.transfer,
     );
   }
 }

@@ -13,6 +13,7 @@ class GetChatMembersParams {
 }
 
 class SendMessageParams{
+  final List<int> forwardIds;
   final text;
   final chatID; 
   final int identificator;
@@ -21,6 +22,7 @@ class SendMessageParams{
   SendMessageParams({
     @required this.identificator,
     @required this.chatID,
+    this.forwardIds,
     this.text
   });
 }

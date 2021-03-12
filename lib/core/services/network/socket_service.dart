@@ -26,7 +26,8 @@ class SocketService {
     socket.connect();
 
     socket.onConnect((data) {
-      print('connect');
+      print(headers);
+      print('connected');
     });
 
     echo = new Echo({
@@ -43,7 +44,6 @@ class SocketService {
 
 
 abstract class SocketChannels {
-
   /// New changes in chat room 
   /// [id] - id of the chat
   static String getChatByID (int id) {

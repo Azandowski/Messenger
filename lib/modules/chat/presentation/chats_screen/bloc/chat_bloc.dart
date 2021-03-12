@@ -90,6 +90,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         user: MessageUser(
           id: sl<AuthConfig>().user.id,
         ),
+        transfer: event.forwardMessage!= null ? [event.forwardMessage] : [],
         text: event.message,
         identificator: randomID,
         isRead: false,
@@ -102,11 +103,16 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         messages: list,
         hasReachedMax: this.state.hasReachedMax
       );
+      List<int> forwardArray = [];
+      if(event.forwardMessage != null){
+        forwardArray.add(event.forwardMessage.id);
+      }
 
       final response = await sendMessage(SendMessageParams(
         chatID: chatId,
         text: event.message,
         identificator: randomID,
+        forwardIds: forwardArray,
       ));
 
       yield* _eitherSentOrErrorState(response);

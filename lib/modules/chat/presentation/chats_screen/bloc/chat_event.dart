@@ -30,12 +30,14 @@ class MessageAdded extends ChatEvent {
 }
 
 class MessageSend extends ChatEvent {
+  final Message forwardMessage;
   final String message;
 
   MessageSend({
-    this.message
+    this.message,
+    this.forwardMessage,
   });
 
   @override
-  List<Object> get props => [message];
+  List<Object> get props => [message, forwardMessage];
 }

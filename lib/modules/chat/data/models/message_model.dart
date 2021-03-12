@@ -11,10 +11,12 @@ class MessageModel extends Message {
   final MessageUser user;
   final ChatActions chatActions;
   final int colorId;
+  final List<Message> transfers;
 
   MessageModel({
     this.id,
     this.isRead,
+    this.transfers,
     this.dateTime,
     this.text,
     this.user,
@@ -26,6 +28,7 @@ class MessageModel extends Message {
     colorId: colorId,
     text: text,
     dateTime: dateTime,
+    transfer: transfers,
     user: user,
     chatActions: chatActions
   );
@@ -39,8 +42,68 @@ class MessageModel extends Message {
       text: json['text'],
       isRead: json['is_read'] == 1,
       dateTime: DateTime.parse(json['created_at']),
+      transfers: json['transfer'] != null ? 
+        (json['transfer'] as List).map((v) => Transfer.fromJson(v)).toList() as List<Message> : [],
       chatActions: ChatActions.values.firstWhere((e) => e.key == json['action'], orElse: () => null)
     );
   }
 }
 
+class Transfer extends Message {
+  final int id;
+  int fromId;
+  int toId;
+  String text;
+  String action;
+  int chatId;
+  final bool isRead;
+  final DateTime dateTime;
+  final MessageUser user;
+  String updatedAt;
+
+  Transfer(
+      {this.id,
+      this.fromId,
+      this.toId,
+      this.text,
+      this.action,
+      this.chatId,
+      this.isRead,
+      this.user,
+      this.dateTime,
+      this.updatedAt,}) : super(
+        id: id,
+        isRead: isRead,
+        dateTime: dateTime,
+        user: user,
+      );
+
+  factory Transfer.fromJson(Map<String, dynamic> json) {
+    return Transfer(
+      id: json['id'],
+      fromId: json['from_id'],
+      toId: json['to_id'],
+      text: json['text'],
+      action: json['action'],
+      chatId: json['chat_id'],
+      isRead: json['is_read'] == 1,
+      dateTime: DateTime.parse(json['created_at']),
+      updatedAt: json['updated_at'],
+      user: json['from_contact'] != null ? 
+        MessageUserModel.fromJson(json['from_contact']) : null,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['from_id'] = this.fromId;
+    data['to_id'] = this.toId;
+    data['text'] = this.text;
+    data['action'] = this.action;
+    data['chat_id'] = this.chatId;
+    data['is_read'] = this.isRead;
+    data['updated_at'] = this.updatedAt;
+    return data;
+  }
+}

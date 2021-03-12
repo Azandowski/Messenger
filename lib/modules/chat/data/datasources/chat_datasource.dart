@@ -9,7 +9,6 @@ import 'package:messenger_mobile/core/services/network/socket_service.dart';
 import 'package:messenger_mobile/core/utils/error_handler.dart';
 import 'package:messenger_mobile/core/utils/pagination.dart';
 import 'package:messenger_mobile/modules/category/data/models/chat_permission_model.dart';
-import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
 import 'package:messenger_mobile/modules/category/domain/entities/chat_permissions.dart';
 import 'package:messenger_mobile/modules/chat/data/models/chat_detailed_model.dart';
 import 'package:messenger_mobile/modules/chat/data/models/message_model.dart';
@@ -49,11 +48,15 @@ class ChatDataSourceImpl implements ChatDataSource {
     @required this.client,
     @required this.socketService,
   }) {
+    socketService.echo.join(SocketChannels.getChatByID(id)).joining((param)=> print('listen')).here((p)=>print('some shit'));
     socketService.echo.channel(SocketChannels.getChatByID(id))
       .listen(
         '.messages.$id', 
-        (updates) => _controller.add(MessageModel.fromJson(updates['message']))
-      );
+        (updates) {
+          print(updates);
+          _controller.add(MessageModel.fromJson(updates['message']));
+        }
+        );
   }
 
   @override
@@ -109,9 +112,11 @@ class ChatDataSourceImpl implements ChatDataSource {
     http.Response response = await client.post(
       Endpoints.sendMessages.buildURL(urlParams: [
         params.chatID.toString(),
-      ],queryParameters: {
-        'text': params.text ?? ''
-      }),
+      ],),
+      body: {
+        'text': params.text ?? '',
+        'forward': json.encode(params.forwardIds.map((e) => e.toString()).toList())
+      },
       headers: Endpoints.getCurrentUser.getHeaders(token: sl<AuthConfig>().token),
     );
 
@@ -194,10 +199,9 @@ class ChatDataSourceImpl implements ChatDataSource {
 
     if (response.isSuccess) {
       var responseJSON = json.decode(response.body);
-
+      List data = ((responseJSON['messages'] ?? [])).map((e) => MessageModel.fromJson(e)).toList();
       return PaginatedResultViaLastItem<Message>(
-        data: ((responseJSON['messages'] ?? []) as List).map(
-          (e) => MessageModel.fromJson(e)).toList(),
+        data: data.cast<Message>(),
         hasReachMax: !responseJSON['hasMoreResults']
       );
     } else {

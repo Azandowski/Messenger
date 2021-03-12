@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
 import 'package:messenger_mobile/app/appTheme.dart';
+import 'package:messenger_mobile/modules/chat/data/models/message_model.dart';
 import 'package:messenger_mobile/modules/chat/data/models/message_view_model.dart';
+import 'package:messenger_mobile/modules/chat/domain/entities/message.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/name_time_read_container.dart';
 import 'package:swipeable/swipeable.dart';
 import 'package:vibrate/vibrate.dart';
 
@@ -45,6 +48,7 @@ class _MessageCellState extends State<MessageCell> {
   @override
   Widget build(BuildContext context) {
     var w = MediaQuery.of(context).size.width;
+    print(widget.messageViewModel.message.transfer.length);
     return Padding(
       padding: const EdgeInsets.only(top: 10),
       child: Swipeable(
@@ -94,42 +98,11 @@ class _MessageCellState extends State<MessageCell> {
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: widget.messageViewModel.isMine ? 
-                    CrossAxisAlignment.end : CrossAxisAlignment.start,
+                  crossAxisAlignment: widget.messageViewModel.isMine ? CrossAxisAlignment.end : CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      children: [
-                        if (!widget.messageViewModel.isMine) 
-                          Text(
-                            widget.messageViewModel.userNameText,
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                              height: 1.4,
-                              color: widget.messageViewModel.color,
-                            ),
-                            textAlign: TextAlign.left,
-                          ),
-
-                        if (widget.messageViewModel.isMine) 
-                          Padding(
-                            padding: const EdgeInsets.only(right: 8),
-                            child: Image.asset(
-                              widget.messageViewModel.readImageName, width: 20, height: 8
-                            )
-                          ),
-
-                        Text(
-                          widget.messageViewModel.time,
-                          style: widget.messageViewModel.isMine ? 
-                            AppFontStyles.whiteGrey12w400 : AppFontStyles.grey12w400, 
-                          textAlign: TextAlign.right
-                        )
-                      ],
-                      mainAxisSize:  MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    ),
-
+                    NameTimeBloc(messageViewModel: widget.messageViewModel),
+                    if(widget.messageViewModel.message.transfer.isNotEmpty)
+                    ...returnForwardColumn(widget.messageViewModel.message.transfer),
                     if (widget.messageViewModel.messageText != null) 
                       Text(
                         widget.messageViewModel.messageText, 
@@ -144,6 +117,68 @@ class _MessageCellState extends State<MessageCell> {
               ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+List<Widget> returnForwardColumn(List<Message> transfers){
+    return transfers.map((e) => ForwardCotainer(messageViewModel: MessageViewModel(e),)).toList();
+}
+
+class ForwardCotainer extends StatelessWidget {
+  final MessageViewModel messageViewModel;
+
+  const ForwardCotainer({Key key, @required this.messageViewModel}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 4),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(5),
+        ),
+        padding: EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+        child: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Container(
+                color: AppColors.indicatorColor,
+                width: 2,
+                height: 55,
+              ),
+              SizedBox(width: 8,),
+              Expanded(
+                  child: Column( 
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        messageViewModel.isMine ? 'Вы' : 
+                        messageViewModel.userNameText,
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          height: 1.4,
+                          color: messageViewModel.color,
+                        ),
+                      ),
+                      Container(
+                        child: Text(messageViewModel.messageText,
+                          style: AppFontStyles.black14w400,
+                          overflow: TextOverflow.ellipsis,
+                          softWrap: true,
+                        ),
+                      ),
+                  ],
+            ),
+          ),
+        ],
+      ),
       ),
     );
   }

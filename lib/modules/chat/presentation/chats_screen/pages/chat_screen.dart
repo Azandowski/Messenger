@@ -78,17 +78,7 @@ class _ChatScreenState extends State<ChatScreen> {
       child: BlocProvider(
           lazy: false,
           create: (context) => _chatBloc,
-          child: BlocConsumer<ChatBloc, ChatState>(
-            listener: (context, state) {
-              if (state is ChatError) {
-                Scaffold.of(context)
-                  ..hideCurrentSnackBar()
-                  ..showSnackBar(
-                    SnackBar(content: Text(state.message)),
-                  );
-              }
-            },
-            
+          child: BlocBuilder<ChatBloc, ChatState>(
             builder: (context, state) {
               return Scaffold(
                 appBar: AppBar(
@@ -107,66 +97,77 @@ class _ChatScreenState extends State<ChatScreen> {
                   ],
                 ),
                 backgroundColor: AppColors.pinkBackgroundColor,
-                body: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Expanded(
-                      child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 16),
-                        decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage('assets/images/bg-home.png'),
-                          fit: BoxFit.cover),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.only(bottom: 20.0),
-                          child: ListView.separated(
-                            controller: _chatBloc.scrollController,
-                            itemBuilder: (context, int index) {
-                              if (state is ChatLoading && getItemsCount(state) - 1 == index) {
-                                return LoadWidget(size: 20);
-                              } else if (getItemsCount(state) - 1 == index) {
-                                var item = state.messages.getItemAt(index);
-                                if (state.messages.getItemAt(index - 1) != null) {
-                                  return ChatDateItem(
-                                    dateTime: state.messages[index - 1].dateTime
-                                  );
-                                } 
-                                return Container();
-                              } else {
-                                int nextMessageUserID = state.messages.getItemAt(index - 1)?.user?.id;
-                                int prevMessageUserID = state.messages.getItemAt(index + 1)?.user?.id;
-                                Message currentMessage = state.messages[index];
-                                
-                                return currentMessage.chatActions == null ? 
-                                  MessageCell(
-                                    onReply: (MessageViewModel message){
-                                      _panelBlocCubit.addMessage(message);
-                                    },
-                                    messageViewModel: MessageViewModel(currentMessage),
-                                    nextMessageUserID: nextMessageUserID,
-                                    prevMessageUserID: prevMessageUserID,
-                                  ) : Text('action');
+                body: BlocListener<ChatBloc, ChatState>(
+                  listener: (context, state) {
+                    if (state is ChatError) {
+                      Scaffold.of(context)
+                        ..hideCurrentSnackBar()
+                        ..showSnackBar(
+                          SnackBar(content: Text(state.message)),
+                        );
+                    }
+                  },
+                  child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Expanded(
+                            child: Container(
+                              padding: EdgeInsets.symmetric(horizontal: 16),
+                              decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage('assets/images/bg-home.png'),
+                                fit: BoxFit.cover),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.only(bottom: 20.0),
+                                child: ListView.separated(
+                                  controller: _chatBloc.scrollController,
+                                  itemBuilder: (context, int index) {
+                                    if (state is ChatLoading && getItemsCount(state) - 1 == index) {
+                                      return LoadWidget(size: 20);
+                                    } else if (getItemsCount(state) - 1 == index) {
+                                      var item = state.messages.getItemAt(index);
+                                      if (state.messages.getItemAt(index - 1) != null) {
+                                        return ChatDateItem(
+                                          dateTime: state.messages[index - 1].dateTime
+                                        );
+                                      } 
+                                      return Container();
+                                    } else {
+                                      int nextMessageUserID = state.messages.getItemAt(index - 1)?.user?.id;
+                                      int prevMessageUserID = state.messages.getItemAt(index + 1)?.user?.id;
+                                      Message currentMessage = state.messages[index];
+                                      
+                                      return currentMessage.chatActions == null ? 
+                                        MessageCell(
+                                          onReply: (MessageViewModel message){
+                                            _panelBlocCubit.addMessage(message);
+                                          },
+                                          messageViewModel: MessageViewModel(currentMessage),
+                                          nextMessageUserID: nextMessageUserID,
+                                          prevMessageUserID: prevMessageUserID,
+                                        ) : Text('action');
+                                    }
+                                  },
+                              scrollDirection: Axis.vertical,
+                              itemCount: getItemsCount(state),
+                              reverse: true,
+                              separatorBuilder: (_, int index) {
+                                return _buildSeparator(index, state);
                               }
-                            },
-                        scrollDirection: Axis.vertical,
-                        itemCount: getItemsCount(state),
-                        reverse: true,
-                        separatorBuilder: (_, int index) {
-                          return _buildSeparator(index, state);
-                        }
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
+                      ChatControlPanel(
+                        messageTextController: messageTextController, 
+                        width: width,
+                        height: height
+                      ),
+                    ],
                   ),
-                ),
-                ChatControlPanel(
-                  messageTextController: messageTextController, 
-                  width: width,
-                  height: height
-                ),
-              ],
-            ),
+                )
           );
         }
       ),
