@@ -4,8 +4,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:messenger_mobile/core/utils/language.dart';
 import '../../../../core/blocs/chat/bloc/bloc/chat_cubit.dart';
 import '../../../../core/utils/paginated_scroll_controller.dart';
 import '../../../../core/widgets/independent/small_widgets/cell_skeleton_item.dart';
@@ -31,11 +31,10 @@ class ChatsScreen extends StatefulWidget {
 class _ChatsScreenState extends State<ChatsScreen> {
   PaginatedScrollController scrollController = PaginatedScrollController();
   ChatsCubit cubit;
-  String language;
+  ApplicationLanguage language = ApplicationLanguage.russian;
 
   @override
   void initState() {
-    language = sl<SharedPreferences>().getString('language') ?? 'Русский';
     cubit = sl<ChatsCubit>();
     context.read<ChatGlobalCubit>().loadChats(isPagination: false);
     scrollController.addListener(() {
@@ -176,32 +175,21 @@ class _ChatsScreenState extends State<ChatsScreen> {
             )
           : null,
       actions: [
-        DropdownButton(
+        DropdownButton<ApplicationLanguage>(
           value: language,
           icon: Icon(Icons.language_outlined),
           iconSize: 24,
           elevation: 15,
-          onChanged: (String newLanguage) async {
-            //await sl<SharedPreferences>().setString('language', newLanguage);
-            setState(() => language = newLanguage);
-          },
-          items: <String>['English', 'Русский', 'Қазақ']
-              .map<DropdownMenuItem<String>>(
-                (String value) => DropdownMenuItem(
-                  child: Text(value),
+          onChanged: (ApplicationLanguage newLanguage) =>
+              setState(() => language = newLanguage),
+          items: ApplicationLanguage.values
+              .map(
+                (ApplicationLanguage value) =>
+                    DropdownMenuItem<ApplicationLanguage>(
+                  child: Text(value.name),
                   value: value,
-                  onTap: () async {
-                    if (value == 'English') {
-                      EasyLocalization.of(context).locale =
-                          (Locale('en', 'US'));
-                    } else if (value == 'Қазақ') {
-                      EasyLocalization.of(context).locale =
-                          (Locale('kk', 'KZ'));
-                    } else {
-                      EasyLocalization.of(context).locale =
-                          (Locale('ru', 'RU'));
-                    }
-                  },
+                  onTap: () =>
+                      EasyLocalization.of(context).locale = value.localeCode,
                 ),
               )
               .toList(),
