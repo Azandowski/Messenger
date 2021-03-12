@@ -1,8 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:messenger_mobile/modules/chat/data/models/message_model.dart';
 import 'package:messenger_mobile/modules/chat/domain/entities/chat_actions.dart';
-import 'package:messenger_mobile/modules/profile/domain/entities/user.dart';
 
 enum MessageStatus {sending, sent,}
 
@@ -14,6 +14,7 @@ class Message extends Equatable {
   final MessageUser user;
   final ChatActions chatActions;
   MessageStatus messageStatus;
+  List<Message> transfer;
   int identificator;
   final int colorId;
   final int deletionSeconds;
@@ -28,9 +29,10 @@ class Message extends Equatable {
     this.id,
     this.isRead,
     this.chatActions,
-    this.messageStatus,
     this.willBeDeletedAt,
-    this.deletionSeconds
+    this.deletionSeconds,
+    this.messageStatus = MessageStatus.sent,
+    this.transfer,
   });
 
   @override
@@ -45,7 +47,8 @@ class Message extends Equatable {
     identificator,
     colorId,
     willBeDeletedAt,
-    deletionSeconds
+    deletionSeconds,
+    transfer,
   ];
 
    Message copyWith({
@@ -56,6 +59,7 @@ class Message extends Equatable {
      MessageUser user,
      ChatActions chatActions,
      MessageStatus status,
+     List<Message> transfer,
      int colorId,
      int identificator,
      int deletionSeconds,
@@ -71,8 +75,7 @@ class Message extends Equatable {
       chatActions: chatActions ?? null,
       messageStatus: status ?? this.messageStatus,
       identificator: identificator ?? this.identificator,
-      willBeDeletedAt: willBeDeletedAt ?? this.willBeDeletedAt,
-      deletionSeconds: deletionSeconds ?? this.deletionSeconds
+      transfer: transfer ?? this.transfer,
     );
   }
 

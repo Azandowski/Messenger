@@ -51,12 +51,9 @@ class ChatsDataSourceImpl implements ChatsDataSource {
 
   void init () {
     int userID = sl<AuthConfig>().user.id;
-    socketService.echo.join(SocketChannels.getChatsUpdates(userID)).here((d) {
-      print(d);
-    });
 
     socketService.echo.channel(SocketChannels.getChatsUpdates(userID)).listen(
-      'get.index.$userID', 
+      '.get.index.$userID', 
       (updates) {
         print(updates);
       });

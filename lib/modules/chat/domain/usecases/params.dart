@@ -12,18 +12,19 @@ class GetChatMembersParams {
   });
 }
 
-class SendMessageParams{
-  final String text;
-  final int chatID; 
-  final int timeLeft;
+class SendMessageParams {
+  final List<int> forwardIds;
+  final text;
+  final chatID; 
   final int identificator;
-
+  final int timeLeft;
 
   SendMessageParams({
     @required this.identificator,
     @required this.chatID,
-    this.timeLeft,
-    this.text
+    this.forwardIds,
+    this.text,
+    this.timeLeft
   });
 }
 

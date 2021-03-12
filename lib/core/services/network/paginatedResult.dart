@@ -2,10 +2,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 
-/**
- * * Holds response with pagination
- * ! T should have fromJson method
- */
 
 class PaginatedResult <T> {
   final List<T> data;

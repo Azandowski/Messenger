@@ -25,7 +25,8 @@ class SocketService {
     socket.connect();
 
     socket.onConnect((data) {
-      print('connect');
+      print(headers);
+      print('connected');
     });
 
     echo = new Echo({
@@ -41,14 +42,13 @@ class SocketService {
 
 
 abstract class SocketChannels {
-
   /// New changes in chat room 
   /// [id] - id of the chat
   static String getChatByID (int id) {
-    return 'laravel_database_messages.$id';
+    return 'messages.$id';
   } 
 
   static String getChatsUpdates (int id) {
-    return 'laravel_database_get.index$id';
+    return 'get.index.$id';
   }
 }

@@ -9,7 +9,6 @@ import 'package:messenger_mobile/core/services/network/socket_service.dart';
 import 'package:messenger_mobile/core/utils/error_handler.dart';
 import 'package:messenger_mobile/core/utils/pagination.dart';
 import 'package:messenger_mobile/modules/category/data/models/chat_permission_model.dart';
-import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
 import 'package:messenger_mobile/modules/category/domain/entities/chat_permissions.dart';
 import 'package:messenger_mobile/modules/chat/data/models/chat_detailed_model.dart';
 import 'package:messenger_mobile/modules/chat/data/models/message_model.dart';
@@ -54,19 +53,11 @@ class ChatDataSourceImpl implements ChatDataSource {
   }) {
     socketService.echo.channel(SocketChannels.getChatByID(44))
       .listen(
-        'messages.44', 
-        (updates) => _controller.add(MessageModel.fromJson(updates['message']))
+        '.messages.$id', 
+        (updates) {
+          _controller.add(MessageModel.fromJson(updates['message']));
+        }
       );
-
-    print("CHANNNNNEEEEL NAME: ${SocketChannels.getChatByID(44)}");
-    socketService.echo.join(SocketChannels.getChatByID(44))
-      .here((users) {
-        print(users);
-      }).joining((user) {
-        print(user);
-      }).leaving((user) {
-        print(user);
-      });
     }
 
   @override
@@ -119,16 +110,20 @@ class ChatDataSourceImpl implements ChatDataSource {
   
   @override
   Future<Message> sendMessage(SendMessageParams params) async {
+    var forward = params.forwardIds.map((e) => e.toString()).join(',');
+    var body =  {
+        'text': params.text ?? '',
+        'forward': forward,
+        if (params.timeLeft != null)
+          ...{'time_deleted': params.timeLeft}
+      };
     http.Response response = await client.post(
       Endpoints.sendMessages.buildURL(urlParams: [
         params.chatID.toString(),
-      ]),
+      ],
+    ),
+      body: json.encode(body),
       headers: Endpoints.getCurrentUser.getHeaders(token: sl<AuthConfig>().token),
-      body: json.encode({
-        'text': params.text,
-        if (params.timeLeft != null)
-          ...{'time_deleted': params.timeLeft}
-      })
     );
 
     if (response.isSuccess) {
@@ -210,10 +205,9 @@ class ChatDataSourceImpl implements ChatDataSource {
 
     if (response.isSuccess) {
       var responseJSON = json.decode(response.body);
-
+      List data = ((responseJSON['messages'] ?? [])).map((e) => MessageModel.fromJson(e)).toList();
       return PaginatedResultViaLastItem<Message>(
-        data: ((responseJSON['messages'] ?? []) as List).map(
-          (e) => MessageModel.fromJson(e)).toList(),
+        data: data.cast<Message>(),
         hasReachMax: !responseJSON['hasMoreResults']
       );
     } else {
