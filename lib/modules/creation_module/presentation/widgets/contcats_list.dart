@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:messenger_mobile/core/config/auth_config.dart';
 import 'package:messenger_mobile/core/utils/paginated_scroll_controller.dart';
+import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
+import 'package:messenger_mobile/modules/creation_module/domain/entities/contact.dart';
+import 'package:messenger_mobile/modules/groupChat/domain/usecases/create_chat_group.dart';
+import 'package:messenger_mobile/modules/groupChat/domain/usecases/params.dart';
 
 import '../../../../core/widgets/independent/small_widgets/cell_skeleton_item.dart';
 import '../../../../core/widgets/independent/small_widgets/chat_count_view.dart';
+import '../../../../locator.dart';
 import '../bloc/contact_bloc/contact_bloc.dart';
 import 'contact_cell.dart';
 import 'package:messenger_mobile/core/widgets/independent/small_widgets/cell_skeleton_item.dart';
@@ -14,8 +20,12 @@ import 'package:messenger_mobile/modules/creation_module/presentation/widgets/co
 class ContactsList extends StatefulWidget {
   
   final bool isScrollable;
+  final Function(ContactEntity) didSelectContactToChat; 
 
-  ContactsList({ this.isScrollable = true });
+  ContactsList({ 
+    this.isScrollable = true,
+    this.didSelectContactToChat
+  });
 
   @override
   _ContactsListState createState() => _ContactsListState();
@@ -60,7 +70,14 @@ class _ContactsListState extends State<ContactsList> {
               } else {
                 return index >= state.contacts.length + 1 ? 
                   CellShimmerItem(circleSize: 35,) : 
-                    ContactCell(contactItem: state.contacts[index - 1]);
+                    ContactCell(
+                      contactItem: state.contacts[index - 1],
+                      onTrilinIconTapped: () async {
+                        if (widget.didSelectContactToChat != null) {
+                          widget.didSelectContactToChat(state.contacts[index - 1]);
+                        }
+                      }
+                    );
               }
             }, 
             separatorBuilder: (context, int index) => Divider(), 

@@ -8,6 +8,7 @@ import 'package:messenger_mobile/modules/chat/data/models/message_view_model.dar
 part 'panel_bloc_state.dart';
 
 class PanelBlocCubit extends Cubit<PanelBlocState> {
+
   PanelBlocCubit() : super(PanelBlocInitial()){
     _textController.sink.addError("Invalid value entered!");
   }
@@ -17,7 +18,6 @@ class PanelBlocCubit extends Cubit<PanelBlocState> {
   }
   
   detachMessage(){
-    print('detacehed');
     emit(PanelBlocInitial());
   }
 
@@ -26,8 +26,8 @@ class PanelBlocCubit extends Cubit<PanelBlocState> {
 
   updateText(String text) {
     (text == null || text == "")
-        ? _textController.sink.addError("Invalid value entered!")
-        : _textController.sink.add(text);
+      ? _textController.sink.addError("Invalid value entered!")
+      : _textController.sink.add(text);
   }
 
   clear(){

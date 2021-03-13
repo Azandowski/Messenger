@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger_mobile/app/appTheme.dart';
@@ -19,6 +20,7 @@ import 'package:messenger_mobile/modules/chat/domain/usecases/send_message.dart'
 import 'package:messenger_mobile/modules/chat/domain/usecases/set_time_deleted.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chat_details/page/chat_detail_page.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/bloc/chat_bloc.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chats_screen/helpers/messageCellAction.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/chatControlPanel/chatControlPanel.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/chatControlPanel/cubit/panel_bloc_cubit.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/chatHeading.dart';
@@ -73,6 +75,7 @@ class _ChatScreenState extends State<ChatScreen> implements TimePickerDelegate {
 
   @override
   void dispose() {
+    _chatBloc.add(DisposeChat());
     _chatBloc.close();
     super.dispose();
   }
@@ -151,6 +154,9 @@ class _ChatScreenState extends State<ChatScreen> implements TimePickerDelegate {
                                   onReply: (MessageViewModel message){
                                     _panelBlocCubit.addMessage(message);
                                   },
+                                  onAction: (MessageCellActions action){
+                                    messageActionProcess(action, context, MessageViewModel(currentMessage));
+                                  },
                                   messageViewModel: MessageViewModel(currentMessage),
                                   nextMessageUserID: nextMessageUserID,
                                   prevMessageUserID: prevMessageUserID,
@@ -184,6 +190,31 @@ class _ChatScreenState extends State<ChatScreen> implements TimePickerDelegate {
     );
   }
 
+  Future<void> messageActionProcess(MessageCellActions action,BuildContext context, MessageViewModel messageViewModel) async {
+    switch (action){
+      case MessageCellActions.copyMessage:
+        Clipboard.setData(ClipboardData(text: messageViewModel.messageText))
+        ..then((result) {
+          final snackBar = SnackBar(
+            content: Text('Скопировано в буфер обмена'),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        });
+        break;
+      case MessageCellActions.attachMessage:
+        // TODO: Handle this case.
+        break;
+      case MessageCellActions.replyMessage:
+        _panelBlocCubit.addMessage(messageViewModel);
+        break;
+      case MessageCellActions.replyMore:
+        // TODO: Handle this case.
+        break;
+      case MessageCellActions.deleteMessage:
+        // TODO: Handle this case.
+        break;
+    }
+  }
 
   // * * Helpers
 
@@ -206,6 +237,7 @@ class _ChatScreenState extends State<ChatScreen> implements TimePickerDelegate {
           duration: Duration(days: 2),
         ));
     } else if (state is ChatInitial) {
+      // Update Notification Badge
 
       var chatGlobalCubit = context.read<main_chat_cubit.ChatGlobalCubit>();
       var globalIndexOfChat = chatGlobalCubit.state.chats.indexWhere((e) => e.chatId == widget.chatEntity.chatId);

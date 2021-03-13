@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
 import 'package:messenger_mobile/app/appTheme.dart';
-import 'package:messenger_mobile/modules/chat/data/models/message_model.dart';
 import 'package:messenger_mobile/modules/chat/data/models/message_view_model.dart';
 import 'package:messenger_mobile/modules/chat/domain/entities/message.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chats_screen/helpers/messageCellAction.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/chatControlPanel/forward_container.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/name_time_read_container.dart';
 import 'package:swipeable/swipeable.dart';
 import 'package:vibrate/vibrate.dart';
@@ -14,10 +15,11 @@ class MessageCell extends StatefulWidget {
   final int nextMessageUserID;
   final int prevMessageUserID;
   final Function(MessageViewModel) onReply;
-  
+  final Function(MessageCellActions) onAction;
 
   const MessageCell({
     @required this.messageViewModel,
+    @required this.onAction,
     @required this.onReply,
     this.nextMessageUserID,
     this.prevMessageUserID,
@@ -48,17 +50,16 @@ class _MessageCellState extends State<MessageCell> {
   @override
   Widget build(BuildContext context) {
     var w = MediaQuery.of(context).size.width;
-    print(widget.messageViewModel.message.transfer.length);
     return Padding(
       padding: const EdgeInsets.only(top: 10),
       child: Swipeable(
       background: Container(
         width: MediaQuery.of(context).size.width - 32,
         child: ListTile(
-          leading: !widget.messageViewModel.isMine ? Icon(Icons.reply) : SizedBox(),
-          trailing: widget.messageViewModel.isMine ? Icon(Icons.reply) : SizedBox(),
-            ),
+            leading: !widget.messageViewModel.isMine ? Icon(Icons.reply) : SizedBox(),
+            trailing: widget.messageViewModel.isMine ? Icon(Icons.reply) : SizedBox(),
           ),
+        ),
           threshold: 64.0,
           onSwipeLeft: () {
             vibrate();
@@ -76,110 +77,50 @@ class _MessageCellState extends State<MessageCell> {
             LimitedBox(
             maxWidth: w * 0.8,
             child: FocusedMenuHolder(
-               blurSize: 5.0,
-               animateMenuItems: true,
-               blurBackgroundColor: Colors.black54,
-               menuOffset: 10.0, 
-               menuBoxDecoration: BoxDecoration(color: Colors.grey,borderRadius: BorderRadius.all(Radius.circular(15.0))),
-               menuItems: <FocusedMenuItem>[
-                  FocusedMenuItem(title: Text("Open"),trailingIcon: Icon(Icons.open_in_new) ,onPressed: (){}),
-                  FocusedMenuItem(title: Text("Share"),trailingIcon: Icon(Icons.share) ,onPressed: (){}),
-                  FocusedMenuItem(title: Text("Favorite"),trailingIcon: Icon(Icons.favorite_border) ,onPressed: (){}),
-                  FocusedMenuItem(title: Text("Delete",style: TextStyle(color: Colors.redAccent),),trailingIcon: Icon(Icons.delete,color: Colors.redAccent,) ,onPressed: (){}),
+              blurSize: 5.0,
+              animateMenuItems: true,
+              blurBackgroundColor: Colors.black54,
+              menuOffset: 10.0, 
+              menuBoxDecoration: BoxDecoration(color: Colors.grey,borderRadius: BorderRadius.all(Radius.circular(15.0))),
+              menuItems: widget.messageViewModel.actionsList.map((e) => FocusedMenuItem(title: Text(e.title),trailingIcon: e.icon, onPressed: (){
+                widget.onAction(e);
+              }),).toList(),
+              onPressed: (){
+                vibrate();
+              },
+              child: Container(
+              padding: EdgeInsets.all(8),
+              decoration: widget.messageViewModel.getCellDecoration(
+                previousMessageUserID: widget.prevMessageUserID, 
+                nextMessageUserID: widget.nextMessageUserID
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: widget.messageViewModel.isMine ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                children: [
+                  NameTimeBloc(messageViewModel: widget.messageViewModel),
+                  if(widget.messageViewModel.message.transfer.isNotEmpty)
+                  ...returnForwardColumn(widget.messageViewModel.message.transfer),
+                  if (widget.messageViewModel.messageText != null) 
+                  Text(
+                    widget.messageViewModel.messageText, 
+                    style: !widget.messageViewModel.isMine ? 
+                    AppFontStyles.black14w400 : AppFontStyles.white14w400,
+                    textAlign: TextAlign.left,
+                  ),
                 ],
-                onPressed: (){
-                  vibrate();
-                },
-                child: Container(
-                padding: EdgeInsets.all(8),
-                decoration: widget.messageViewModel.getCellDecoration(
-                  previousMessageUserID: widget.prevMessageUserID, 
-                  nextMessageUserID: widget.nextMessageUserID
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: widget.messageViewModel.isMine ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-                  children: [
-                    NameTimeBloc(messageViewModel: widget.messageViewModel),
-                    if(widget.messageViewModel.message.transfer.isNotEmpty)
-                    ...returnForwardColumn(widget.messageViewModel.message.transfer),
-                    if (widget.messageViewModel.messageText != null) 
-                      Text(
-                        widget.messageViewModel.messageText, 
-                        style: !widget.messageViewModel.isMine ? 
-                          AppFontStyles.black14w400 : AppFontStyles.white14w400,
-                        textAlign: TextAlign.left,
-                      ),
-                  ],
-                ),
               ),
-            ),
-              ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-List<Widget> returnForwardColumn(List<Message> transfers){
-    return transfers.map((e) => ForwardCotainer(messageViewModel: MessageViewModel(e),)).toList();
-}
-
-class ForwardCotainer extends StatelessWidget {
-  final MessageViewModel messageViewModel;
-
-  const ForwardCotainer({Key key, @required this.messageViewModel}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 4),
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(5),
-        ),
-        padding: EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-        child: Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Container(
-                color: AppColors.indicatorColor,
-                width: 2,
-                height: 55,
-              ),
-              SizedBox(width: 8,),
-              Expanded(
-                  child: Column( 
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        messageViewModel.isMine ? 'Вы' : 
-                        messageViewModel.userNameText,
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          height: 1.4,
-                          color: messageViewModel.color,
-                        ),
-                      ),
-                      Container(
-                        child: Text(messageViewModel.messageText,
-                          style: AppFontStyles.black14w400,
-                          overflow: TextOverflow.ellipsis,
-                          softWrap: true,
-                        ),
-                      ),
-                  ],
             ),
           ),
-        ],
-      ),
-      ),
-    );
-  }
+        ),
+      ],
+    ),
+  ),
+);
 }
+}
+
+List<Widget> returnForwardColumn(List<Message> transfers) {
+    return transfers.map((e) => ForwardContainer(messageViewModel: MessageViewModel(e),)).toList();
+}
+

@@ -3,6 +3,7 @@ import 'package:messenger_mobile/app/appTheme.dart';
 import 'package:messenger_mobile/core/config/auth_config.dart';
 import 'package:messenger_mobile/modules/chat/domain/entities/message.dart';
 import 'package:intl/intl.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chats_screen/helpers/messageCellAction.dart';
 
 import '../../../../locator.dart';
 
@@ -55,7 +56,17 @@ class MessageViewModel {
   Color get readColor {
     return message.isRead ? AppColors.successGreenColor : AppColors.greyColor;
   }
-
+  
+  bool get canBeCopied {
+    return message.text != null && message.text != '';
+  }
+  List<MessageCellActions> get actionsList {
+    if(message.text != null && message.text != ''){
+      return MessageCellActions.values.toList(); 
+    }else{
+      return [MessageCellActions.attachMessage, MessageCellActions.replyMessage, MessageCellActions.replyMore, MessageCellActions.deleteMessage];
+    } 
+  }
 
   // MARK: - Logic
 

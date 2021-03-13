@@ -11,6 +11,7 @@ abstract class AppColors {
   static get lightPinkColor => Color(0xff9357CD).withAlpha(15);
   static get pinkBackgroundColor => Color(0xffECE9F8);
   static get messageBlueBackground => Color(0xff4C4FB4);
+  static get redDeleteColor => Color(0xffEB5757);
 }
 
 abstract class AppFontStyles {

@@ -179,4 +179,9 @@ class ChatRepositoryImpl extends ChatRepository {
       return Left(ConnectionFailure());
     }
   }
+  
+  @override
+  Future<void> disposeChat() {
+    chatDataSource.disposeChat();
+  }
 }

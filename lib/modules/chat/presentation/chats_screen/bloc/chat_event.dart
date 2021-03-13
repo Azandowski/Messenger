@@ -57,3 +57,13 @@ class SetInitialTime extends ChatEvent {
   @override
   List<Object> get props => [option];
 }
+
+class DisposeChat extends ChatEvent{
+  @override
+  List<Object> get props => [];
+}
+
+class EnableSelectMode extends ChatEvent{
+  @override
+  List<Object> get props => [];
+}

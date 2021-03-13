@@ -13,13 +13,13 @@ class MessageModel extends Message {
   final int colorId;
   final int deletionSeconds;
   final DateTime willBeDeletedAt;
-  final List<Message> transfers;
+  final List<Message> transfer;
   final MessageStatus messageStatus;
 
   MessageModel({
     this.id,
     this.isRead,
-    this.transfers,
+    this.transfer,
     this.dateTime,
     this.text,
     this.user,
@@ -27,14 +27,14 @@ class MessageModel extends Message {
     this.chatActions,
     this.deletionSeconds,
     this.willBeDeletedAt,
-    this.messageStatus
+    this.messageStatus = MessageStatus.sent,
   }) : super(
     id: id,
     isRead: isRead,
     colorId: colorId,
     text: text,
     dateTime: dateTime,
-    transfer: transfers,
+    transfer: transfer,
     user: user,
     chatActions: chatActions,
     willBeDeletedAt: willBeDeletedAt,
@@ -45,7 +45,7 @@ class MessageModel extends Message {
   factory MessageModel.fromJson(Map json) {
     return MessageModel(
       id: json['id'],
-      colorId: json['color'],
+      colorId: json['color'] is Map ? json['color']['color'] : json['color'],
       user: json['from_contact'] != null ? 
         MessageUserModel.fromJson(json['from_contact']) : null,
       text: json['text'],
@@ -55,7 +55,7 @@ class MessageModel extends Message {
       willBeDeletedAt: json['deleted_at']  != null ? 
         DateTime.parse(json['deleted_at']).toLocal() : null,
       deletionSeconds: json['time_deleted'],
-      transfers: json['transfer'] != null ? 
+      transfer: json['transfer'] != null ? 
         (json['transfer'] as List).map((v) => Transfer.fromJson(v)).toList() : [],
     );
   }
@@ -73,34 +73,38 @@ class MessageModel extends Message {
   }
 }
 
+// ignore: must_be_immutable
 class Transfer extends Message {
   final int id;
-  int fromId;
-  int toId;
-  String text;
-  String action;
-  int chatId;
+  final ChatActions action;
   final bool isRead;
   final DateTime dateTime;
   final MessageUser user;
+  int fromId;
+  int toId;
+  String text;
+  int chatId;
   String updatedAt;
 
-  Transfer(
-      {this.id,
-      this.fromId,
-      this.toId,
-      this.text,
-      this.action,
-      this.chatId,
-      this.isRead,
-      this.user,
-      this.dateTime,
-      this.updatedAt,}) : super(
-        id: id,
-        isRead: isRead,
-        dateTime: dateTime,
-        user: user,
-      );
+  Transfer({
+    this.id,
+    this.fromId,
+    this.toId,
+    this.text,
+    this.action,
+    this.chatId,
+    this.isRead,
+    this.user,
+    this.dateTime,
+    this.updatedAt,
+  }) : super(
+    id: id,
+    isRead: isRead,
+    dateTime: dateTime,
+    user: user,
+    text: text,
+    chatActions: action
+  );
 
   factory Transfer.fromJson(Map<String, dynamic> json) {
     return Transfer(
@@ -108,7 +112,7 @@ class Transfer extends Message {
       fromId: json['from_id'],
       toId: json['to_id'],
       text: json['text'],
-      action: json['action'],
+      action: ChatActions.values.firstWhere((e) => e.key == json['action'], orElse: () => null),
       chatId: json['chat_id'],
       isRead: json['is_read'] == 1,
       dateTime: DateTime.parse(json['created_at']).toLocal(),

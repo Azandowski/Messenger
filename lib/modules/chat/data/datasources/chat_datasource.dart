@@ -34,9 +34,13 @@ abstract class ChatDataSource {
     int id
   });
   Future<PaginatedResultViaLastItem<Message>> getChatMessages (int lastMessageId);
+  
+  // TODO: Finish later
   Future<void> setTimeDeleted ({
     int id, int timeInSeconds
   });
+
+  Future<void> disposeChat();
 }
 
 
@@ -215,7 +219,15 @@ class ChatDataSourceImpl implements ChatDataSource {
     }
   }
 
-  @override 
+  @override
+  Future<void> disposeChat() {
+    socketService.echo.leave(SocketChannels.getChatByID(id));
+  }
+
+
+  // TODO: Works Partly, No need to touch
+
+    @override 
   Future<void> setTimeDeleted ({
     @required int timeInSeconds,
     @required int id

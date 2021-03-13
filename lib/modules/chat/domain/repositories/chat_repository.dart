@@ -24,4 +24,5 @@ abstract class ChatRepository {
   Future<Either<Failure, NoParams>> setTimeDeleted ({
     int id, int timeInSeconds
   });
+  Future<void> disposeChat();
 }
