@@ -97,7 +97,9 @@ class _ChatScreenState extends State<ChatScreen> implements TimePickerDelegate {
                   }
                 ),
                 actions: [
-                  ChatScreenActions()
+                  ChatScreenActions(
+                    chatID: widget.chatEntity.chatId
+                  )
                 ],
               ),
               backgroundColor: AppColors.pinkBackgroundColor,
