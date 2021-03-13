@@ -13,22 +13,22 @@ import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.da
 import 'package:messenger_mobile/modules/chat/data/datasources/chat_datasource.dart';
 import 'package:messenger_mobile/modules/chat/data/models/message_view_model.dart';
 import 'package:messenger_mobile/modules/chat/data/repositories/chat_repository.dart';
+import 'package:messenger_mobile/modules/chat/domain/entities/chat_actions.dart';
 import 'package:messenger_mobile/modules/chat/domain/entities/message.dart';
 import 'package:messenger_mobile/modules/chat/domain/repositories/chat_repository.dart';
 import 'package:messenger_mobile/modules/chat/domain/usecases/get_messages.dart';
 import 'package:messenger_mobile/modules/chat/domain/usecases/send_message.dart';
 import 'package:messenger_mobile/modules/chat/domain/usecases/set_time_deleted.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chat_details/page/chat_detail_page.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/bloc/chat_bloc.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/helpers/messageCellAction.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/chatControlPanel/chatControlPanel.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/chatControlPanel/cubit/panel_bloc_cubit.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/chatHeading.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/chat_action_view.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/chat_app_bar.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/chat_date_item.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/chat_screen_actions.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/message_cell.dart';
 import 'package:messenger_mobile/core/utils/list_helper.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/selection_app_bar.dart';
 import 'package:messenger_mobile/modules/chat/presentation/time_picker/time_picker_screen.dart';
 import '../../../../../main.dart';
 
@@ -86,35 +86,26 @@ class _ChatScreenState extends State<ChatScreen> implements TimePickerDelegate {
     var height = MediaQuery.of(context).size.width;
     ChatViewModel chatViewModel = ChatViewModel(widget.chatEntity);
 
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: false,
-        titleSpacing: 0.0,
-        title: ChatHeading(
-          title: chatViewModel.title ?? '',
-          description: chatViewModel.description ?? '',
-          avatarURL: chatViewModel.imageURL,
-          onTap: () {
-            _navigator.push(ChatDetailPage.route(widget.chatEntity.chatId));
-          }
-        ),
-        actions: [
-          ChatScreenActions(timePickerDelegate: this,)
-        ],
-      ),
-      backgroundColor: AppColors.pinkBackgroundColor,
-      body: BlocProvider(
-        lazy: false,
-        create: (context) => _panelBlocCubit,
-        child: BlocProvider(
-        lazy: false,
-        create: (context) => _chatBloc,
-        child: BlocBuilder<ChatBloc, ChatState>(
-          builder: (context, state) {
-            return BlocListener<ChatBloc, ChatState>(
-              listener: (context, state) {
-                _handleListener(state);
-              },
+    return BlocProvider(
+      create: (context) => _chatBloc,
+      child: BlocConsumer<ChatBloc, ChatState>(
+        listener: (context, state) {
+          _handleListener(state);
+        },
+        builder: (context, state) {
+          return Scaffold(
+            appBar: state is ChatSelection ? SelectionAppBar(
+              chatViewModel: chatViewModel, widget: widget, delegate: this,
+              chatBloc: _chatBloc,
+              appBar: AppBar(),
+            ) : ChatAppBar(
+              chatViewModel: chatViewModel, navigator: _navigator, widget: widget, delegate: this,
+              appBar: AppBar(),
+            ),
+            backgroundColor: AppColors.pinkBackgroundColor,
+            body: BlocProvider(
+              lazy: false,
+              create: (context) => _panelBlocCubit,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -167,27 +158,25 @@ class _ChatScreenState extends State<ChatScreen> implements TimePickerDelegate {
                           },
                           scrollDirection: Axis.vertical,
                           itemCount: getItemsCount(state),
-                          reverse: true,
-                          separatorBuilder: (_, int index) {
-                            return _buildSeparator(index, state);
-                          }
-                        ),
-                      ),
-                    ),
+                    reverse: true,
+                    separatorBuilder: (_, int index) {
+                      return _buildSeparator(index, state);
+                    }
                   ),
-                  ChatControlPanel(
-                    messageTextController: messageTextController, 
-                    width: width,
-                    height: height
-                  ),
-                ],
+                ),
+                )   ,
               ),
-            );
-          }
-        ),
+              ChatControlPanel(
+                messageTextController: messageTextController, 
+                width: width,
+                height: height
+              ),
+            ],
+          ),
+        
        ),
-      ),
-    );
+      );}
+    ));
   }
 
   Future<void> messageActionProcess(MessageCellActions action,BuildContext context, MessageViewModel messageViewModel) async {
@@ -208,7 +197,7 @@ class _ChatScreenState extends State<ChatScreen> implements TimePickerDelegate {
         _panelBlocCubit.addMessage(messageViewModel);
         break;
       case MessageCellActions.replyMore:
-        // TODO: Handle this case.
+        _chatBloc.add(EnableSelectMode());
         break;
       case MessageCellActions.deleteMessage:
         // TODO: Handle this case.
@@ -285,3 +274,4 @@ class _ChatScreenState extends State<ChatScreen> implements TimePickerDelegate {
     _chatBloc.add(SetInitialTime(option: option));
   }
 }
+

@@ -115,6 +115,14 @@ abstract class AppFontStyles {
     height: 0.75,
     fontSize: 12,
   );
+
+  static get purple15 => TextStyle(
+    color: AppColors.indicatorColor,
+    fontWeight: FontWeight.w400,
+    height: 0.75,
+    fontSize: 15,
+  );
+
 }
 
 abstract class AppTheme {

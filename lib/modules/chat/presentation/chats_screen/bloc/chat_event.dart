@@ -67,3 +67,8 @@ class EnableSelectMode extends ChatEvent{
   @override
   List<Object> get props => [];
 }
+
+class DisableSelectMode extends ChatEvent{
+  @override
+  List<Object> get props => [];
+}

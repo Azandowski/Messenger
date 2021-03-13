@@ -121,6 +121,12 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         messages: state.messages, 
         hasReachedMax: this.state.hasReachedMax
       );
+    } else if (event is DisableSelectMode){
+      yield ChatInitial(
+        messages: this.state.messages,
+        hasReachedMax: this.state.hasReachedMax,
+        wallpaperPath: this.state.wallpaperPath
+      );
     }
   }
 

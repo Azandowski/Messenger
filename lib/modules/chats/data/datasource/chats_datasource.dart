@@ -57,7 +57,6 @@ class ChatsDataSourceImpl implements ChatsDataSource {
     socketService.echo.channel(SocketChannels.getChatsUpdates(userID)).listen(
       '.get.index.$userID', 
       (updates) {
-        // print(updates);
         Map chatJSON = updates['chat'];
         chatJSON['last_message'] = updates['last_message'];
         chatJSON['category_chat'] = updates['category_chat'];
