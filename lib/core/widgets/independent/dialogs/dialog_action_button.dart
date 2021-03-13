@@ -34,3 +34,22 @@ class DialogActionButton {
   /// This is callback button which will be called if user taps on the button;
   final Function onPress;
 }
+
+
+class DialogOptionsContainer {
+  
+  // Список опции 
+  final List<String> options;
+
+  // index of the current option
+  final int currentOptionIndex;
+
+  // Callback which contains index of the selected option
+  final Function(int) onPress;
+
+  DialogOptionsContainer({
+    @required this.options,
+    @required this.currentOptionIndex,
+    @required this.onPress
+  });
+}

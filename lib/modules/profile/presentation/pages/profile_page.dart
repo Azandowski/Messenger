@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:messenger_mobile/modules/creation_module/presentation/bloc/contact_bloc/contact_bloc.dart';
 
 import '../../../../core/blocs/authorization/bloc/auth_bloc.dart';
 import '../../../../core/blocs/category/bloc/category_bloc.dart';
@@ -83,7 +84,8 @@ class _ProfilePageState extends State<ProfilePage> {
                           context.read<AuthBloc>().add(
                             AuthenticationLogoutRequested(
                               categoryBloc: context.read<CategoryBloc>(), 
-                              chatBloc: context.read<ChatGlobalCubit>()
+                              chatBloc: context.read<ChatGlobalCubit>(),
+                              contactBloc: context.read<ContactBloc>()
                             )
                           );
                         },

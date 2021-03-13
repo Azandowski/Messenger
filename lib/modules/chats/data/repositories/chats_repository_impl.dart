@@ -124,4 +124,9 @@ class ChatsRepositoryImpl extends ChatsRepository {
   Future<void> saveNewChatLocally(ChatEntityModel model) async {
     return localChatsDataSource.setCategoryChats([model]);
   }
+
+  @override
+  Future<void> removeAllChats() {
+    return localChatsDataSource.resetAll();
+  }
 }

@@ -57,12 +57,15 @@ class ChatsDataSourceImpl implements ChatsDataSource {
     socketService.echo.channel(SocketChannels.getChatsUpdates(userID)).listen(
       '.get.index.$userID', 
       (updates) {
+        // print(updates);
         Map chatJSON = updates['chat'];
         chatJSON['last_message'] = updates['last_message'];
+        chatJSON['category_chat'] = updates['category_chat'];
+        chatJSON['settings'] = updates['settings'];
+        chatJSON['no_read_message'] = updates['no_read_message'];
 
         ChatEntityModel model = ChatEntityModel.fromJson(chatJSON);
         _controller.add(model);
-        print(updates);
       });
   }
 
@@ -153,5 +156,5 @@ class ChatsDataSourceImpl implements ChatsDataSource {
   }
 
   @override 
-  final StreamController _controller = StreamController<ChatEntity>();
+  final StreamController _controller = StreamController<ChatEntity>.broadcast();
 }

@@ -74,26 +74,27 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> implements ContactC
                 children: [
                   ChatDetailHeader(chatDetailed: state.chatDetailed),
                   if (state.chatDetailed?.chatMemberRole == ChatMember.admin)
-                    ChatAdminSettings(
-                      permissions: state.chatDetailed?.settings
-                    ),
-                  DividerWrapper(
-                    children: _getChatSettings(state).map((e) => ChatSettingItem(
-                      chatSetting: e,
-                      isOn: !e.getValue(state.chatDetailed?.settings),
-                      onToggle: (value) {
-                        _chatDetailsCubit.toggleChatSetting(
-                          settings: e, 
-                          newValue: value, 
-                          id: widget.id,
-                          callback: (ChatPermissions permissons) {
-                            context.read<ChatGlobalCubit>().updateChatSettings(
-                              chatPermissions: permissons, id: widget.id
-                            );
-                          } 
-                        );
-                      },
-                    )).toList(),
+                    ...[
+                      ChatAdminSettings(
+                        permissions: state.chatDetailed?.settings
+                      ),
+                      Divider()
+                    ],
+                  ChatSettingItem(
+                    chatSetting: ChatSettings.noSound,
+                    isOn: !ChatSettings.noSound.getValue(state.chatDetailed?.settings),
+                    onToggle: (value) {
+                      _chatDetailsCubit.toggleChatSetting(
+                        settings: ChatSettings.noSound, 
+                        newValue: value, 
+                        id: widget.id,
+                        callback: (ChatPermissions permissons) {
+                          context.read<ChatGlobalCubit>().updateChatSettings(
+                            chatPermissions: permissons, id: widget.id
+                          );
+                        } 
+                      );
+                    },
                   ),
                   _buildSeparator(),
                   ChatMediaBlock(

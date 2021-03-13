@@ -65,6 +65,12 @@ class ContactBloc extends Bloc<ContactEvent, ContactState> {
       );
       
       yield await _mapPostFetchedToState(state, status);
+    } else if (event is ContactReset) {
+      yield state.copyWith(
+        status: ContactStatus.initial,
+        hasReachedMax: false,
+        contacts: []
+      );
     }
   }
   

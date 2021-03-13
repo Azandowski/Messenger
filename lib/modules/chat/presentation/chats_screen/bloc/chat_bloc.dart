@@ -61,8 +61,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
     _chatSubscription = chatRepository.message.listen(
       (message) {
-        print(message.messageStatus);
-        print('satuto'); 
         add(MessageAdded(message: message));
       }
     );

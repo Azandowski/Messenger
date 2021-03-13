@@ -21,6 +21,8 @@ class ChatScreenCategoriesView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<CategoryBloc, CategoryState>(
       listener: (context, state) {
+        print(state);
+
         // TODO: implement listener
       },
       builder: (context, categoryState) {

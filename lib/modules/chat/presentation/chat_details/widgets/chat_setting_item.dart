@@ -59,11 +59,30 @@ extension ChatSettingsUIExtension on ChatSettings {
     }
   }
 
+  List<String> get selectionOptions {
+    switch (this) {
+      case ChatSettings.adminSendMessage:        
+        return [
+          'Только Админы',
+          'Все участники'
+        ];
+      case ChatSettings.noMedia:
+        return [
+          'Только Админы',
+          'Все участники'
+        ];
+      default:
+        return null;
+    }
+  }
+
 
   String getValueText (ChatPermissions permissions) {
     switch (this) {
       case ChatSettings.adminSendMessage:        
         return permissions?.adminMessageSend ? 'Только админы' : 'Все участники';
+      case ChatSettings.noMedia:
+        return permissions?.isMediaSendOn ? 'Только админы' : 'Все участники';
       default:
         return null;
     }

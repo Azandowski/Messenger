@@ -136,6 +136,7 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
   Future<Either<Failure, bool>> logout(NoParams params) async {
     try {
       await localDataSource.deleteToken();
+      await localDataSource.deleteContacts();
       initToken();
       return Right(true);
     } on StorageFailure {

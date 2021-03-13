@@ -38,7 +38,7 @@ class _ContactsListState extends State<ContactsList> {
   Widget build(BuildContext context) {
     return BlocConsumer<ContactBloc, ContactState>(
       listener: (context, state) {
-        if(state.status == ContactStatus.failure){
+        if (state.status == ContactStatus.failure){
           Scaffold.of(context).showSnackBar(SnackBar(content: Text('Could not handle contacts')));
         }
       },

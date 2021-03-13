@@ -90,3 +90,32 @@ class ChatsError extends ChatState {
     currentCategory
   ];
 }
+
+class ChatCategoryReadCountChanged extends ChatState{
+  final List<ChatEntity> chats;
+  final bool hasReachedMax;
+  final int currentCategory;
+  final int categoryID;
+  final int newReadCount;
+
+  ChatCategoryReadCountChanged({
+    @required this.chats,
+    @required this.hasReachedMax,
+    @required this.categoryID,
+    @required this.newReadCount,
+    this.currentCategory
+  }) : super(
+    chats: chats, 
+    hasReachedMax: hasReachedMax,
+    currentCategory: currentCategory,
+  );
+  
+  @override
+  List<Object> get props => [
+    chats, 
+    hasReachedMax,
+    currentCategory,
+    newReadCount,
+    categoryID,
+  ];
+}

@@ -7,7 +7,7 @@ enum DialogViewButtonsLayout {
 }
 
 enum DialogViewType {
-  alert, actionSheet
+  alert, actionSheet, optionSelector
 }
 
 enum DialogActionButtonStyle {

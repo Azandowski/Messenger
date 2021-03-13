@@ -16,15 +16,13 @@ class CategoryEntity extends Equatable {
     @required this.noReadCount
   });
 
-  CategoryEntity clone({
-    int noReadCount
-  }) {
+  CategoryEntity clone() {
     return CategoryEntity(
       id: this.id,
       name: this.name,
       avatar: this.avatar,
       totalChats: this.totalChats,
-      noReadCount: noReadCount ?? this.noReadCount
+      noReadCount: this.noReadCount
     );
   }
 

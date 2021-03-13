@@ -18,6 +18,7 @@ abstract class AuthenticationLocalDataSource {
 
   // write sent contacts
   Future<void> saveContacts(List<Map> contacts);
+  Future<void> deleteContacts ();
 
   Future<List> getDatabaseContacts();
   Future<List<Map>> getDeviceContacts();
@@ -64,6 +65,11 @@ class AuthenticationLocalDataSourceImpl implements AuthenticationLocalDataSource
   @override
   Future<List> getDatabaseContacts() async{
     return await _contactsFolder.find(await _localDb);
+  }
+
+  @override
+  Future<void> deleteContacts() async {
+    return await _contactsFolder.delete(await _localDb);
   }
 
   @override

@@ -45,7 +45,7 @@ class _ChatScreenState extends State<ChatScreen> implements TimePickerDelegate {
   NavigatorState get _navigator => navigatorKey.currentState;
   
   TextEditingController messageTextController = TextEditingController();
-     
+  CategoryBloc categoryBloc;
   ChatBloc _chatBloc;
   PanelBlocCubit _panelBlocCubit;
   @override
@@ -58,6 +58,7 @@ class _ChatScreenState extends State<ChatScreen> implements TimePickerDelegate {
         client: sl()
       )
     );
+    categoryBloc = context.read<CategoryBloc>();
     _panelBlocCubit = PanelBlocCubit();
     _chatBloc = ChatBloc(
       chatId: widget.chatEntity.chatId,
@@ -214,7 +215,6 @@ class _ChatScreenState extends State<ChatScreen> implements TimePickerDelegate {
           context.read<main_chat_cubit.ChatGlobalCubit>().resetChatNoReadCounts(chatId: widget.chatEntity.chatId);
           if (widget.chatEntity.chatCategory?.id != null) {
 
-            CategoryBloc categoryBloc = context.read<CategoryBloc>();
             int index = categoryBloc.state.categoryList.indexWhere((e) => e.id == widget.chatEntity.chatCategory?.id);
 
             categoryBloc.add(CategoryReadCountChanged(

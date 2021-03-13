@@ -64,7 +64,7 @@ class ChatEntityModel extends ChatEntity {
       'id': chatId,
       'name': title,
       'avatar': imageUrl,
-      'chatCategory': chatCategory == null ? null : {
+      'category_chat': chatCategory == null ? null : {
         'id': chatCategory.id,
         'name': chatCategory.name,
         'avatar': chatCategory.avatar,

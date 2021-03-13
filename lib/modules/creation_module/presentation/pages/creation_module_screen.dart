@@ -30,6 +30,7 @@ class _CreationModuleScreenState extends State<CreationModuleScreen> {
   @override
   void initState() {
     _scrollController.addListener(_onScroll);
+    context.read<ContactBloc>().add(ContactFetched());
     super.initState();
   }
 

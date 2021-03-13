@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:messenger_mobile/core/blocs/chat/bloc/bloc/chat_cubit.dart';
 import 'package:messenger_mobile/modules/profile/presentation/widgets/profile_shimmer.dart';
 
 import '../../../../modules/category/domain/repositories/category_repository.dart';
@@ -18,15 +19,29 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
   final CategoryRepository repository;
   final DeleteCategory deleteCategory;
   final ReorderCategories reorderCategories;
-
+  final ChatGlobalCubit chatGlobalCubit;
   CategoryBloc({
     @required this.repository,
     @required this.deleteCategory,
-    @required this.reorderCategories
+    @required this.reorderCategories,
+    this.chatGlobalCubit,
   }) : super(CategoryEmpty()) {
     _categoriesSubscription = repository.categoryListController.stream
       .listen((categories) => add(CategoriesChanged(newCategories: categories)));
+
+    if(chatGlobalCubit != null){
+      _chatCubitSubscription = chatGlobalCubit.listen((chatState) { 
+        print('state changed');
+        if(chatState is ChatCategoryReadCountChanged){
+          add(CategoryReadCountChanged(
+            categoryID: chatState.categoryID,
+            newReadCount: chatState.newReadCount,
+          ));
+        }
+      });
+    }
   }
+  StreamSubscription _chatCubitSubscription;
 
   StreamSubscription<List<CategoryEntity>> _categoriesSubscription;
 
@@ -68,18 +83,33 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
           );
       });
     } else if (event is CategoryReadCountChanged) {
-      int index = this.state.categoryList.indexWhere((element) => element.id == event.categoryID);
+        print('dmkasmdlasmd');
+        yield* _mapCountChangeToState(event);
+    }
+  }
 
-      if (index != -1) {
-        var newCategory = this.state.categoryList[index].clone(noReadCount: event.newReadCount);
+  Stream<CategoryState> _mapCountChangeToState(CategoryReadCountChanged event) async* {
+    print('something is done');
+    int index = this.state.categoryList.indexWhere((element) => element.id == event.categoryID);
+    print(index);
+
+        if (index != -1) {
+        print('dkslmklsmj;nvgvjfdnvdfnkjnvknvkjenvjerngvjkengvjkern');
+        var newCategory = CategoryEntity(
+          id: this.state.categoryList[index].id, 
+          name: this.state.categoryList[index].name, 
+          avatar: this.state.categoryList[index].avatar, 
+          totalChats: this.state.categoryList[index].totalChats, 
+          noReadCount: event.newReadCount
+        );
+
         final newCategories = this.state.categoryList.map(
-          (e) => e.id == event.categoryID ? newCategory : e.clone()
+          (e) => e.id == event.categoryID ? newCategory :  e.clone()
         ).toList();
 
         yield CategoryLoaded(
           categoryList: newCategories
         );
       }
-    }
   }
 }

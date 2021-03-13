@@ -4,11 +4,11 @@ import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
+import 'package:messenger_mobile/core/blocs/category/bloc/category_bloc.dart';
 import 'package:messenger_mobile/core/error/failures.dart';
 import 'package:messenger_mobile/core/services/network/paginatedResult.dart';
 import 'package:messenger_mobile/modules/category/domain/entities/chat_permissions.dart';
 import 'package:messenger_mobile/modules/chats/domain/usecase/get_category_chats.dart';
-
 import '../../../../../locator.dart';
 import '../../../../../modules/category/domain/entities/chat_entity.dart';
 import '../../../../../modules/chats/domain/repositories/chats_repository.dart';
@@ -25,10 +25,12 @@ class ChatGlobalCubit extends Cubit<ChatState> {
   final GetChats getChats;
   final GetCategoryChats getCategoryChats;
 
+  int lastCategoryID;
+
   ChatGlobalCubit(
     this.chatsRepository,
     this.getChats,
-    this.getCategoryChats
+    this.getCategoryChats,
   ) : super(ChatLoading(
       chats: [],
       hasReachedMax: false,
@@ -39,24 +41,40 @@ class ChatGlobalCubit extends Cubit<ChatState> {
     _chatsSubscription = chatsRepository.chats.listen((chat) {
       chatsRepository.saveNewChatLocally(chat);
       var chatIndex = this.state.chats.indexWhere((e) => e.chatId == chat.chatId);
+      
+      /// Если до этого количество непрочитанных был [0]
+      /// Значит нам нужно увеличить количество непрочитанных чатов в
+      /// [CategoryBloc]
 
-      if (chatIndex == -1) {
-        List<ChatEntity> newChats = [...this.state.chats, chat];
-        emit(ChatsLoaded(
+      if (this.state.chats[chatIndex].unreadCount == 0) {
+         emit(ChatCategoryReadCountChanged(
+          chats: this.state.chats,
           currentCategory: this.state.currentCategory,
           hasReachedMax: this.state.hasReachedMax,
-          chats: newChats
-        ));
-      } else {
-        var newChats = this.state.chats.map((e) => e.clone()).toList();
-        newChats.removeAt(chatIndex);
-        newChats.insert(0, chat);
-        
-        emit(ChatsLoaded(
-          currentCategory: this.state.currentCategory,
-          hasReachedMax: this.state.hasReachedMax,
-          chats: newChats
-        ));
+          categoryID: this.state.chats[chatIndex].chatCategory?.id, 
+          newReadCount: (this.state.chats[chatIndex].chatCategory?.noReadCount ?? 0) + 1)
+        );
+      }
+
+      if (lastCategoryID == null || lastCategoryID == chat.chatCategory?.id)  {
+        if (chatIndex == -1) {
+          List<ChatEntity> newChats = [...this.state.chats, chat];
+          emit(ChatsLoaded(
+            currentCategory: this.state.currentCategory,
+            hasReachedMax: this.state.hasReachedMax,
+            chats: newChats
+          ));
+        } else {
+          var newChats = this.state.chats.map((e) => e.clone()).toList();
+          newChats.removeAt(chatIndex);
+          newChats.insert(0, chat);
+          
+          emit(ChatsLoaded(
+            currentCategory: this.state.currentCategory,
+            hasReachedMax: this.state.hasReachedMax,
+            chats: newChats
+          ));
+        }
       }
     });
   }
@@ -69,7 +87,8 @@ class ChatGlobalCubit extends Cubit<ChatState> {
     @required bool isPagination,
     int categoryID
   }) async {
-    
+    lastCategoryID = categoryID;
+
     emit(ChatLoading(
       chats: isPagination ? this.state.chats : [], 
       isPagination: false,
@@ -143,6 +162,15 @@ class ChatGlobalCubit extends Cubit<ChatState> {
     }
   }
 
+
+  void killAllCaches () {
+    chatsRepository.removeAllChats();
+    emit(ChatsLoaded(
+      hasReachedMax: false,
+      chats: [],
+      currentCategory: 0
+    ));
+  }
 
   void resetChatNoReadCounts ({
     @required int chatId

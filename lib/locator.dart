@@ -74,12 +74,6 @@ Future<void> init() async {
     ),
   );
 
-  sl.registerFactory(() => ChatGlobalCubit(
-    sl(), 
-    sl(),
-    sl()
-  ));
-
   sl.registerFactory(() => ProfileCubit(getUser: sl()));
   sl.registerFactory(() => ChatsCubit(sl()));
 
@@ -204,11 +198,6 @@ Future<void> init() async {
       authRepositiry: sl(),
       logoutUseCase: sl(),
     ),
-  );
-
-  sl.registerFactory(
-    () => CategoryBloc(
-        repository: sl(), deleteCategory: sl(), reorderCategories: sl()),
   );
 
   // local storage

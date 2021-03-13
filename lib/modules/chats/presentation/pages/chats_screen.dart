@@ -98,7 +98,7 @@ class _ChatsScreenState extends State<ChatsScreen> {
                             onLongPressStart: (d) {
                               cubit.didSelectChat(index - 1);
                             },
-                            onTap: (){
+                            onTap: () {
                               Navigator.push(
                                 context, MaterialPageRoute(builder: (context) => ChatScreen(chatEntity: chatState.chats[index - 1],)),
                               );
