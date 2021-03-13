@@ -89,3 +89,22 @@ class ChatError extends ChatState {
     wallpaperPath
   ];
 }
+
+class ChatSelection extends ChatState {
+  final List<Message> messages;
+  final bool hasReachedMax;
+
+  ChatSelection({
+    @required this.messages,
+    @required this.hasReachedMax,
+  }) : super(
+    hasReachedMax: hasReachedMax,
+    messages: messages, 
+  );
+
+  @override
+  List<Object> get props => [
+    messages, 
+    hasReachedMax,
+  ];
+}

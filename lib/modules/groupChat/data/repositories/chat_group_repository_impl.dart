@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
 import '../../../../core/error/failures.dart';
 import 'package:dartz/dartz.dart';
 import '../datasources/chat_group_remote_datasource.dart';
@@ -14,7 +15,7 @@ class ChatGroupRepositoryImpl implements ChatGroupRepository{
   
 
   @override
-  Future<Either<Failure, bool>> createGroupChat(CreateChatGroupParams createChatGroupParams) async {
+  Future<Either<Failure, ChatEntity>> createGroupChat(CreateChatGroupParams createChatGroupParams) async {
      try {
         final response = await remoteDataSource.createChatGroup(groupParams: createChatGroupParams);
         return Right(response);

@@ -34,6 +34,7 @@ abstract class ChatDataSource {
     int id
   });
   Future<PaginatedResultViaLastItem<Message>> getChatMessages (int lastMessageId);
+  Future<void> disposeChat();
 }
 
 
@@ -52,8 +53,9 @@ class ChatDataSourceImpl implements ChatDataSource {
       .listen(
         '.messages.$id', 
         (updates) {
-          print(updates);
           _controller.add(MessageModel.fromJson(updates['message']));
+         var mal = MessageModel.fromJson(updates['message']);
+         mal.transfer;
         }
       );
   }
@@ -211,5 +213,10 @@ class ChatDataSourceImpl implements ChatDataSource {
     } else {
       throw ServerFailure(message: ErrorHandler.getErrorMessage(response.body.toString()));
     }
+  }
+
+  @override
+  Future<void> disposeChat() {
+    socketService.echo.leave(SocketChannels.getChatByID(id));
   }
 }

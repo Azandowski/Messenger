@@ -36,8 +36,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     isReversed: true
   );
 
-  // Timer left for the messages
-  int currentLeftTime = 0;
+   int currentLeftTime = 0;
 
   ChatBloc({
     @required this.chatRepository,
@@ -55,8 +54,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
     _chatSubscription = chatRepository.message.listen(
       (message) {
-        print(message.messageStatus);
-        print('satuto'); 
         add(MessageAdded(message: message));
       }
     );
@@ -64,7 +61,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     scrollController.addListener(() {
       if (scrollController.isPaginated && !(state is ChatLoading) && !state.hasReachedMax) {
         // Load More
-        
         this.add(LoadMessages(
           isPagination: true
         ));
@@ -80,24 +76,93 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   @override
   Stream<ChatState> mapEventToState(ChatEvent event) async* {
     if (event is ChatScreenStarted) {
-      File wallpaperFile = await chatsRepository.getLocalWallpaper();
-      if (wallpaperFile != null) {
-        yield ChatInitial(
-          messages: this.state.messages,
+      yield* _chatInitialEventToState();
+    } else if (event is MessageAdded) {
+      yield* _messageAddedToState(event);
+    } else if (event is MessageSend) {
+      yield* _messageSendToState(event);
+    } else if (event is LoadMessages) {
+      yield ChatLoading(
+        isPagination: event.isPagination,
+        messages: this.state.messages,
+        hasReachedMax: this.state.hasReachedMax,
+        wallpaperPath: this.state.wallpaperPath
+      );
+
+      final response = await getMessages(event.isPagination ? this.state.messages?.lastItem?.id : null);
+
+      yield* _eitherMessagesOrErrorState(response, event.isPagination);
+    } else if (event is SetInitialTime) {
+      // TODO: Update it
+      currentLeftTime = 10;
+    }else if (event is DisposeChat) {
+      await chatRepository.disposeChat();
+    }else if (event is EnableSelectMode){
+      yield ChatSelection(messages: state.messages, hasReachedMax: this.state.hasReachedMax);
+    }
+  }
+
+  Stream<ChatState> _eitherSentOrErrorState(
+    Either<Failure, Message> failureOrMessage,
+  ) async* {
+    var list = getCopyMessages();    
+    yield failureOrMessage.fold(
+      (failure) => ChatInitial(
+        messages: list,
+        hasReachedMax: this.state.hasReachedMax,
+        wallpaperPath: this.state.wallpaperPath
+      ),
+      (message) {
+        print('succeded and ');
+        print(message.colorId);
+        var i = list.indexWhere((element) => element.identificator == message.identificator);
+        list[i]= message.copyWith(
+          identificator: message.id, status: list[i].messageStatus
+        );
+        return ChatInitial(
+          messages: list,
           hasReachedMax: this.state.hasReachedMax,
-          wallpaperPath: wallpaperFile.path
+          wallpaperPath: this.state.wallpaperPath
         );
       }
-    } else if (event is MessageAdded) {
-      var list = getCopyMessages();
+    );
+  }
+  
+  Stream<ChatState> _eitherMessagesOrErrorState (
+    Either<Failure, PaginatedResultViaLastItem<Message>> failureOrMessage,
+    bool isPagination
+  ) async* {
+    yield failureOrMessage.fold(
+      (failure) => ChatError(
+        messages: this.state.messages, 
+        message: failure.message,
+        hasReachedMax: this.state.hasReachedMax,
+        wallpaperPath: this.state.wallpaperPath
+      ),
+      (result) {
+        print('success bitch');
+        List<Message> newMessages = isPagination ? 
+          (this.state.messages ?? []) + result.data : result.data;
+        
+        return ChatInitial(
+          messages: newMessages,
+          hasReachedMax: result.hasReachMax,
+          wallpaperPath: this.state.wallpaperPath
+        );
+      }
+    );
+  }
+
+  Stream<ChatState> _messageAddedToState(MessageAdded event) async* {
+    var list = getCopyMessages();
       
       var i = list.indexWhere((element) => element.identificator == event.message.id);
       
       if (i != -1) {
+        print('removing');
         list.removeAt(i);
       }
-      print('holy shit');
-      print(event.message.messageStatus);
+
       list.insert(0, event.message);
       
       yield ChatInitial(
@@ -105,8 +170,21 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         hasReachedMax: this.state.hasReachedMax,
         wallpaperPath: this.state.wallpaperPath
       );
-    } else if (event is MessageSend) {
-      var list = getCopyMessages();
+  }
+
+  Stream<ChatState> _chatInitialEventToState() async* {
+     File wallpaperFile = await chatsRepository.getLocalWallpaper();
+      if (wallpaperFile != null) {
+        yield ChatInitial(
+          messages: this.state.messages,
+          hasReachedMax: this.state.hasReachedMax,
+          wallpaperPath: wallpaperFile.path
+        );
+      }
+  }
+
+  Stream<ChatState> _messageSendToState(MessageSend event) async* {
+    var list = getCopyMessages();
       int randomID = _random.nextInt(99999);
       
       var newMessage = Message(
@@ -141,70 +219,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       ));
 
       yield* _eitherSentOrErrorState(response);
-    } else if (event is LoadMessages) {
-      yield ChatLoading(
-        isPagination: event.isPagination,
-        messages: this.state.messages,
-        hasReachedMax: this.state.hasReachedMax,
-        wallpaperPath: this.state.wallpaperPath
-      );
 
-      final response = await getMessages(event.isPagination ? this.state.messages?.lastItem?.id : null);
-
-      yield* _eitherMessagesOrErrorState(response, event.isPagination);
-    } else if (event is SetInitialTime) {
-      // TODO: Update it
-      currentLeftTime = 10;
-    }
-  }
-
-  Stream<ChatState> _eitherSentOrErrorState(
-    Either<Failure, Message> failureOrMessage,
-  ) async* {
-    var list = getCopyMessages();
-    
-    yield failureOrMessage.fold(
-      (failure) => ChatInitial(
-        messages: list,
-        hasReachedMax: this.state.hasReachedMax,
-        wallpaperPath: this.state.wallpaperPath
-      ),
-      (message) {
-        var i = list.indexWhere((element) => element.identificator == message.identificator);
-        list[i]= message.copyWith(
-          identificator: message.id, status: list[i].messageStatus
-        );
-        return ChatInitial(
-          messages: list,
-          hasReachedMax: this.state.hasReachedMax,
-          wallpaperPath: this.state.wallpaperPath
-        );
-      }
-    );
-  }
-  
-  Stream<ChatState> _eitherMessagesOrErrorState (
-    Either<Failure, PaginatedResultViaLastItem<Message>> failureOrMessage,
-    bool isPagination
-  ) async* {
-    yield failureOrMessage.fold(
-      (failure) => ChatError(
-        messages: this.state.messages, 
-        message: failure.message,
-        hasReachedMax: this.state.hasReachedMax,
-        wallpaperPath: this.state.wallpaperPath
-      ),
-      (result) {
-        List<Message> newMessages = isPagination ? 
-          (this.state.messages ?? []) + result.data : result.data;
-        
-        return ChatInitial(
-          messages: newMessages,
-          hasReachedMax: result.hasReachMax,
-          wallpaperPath: this.state.wallpaperPath
-        );
-      }
-    );
   }
 
   List<Message> getCopyMessages() => state.messages.map((e) => e.copyWith()).toList();

@@ -25,4 +25,5 @@ abstract class ChatsRepository {
   Future<File> getLocalWallpaper ();
 
   Future<void> setLocalWallpaper(File file); 
+  
 }

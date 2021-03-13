@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_share/flutter_share.dart';
 import 'package:messenger_mobile/core/utils/paginated_scroll_controller.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen.dart';
 import 'package:messenger_mobile/modules/creation_module/presentation/bloc/contact_bloc/contact_bloc.dart';
+import 'package:messenger_mobile/modules/creation_module/presentation/bloc/creation_module_cubit/creation_module_cubit.dart';
 import 'package:messenger_mobile/modules/creation_module/presentation/helpers/creation_actions.dart';
 import 'package:messenger_mobile/modules/creation_module/presentation/widgets/actions_builder.dart';
+import 'package:messenger_mobile/modules/groupChat/domain/usecases/create_chat_group.dart';
 import 'package:messenger_mobile/modules/groupChat/presentation/create_group/create_group_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../app/appTheme.dart';
+import '../../../../locator.dart';
 import '../widgets/contcats_list.dart';
 
 
@@ -42,23 +46,64 @@ class _CreationModuleScreenState extends State<CreationModuleScreen> {
           style: AppFontStyles.headingTextSyle,
         ),
       ),
-      body: Container(
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
-        child: SingleChildScrollView(
-          controller: _scrollController,
-          scrollDirection: Axis.vertical,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ActionsContainer(
-                onTap: (CreationActions action) {
-                  actionProcess(action, context);
-                },
+      body: BlocProvider(
+        create: (context) => CreationModuleCubit(
+          createChatGruopUseCase: sl<CreateChatGruopUseCase>()
+        ),
+        child: BlocConsumer<CreationModuleCubit, CreationModuleState>(
+          listener: (context, state) {
+            if (state is CreationModuleLoading) {
+              ScaffoldMessenger.of(context)
+                ..hideCurrentSnackBar()
+                ..showSnackBar(
+                SnackBar(
+                  content: LinearProgressIndicator(), 
+                  duration: Duration(days: 2),
+                )
+              );
+            } else if (state is CreationModuleError){
+              ScaffoldMessenger.of(context)
+                ..hideCurrentSnackBar()
+                ..showSnackBar(SnackBar(content: Text(
+                  state.message
+                )));
+            } else if (state is OpenChatWithUser) {
+              ScaffoldMessenger.of(context).hideCurrentSnackBar();
+              Navigator.push(
+                context, MaterialPageRoute(builder: (context) => ChatScreen(
+                  chatEntity: state.newChat
+                )),
+              );
+            } else {
+              ScaffoldMessenger.of(context).hideCurrentSnackBar();
+            }
+          },
+          builder: (context, state) {
+            return Container(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              child: SingleChildScrollView(
+                controller: _scrollController,
+                scrollDirection: Axis.vertical,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ActionsContainer(
+                      onTap: (CreationActions action) {
+                        actionProcess(action, context);
+                      },
+                    ),
+                    ContactsList(
+                      isScrollable: false,
+                      didSelectContactToChat: (contact) {
+                        context.read<CreationModuleCubit>().createChatWithUser(contact.id);
+                      },
+                    )
+                  ],
+                )
               ),
-              ContactsList(isScrollable: false)
-            ],
-          )
+            );
+          },
         ),
       ),
     );
