@@ -77,7 +77,11 @@ class CreateCategoryCubit extends Cubit<CreateCategoryState> {
     ));
 
     response.fold(
-      (failure) => emit(CreateCategoryError(message: failure.message)), 
+      (failure) => emit(CreateCategoryError(
+        message: failure.message,
+        imageFile: this.state.imageFile,
+        chats: this.state.chats,
+      )), 
       (categories) => emit(CreateCategorySuccess(
         updatedCategories: categories,
         chats: this.state.chats,
@@ -99,7 +103,13 @@ class CreateCategoryCubit extends Cubit<CreateCategoryState> {
     ));
 
     response.fold(
-      (failure) => emit(CreateCategoryError(message: failure.message)), 
+      (failure) => emit(
+        CreateCategoryError(
+          message: failure.message,
+          imageFile: this.state.imageFile,
+          chats: this.state.chats,
+        )
+      ), 
       (_) {
         var updatedChats = this.state.chats
           .where((e) => !movingChats.contains(e.chatId))
@@ -144,7 +154,11 @@ class CreateCategoryCubit extends Cubit<CreateCategoryState> {
     ));
 
     response.fold(
-      (failure) => emit(CreateCategoryError(message: failure.message)), 
+      (failure) => emit(CreateCategoryError(
+        message: failure.message,
+        imageFile: this.state.imageFile,
+        chats: this.state.chats
+      )), 
       (chats) => emit(
         CreateCategoryNormal(
           imageFile: this.state.imageFile,

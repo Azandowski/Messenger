@@ -101,6 +101,11 @@ class ChatDetailsCubit extends Cubit<ChatDetailsState> {
           isMediaSendOn: !newValue
         ) ?? ChatPermissions(isSoundOn: false, isMediaSendOn: !newValue);
         break;
+      case ChatSettings.adminSendMessage:
+        newPermissions = this.state.chatDetailed.settings?.copyWith(
+          adminMessageSend: newValue
+        );
+        break;
     }
 
     var newState = this.state.copyWith(chatDetailed: this.state.chatDetailed.copyWith(

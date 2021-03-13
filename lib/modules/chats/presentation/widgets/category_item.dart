@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:messenger_mobile/modules/chats/presentation/widgets/chat_item/chat_notification_view.dart';
 
 import '../../../../app/appTheme.dart';
 import '../../../../core/widgets/independent/images/ImageWithCorner.dart';
@@ -27,12 +28,24 @@ class CategoryItem extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            AvatarImage(
-              borderRadius: BorderRadius.circular(15),
-              path: entity.avatar,
-              isFromAsset: isAvatarFromAssets,
-              width: 80,
-              height: 80,
+            Stack(
+              children: [
+                AvatarImage(
+                  borderRadius: BorderRadius.circular(15),
+                  path: entity.avatar,
+                  isFromAsset: isAvatarFromAssets,
+                  width: 80,
+                  height: 80,
+                ),
+                if (entity.noReadCount != 0) 
+                  Positioned(
+                    top: 8,
+                    left: 8,
+                    child: ChatNotificationView(
+                      badgeCount: entity.noReadCount
+                    ),
+                  ),
+              ],
             ),
             SizedBox(
               height: 10,

@@ -71,7 +71,7 @@ class CategoryDataSourceImpl implements CategoryDataSource {
       keyName: 'file',
       data: {
         'transfer': chatIds.join(','),
-        'name': name
+        'name': name,
       }
     );
 
@@ -94,7 +94,8 @@ class CategoryDataSourceImpl implements CategoryDataSource {
       headers: Endpoints.getCurrentUser.getHeaders(token: token));
 
     if (response.statusCode >= 200 && response.statusCode <= 299) {
-      final categories = (json.decode(response.body) as List)
+      List decodedCategories = (json.decode(response.body) as List);
+      final categories = decodedCategories
           .map((e) => CategoryModel.fromJson(e))
           .toList();
 

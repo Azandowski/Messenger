@@ -46,6 +46,10 @@ class ChatViewModel {
   }
 
   String get dateTime {
+    if (entity.lastMessage != null) {
+      return new DateFormat("Hm").format(entity.lastMessage.dateTime); 
+    }
+    
     return new DateFormat("Hm").format(entity.date); 
   }
 

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
+import 'package:messenger_mobile/modules/category/data/models/chat_entity_model.dart';
 import 'package:messenger_mobile/modules/chats/data/datasource/local_chats_datasource.dart';
 
 import '../../../../core/error/failures.dart';
@@ -40,12 +41,6 @@ class ChatsRepositoryImpl extends ChatsRepository {
     }
   }
 
-  @override
-  StreamController<List<ChatEntity>> chatsController = StreamController<List<ChatEntity>>.broadcast();
-
-  @override
-  List<ChatEntity> currentChats = [];
-
   // * * Methods
 
   @override
@@ -65,18 +60,6 @@ class ChatsRepositoryImpl extends ChatsRepository {
         );
 
         await localChatsDataSource.setCategoryChats(response.data);
-
-        if (params.lastChatID != null) {
-          // Adding not first page
-          currentChats.addAll(response.data);
-          chatsController.add(currentChats);
-        } else {
-          // First page
-
-          currentChats = response.data;
-          chatsController.add(currentChats);
-        }
-
         return Right(response);
       } catch (e) {
         return Left(e);
@@ -109,18 +92,6 @@ class ChatsRepositoryImpl extends ChatsRepository {
 
         // Save chats in local storage
         await localChatsDataSource.setCategoryChats(response.data);
-
-        if (params.lastChatID != null) {
-          // Adding not first page
-          currentChats.addAll(response.data);
-          chatsController.add(currentChats);
-        } else {
-          // First page
-
-          currentChats = response.data;
-          chatsController.add(currentChats);
-        }
-
         return Right(response);
       } catch (e) {
         return Left(e);
@@ -132,6 +103,12 @@ class ChatsRepositoryImpl extends ChatsRepository {
       ));
     }
   }
+  
+  
+  @override
+  Stream<ChatEntity> get chats async* {
+    yield* chatsDataSource.chats;
+  }
 
   @override
   Future<File> getLocalWallpaper() {
@@ -141,5 +118,10 @@ class ChatsRepositoryImpl extends ChatsRepository {
   @override
   Future<void> setLocalWallpaper(File file) {
     return chatsDataSource.setLocalWallpaper(file);
+  }
+
+  @override
+  Future<void> saveNewChatLocally(ChatEntityModel model) async {
+    return localChatsDataSource.setCategoryChats([model]);
   }
 }

@@ -39,6 +39,7 @@ class ChatGroupRemoteDataSourceImpl implements ChatGroupRemoteDataSource {
         'contact': groupParams.contactIds.join(','),
         'name': groupParams.name,
         'description': groupParams.description,
+        'is_private': '0'
       }
     );
 

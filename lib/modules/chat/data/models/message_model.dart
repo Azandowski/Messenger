@@ -50,10 +50,10 @@ class MessageModel extends Message {
         MessageUserModel.fromJson(json['from_contact']) : null,
       text: json['text'],
       isRead: json['is_read'] == 1,
-      dateTime: DateTime.parse(json['created_at']),
+      dateTime: DateTime.parse(json['created_at']).toLocal(),
       chatActions: ChatActions.values.firstWhere((e) => e.key == json['action'], orElse: () => null),
       willBeDeletedAt: json['deleted_at']  != null ? 
-        DateTime.parse(json['deleted_at']) : null,
+        DateTime.parse(json['deleted_at']).toLocal() : null,
       deletionSeconds: json['time_deleted'],
       transfers: json['transfer'] != null ? 
         (json['transfer'] as List).map((v) => Transfer.fromJson(v)).toList() : [],
@@ -111,7 +111,7 @@ class Transfer extends Message {
       action: json['action'],
       chatId: json['chat_id'],
       isRead: json['is_read'] == 1,
-      dateTime: DateTime.parse(json['created_at']),
+      dateTime: DateTime.parse(json['created_at']).toLocal(),
       updatedAt: json['updated_at'],
       user: json['from_contact'] != null ? 
         MessageUserModel.fromJson(json['from_contact']) : null,

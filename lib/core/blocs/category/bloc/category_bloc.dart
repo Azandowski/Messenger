@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:messenger_mobile/modules/profile/presentation/widgets/profile_shimmer.dart';
 
 import '../../../../modules/category/domain/repositories/category_repository.dart';
 import '../../../../modules/category/domain/usecases/delete_category.dart';
@@ -66,6 +67,19 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
             categoryList: data
           );
       });
+    } else if (event is CategoryReadCountChanged) {
+      int index = this.state.categoryList.indexWhere((element) => element.id == event.categoryID);
+
+      if (index != -1) {
+        var newCategory = this.state.categoryList[index].clone(noReadCount: event.newReadCount);
+        final newCategories = this.state.categoryList.map(
+          (e) => e.id == event.categoryID ? newCategory : e.clone()
+        ).toList();
+
+        yield CategoryLoaded(
+          categoryList: newCategories
+        );
+      }
     }
   }
 }

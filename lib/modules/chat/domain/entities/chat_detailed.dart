@@ -10,12 +10,14 @@ class ChatDetailed extends Equatable {
   final ChatPermissions settings;
   final List<ContactEntity> members;
   final int membersCount;
+  final ChatMember chatMemberRole;
 
   ChatDetailed({
     @required this.chat, 
     @required this.media, 
     @required this.members,
     @required this.membersCount,
+    @required this.chatMemberRole,
     this.settings, 
   });  
 
@@ -24,22 +26,29 @@ class ChatDetailed extends Equatable {
     MediaStats media, 
     List<ContactEntity> members,
     int membersCount,
-    ChatPermissions settings
+    ChatPermissions settings,
+    ChatMember chatMemberRole
   }) {
     return ChatDetailed(
       chat: chat ?? this.chat,
       media: media ?? this.media,
       members: members ?? this.members,
       membersCount: membersCount ?? this.membersCount,
-      settings: settings ?? this.settings
+      settings: settings ?? this.settings,
+      chatMemberRole: chatMemberRole ?? this.chatMemberRole
     );
   }
 
   @override
   List<Object> get props => [
-    membersCount, members, chat, media, settings
+    membersCount, members, chat, media, settings, chatMemberRole
   ];
 }
+
+enum ChatMember {
+  admin, member
+}
+
 
 class MediaStats {
   final int mediaCount;

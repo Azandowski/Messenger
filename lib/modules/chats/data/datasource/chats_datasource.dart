@@ -34,6 +34,8 @@ abstract class ChatsDataSource {
     int lastChatId
   });
 
+  Stream<ChatEntity> get chats;
+
   Future<File> getLocalWallpaper ();
 
   Future<void> setLocalWallpaper(File file); 
@@ -55,6 +57,11 @@ class ChatsDataSourceImpl implements ChatsDataSource {
     socketService.echo.channel(SocketChannels.getChatsUpdates(userID)).listen(
       '.get.index.$userID', 
       (updates) {
+        Map chatJSON = updates['chat'];
+        chatJSON['last_message'] = updates['last_message'];
+
+        ChatEntityModel model = ChatEntityModel.fromJson(chatJSON);
+        _controller.add(model);
         print(updates);
       });
   }
@@ -141,5 +148,10 @@ class ChatsDataSourceImpl implements ChatsDataSource {
   }
 
   @override
-  Stream<ChatEntity> get chats => throw UnimplementedError(); 
+  Stream<ChatEntity> get chats async* {
+    yield* _controller.stream;
+  }
+
+  @override 
+  final StreamController _controller = StreamController<ChatEntity>();
 }

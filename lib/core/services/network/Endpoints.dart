@@ -108,7 +108,7 @@ extension EndpointsExtension on Endpoints {
       case Endpoints.getCategoryChats:
         return '${Config.baseAPIpath.value}/messenger/category/${params[0]}';
       case Endpoints.setTimeDeleted:
-        return '${Config.baseAPIpath.value}/messenger/chat/${params[0]}/set-time-deleted';
+        return '${Config.baseAPIpath.value}/messenger/chat/set-time-deleted';
     }
   }
 

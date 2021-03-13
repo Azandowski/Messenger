@@ -42,7 +42,8 @@ class ChatEntity extends Equatable {
   ];
 
   ChatEntity clone({
-    ChatPermissions permissions
+    ChatPermissions permissions,
+    int unreadCount
   }) {
     return ChatEntity(
       chatId: this.chatId,
@@ -55,7 +56,7 @@ class ChatEntity extends Equatable {
         isMediaSendOn: this.permissions.isMediaSendOn
       ),
       lastMessage: this.lastMessage,
-      unreadCount: this.unreadCount,
+      unreadCount: unreadCount ?? this.unreadCount,
       description: description
     );
   }

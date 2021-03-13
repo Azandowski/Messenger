@@ -29,7 +29,7 @@ class ChatSettingItem extends StatelessWidget {
 }
 
 enum ChatSettings {
-  noSound, noMedia
+  noSound, noMedia, adminSendMessage
 }
 
 extension ChatSettingsUIExtension on ChatSettings {
@@ -39,6 +39,8 @@ extension ChatSettingsUIExtension on ChatSettings {
         return 'Без звука';
       case ChatSettings.noMedia:
         return 'Без фото и видео';
+      case ChatSettings.adminSendMessage:
+        return 'Отправка сообщений';
       default:
         return '';
     }
@@ -50,8 +52,20 @@ extension ChatSettingsUIExtension on ChatSettings {
         return permissions?.isSoundOn ?? false;
       case ChatSettings.noMedia:
         return permissions?.isMediaSendOn ?? false;
+      case ChatSettings.adminSendMessage:
+        return permissions?.adminMessageSend ?? false;
       default:
         return false;
+    }
+  }
+
+
+  String getValueText (ChatPermissions permissions) {
+    switch (this) {
+      case ChatSettings.adminSendMessage:        
+        return permissions?.adminMessageSend ? 'Только админы' : 'Все участники';
+      default:
+        return null;
     }
   }
 }

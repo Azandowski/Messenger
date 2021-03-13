@@ -51,9 +51,10 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     @required this.getMessages,
     @required this.setTimeDeleted
   }) : super(
-    ChatInitial(
+    ChatLoading(
       messages: [],
-      hasReachedMax: false
+      hasReachedMax: false,
+      isPagination: false
     )
   ) {
     this.add(ChatScreenStarted());

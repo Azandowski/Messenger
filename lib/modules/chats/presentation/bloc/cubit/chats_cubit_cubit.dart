@@ -23,7 +23,6 @@ class ChatsCubit extends Cubit<ChatsCubitState> {
     _handleInit();
   }
 
-
   // * * Methods
 
   void _handleInit () async {
@@ -36,7 +35,7 @@ class ChatsCubit extends Cubit<ChatsCubitState> {
           currentTabIndex: this.state.currentTabIndex,
         )
       );
-    }
+    } 
   }
 
   Future<void> setWallpaper (File file) async {

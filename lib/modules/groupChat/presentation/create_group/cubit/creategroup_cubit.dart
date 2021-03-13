@@ -28,7 +28,11 @@ class CreateGroupCubit extends Cubit<CreateGroupState> {
   Future<void> selectPhoto (ImageSource imageSource) async {
     var pickedFile = await getImageUseCase(imageSource);
     pickedFile.fold(
-      (failure) => emit(CreateCategoryError(message: 'Unable to get image')), 
+      (failure) => emit(CreateCategoryError(
+        message: 'Unable to get image',
+        contacts: this.state.contacts,
+        imageFile: this.state.imageFile
+      )), 
       (image) {
         emit(CreateGroupNormal(imageFile: image, contacts: this.state.contacts));
     });
@@ -62,12 +66,16 @@ class CreateGroupCubit extends Cubit<CreateGroupState> {
       avatarFile: this.state.imageFile,
       name: name, 
       description: desc,
-      contactIds: this.state.contacts.map((e) => e.id).toList(),
+      contactIds: (this.state.contacts ?? []).map((e) => e.id).toList(),
       isCreate: true,
     ));
 
     response.fold(
-      (failure) => emit(CreateCategoryError(message: failure.message)), 
+      (failure) => emit(CreateCategoryError(
+        message: failure.message,
+        contacts: this.state.contacts,
+        imageFile: this.state.imageFile
+      )), 
       (categories) => emit(CreateGroupSuccess(
         contacts: this.state.contacts,
         imageFile: this.state.imageFile

@@ -65,7 +65,7 @@ class ChatRepositoryImpl extends ChatRepository {
   }
   
   @override
-  Stream<Message> get  message async*{
+  Stream<Message> get message async*{
     yield* chatDataSource.messages;
   }
 

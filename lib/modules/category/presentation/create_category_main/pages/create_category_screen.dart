@@ -85,50 +85,53 @@ class _CreateCategoryScreenState extends State<CreateCategoryScreen> implements 
             height: MediaQuery.of(context).size.height,
             child: Stack(
               children: [
-                SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SizedBox(height: 30),
-                      CreateCategoryHeader(
-                        nameController: cubit.nameController,
-                        imageProvider: state.imageFile != null ? 
-                          FileImage(state.imageFile) : cubit.defaultImageUrl != null ? 
-                            NetworkImage(cubit.defaultImageUrl) : null,
-                        selectImage: (file) {
-                          PhotoPicker().showImageSourceSelectionDialog(context,
-                            (imageSource) {
-                              cubit.selectPhoto(imageSource);
-                            });
-                        },
-                        onAddChats: () {
-                          _navigator.push(ChooseChatsPage.route(this));
-                        } 
-                      ),
-                      CellHeaderView(
-                        title: 'Чаты: ${state is CreateCategoryChatsLoading ? "Загрузка ,,," : (chats ?? []).length }'
-                      ),
-                      ChatsList(
-                        showSpinner: state is CreateCategoryChatsLoading,
-                        isScrollable: false,
-                        items: chats ?? [],
-                        loadingItemsIDS: state is CreateCategoryTransferLoading ? 
-                          state.chatsIDs : [],
-                        cellType: ChatCellType.optionsWithChat,
-                        onSelectedOption: (ChatCellActionType action, ChatEntity entity) async {
-                          if (action == ChatCellActionType.delete) {
-                            cubit.deleteChat(entity);
-                          } else {
-                            var response = await _navigator.push(CategoryList.route(isMoveChat: true));
+                Container(
+                  padding: const EdgeInsets.only(bottom: 80),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(height: 30),
+                        CreateCategoryHeader(
+                          nameController: cubit.nameController,
+                          imageProvider: state.imageFile != null ? 
+                            FileImage(state.imageFile) : cubit.defaultImageUrl != null ? 
+                              NetworkImage(cubit.defaultImageUrl) : null,
+                          selectImage: (file) {
+                            PhotoPicker().showImageSourceSelectionDialog(context,
+                              (imageSource) {
+                                cubit.selectPhoto(imageSource);
+                              });
+                          },
+                          onAddChats: () {
+                            _navigator.push(ChooseChatsPage.route(this));
+                          } 
+                        ),
+                        CellHeaderView(
+                          title: 'Чаты: ${state is CreateCategoryChatsLoading ? "Загрузка ,,," : (chats ?? []).length }'
+                        ),
+                        ChatsList(
+                          showSpinner: state is CreateCategoryChatsLoading,
+                          isScrollable: false,
+                          items: chats ?? [],
+                          loadingItemsIDS: state is CreateCategoryTransferLoading ? 
+                            state.chatsIDs : [],
+                          cellType: ChatCellType.optionsWithChat,
+                          onSelectedOption: (ChatCellActionType action, ChatEntity entity) async {
+                            if (action == ChatCellActionType.delete) {
+                              cubit.deleteChat(entity);
+                            } else {
+                              var response = await _navigator.push(CategoryList.route(isMoveChat: true));
 
-                            if (response is CategoryEntity) {
-                              cubit.movingChats = [entity.chatId];
-                              cubit.doTransferChats(response.id);
+                              if (response is CategoryEntity) {
+                                cubit.movingChats = [entity.chatId];
+                                cubit.doTransferChats(response.id);
+                              }
                             }
-                          }
-                        },
-                      )
-                    ],
+                          },
+                        )
+                      ],
+                    ),
                   ),
                 ),
                 BottomActionButtonContainer(

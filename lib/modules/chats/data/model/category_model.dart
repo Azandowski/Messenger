@@ -7,17 +7,20 @@ class CategoryModel extends CategoryEntity {
   final String name;
   final String avatar;
   final int totalChats;
+  final int noReadCount;
 
   CategoryModel({
     @required this.id,
     @required this.name,
     @required this.avatar,
-    @required this.totalChats
+    @required this.totalChats,
+    @required this.noReadCount
   }) : super(
     id: id, 
     name: name, 
     avatar: avatar, 
-    totalChats: totalChats
+    totalChats: totalChats,
+    noReadCount: noReadCount
   );
 
   factory CategoryModel.fromJson(Map<String, dynamic> json) {
@@ -26,7 +29,8 @@ class CategoryModel extends CategoryEntity {
       name: json['name'],
       avatar: json['avatar'] == '/' ? null : 
         json['full_link'],
-      totalChats: json['total_chats']
+      totalChats: json['total_chats'],
+      noReadCount: json['no_read_message']
     );
   }
 
@@ -36,7 +40,8 @@ class CategoryModel extends CategoryEntity {
       'name': name,
       'avatar': avatar,
       'full_link': avatar,
-      'total_chats': totalChats
+      'total_chats': totalChats,
+      'no_read_message': noReadCount
     };
   }
 }

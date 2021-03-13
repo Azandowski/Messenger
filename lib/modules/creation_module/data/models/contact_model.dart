@@ -32,7 +32,7 @@ class ContactModel extends ContactEntity {
       name: json['name'],
       patronym: json['patronym'] ?? '',
       surname: json['surname'] ?? '',
-      lastVisit: json['last_visit'] != null ? DateTime.parse(json['last_visit']) : null,
+      lastVisit: json['last_visit'] != null ? DateTime.parse(json['last_visit']).toLocal() : null,
       avatar: json['avatar'],
       );
   }

@@ -83,7 +83,7 @@ class ChatPreviewItem extends StatelessWidget {
       case ChatBottomPin.badge:
         return _buildNotificationBadge();
       case ChatBottomPin.unread: case ChatBottomPin.read:
-        return _buildReadUnreaIcon();
+        return _buildReadUnreadIcon();
       case ChatBottomPin.none:
         return Container();
     }
@@ -97,7 +97,7 @@ class ChatPreviewItem extends StatelessWidget {
   }
 
   // show Read or Unread
-  Widget _buildReadUnreaIcon () {
+  Widget _buildReadUnreadIcon () {
     return Image(
       width: 22,
       height: 8,

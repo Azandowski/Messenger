@@ -221,12 +221,11 @@ class ChatDataSourceImpl implements ChatDataSource {
     @required int id
   }) async {
     http.Response response = await client.post(
-      Endpoints.setTimeDeleted.buildURL(urlParams: [
-        '$id'
-      ]),
+      Endpoints.setTimeDeleted.buildURL(),
       headers: Endpoints.changeChatSettings.getHeaders(token: sl<AuthConfig>().token),
       body: json.encode({
-        'time_deleted': '$timeInSeconds'
+        'time_deleted': '$timeInSeconds',
+        'chat_id': '$id'
       })
     );
 

@@ -36,16 +36,32 @@ class ChatGlobalCubit extends Cubit<ChatState> {
       currentCategory: 0
     )) {
 
-    // TODO: Uncomment this line
-    // _chatsSubscription = chatsRepository.chatsController.stream
-    //   .listen(
-    //     (chats) => ChatsLoaded(
-    //       chats: PaginatedResult(data: chats),
-    //     )
-    //   );
+    _chatsSubscription = chatsRepository.chats.listen((chat) {
+      chatsRepository.saveNewChatLocally(chat);
+      var chatIndex = this.state.chats.indexWhere((e) => e.chatId == chat.chatId);
+
+      if (chatIndex == -1) {
+        List<ChatEntity> newChats = [...this.state.chats, chat];
+        emit(ChatsLoaded(
+          currentCategory: this.state.currentCategory,
+          hasReachedMax: this.state.hasReachedMax,
+          chats: newChats
+        ));
+      } else {
+        var newChats = this.state.chats.map((e) => e.clone()).toList();
+        newChats.removeAt(chatIndex);
+        newChats.insert(0, chat);
+        
+        emit(ChatsLoaded(
+          currentCategory: this.state.currentCategory,
+          hasReachedMax: this.state.hasReachedMax,
+          chats: newChats
+        ));
+      }
+    });
   }
 
-  StreamSubscription<List<ChatEntity>> _chatsSubscription;
+  StreamSubscription<ChatEntity> _chatsSubscription;
 
   // * * Manutally loading chats
   
@@ -122,6 +138,23 @@ class ChatGlobalCubit extends Cubit<ChatState> {
       emit(ChatsLoaded(
         hasReachedMax: this.state.hasReachedMax ?? false,
         chats: chats,
+        currentCategory: this.state.currentCategory
+      ));
+    }
+  }
+
+
+  void resetChatNoReadCounts ({
+    @required int chatId
+  }) {
+    int index = this.state.chats.indexWhere((element) => element.chatId == chatId);
+    if (index != -1) {
+      var newChatModel = this.state.chats[index].clone(unreadCount: 0);
+      var newChats = this.state.chats.map((e) => e.chatId == chatId ? newChatModel : e.clone()).toList();
+
+      emit(ChatsLoaded(
+        hasReachedMax: this.state.hasReachedMax ?? false,
+        chats: newChats,
         currentCategory: this.state.currentCategory
       ));
     }

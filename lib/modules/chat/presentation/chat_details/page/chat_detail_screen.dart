@@ -3,9 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger_mobile/core/blocs/chat/bloc/bloc/chat_cubit.dart';
 import 'package:messenger_mobile/core/widgets/independent/buttons/icon_text_button.dart';
 import 'package:messenger_mobile/modules/category/domain/entities/chat_permissions.dart';
+import 'package:messenger_mobile/modules/chat/domain/entities/chat_detailed.dart';
 import 'package:messenger_mobile/modules/chat/domain/usecases/get_chat_details.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chat_details/cubit/chat_details_cubit.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chat_details/page/chat_skeleton_page.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chat_details/widgets/chat_admin_settings.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chat_details/widgets/chat_detail_header.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chat_details/widgets/chat_media_block.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chat_details/widgets/chat_members_block.dart';
@@ -62,22 +64,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> implements ContactC
       },
       child: BlocConsumer<ChatDetailsCubit, ChatDetailsState>(
         listener: (context, state) {
-          if (state is ChatDetailsError) {
-            Scaffold.of(context).hideCurrentSnackBar();
-            Scaffold.of(context).showSnackBar(SnackBar(content: Text(state.message)));
-          } else if (state is ChatDetailsProccessing) {
-            Scaffold.of(context).hideCurrentSnackBar();
-            Scaffold.of(context).showSnackBar(
-              SnackBar(content: LinearProgressIndicator(), duration: Duration(days: 2),)
-            );
-          } else {
-            if (state is ChatDetailsLeave) {
-              context.read<ChatGlobalCubit>().leaveFromChat(id: widget.id);
-              Navigator.of(context).popUntil((route) => route.isFirst);
-            }
-
-            Scaffold.of(context).hideCurrentSnackBar();
-          }
+          _handleListener(state);
         },
         builder: (context, state) {
           if (!(state is ChatDetailsLoading)) {
@@ -86,8 +73,12 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> implements ContactC
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   ChatDetailHeader(chatDetailed: state.chatDetailed),
+                  if (state.chatDetailed?.chatMemberRole == ChatMember.admin)
+                    ChatAdminSettings(
+                      permissions: state.chatDetailed?.settings
+                    ),
                   DividerWrapper(
-                    children: ChatSettings.values.map((e) => ChatSettingItem(
+                    children: _getChatSettings(state).map((e) => ChatSettingItem(
                       chatSetting: e,
                       isOn: !e.getValue(state.chatDetailed?.settings),
                       onToggle: (value) {
@@ -147,6 +138,41 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> implements ContactC
         },
       ),
     );
+  }
+
+
+  List<ChatSettings> _getChatSettings (ChatDetailsState state) {
+    if ((state.chatDetailed?.chatMemberRole ?? ChatMember.member) == ChatMember.admin) {
+      return [
+        ChatSettings.noSound,
+        ChatSettings.noMedia
+      ];
+    } else {
+      return [
+        ChatSettings.noSound
+      ];
+    }
+  }
+
+  void _handleListener (ChatDetailsState state) {
+    if (state is ChatDetailsError) {
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(SnackBar(content: Text(state.message)));
+    } else if (state is ChatDetailsProccessing) {
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(content: LinearProgressIndicator(), duration: Duration(days: 2),)
+        );
+    } else {
+      if (state is ChatDetailsLeave) {
+        context.read<ChatGlobalCubit>().leaveFromChat(id: widget.id);
+        Navigator.of(context).popUntil((route) => route.isFirst);
+      }
+
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    }
   }
 
   Widget _buildSeparator ({double height}) {

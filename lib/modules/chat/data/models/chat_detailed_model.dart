@@ -14,18 +14,21 @@ class ChatDetailedModel extends ChatDetailed {
   final ChatPermissionModel settings;
   final List<ContactEntity> members;
   final int membersCount;
+  final ChatMember chatMemberRole;
 
   ChatDetailedModel({
     @required this.chat, 
     @required this.media, 
     @required this.members,
     @required this.membersCount,
+    @required this.chatMemberRole,
     this.settings, 
   }) : super(
     chat: chat,
     media: media,
     members: members,
-    membersCount: membersCount
+    membersCount: membersCount,
+    chatMemberRole: chatMemberRole
   );
 
   factory ChatDetailedModel.fromJson (Map<String, dynamic> json) {
@@ -36,7 +39,8 @@ class ChatDetailedModel extends ChatDetailed {
       members: ((json['members'] ?? []) as List).map(
         (e) => ContactModel.fromJson(e)
       ).toList(),
-      settings: ChatPermissionModel.fromJson(json['settings'])
+      settings: ChatPermissionModel.fromJson(json['settings']),
+      chatMemberRole: json['role'] == 'member' ? ChatMember.member : ChatMember.admin,
     );
   }
 }

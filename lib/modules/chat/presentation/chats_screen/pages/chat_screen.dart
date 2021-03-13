@@ -1,11 +1,13 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger_mobile/app/appTheme.dart';
+import 'package:messenger_mobile/core/blocs/category/bloc/category_bloc.dart';
+import 'package:messenger_mobile/core/blocs/chat/bloc/bloc/chat_cubit.dart' as main_chat_cubit;
 import 'package:messenger_mobile/core/widgets/independent/placeholders/load_widget.dart';
 import 'package:messenger_mobile/locator.dart';
+import 'package:messenger_mobile/modules/category/data/models/chat_view_model.dart';
 import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
 import 'package:messenger_mobile/modules/chat/data/datasources/chat_datasource.dart';
 import 'package:messenger_mobile/modules/chat/data/models/message_view_model.dart';
@@ -20,6 +22,7 @@ import 'package:messenger_mobile/modules/chat/presentation/chats_screen/bloc/cha
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/chatControlPanel/chatControlPanel.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/chatControlPanel/cubit/panel_bloc_cubit.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/chatHeading.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/chat_action_view.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/chat_date_item.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/chat_screen_actions.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/message_cell.dart';
@@ -31,7 +34,7 @@ import '../../../../../main.dart';
 class ChatScreen extends StatefulWidget {
   final ChatEntity chatEntity;
 
-  const ChatScreen({Key key,@required this.chatEntity}) : super(key: key);
+  const ChatScreen({Key key, @required this.chatEntity}) : super(key: key);
 
   @override
   _ChatScreenState createState() => _ChatScreenState();
@@ -77,21 +80,22 @@ class _ChatScreenState extends State<ChatScreen> implements TimePickerDelegate {
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.width;
-    
+    ChatViewModel chatViewModel = ChatViewModel(widget.chatEntity);
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: false,
         titleSpacing: 0.0,
         title: ChatHeading(
-          title: widget.chatEntity.title ?? '',
-          description: widget.chatEntity.description ?? '',
-          avatarURL: widget.chatEntity.imageUrl,
+          title: chatViewModel.title ?? '',
+          description: chatViewModel.description ?? '',
+          avatarURL: chatViewModel.imageURL,
           onTap: () {
             _navigator.push(ChatDetailPage.route(widget.chatEntity.chatId));
           }
         ),
         actions: [
-          ChatScreenActions()
+          ChatScreenActions(timePickerDelegate: this,)
         ],
       ),
       backgroundColor: AppColors.pinkBackgroundColor,
@@ -116,7 +120,9 @@ class _ChatScreenState extends State<ChatScreen> implements TimePickerDelegate {
                       padding: EdgeInsets.symmetric(horizontal: 16),
                       decoration: BoxDecoration(
                       image: DecorationImage(
-                        image: AssetImage('assets/images/bg-home.png'),
+                        image: state.wallpaperPath != null ? 
+                          FileImage(File(state.wallpaperPath)) : 
+                            AssetImage('assets/images/bg-home.png'),
                         fit: BoxFit.cover),
                       ),
                       child: Padding(
@@ -147,7 +153,9 @@ class _ChatScreenState extends State<ChatScreen> implements TimePickerDelegate {
                                   messageViewModel: MessageViewModel(currentMessage),
                                   nextMessageUserID: nextMessageUserID,
                                   prevMessageUserID: prevMessageUserID,
-                                ) : Text('action');
+                                ) : ChatActionView(
+                                  chatActions: currentMessage.chatActions
+                                );
                             }
                           },
                           scrollDirection: Axis.vertical,
@@ -196,6 +204,26 @@ class _ChatScreenState extends State<ChatScreen> implements TimePickerDelegate {
           content: LinearProgressIndicator(), 
           duration: Duration(days: 2),
         ));
+    } else if (state is ChatInitial) {
+
+      var chatGlobalCubit = context.read<main_chat_cubit.ChatGlobalCubit>();
+      var globalIndexOfChat = chatGlobalCubit.state.chats.indexWhere((e) => e.chatId == widget.chatEntity.chatId);
+
+      if (globalIndexOfChat != -1) {
+        if (chatGlobalCubit.state.chats[globalIndexOfChat].unreadCount != 0) {
+          context.read<main_chat_cubit.ChatGlobalCubit>().resetChatNoReadCounts(chatId: widget.chatEntity.chatId);
+          if (widget.chatEntity.chatCategory?.id != null) {
+
+            CategoryBloc categoryBloc = context.read<CategoryBloc>();
+            int index = categoryBloc.state.categoryList.indexWhere((e) => e.id == widget.chatEntity.chatCategory?.id);
+
+            categoryBloc.add(CategoryReadCountChanged(
+              categoryID: widget.chatEntity.chatCategory?.id,
+              newReadCount: categoryBloc.state.categoryList[index].noReadCount - 1
+            ));
+          }
+        }
+      }
     } else {
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
     }

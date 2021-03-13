@@ -14,11 +14,11 @@ class ChatNotificationView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 20,
-      height: 20,
+      
+      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
       decoration: BoxDecoration(
         color: AppColors.indicatorColor,
-        borderRadius: BorderRadius.circular(10)
+        borderRadius: BorderRadius.circular(12)
       ),
       child: Center(
         child: Text(
@@ -27,6 +27,7 @@ class ChatNotificationView extends StatelessWidget {
             color: Colors.white,
             fontSize: 12
           ),
+          textAlign: TextAlign.center,
         ),
       ),
     );
