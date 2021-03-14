@@ -9,7 +9,7 @@ import '../../../../modules/category/domain/usecases/delete_category.dart';
 import '../../../../modules/category/domain/usecases/reorder_category.dart';
 import '../../../../modules/chats/domain/entities/category.dart';
 
-part 'category_event.dart';
+part 'category_event.dart'; 
 part 'category_state.dart';
 
 class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
