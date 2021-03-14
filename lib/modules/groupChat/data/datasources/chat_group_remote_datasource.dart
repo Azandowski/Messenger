@@ -32,8 +32,13 @@ class ChatGroupRemoteDataSourceImpl implements ChatGroupRemoteDataSource {
   });
 
   @override
-  Future<ChatEntity> createChatGroup({CreateChatGroupParams groupParams}) async {
-    var url = groupParams.isCreate ? Endpoints.createGroupChat.buildURL() : Endpoints.updateCategory.buildURL(urlParams: ['1']);
+  Future<ChatEntity> createChatGroup({
+    CreateChatGroupParams groupParams
+  }) async {
+    var url = groupParams.isCreate ? 
+      Endpoints.createGroupChat.buildURL() : 
+        Endpoints.updateCategory.buildURL(urlParams: ['${groupParams.chatGroupId}']);
+    
     multipartRequest = http.MultipartRequest('POST', url);
 
     http.StreamedResponse streamResponse = await MultipartRequestHelper.postData(
@@ -48,7 +53,7 @@ class ChatGroupRemoteDataSourceImpl implements ChatGroupRemoteDataSource {
           'is_private': groupParams.isPrivate ? 1 : 0,
         'name': groupParams.name,
         'description': groupParams.description,
-        'is_private': '0'
+        // 'is_private': '0'
       }
     );
 

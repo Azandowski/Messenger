@@ -33,7 +33,9 @@ class NameTimeBloc extends StatelessWidget {
         Text(
           messageViewModel.time,
           style: messageViewModel.isMine ? 
-            AppFontStyles.whiteGrey12w400 : AppFontStyles.grey12w400, 
+            AppFontStyles.whiteGrey12w400 : AppFontStyles.grey12w400.copyWith(
+              height: 0.75,
+            ), 
           textAlign: TextAlign.right
         )
       ],

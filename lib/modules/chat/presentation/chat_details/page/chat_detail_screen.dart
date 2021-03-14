@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger_mobile/core/blocs/chat/bloc/bloc/chat_cubit.dart';
 import 'package:messenger_mobile/core/widgets/independent/buttons/icon_text_button.dart';
+import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
 import 'package:messenger_mobile/modules/category/domain/entities/chat_permissions.dart';
 import 'package:messenger_mobile/modules/chat/domain/entities/chat_detailed.dart';
 import 'package:messenger_mobile/modules/chat/domain/usecases/get_chat_details.dart';
@@ -12,7 +13,6 @@ import 'package:messenger_mobile/modules/chat/presentation/chat_details/widgets/
 import 'package:messenger_mobile/modules/chat/presentation/chat_details/widgets/chat_media_block.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chat_details/widgets/chat_members_block.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chat_details/widgets/chat_setting_item.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chat_details/widgets/divider_wrapper.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chat_members/chat_members_screen.dart';
 import 'package:messenger_mobile/modules/creation_module/domain/entities/contact.dart';
 import 'package:messenger_mobile/modules/groupChat/presentation/choose_contacts/choose_contacts_page.dart';
@@ -22,11 +22,11 @@ import 'package:messenger_mobile/modules/profile/presentation/widgets/profile_it
 import '../../../../../main.dart';
 
 class ChatDetailScreen extends StatefulWidget {
-  final int id;
+  final ChatEntity chatEntity;
   final GetChatDetails getChatDetails;
 
   ChatDetailScreen({
-    @required this.id,
+    @required this.chatEntity,
     @required this.getChatDetails
   });
 
@@ -44,7 +44,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> implements ContactC
   void initState() {
     super.initState();
     _chatDetailsCubit = context.read<ChatDetailsCubit>();
-    _chatDetailsCubit.loadDetails(widget.id);
+    _chatDetailsCubit.loadDetails(widget.chatEntity.chatId);
   }
 
   @override
@@ -52,10 +52,10 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> implements ContactC
     return WillPopScope(
       onWillPop: () async {
         _chatDetailsCubit.onFinish(
-          id: widget.id, 
+          id: widget.chatEntity.chatId, 
           callback: (newPermissions) {
             navigatorKey.currentContext.read<ChatGlobalCubit>().updateChatSettings(
-              chatPermissions: newPermissions, id: widget.id
+              chatPermissions: newPermissions, id: widget.chatEntity.chatId
             );
           }
         );
@@ -73,10 +73,22 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> implements ContactC
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   ChatDetailHeader(chatDetailed: state.chatDetailed),
-                  if (state.chatDetailed?.chatMemberRole == ChatMember.admin)
+                  if (state.chatDetailed?.chatMemberRole == ChatMember.admin && !(state.chatDetailed?.chat?.isPrivate ?? false))
                     ...[
                       ChatAdminSettings(
-                        permissions: state.chatDetailed?.settings
+                        permissions: state.chatDetailed?.settings,
+                        didSelectOption: (ChatSettings settings, bool newValue) {
+                          _chatDetailsCubit.toggleChatSetting(
+                            settings: settings, 
+                            newValue: newValue, 
+                            id: widget.chatEntity.chatId,
+                            callback: (ChatPermissions permissons) {
+                              context.read<ChatGlobalCubit>().updateChatSettings(
+                                chatPermissions: permissons, id: widget.chatEntity.chatId
+                              );
+                            } 
+                          );
+                        },
                       ),
                       Divider()
                     ],
@@ -87,10 +99,10 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> implements ContactC
                       _chatDetailsCubit.toggleChatSetting(
                         settings: ChatSettings.noSound, 
                         newValue: value, 
-                        id: widget.id,
+                        id: widget.chatEntity.chatId,
                         callback: (ChatPermissions permissons) {
                           context.read<ChatGlobalCubit>().updateChatSettings(
-                            chatPermissions: permissons, id: widget.id
+                            chatPermissions: permissons, id: widget.chatEntity.chatId
                           );
                         } 
                       );
@@ -126,7 +138,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> implements ContactC
                       isRed: true,
                     ),
                     onTap: () {
-                      _chatDetailsCubit.doLeaveChat(widget.id);
+                      _chatDetailsCubit.doLeaveChat(widget.chatEntity.chatId);
                     },
                   ),
                   _buildSeparator(height: 200)
@@ -168,7 +180,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> implements ContactC
         );
     } else {
       if (state is ChatDetailsLeave) {
-        context.read<ChatGlobalCubit>().leaveFromChat(id: widget.id);
+        context.read<ChatGlobalCubit>().leaveFromChat(id: widget.chatEntity.chatId);
         Navigator.of(context).popUntil((route) => route.isFirst);
       }
 
@@ -185,6 +197,6 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> implements ContactC
 
   @override
   void didSaveChats(List<ContactEntity> contacts) {
-    _chatDetailsCubit.addMembersToChat(widget.id, contacts);
+    _chatDetailsCubit.addMembersToChat(widget.chatEntity.chatId, contacts);
   }
 }

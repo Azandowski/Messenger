@@ -127,7 +127,8 @@ class ChatDetailsCubit extends Cubit<ChatDetailsState> {
         id: id,
         permissionModel: ChatPermissionModel(
           isSoundOn: newPermissions.isSoundOn,
-          isMediaSendOn: newPermissions.isMediaSendOn
+          isMediaSendOn: newPermissions.isMediaSendOn,
+          adminMessageSend: newPermissions.adminMessageSend
         )
       ));
 
@@ -143,6 +144,7 @@ class ChatDetailsCubit extends Cubit<ChatDetailsState> {
   bool get _needsPermissionsUpdate {
     return 
       initialPermissions?.isSoundOn != this.state.chatDetailed?.settings?.isSoundOn || 
-        initialPermissions?.isMediaSendOn != this.state.chatDetailed?.settings?.isMediaSendOn;
+        initialPermissions?.isMediaSendOn != this.state.chatDetailed?.settings?.isMediaSendOn ||
+          initialPermissions.adminMessageSend != this.state.chatDetailed?.settings?.adminMessageSend;
   }
 }

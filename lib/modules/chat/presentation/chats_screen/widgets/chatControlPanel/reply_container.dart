@@ -47,7 +47,9 @@ class ReplyContainer extends StatelessWidget {
                     ),
                     Container(
                       child: Text(messageVM.messageText,
-                        style: AppFontStyles.black14w400,
+                        style: AppFontStyles.black14w400.copyWith(
+                          height: 1.4,
+                        ),
                         overflow: TextOverflow.ellipsis,
                         softWrap: true,
                         maxLines: 1,

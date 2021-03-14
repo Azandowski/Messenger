@@ -17,6 +17,7 @@ class ChatEntityModel extends ChatEntity {
   final MessageModel lastMessage;
   final int unreadCount;
   final String description;
+  final bool isPrivate;
 
   ChatEntityModel({
     @required this.chatId, 
@@ -28,6 +29,7 @@ class ChatEntityModel extends ChatEntity {
     @required this.description,
     this.lastMessage,
     this.unreadCount = 0,
+    this.isPrivate
   }) : super(
     chatId: chatId,
     chatCategory: chatCategory,
@@ -37,7 +39,8 @@ class ChatEntityModel extends ChatEntity {
     permissions: permissions,
     lastMessage: lastMessage,
     unreadCount: unreadCount,
-    description: description
+    description: description,
+    isPrivate: isPrivate
   );
 
   factory ChatEntityModel.fromJson(
@@ -54,7 +57,8 @@ class ChatEntityModel extends ChatEntity {
         ChatPermissionModel.fromJson(json['settings']) : ChatPermissionModel(),
       lastMessage: json['last_message'] != null ? MessageModel.fromJson(json['last_message']) : null,
       unreadCount: json['no_read_message'] ?? 0,
-      description: json['description']
+      description: json['description'],
+      isPrivate: json['is_private'] == 1 
     );
   }
 
@@ -78,7 +82,8 @@ class ChatEntityModel extends ChatEntity {
       },
       'last_message': lastMessage?.toJson(),
       'no_read_message': unreadCount,
-      'description': description
+      'description': description,
+      'is_private': isPrivate ? 1 : 0
     };
   }
 }

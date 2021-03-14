@@ -40,7 +40,7 @@ class CategoryItem extends StatelessWidget {
                 if (entity.noReadCount != 0) 
                   Positioned(
                     top: 8,
-                    left: 8,
+                    right: 8,
                     child: ChatNotificationView(
                       badgeCount: entity.noReadCount
                     ),

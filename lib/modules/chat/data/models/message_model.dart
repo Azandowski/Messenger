@@ -51,7 +51,8 @@ class MessageModel extends Message {
       text: json['text'],
       isRead: json['is_read'] == 1,
       dateTime: DateTime.parse(json['created_at']).toLocal(),
-      chatActions: ChatActions.values.firstWhere((e) => e.key == json['action'], orElse: () => null),
+      chatActions: json['action'] == null ? null : 
+        ChatActions.values.firstWhere((e) => e.key == json['action'], orElse: () => null),
       willBeDeletedAt: json['deleted_at']  != null ? 
         DateTime.parse(json['deleted_at']).toLocal() : null,
       deletionSeconds: json['time_deleted'],

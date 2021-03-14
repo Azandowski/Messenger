@@ -4,6 +4,8 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:messenger_mobile/modules/category/data/models/chat_view_model.dart';
+import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
 
 import '../../../../../core/config/auth_config.dart';
 import '../../../../../locator.dart';
@@ -15,8 +17,11 @@ import '../../../domain/usecases/params.dart';
 part 'creategroup_state.dart';
 
 class CreateGroupCubit extends Cubit<CreateGroupState> {
+  
   final GetImage getImageUseCase;
   final CreateChatGruopUseCase createChatGruopUseCase;
+  
+  
   CreateGroupCubit({
     @required this.getImageUseCase,
     @required this.createChatGruopUseCase,
@@ -56,18 +61,28 @@ class CreateGroupCubit extends Cubit<CreateGroupState> {
     );
   }
 
-  Future createChat(String name, String desc,) async {
-     emit(CreateGroupLoading(
+  Future createChat(
+    String name, 
+    String desc,
+    {
+      bool isCreate = true,
+      int chatID
+    }
+  ) async {
+    emit(CreateGroupLoading(
       imageFile: this.state.imageFile,
       contacts: this.state.contacts
     ));
+    
     var response = await createChatGruopUseCase(CreateChatGroupParams(
       token: sl<AuthConfig>().token, 
       avatarFile: this.state.imageFile,
       name: name, 
       description: desc,
-      contactIds: (this.state.contacts ?? []).map((e) => e.id).toList(),
-      isCreate: true,
+      contactIds: isCreate ? 
+        (this.state.contacts ?? []).map((e) => e.id).toList() : [],
+      isCreate: isCreate,
+      chatGroupId: chatID
     ));
 
     response.fold(
@@ -83,5 +98,18 @@ class CreateGroupCubit extends Cubit<CreateGroupState> {
     );
   }
 
-    String defaultImageUrl;
+  void initReadyEntity (ChatEntity entity) {
+
+    defaultImageUrl = ChatViewModel(entity).imageURL;
+
+    emit(CreateGroupNormal(
+      imageFile: null, 
+      contacts: []
+    ));
+  }
+
+  /// Initial image URL
+  /// Will not be null if editing the group chat only
+
+  String defaultImageUrl;
 }

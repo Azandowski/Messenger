@@ -25,9 +25,7 @@ class ChatsRepositoryImpl extends ChatsRepository {
     @required this.chatsDataSource, 
     @required this.localChatsDataSource,
     @required this.networkInfo
-  }) {
-    initRepository();
-  }
+  });
 
   // Screen mounted
   void init () {
@@ -35,11 +33,6 @@ class ChatsRepositoryImpl extends ChatsRepository {
   }
 
 
-  void initRepository () async {
-    if (await networkInfo.isConnected) {
-      localChatsDataSource.resetAll();
-    }
-  }
 
   // * * Methods
 
@@ -47,12 +40,16 @@ class ChatsRepositoryImpl extends ChatsRepository {
   Future<Either<Failure, PaginatedResultViaLastItem<ChatEntity>>> getUserChats(GetChatsParams params) async {
     List<ChatEntity> chatsFromLocal = await localChatsDataSource.getCategoryChats(null);
     
-    if (chatsFromLocal.length != 0 && params.lastChatID == null) {
+    if (chatsFromLocal.length != 0 && params.lastChatID == null && hasInitialized) {
       return Right(PaginatedResultViaLastItem<ChatEntity>(
         data: chatsFromLocal,
         hasReachMax: false
       ));
     } else if (await networkInfo.isConnected) {
+      
+      hasInitialized = true;
+      await localChatsDataSource.resetAll();
+
       try {
         final response = await chatsDataSource.getUserChats(
           token: params.token, 

@@ -227,7 +227,7 @@ class ChatDataSourceImpl implements ChatDataSource {
 
   // TODO: Works Partly, No need to touch
 
-    @override 
+  @override 
   Future<void> setTimeDeleted ({
     @required int timeInSeconds,
     @required int id

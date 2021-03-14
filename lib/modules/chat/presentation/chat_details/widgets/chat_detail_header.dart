@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:messenger_mobile/app/appTheme.dart';
+import 'package:messenger_mobile/modules/category/data/models/chat_view_model.dart';
 import 'package:messenger_mobile/modules/chat/domain/entities/chat_detailed.dart';
 
 class ChatDetailHeader extends StatelessWidget {
@@ -14,6 +15,9 @@ class ChatDetailHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    ChatViewModel chatViewModel = ChatViewModel(chatDetailed?.chat);
+
     return Container(
       child: Stack(
         children: [
@@ -23,7 +27,7 @@ class ChatDetailHeader extends StatelessWidget {
                 placeholder: AssetImage("assets/images/logo.png"),
                 image: chatDetailed?.chat?.imageUrl == null ? AssetImage(
                   'assets/images/placeholder.png', 
-                ) : NetworkImage(chatDetailed?.chat?.imageUrl),
+                ) : NetworkImage(chatViewModel.imageURL),
                 height: 286,
                 fit: BoxFit.cover,
               ),
@@ -51,7 +55,7 @@ class ChatDetailHeader extends StatelessWidget {
                     children: [
                       Expanded(
                         child: Text(
-                          chatDetailed.chat.title,
+                          chatViewModel.title,
                           style: TextStyle(
                             color: Colors.black,
                             fontWeight: FontWeight.w500,
@@ -83,7 +87,7 @@ class ChatDetailHeader extends StatelessWidget {
                   ),
                   Divider(),
                   Text(
-                    chatDetailed.chat.description ?? '',
+                    chatViewModel.description,
                     overflow: TextOverflow.ellipsis,
                     maxLines: 2,
                     textAlign: TextAlign.left,

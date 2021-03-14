@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
 import '../../../creation_module/presentation/widgets/contact_cell.dart';
 import '../choose_contacts/choose_contacts_page.dart';
 import '../../../../core/widgets/independent/buttons/bottom_action_button.dart';
@@ -17,23 +18,17 @@ import 'widgets/create_group_header.dart';
 class CreateGroupScreen extends StatefulWidget {
   static final String id = 'create_group';
 
-  final CreateCategoryScreenMode mode;
-  final CategoryEntity entity;
+  final CreateGroupScreenMode mode;
+  final ChatEntity entity;
 
   CreateGroupScreen({
-    this.mode = CreateCategoryScreenMode.create, 
+    this.mode = CreateGroupScreenMode.create, 
     this.entity,
     Key key, 
   }) : super(key: key) {
-    if (mode == CreateCategoryScreenMode.edit) {
+    if (mode == CreateGroupScreenMode.edit) {
       assert(entity != null, 'entity of edit model should not be null');
     }
-  }
-
-  static Route route({ CreateCategoryScreenMode mode, CategoryEntity category }) {
-    return MaterialPageRoute<void>(builder: (_) => CreateGroupScreen(
-      mode: mode, entity: category,
-    ));
   }
 
   @override
@@ -44,6 +39,7 @@ class CreateGroupScreen extends StatefulWidget {
 
 class _CreateGroupScreenState extends State<CreateGroupScreen> implements ContactChooseDelegate {
   NavigatorState get _navigator => navigatorKey.currentState;
+  
   CreateGroupCubit _groupCubit;
   List<ContactViewModel> contacts = [];
   TextEditingController _nameController;
@@ -57,6 +53,12 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> implements Contac
     _nameController = TextEditingController();
     _descriptionController = TextEditingController();
     _groupCubit = context.read<CreateGroupCubit>();
+
+    if (widget.entity != null) {
+      _nameController.text = widget.entity.title ?? '';
+      _descriptionController.text = widget.entity.description ?? '';
+      _groupCubit.initReadyEntity(widget.entity);
+    }  
   }
 
   @override
@@ -102,30 +104,40 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> implements Contac
                         Navigator.of(context).push(ChooseContactsPage.route(this));
                       },
                     ),
-                    CellHeaderView(
-                      title: 'Участники: ${state is CreateGroupContactsLoading ? "Загрузка ,,," : (contacts ?? []).length }'
-                    ),
-                    Flexible(
-                        child: ListView.builder(
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        itemBuilder: (context, i){
-                          var contact = contacts[i].entity;
-                          return ContactCell(contactItem: contact, cellType: ContactCellType.delete,onTrilinIconTapped: (){
-                            _groupCubit.deleteContact(contact);
-                          },);
-                        },
-                        itemCount: contacts.length,
-                      ),
-                    )
+
+                    if (widget.mode == CreateGroupScreenMode.create)
+                      ...[
+                        CellHeaderView(
+                          title: 'Участники: ${state is CreateGroupContactsLoading ? "Загрузка ,,," : (contacts ?? []).length }'
+                        ),
+                        Flexible(
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemBuilder: (context, i){
+                              var contact = contacts[i].entity;
+                              return ContactCell(contactItem: contact, cellType: ContactCellType.delete,onTrilinIconTapped: (){
+                                _groupCubit.deleteContact(contact);
+                              },);
+                            },
+                            itemCount: contacts.length,
+                          ),
+                        )
+                      ]
                   ],
                 ),
               ),
               BottomActionButtonContainer(
-                title: 'Создать группу',
+                title: 'Готово',
                 isLoading: state is CreateGroupLoading,
                 onTap: () {
-                  _groupCubit.createChat(_nameController.text, _descriptionController.text);
+                  _groupCubit.createChat(
+                    _nameController.text, 
+                    _descriptionController.text,
+                    isCreate: widget.mode == CreateGroupScreenMode.create,
+                    chatID: widget.mode == CreateGroupScreenMode.edit ? 
+                      widget.entity.chatId : null
+                  );
                 },
               )
             ],
@@ -139,5 +151,21 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> implements Contac
   @override
   void didSaveChats(List<ContactEntity> contacts) {
     _groupCubit.addContacts(contacts);
+  }
+}
+
+
+enum CreateGroupScreenMode {
+  edit, create
+}
+
+extension CreateGroupScreenModeUIExtension on CreateGroupScreenMode {
+  String get title {
+    switch (this) {
+      case CreateGroupScreenMode.edit:
+        return 'Редактировать';
+      case CreateGroupScreenMode.create:
+        return 'Создать чат';
+    }
   }
 }

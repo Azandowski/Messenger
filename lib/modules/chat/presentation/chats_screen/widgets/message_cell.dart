@@ -105,7 +105,9 @@ class _MessageCellState extends State<MessageCell> {
                   Text(
                     widget.messageViewModel.messageText, 
                     style: !widget.messageViewModel.isMine ? 
-                    AppFontStyles.black14w400 : AppFontStyles.white14w400,
+                    AppFontStyles.black14w400.copyWith(
+                      height: 1.4,
+                    ) : AppFontStyles.white14w400,
                     textAlign: TextAlign.left,
                   ),
                 ],

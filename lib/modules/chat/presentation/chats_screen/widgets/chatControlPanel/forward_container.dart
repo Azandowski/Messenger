@@ -45,7 +45,9 @@ class ForwardContainer extends StatelessWidget {
                       ),
                       Container(
                         child: Text(messageViewModel.messageText,
-                          style: AppFontStyles.black14w400,
+                          style: AppFontStyles.black14w400.copyWith(
+                            height: 1.4,
+                          ),
                           overflow: TextOverflow.ellipsis,
                           softWrap: true,
                         ),

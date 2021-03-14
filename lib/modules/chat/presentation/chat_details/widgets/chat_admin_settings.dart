@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:messenger_mobile/app/appTheme.dart';
 import 'package:messenger_mobile/core/widgets/independent/dialogs/dialog_action_button.dart';
 import 'package:messenger_mobile/core/widgets/independent/dialogs/dialog_params.dart';
 import 'package:messenger_mobile/core/widgets/independent/dialogs/dialogs.dart';
@@ -9,10 +10,11 @@ import 'package:messenger_mobile/modules/chat/presentation/chat_details/widgets/
 class ChatAdminSettings extends StatefulWidget {
   
   final ChatPermissions permissions;
-
+  final Function (ChatSettings, bool) didSelectOption; 
 
   const ChatAdminSettings({
     @required this.permissions,
+    @required this.didSelectOption,
     Key key, 
   }) : super(key: key);
 
@@ -21,13 +23,6 @@ class ChatAdminSettings extends StatefulWidget {
 }
 
 class _ChatAdminSettingsState extends State<ChatAdminSettings> {
-
-  final Function (ChatSettings, bool) didSelectOption; 
-
-  _ChatAdminSettingsState ({
-    @required this.didSelectOption
-  });
-
   @override
   Widget build(BuildContext context) {
     return DividerWrapper(
@@ -39,17 +34,25 @@ class _ChatAdminSettingsState extends State<ChatAdminSettings> {
             _showDialog(
               context,
               (int newValue) {
-
+                widget.didSelectOption(ChatSettings.adminSendMessage, newValue == 0);
               },
               ChatSettings.adminSendMessage
             );
           }
         ),
-        // _buildItem(
-        //   title: ChatSettings.noMedia.title,
-        //   value: ChatSettings.noMedia.getValueText(widget.permissions),
-        //   context: context
-        // )
+        _buildItem(
+          title: ChatSettings.noMedia.title,
+          value: ChatSettings.noMedia.getValueText(widget.permissions),
+          onPress: () {
+            _showDialog(
+              context,
+              (int newValue) {
+                widget.didSelectOption(ChatSettings.noMedia, newValue == 0);
+              },
+              ChatSettings.noMedia
+            );
+          }
+        )
       ],
     );
   }
@@ -71,8 +74,14 @@ class _ChatAdminSettingsState extends State<ChatAdminSettings> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(title),
-            Text(value),
+            Text(
+              title,
+              style: AppFontStyles.black14w400,
+            ),
+            Text(
+              value,
+              style: AppFontStyles.grey14w400,
+            ),
           ],
         ),
       )
@@ -84,16 +93,16 @@ class _ChatAdminSettingsState extends State<ChatAdminSettings> {
     Function (int) onNewValue,
     ChatSettings settings
   ) {
-    int _currentOptionIndex = 0;
+    int _currentOptionIndex;
 
     showDialog(context: context, builder: (_) {
       return DialogsView( 
         dialogViewType: DialogViewType.optionSelector,
-        title: 'Отправка сообщений',
-        description: 'Выберите, кто может отправлять сообщения в группе',
+        title: settings.title,
+        description: settings.hintText,
         optionsContainer: DialogOptionsContainer(
           options: settings.selectionOptions, 
-          currentOptionIndex: 0, 
+          currentOptionIndex: null, 
           onPress: (newIndex) {
             _currentOptionIndex = newIndex;
           }

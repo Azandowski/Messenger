@@ -15,6 +15,7 @@ class ChatEntity extends Equatable {
   final MessageModel lastMessage;
   final int unreadCount;
   final String description;
+  final bool isPrivate;
 
   ChatEntity({
     @required this.chatCategory,
@@ -25,7 +26,8 @@ class ChatEntity extends Equatable {
     @required this.permissions,
     @required this.unreadCount,
     @required this.description,
-    this.lastMessage
+    this.lastMessage,
+    this.isPrivate = false
   });
 
   @override
@@ -38,7 +40,8 @@ class ChatEntity extends Equatable {
     permissions, 
     date,
     unreadCount,
-    description
+    description,
+    isPrivate
   ];
 
   ChatEntity clone({
@@ -80,7 +83,8 @@ class ChatEntity extends Equatable {
       },
       'last_message': lastMessage?.toJson(),
       'no_read_message': unreadCount,
-      'description': description
+      'description': description,
+      'is_private': isPrivate ? 1 : 0
     };
   }
 }

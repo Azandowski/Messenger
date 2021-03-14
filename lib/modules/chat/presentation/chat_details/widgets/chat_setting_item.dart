@@ -80,9 +80,20 @@ extension ChatSettingsUIExtension on ChatSettings {
   String getValueText (ChatPermissions permissions) {
     switch (this) {
       case ChatSettings.adminSendMessage:        
-        return permissions?.adminMessageSend ? 'Только админы' : 'Все участники';
+        return (permissions?.adminMessageSend ?? false) ? 'Только админы' : 'Все участники';
       case ChatSettings.noMedia:
-        return permissions?.isMediaSendOn ? 'Только админы' : 'Все участники';
+        return (permissions?.isMediaSendOn ?? true) ? 'Все участники' : 'Только админы';
+      default:
+        return null;
+    }
+  }
+
+  String get hintText {
+    switch (this) {
+      case ChatSettings.adminSendMessage:        
+        return 'Выберите, кто может отправлять сообщения в группе';
+      case ChatSettings.noMedia:
+        return 'Выберите, кто может отправлять фото, видео и документы в группе';
       default:
         return null;
     }

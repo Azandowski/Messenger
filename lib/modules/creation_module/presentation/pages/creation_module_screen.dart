@@ -12,6 +12,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../app/appTheme.dart';
 import '../../../../locator.dart';
+import '../../../../main.dart';
 import '../widgets/contcats_list.dart';
 
 
@@ -30,6 +31,9 @@ class CreationModuleScreen extends StatefulWidget {
 class _CreationModuleScreenState extends State<CreationModuleScreen> {
   
   PaginatedScrollController _scrollController = PaginatedScrollController();
+
+  NavigatorState get _navigator => navigatorKey.currentState;
+
 
   @override
   void initState() {
@@ -118,7 +122,7 @@ class _CreationModuleScreenState extends State<CreationModuleScreen> {
   ) async {
     switch (action){
       case CreationActions.createGroup:
-        Navigator.pushNamed(context, CreateGroupPage.id);
+        _navigator.push(CreateGroupPage.route());
         break;
       case CreationActions.createSecretChat:
         // TODO: Handle this case.

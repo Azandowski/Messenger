@@ -13,6 +13,7 @@ import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.da
 import 'package:messenger_mobile/modules/chat/data/datasources/chat_datasource.dart';
 import 'package:messenger_mobile/modules/chat/data/models/message_view_model.dart';
 import 'package:messenger_mobile/modules/chat/data/repositories/chat_repository.dart';
+import 'package:messenger_mobile/modules/chat/domain/entities/chat_actions.dart';
 import 'package:messenger_mobile/modules/chat/domain/entities/message.dart';
 import 'package:messenger_mobile/modules/chat/domain/repositories/chat_repository.dart';
 import 'package:messenger_mobile/modules/chat/domain/usecases/get_messages.dart';
@@ -25,7 +26,6 @@ import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/chatControlPanel/cubit/panel_bloc_cubit.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/chatHeading.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/chat_action_view.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/chat_date_item.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/chat_screen_actions.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/message_cell.dart';
 import 'package:messenger_mobile/core/utils/list_helper.dart';
@@ -95,7 +95,7 @@ class _ChatScreenState extends State<ChatScreen> implements TimePickerDelegate {
           description: chatViewModel.description ?? '',
           avatarURL: chatViewModel.imageURL,
           onTap: () {
-            _navigator.push(ChatDetailPage.route(widget.chatEntity.chatId));
+            _navigator.push(ChatDetailPage.route(widget.chatEntity));
           }
         ),
         actions: [
@@ -137,10 +137,12 @@ class _ChatScreenState extends State<ChatScreen> implements TimePickerDelegate {
                             if (state is ChatLoading && getItemsCount(state) - 1 == index) {
                               return LoadWidget(size: 20);
                             } else if (getItemsCount(state) - 1 == index) {
-                              var item = state.messages.getItemAt(index);
                               if (state.messages.getItemAt(index - 1) != null) {
-                                return ChatDateItem(
-                                  dateTime: state.messages[index - 1].dateTime
+                                return ChatActionView(
+                                  chatAction: TimeAction(
+                                    action: ChatActions.newDay,
+                                    dateTime: state.messages[index - 1].dateTime
+                                  )
                                 );
                               } 
                               return Container();
@@ -161,7 +163,7 @@ class _ChatScreenState extends State<ChatScreen> implements TimePickerDelegate {
                                   nextMessageUserID: nextMessageUserID,
                                   prevMessageUserID: prevMessageUserID,
                                 ) : ChatActionView(
-                                  chatActions: currentMessage.chatActions
+                                  chatAction: _buildChatAction(currentMessage)
                                 );
                             }
                           },
@@ -261,6 +263,19 @@ class _ChatScreenState extends State<ChatScreen> implements TimePickerDelegate {
     }
   }
 
+  // Get Chat Action model from the message 
+  ChatAction _buildChatAction (Message message) {
+    if (message.chatActions.actionType == ChatActionTypes.group) {
+      return GroupAction(
+        firstUser: null,
+        action: message.chatActions,
+        secondUser: null
+      );
+    } else {
+      return null;
+    }
+  }
+
 
   Widget _buildSeparator (int index, ChatState state) {
     if (!(state is ChatLoading && getItemsCount(state) - 1 == index)) {
@@ -272,7 +287,12 @@ class _ChatScreenState extends State<ChatScreen> implements TimePickerDelegate {
         state.messages[index].dateTime?.day != null && 
         nextMessage.dateTime?.day != state.messages[index].dateTime?.day
       ) {
-        return ChatDateItem(dateTime: state.messages[index].dateTime,);
+        return ChatActionView(
+          chatAction: TimeAction(
+            dateTime: state.messages[index].dateTime,
+            action: ChatActions.newDay
+          )
+        );
       } 
     } 
  
