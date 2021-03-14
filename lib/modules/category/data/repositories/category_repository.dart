@@ -16,23 +16,23 @@ class CategoryRepositoryImpl implements CategoryRepository {
   final NetworkInfo networkInfo;
 
   CategoryRepositoryImpl({
-    @required this.categoryDataSource, 
+    @required this.categoryDataSource,
     @required this.networkInfo,
   });
 
   @override
-  Future<Either<Failure, List<CategoryEntity>>> createCategory(CreateCategoryParams createCategoryParams) async {
+  Future<Either<Failure, List<CategoryEntity>>> createCategory(
+      CreateCategoryParams createCategoryParams) async {
     if (await networkInfo.isConnected) {
       try {
         final response = await categoryDataSource.createCategory(
-          file: createCategoryParams.avatarFile, 
-          name: createCategoryParams.name, 
-          token: createCategoryParams.token,
-          chatIds: createCategoryParams.chatIds,
-          isCreate: createCategoryParams.isCreate,
-          categoryID: createCategoryParams.categoryID
-        );
-        
+            file: createCategoryParams.avatarFile,
+            name: createCategoryParams.name,
+            token: createCategoryParams.token,
+            chatIds: createCategoryParams.chatIds,
+            isCreate: createCategoryParams.isCreate,
+            categoryID: createCategoryParams.categoryID);
+
         categoryListController.add(response);
         return Right(response);
       } catch (e) {
@@ -44,15 +44,16 @@ class CategoryRepositoryImpl implements CategoryRepository {
   }
 
   @override
-  StreamController<List<CategoryEntity>> categoryListController = StreamController<List<CategoryEntity>>.broadcast();
+  StreamController<List<CategoryEntity>> categoryListController =
+      StreamController<List<CategoryEntity>>.broadcast();
 
   @override
   Future<Either<Failure, List<CategoryEntity>>> getCategories(
-    GetCategoriesParams getCategoriesParams
-  ) async {
+      GetCategoriesParams getCategoriesParams) async {
     if (await networkInfo.isConnected) {
       try {
-        final categories = await categoryDataSource.getCategories(getCategoriesParams.token);
+        final categories =
+            await categoryDataSource.getCategories(getCategoriesParams.token);
         categoryListController.add(categories);
         return Right(categories);
       } catch (e) {
@@ -70,7 +71,7 @@ class CategoryRepositoryImpl implements CategoryRepository {
         final response = await categoryDataSource.deleteCatefory(id);
         categoryListController.add(response);
         return Right(response);
-      } on ServerFailure catch(e) {  
+      } on ServerFailure catch (e) {
         return Left(e);
       }
     } else {
@@ -79,10 +80,12 @@ class CategoryRepositoryImpl implements CategoryRepository {
   }
 
   @override
-  Future<Either<Failure, List<CategoryEntity>>> transferChats(List<int> chatsIDs, int categoryID) async {
+  Future<Either<Failure, List<CategoryEntity>>> transferChats(
+      List<int> chatsIDs, int categoryID) async {
     if (await networkInfo.isConnected) {
       try {
-        var categories = await categoryDataSource.transferChats(chatsIDs, categoryID);
+        var categories =
+            await categoryDataSource.transferChats(chatsIDs, categoryID);
         categoryListController.add(categories);
         return Right(categories);
       } catch (e) {
@@ -94,10 +97,12 @@ class CategoryRepositoryImpl implements CategoryRepository {
   }
 
   @override
-  Future<Either<Failure, List<CategoryEntity>>> reorderCategories(Map<String, int> categoryUpdates) async {
-    if (await networkInfo.isConnected) { 
+  Future<Either<Failure, List<CategoryEntity>>> reorderCategories(
+      Map<String, int> categoryUpdates) async {
+    if (await networkInfo.isConnected) {
       try {
-        final response = await categoryDataSource.reorderCategories(categoryUpdates);
+        final response =
+            await categoryDataSource.reorderCategories(categoryUpdates);
         return Right(response);
       } catch (e) {
         return Left(e);

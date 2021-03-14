@@ -31,67 +31,64 @@ abstract class CategoryDataSource {
 
   Future<List<CategoryEntity>> deleteCatefory(int id);
 
-  Future<List<CategoryEntity>> transferChats (List<int> chatsIDs, int categoryID);
+  Future<List<CategoryEntity>> transferChats(
+      List<int> chatsIDs, int categoryID);
 
-  Future<List<CategoryEntity>> reorderCategories (Map<String, int> categoryUpdates);
+  Future<List<CategoryEntity>> reorderCategories(
+      Map<String, int> categoryUpdates);
 }
-
 
 // * * Implementation of the CategoryDataSource
 class CategoryDataSourceImpl implements CategoryDataSource {
-  
   http.MultipartRequest multipartRequest;
   final http.Client client;
 
-  CategoryDataSourceImpl({
-    @required this.multipartRequest,
-    @required this.client
-  });
-  
+  CategoryDataSourceImpl(
+      {@required this.multipartRequest, @required this.client});
+
   /**
    * * Request to create new category
    * * Returns: List of categories of the user
    */
   @override
-  Future<List<CategoryEntity>> createCategory({
-    bool isCreate,
-    int categoryID,
-    File file, 
-    String name, 
-    List<int> chatIds, 
-    String token
-  }) async {
-    var url = isCreate ? Endpoints.createCategory.buildURL() : Endpoints.updateCategory.buildURL(urlParams: ['$categoryID']);
+  Future<List<CategoryEntity>> createCategory(
+      {bool isCreate,
+      int categoryID,
+      File file,
+      String name,
+      List<int> chatIds,
+      String token}) async {
+    var url = isCreate
+        ? Endpoints.createCategory.buildURL()
+        : Endpoints.updateCategory.buildURL(urlParams: ['$categoryID']);
     multipartRequest = http.MultipartRequest('POST', url);
 
-    http.StreamedResponse streamResponse = await MultipartRequestHelper.postData(
-      token: token, 
-      request: multipartRequest, 
-      files: file != null ? [file] : file,
-      keyName: 'file',
-      data: {
-        'transfer': chatIds.join(','),
-        'name': name
-      }
-    );
+    http.StreamedResponse streamResponse =
+        await MultipartRequestHelper.postData(
+            token: token,
+            request: multipartRequest,
+            files: file != null ? [file] : file,
+            keyName: 'file',
+            data: {'transfer': chatIds.join(','), 'name': name});
 
     final httpResponse = await http.Response.fromStream(streamResponse);
 
     if (httpResponse.isSuccess) {
       final categories = (json.decode(httpResponse.body) as List)
-        .map((e) => CategoryModel.fromJson(e))
-        .toList();
+          .map((e) => CategoryModel.fromJson(e))
+          .toList();
       return categories;
     } else {
-      throw ServerFailure(message: ErrorHandler.getErrorMessage(httpResponse.body.toString()));
+      throw ServerFailure(
+          message: ErrorHandler.getErrorMessage(httpResponse.body.toString()));
     }
   }
 
   @override
   Future<List<CategoryEntity>> getCategories(String token) async {
     http.Response response = await client.get(
-      Endpoints.getCategories.buildURL(),
-      headers: Endpoints.getCurrentUser.getHeaders(token: token));
+        Endpoints.getCategories.buildURL(),
+        headers: Endpoints.getCurrentUser.getHeaders(token: token));
 
     if (response.statusCode >= 200 && response.statusCode <= 299) {
       final categories = (json.decode(response.body) as List)
@@ -100,7 +97,8 @@ class CategoryDataSourceImpl implements CategoryDataSource {
 
       return categories;
     } else {
-      throw ServerFailure(message: ErrorHandler.getErrorMessage(response.body.toString()));
+      throw ServerFailure(
+          message: ErrorHandler.getErrorMessage(response.body.toString()));
     }
   }
 
@@ -108,61 +106,59 @@ class CategoryDataSourceImpl implements CategoryDataSource {
   Future<List<CategoryEntity>> deleteCatefory(int id) async {
     var ednpoint = Endpoints.deleteCategory;
     http.Response response = await client.delete(
-      ednpoint.buildURL(urlParams: [id.toString()]),
-      headers: Endpoints.getCurrentUser.getHeaders(token: sl<AuthConfig>().token));
+        ednpoint.buildURL(urlParams: [id.toString()]),
+        headers:
+            Endpoints.getCurrentUser.getHeaders(token: sl<AuthConfig>().token));
     if (response.statusCode >= 200 && response.statusCode <= 299) {
-      final categories =  (json.decode(response.body) as List)
+      final categories = (json.decode(response.body) as List)
           .map((e) => CategoryModel.fromJson(e))
           .toList();
       return categories;
     } else {
-      throw ServerFailure(message: ErrorHandler.getErrorMessage(response.body.toString()));
+      throw ServerFailure(
+          message: ErrorHandler.getErrorMessage(response.body.toString()));
     }
   }
 
   @override
-  Future<List<CategoryEntity>> transferChats(List<int> chatsIDs, int categoryID) async {
+  Future<List<CategoryEntity>> transferChats(
+      List<int> chatsIDs, int categoryID) async {
     Endpoints endpoint = Endpoints.transferChats;
 
-    http.Response response = await client.post(
-      endpoint.buildURL(), 
-      headers: endpoint.getHeaders(token: sl<AuthConfig>().token),
-      body: json.encode({
-        'new_category': '$categoryID',
-        'chats': chatsIDs.join(',')
-      })
-    );
+    http.Response response = await client.post(endpoint.buildURL(),
+        headers: endpoint.getHeaders(token: sl<AuthConfig>().token),
+        body: json.encode(
+            {'new_category': '$categoryID', 'chats': chatsIDs.join(',')}));
 
     if (!response.isSuccess) {
-      throw ServerFailure(message: ErrorHandler.getErrorMessage(response.body.toString()));
+      throw ServerFailure(
+          message: ErrorHandler.getErrorMessage(response.body.toString()));
     } else {
-      final categories =  (json.decode(response.body)['category'] as List)
-        .map((e) => CategoryModel.fromJson(e))
-        .toList();
+      final categories = (json.decode(response.body)['category'] as List)
+          .map((e) => CategoryModel.fromJson(e))
+          .toList();
       return categories;
     }
   }
 
   @override
-  Future<List<CategoryEntity>> reorderCategories(Map<String, int> categoryUpdates) async {
+  Future<List<CategoryEntity>> reorderCategories(
+      Map<String, int> categoryUpdates) async {
     Endpoints endpoint = Endpoints.reorderCategories;
 
-    http.Response response = await client.post(
-      endpoint.buildURL(),
-      headers: endpoint.getHeaders(
-        token: sl<AuthConfig>().token,
-      ),
-      body: json.encode({
-        'orders': categoryUpdates
-      })
-    );
+    http.Response response = await client.post(endpoint.buildURL(),
+        headers: endpoint.getHeaders(
+          token: sl<AuthConfig>().token,
+        ),
+        body: json.encode({'orders': categoryUpdates}));
 
     if (!response.isSuccess) {
-      throw ServerFailure(message: ErrorHandler.getErrorMessage(response.body.toString()));
+      throw ServerFailure(
+          message: ErrorHandler.getErrorMessage(response.body.toString()));
     } else {
-      final categories =  (json.decode(response.body)['categories'] as List)
-        .map((e) => CategoryModel.fromJson(e))
-        .toList();
+      final categories = (json.decode(response.body)['categories'] as List)
+          .map((e) => CategoryModel.fromJson(e))
+          .toList();
       return categories;
     }
   }
