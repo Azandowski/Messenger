@@ -9,13 +9,10 @@ import '../repositories/category_repository.dart';
 class DeleteCategory implements UseCase<List<CategoryEntity>, int> {
   final CategoryRepository repository;
 
-  DeleteCategory({
-    @required this.repository
-  });
+  DeleteCategory({@required this.repository});
 
   @override
-  Future<Either<Failure,List<CategoryEntity>>> call(
-      int id) async {
+  Future<Either<Failure, List<CategoryEntity>>> call(int id) async {
     return await repository.deleteCategory(id);
   }
 }

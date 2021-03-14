@@ -7,12 +7,11 @@ import '../../../chats/domain/entities/category.dart';
 import '../../../chats/domain/entities/usecases/params.dart';
 import '../repositories/category_repository.dart';
 
-class GetCategories implements UseCase<List<CategoryEntity>, GetCategoriesParams> {
+class GetCategories
+    implements UseCase<List<CategoryEntity>, GetCategoriesParams> {
   final CategoryRepository repository;
 
-  GetCategories({
-    @required this.repository
-  });
+  GetCategories({@required this.repository});
 
   @override
   Future<Either<Failure, List<CategoryEntity>>> call(
