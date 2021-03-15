@@ -7,7 +7,7 @@ import '../../domain/entities/chat_entity.dart';
 import '../../domain/entities/chat_permissions.dart';
 import 'chat_permission_model.dart';
 
-class ChatEntityModel extends ChatEntity {
+class ChatEntityModel extends ChatEntity { 
   final int chatId;
   final CategoryEntity chatCategory;
   final String title;
