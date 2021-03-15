@@ -3,12 +3,15 @@ import 'package:messenger_mobile/modules/chat/domain/entities/message.dart';
 
 enum ChatActions {
   addUser,
+  kickUser,
   newDay
 }
 
 extension ChatActionsLogicExtension on ChatActions {
   ChatActionTypes get actionType {
-    if (this == ChatActions.addUser) {
+    if (
+      this == ChatActions.addUser || this == ChatActions.kickUser
+    ) {
       return ChatActionTypes.group;
     } else {
       return ChatActionTypes.time;
@@ -21,6 +24,8 @@ extension ChatActionsExtension on ChatActions {
     switch (this) {
       case ChatActions.addUser:
         return 'Ad User';
+      case ChatActions.kickUser:
+        return 'Kick User';
       default: 
         return null;
     }
@@ -30,6 +35,8 @@ extension ChatActionsExtension on ChatActions {
     switch (this) {
       case ChatActions.addUser:
         return 'добавил(а) участника';
+      case ChatActions.kickUser:
+        return 'удалил участника';
       default:
         return null;
     }

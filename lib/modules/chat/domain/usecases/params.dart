@@ -38,6 +38,17 @@ class AddMembersToChatParams {
   });
 }
 
+class KickMemberParams {
+  final int id;
+  final int userID;
+
+  KickMemberParams({
+    @required this.id,
+    @required this.userID
+  });
+}
+
+
 class UpdateChatSettingsParams {
   final int id;
   final ChatPermissionModel permissionModel;

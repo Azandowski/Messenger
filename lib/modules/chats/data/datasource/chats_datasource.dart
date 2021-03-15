@@ -5,6 +5,8 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:messenger_mobile/core/config/auth_config.dart';
 import 'package:messenger_mobile/core/services/network/socket_service.dart';
+import 'package:messenger_mobile/modules/chats/data/model/chat_search_response_model.dart';
+import 'package:messenger_mobile/modules/chats/domain/entities/chat_search_response.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/services/network/Endpoints.dart';
 import '../../../../core/services/network/paginatedResult.dart';
@@ -39,6 +41,11 @@ abstract class ChatsDataSource {
   Future<File> getLocalWallpaper ();
 
   Future<void> setLocalWallpaper(File file); 
+
+  Future<ChatMessageResponse> searchChats ({
+    int lastChatId,
+    String queryText
+  });
 }
 
 
@@ -95,6 +102,30 @@ class ChatsDataSourceImpl implements ChatsDataSource {
       );
     } else {
       throw ServerFailure(message: ErrorHandler.getErrorMessage(response.body.toString()));
+    }
+  }
+
+  @override
+  Future<ChatMessageResponse> searchChats({
+    int lastChatId,
+    String queryText
+  }) async {
+    http.Response response = await client.get(
+      Endpoints.searchChats.buildURL(
+        queryParameters: {
+          'search': queryText,
+          if (lastChatId != null)
+            ...{'last_message_id': '$lastChatId'}
+        }
+      ),
+      headers: Endpoints.searchChats.getHeaders(token: sl<AuthConfig>().token)
+    );
+
+    if (response.isSuccess) {
+      var responseJSON = json.decode(response.body);
+      return ChatSearchResponseModel.fromJson(responseJSON);
+    } else {
+      throw ServerFailure(message: ErrorHandler.getErrorMessage(response.body.toString()));   
     }
   }
 

@@ -7,6 +7,7 @@ import 'package:messenger_mobile/modules/category/domain/entities/chat_permissio
 import 'package:messenger_mobile/modules/chat/domain/entities/chat_detailed.dart';
 import 'package:messenger_mobile/modules/chat/domain/usecases/add_members.dart';
 import 'package:messenger_mobile/modules/chat/domain/usecases/get_chat_details.dart';
+import 'package:messenger_mobile/modules/chat/domain/usecases/kick_member.dart';
 import 'package:messenger_mobile/modules/chat/domain/usecases/leave_chat.dart';
 import 'package:messenger_mobile/modules/chat/domain/usecases/params.dart';
 import 'package:messenger_mobile/modules/chat/domain/usecases/update_chat_settings.dart';
@@ -21,6 +22,7 @@ class ChatDetailsCubit extends Cubit<ChatDetailsState> {
   final AddMembers addMembers;
   final LeaveChat leaveChat;
   final UpdateChatSettings updateChatSettings;
+  final KickMembers kickMembers;
 
   ChatPermissions initialPermissions;
 
@@ -28,7 +30,8 @@ class ChatDetailsCubit extends Cubit<ChatDetailsState> {
     @required this.getChatDetails,
     @required this.addMembers,
     @required this.leaveChat,
-    @required this.updateChatSettings
+    @required this.updateChatSettings,
+    @required this.kickMembers
   }) : super(ChatDetailsLoading());
 
   Future<void> loadDetails (int id) async {
@@ -62,6 +65,24 @@ class ChatDetailsCubit extends Cubit<ChatDetailsState> {
         chatDetailed: this.state.chatDetailed
       ));
     });
+  }
+
+  Future<void> kickMember (int id, int userID) async {
+    emit(ChatDetailsProccessing(chatDetailed: this.state.chatDetailed));
+
+    var response = await kickMembers(KickMemberParams(
+      id: id, 
+      userID: userID
+    ));
+
+    response.fold(
+      (failure) => emit(ChatDetailsError(
+        message: failure.message,
+        chatDetailed: this.state.chatDetailed
+      )), (newChatDetailed) => emit(ChatDetailsLoaded(
+        chatDetailed: newChatDetailed
+      ))
+    );
   }
 
   Future<void> addMembersToChat (int id, List<ContactEntity> contacts) async {

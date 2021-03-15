@@ -99,7 +99,10 @@ class _ChatScreenState extends State<ChatScreen> implements TimePickerDelegate {
           }
         ),
         actions: [
-          ChatScreenActions(timePickerDelegate: this,)
+          ChatScreenActions(
+            timePickerDelegate: this,
+            chatEntity: widget.chatEntity
+          )
         ],
       ),
       backgroundColor: AppColors.pinkBackgroundColor,
@@ -267,9 +270,9 @@ class _ChatScreenState extends State<ChatScreen> implements TimePickerDelegate {
   ChatAction _buildChatAction (Message message) {
     if (message.chatActions.actionType == ChatActionTypes.group) {
       return GroupAction(
-        firstUser: null,
+        firstUser: message.user,
         action: message.chatActions,
-        secondUser: null
+        secondUser: message.toUser
       );
     } else {
       return null;

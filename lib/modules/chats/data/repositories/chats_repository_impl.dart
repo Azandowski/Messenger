@@ -5,6 +5,7 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
 import 'package:messenger_mobile/modules/category/data/models/chat_entity_model.dart';
 import 'package:messenger_mobile/modules/chats/data/datasource/local_chats_datasource.dart';
+import 'package:messenger_mobile/modules/chats/domain/entities/chat_search_response.dart';
 
 import '../../../../core/error/failures.dart';
 import '../../../../core/services/network/network_info.dart';
@@ -40,7 +41,10 @@ class ChatsRepositoryImpl extends ChatsRepository {
   Future<Either<Failure, PaginatedResultViaLastItem<ChatEntity>>> getUserChats(GetChatsParams params) async {
     List<ChatEntity> chatsFromLocal = await localChatsDataSource.getCategoryChats(null);
     
-    if (chatsFromLocal.length != 0 && params.lastChatID == null && hasInitialized) {
+    if (
+      (chatsFromLocal.length != 0 && params.lastChatID == null && hasInitialized) || 
+      params.fromCache
+    ) {
       return Right(PaginatedResultViaLastItem<ChatEntity>(
         data: chatsFromLocal,
         hasReachMax: false
@@ -101,7 +105,33 @@ class ChatsRepositoryImpl extends ChatsRepository {
     }
   }
   
-  
+
+  @override
+  Future<Either<Failure, ChatMessageResponse>> searchChats({
+    int lastChatId, 
+    String queryText
+  }) async {
+    if (await networkInfo.isConnected) {
+      try {
+        final response = await chatsDataSource.searchChats(
+          lastChatId: lastChatId,
+          queryText: queryText
+        );
+
+        return Right(response);
+      } catch (e) {
+        if (e is Failure) {
+          return Left(e);
+        } else {
+          return Left(ServerFailure(message: e.toString()));
+        }
+      }
+    } else {
+      return Left(ConnectionFailure());
+    }
+  }
+
+
   @override
   Stream<ChatEntity> get chats async* {
     yield* chatsDataSource.chats;

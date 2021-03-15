@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:messenger_mobile/core/blocs/chat/bloc/bloc/chat_cubit.dart';
 import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
 import 'package:messenger_mobile/modules/chat/data/datasources/chat_datasource.dart';
 import 'package:messenger_mobile/modules/chat/data/repositories/chat_repository.dart';
 import 'package:messenger_mobile/modules/chat/domain/usecases/add_members.dart';
 import 'package:messenger_mobile/modules/chat/domain/usecases/get_chat_details.dart';
+import 'package:messenger_mobile/modules/chat/domain/usecases/kick_member.dart';
 import 'package:messenger_mobile/modules/chat/domain/usecases/leave_chat.dart';
 import 'package:messenger_mobile/modules/chat/domain/usecases/update_chat_settings.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chat_details/cubit/chat_details_cubit.dart';
@@ -41,6 +43,9 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   AddMembers addMembers;
   LeaveChat leaveChat;
   UpdateChatSettings updateChatSettings;
+  KickMembers kickMembers;
+
+  ChatDetailsCubit _chatDetailsCubit;
 
   @override
   void initState() {
@@ -63,38 +68,58 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
 
     updateChatSettings = UpdateChatSettings(repository: chatRepositoryImpl);
 
+    kickMembers = KickMembers(repository: chatRepositoryImpl);
+
+    _chatDetailsCubit = ChatDetailsCubit(
+      getChatDetails: getChatDetails,
+      addMembers: addMembers,
+      leaveChat: leaveChat,
+      updateChatSettings: updateChatSettings,
+      kickMembers: kickMembers
+    );
     super.initState();
   }
 
 
   @override
+  void dispose() {
+    _chatDetailsCubit.close();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: BlocProvider(
-        create: (context) => ChatDetailsCubit(
-          getChatDetails: getChatDetails,
-          addMembers: addMembers,
-          leaveChat: leaveChat,
-          updateChatSettings: updateChatSettings
-        ),
-        child: Scaffold(
-          body: Stack(
-            children: [
-              ChatDetailScreen(
-                chatEntity: widget.chatEntity, 
-                getChatDetails: getChatDetails
-              ),
-              ChildDetailAppBar(
-                onPressRightIcon: () {
-                  _navigator.push(CreateGroupPage.route(
-                    mode: CreateGroupScreenMode.edit,
-                    chatEntity: widget.chatEntity
-                  ));
-                },
-              ),
-           ]
-          )
-        ),
+    return BlocProvider(
+      create: (context) => _chatDetailsCubit,
+      child: Scaffold(
+        body: Stack(
+          children: [
+            ChatDetailScreen(
+              chatEntity: widget.chatEntity, 
+              getChatDetails: getChatDetails
+            ),
+            ChildDetailAppBar(
+              onPressRightIcon: () {
+                _navigator.push(CreateGroupPage.route(
+                  mode: CreateGroupScreenMode.edit,
+                  chatEntity: widget.chatEntity
+                ));
+              },
+              onPressLeftIcon: () {
+                _chatDetailsCubit.onFinish(
+                  id: widget.chatEntity.chatId, 
+                  callback: (newPermissions) {
+                    navigatorKey.currentContext.read<ChatGlobalCubit>().updateChatSettings(
+                      chatPermissions: newPermissions, id: widget.chatEntity.chatId
+                    );
+                  }
+                );
+
+                Navigator.of(context).pop();
+              },
+            ),
+          ]
+        )
       ),
     );
   }

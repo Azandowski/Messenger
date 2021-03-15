@@ -40,7 +40,8 @@ class ChatActionView extends StatelessWidget {
 
   List<Widget> _buildGroupAction (GroupAction groupAction) {
     final firstUser = MessageUserViewModel(groupAction.firstUser);
-  
+    final secondUser = MessageUserViewModel(groupAction.secondUser);
+
     return [
       Text(
         firstUser.name,
@@ -52,7 +53,12 @@ class ChatActionView extends StatelessWidget {
         style: AppFontStyles.grey12w400.copyWith(
           fontSize: 13.0
         )
-      )
+      ),
+      SizedBox(width: 4),
+      Text(
+        secondUser.name,
+        style: AppFontStyles.black14w400
+      ),
     ];
   }
 

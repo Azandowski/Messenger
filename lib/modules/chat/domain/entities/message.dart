@@ -12,6 +12,7 @@ class Message extends Equatable {
   final DateTime dateTime;
   final String text;
   final MessageUser user;
+  final MessageUser toUser;
   final ChatActions chatActions;
   MessageStatus messageStatus;
   List<Message> transfer;
@@ -19,6 +20,7 @@ class Message extends Equatable {
   final int colorId;
   final int deletionSeconds;
   final DateTime willBeDeletedAt;
+  final MessageChat chat;
   
   Message({
     this.text,
@@ -33,6 +35,8 @@ class Message extends Equatable {
     this.deletionSeconds,
     this.messageStatus = MessageStatus.sent,
     this.transfer,
+    this.toUser,
+    this.chat
   });
 
   @override
@@ -49,6 +53,8 @@ class Message extends Equatable {
     willBeDeletedAt,
     deletionSeconds,
     transfer,
+    toUser,
+    chat
   ];
 
    Message copyWith({
@@ -63,7 +69,9 @@ class Message extends Equatable {
      int colorId,
      int identificator,
      int deletionSeconds,
-     DateTime willBeDeletedAt
+     DateTime willBeDeletedAt,
+     MessageUser toUser,
+     MessageChat chat
   }) {
     return Message(
       id: id ?? this.id,
@@ -76,6 +84,8 @@ class Message extends Equatable {
       messageStatus: status ?? this.messageStatus,
       identificator: identificator ?? this.identificator,
       transfer: transfer ?? this.transfer,
+      toUser: toUser ?? this.toUser,
+      chat: chat ?? this.chat
     );
   }
 
@@ -88,6 +98,8 @@ class Message extends Equatable {
       'is_read': isRead ? 1 : 0,
       'created_at': dateTime.toIso8601String(),
       'action': chatActions?.key,
+      'to_contact': toUser?.toJson(),
+      'chat': chat?.toJson()
     };
   }
 }
@@ -118,4 +130,25 @@ class MessageUser extends Equatable{
       'avatarURL': avatarURL
     };
   }
+}
+
+
+class MessageChat extends Equatable {
+  final int id;
+  final String name;
+
+  MessageChat({
+    @required this.id,
+    @required this.name
+  });
+
+  Map toJson () { 
+    return {
+      'id': id,
+      'name': name,
+    };
+  }
+
+  @override
+  List<Object> get props => [id, name];
 }

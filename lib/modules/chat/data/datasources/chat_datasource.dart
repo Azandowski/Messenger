@@ -26,6 +26,7 @@ abstract class ChatDataSource {
   Future<ChatDetailed> getChatDetails (int id);
   Future<PaginatedResult<ContactEntity>> getChatMembers (int id, Pagination pagination);
   Future<ChatDetailed> addMembers (int id, List<int> userIDs);
+  Future<ChatDetailed> kickMember (int id, int userID);
   Stream<Message> get messages;
   Future<Message> sendMessage(SendMessageParams params);
   Future<void> leaveChat (int id);
@@ -148,6 +149,25 @@ class ChatDataSourceImpl implements ChatDataSource {
       headers: Endpoints.addMembersToChat.getHeaders(token: sl<AuthConfig>().token),
       body: json.encode({
         'contact': userIDs.join(',')
+      })
+    );
+
+    if (response.isSuccess) {
+      return ChatDetailedModel.fromJson(json.decode(response.body));
+    } else {
+      throw ServerFailure(message: ErrorHandler.getErrorMessage(response.body.toString()));
+    }
+  }
+
+  @override
+  Future<ChatDetailed> kickMember(int id, int userID) async {
+    http.Response response = await client.post(
+      Endpoints.kickUser.buildURL(urlParams: [
+        '$id'
+      ]),
+      headers: Endpoints.kickUser.getHeaders(token: sl<AuthConfig>().token),
+      body: json.encode({
+        'contact': userID
       })
     );
 

@@ -5,9 +5,11 @@ import 'package:flutter/material.dart';
 class ChildDetailAppBar extends StatelessWidget {
   
   final Function onPressRightIcon;
-  
+  final Function onPressLeftIcon;
+
   const ChildDetailAppBar({
     @required this.onPressRightIcon,
+    @required this.onPressLeftIcon,
     Key key,
   }) : super(key: key);
 
@@ -26,7 +28,7 @@ class ChildDetailAppBar extends StatelessWidget {
                 color: Colors.white,
               ),
               onPressed: () {
-                Navigator.of(context).pop();
+                onPressLeftIcon();
               },
             ),
             IconButton(

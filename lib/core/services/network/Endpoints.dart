@@ -30,11 +30,12 @@ enum Endpoints {
   createGroupChat,
   getChatDetails,
   sendMessages,
-
+  kickUser,
   addMembersToChat,
   leaveChat,
   getChatMessages,
-  setTimeDeleted
+  setTimeDeleted,
+  searchChats
 }
 
 extension EndpointsExtension on Endpoints {
@@ -99,6 +100,8 @@ extension EndpointsExtension on Endpoints {
         return '${Config.baseAPIpath.value}/messenger/chat/${params[0]}/send-message';
       case Endpoints.addMembersToChat:
         return '${Config.baseAPIpath.value}/messenger/chat/${params[0]}/add-contacts';
+      case Endpoints.kickUser:
+        return '${Config.baseAPIpath.value}/messenger/chat/${params[0]}/kick-contacts';
       case Endpoints.leaveChat:
         return '${Config.baseAPIpath.value}/messenger/chat/leave/${params[0]}';
       case Endpoints.changeChatSettings:
@@ -109,6 +112,8 @@ extension EndpointsExtension on Endpoints {
         return '${Config.baseAPIpath.value}/messenger/category/${params[0]}';
       case Endpoints.setTimeDeleted:
         return '${Config.baseAPIpath.value}/messenger/chat/set-time-deleted';
+      case Endpoints.searchChats:
+        return '${Config.baseAPIpath.value}/messenger/message/search/all';
     }
   }
 

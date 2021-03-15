@@ -3,8 +3,10 @@ import 'dart:io';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_search_bar/flutter_search_bar.dart';
 import 'package:messenger_mobile/core/widgets/independent/small_widgets/image_text_view.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen.dart';
+import 'package:messenger_mobile/modules/chats/presentation/pages/chats_search_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../core/blocs/chat/bloc/bloc/chat_cubit.dart';
@@ -18,6 +20,7 @@ import 'package:messenger_mobile/core/widgets/independent/small_widgets/cell_ske
 import 'package:messenger_mobile/modules/chats/presentation/widgets/categories_bloc_listener.dart';
 import 'package:messenger_mobile/modules/chats/presentation/widgets/chat_item/chat_preview_item.dart';
 import '../../../../locator.dart';
+import '../../../../main.dart';
 import '../../../category/data/models/chat_view_model.dart';
 
 import '../bloc/cubit/chats_cubit_cubit.dart';
@@ -30,9 +33,12 @@ class ChatsScreen extends StatefulWidget {
 }
 
 class _ChatsScreenState extends State<ChatsScreen> {
+  
   PaginatedScrollController scrollController = PaginatedScrollController();
   ChatsCubit cubit;
   String language;
+
+  NavigatorState get _navigator => navigatorKey.currentState;
 
   @override
   void initState() {
@@ -49,7 +55,6 @@ class _ChatsScreenState extends State<ChatsScreen> {
         }
       }
     });
-
     super.initState();
   }
 
@@ -75,15 +80,7 @@ class _ChatsScreenState extends State<ChatsScreen> {
               int chatsCount = chatState.chats?.length ?? 0;
 
               return Scaffold(
-                appBar: _buildAppBar(
-                  cubit.selectedChat != null ?
-                  ChatViewModel(cubit.selectedChat) : null,
-                  () async {
-                    final PickedFile image = await ImagePicker().getImage(source: ImageSource.gallery);
-                    final file = File(image.path);
-                    cubit.setWallpaper(file);
-                  }
-                ),
+                appBar: buildAppBar(context),
                 body: Container(
                   child: ListView.separated(
                     controller: scrollController,
@@ -158,59 +155,21 @@ class _ChatsScreenState extends State<ChatsScreen> {
         ),
       );
     }
-  }
+  } 
 
-  AppBar _buildAppBar(ChatViewModel selectedChat, Function onIconClick) {
-    var isSelected = selectedChat != null;
-
-    return AppBar(
-      title: Text(!isSelected ? 'appBarTitle'.tr() : 'selectedChats'.tr()),
-      leading: isSelected
-        ? IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () {
-              context.read<ChatsCubit>().didCancelChatSelection();
-            },
-          )
-        : null,
+  AppBar buildAppBar(BuildContext context) {
+    return new AppBar(
+      title: new Text('Chats'),
       actions: [
-        DropdownButton(
-          value: language,
-          icon: Icon(Icons.language_outlined),
-          iconSize: 24,
-          elevation: 15,
-          onChanged: (String newLanguage) async {
-            setState(() => language = newLanguage);
-          },
-          items: <String>['English', 'Русский', 'Kazakh']
-            .map<DropdownMenuItem<String>>(
-              (String value) => DropdownMenuItem(
-                child: Text(value),
-                value: value,
-                onTap: () async {
-                  if (value == 'English') {
-                    EasyLocalization.of(context)
-                      .setLocale(Locale('en', 'US'));
-                  } else if (value == 'Kazakh') {
-                    EasyLocalization.of(context)
-                      .setLocale(Locale('kk', 'KZ'));
-                    ;
-                  } else {
-                    EasyLocalization.of(context)
-                      .setLocale(Locale('ru', 'RU'));
-                  }
-                },
-              ),
-            )
-            .toList(),
-        ),
         IconButton(
-          icon: Icon(Icons.format_paint),
+          icon: Icon(Icons.search),
           onPressed: () {
-            onIconClick();
+            _navigator.push(ChatsSearchScreen.route());
+            // ChatsSearchScreen
           },
         )
-      ],
+        // searchBar.getSearchAction(context)
+      ]
     );
   }
 }

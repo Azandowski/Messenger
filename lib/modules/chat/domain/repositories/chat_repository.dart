@@ -17,6 +17,7 @@ abstract class ChatRepository {
   Future<Either<Failure, PaginatedResult<ContactEntity>>> getChatMembers (int id, Pagination pagination);
   Future<Either<Failure, Message>> sendMessage(SendMessageParams params);
   Future<Either<Failure, ChatDetailed>> addMembers (int id, List<int> members);
+  Future<Either<Failure, ChatDetailed>> kickMember (int id, int userID);
   Stream<Message> message;
   Future<Either<Failure, NoParams>> leaveChat (int id);
   Future<Either<Failure, ChatPermissions>> updateChatSettings({ ChatPermissionModel permissions, int id }); 

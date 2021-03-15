@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger_mobile/core/blocs/chat/bloc/bloc/chat_cubit.dart';
 import 'package:messenger_mobile/core/widgets/independent/buttons/icon_text_button.dart';
+import 'package:messenger_mobile/core/widgets/independent/dialogs/dialog_action_button.dart';
+import 'package:messenger_mobile/core/widgets/independent/dialogs/dialog_params.dart';
+import 'package:messenger_mobile/core/widgets/independent/dialogs/dialogs.dart';
 import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
 import 'package:messenger_mobile/modules/category/domain/entities/chat_permissions.dart';
 import 'package:messenger_mobile/modules/chat/domain/entities/chat_detailed.dart';
@@ -49,70 +52,58 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> implements ContactC
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        _chatDetailsCubit.onFinish(
-          id: widget.chatEntity.chatId, 
-          callback: (newPermissions) {
-            navigatorKey.currentContext.read<ChatGlobalCubit>().updateChatSettings(
-              chatPermissions: newPermissions, id: widget.chatEntity.chatId
-            );
-          }
-        );
-
-        return true;
+    return BlocConsumer<ChatDetailsCubit, ChatDetailsState>(
+      listener: (context, state) {
+        _handleListener(state);
       },
-      child: BlocConsumer<ChatDetailsCubit, ChatDetailsState>(
-        listener: (context, state) {
-          _handleListener(state);
-        },
-        builder: (context, state) {
-          if (!(state is ChatDetailsLoading)) {
-            return SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  ChatDetailHeader(chatDetailed: state.chatDetailed),
-                  if (state.chatDetailed?.chatMemberRole == ChatMember.admin && !(state.chatDetailed?.chat?.isPrivate ?? false))
-                    ...[
-                      ChatAdminSettings(
-                        permissions: state.chatDetailed?.settings,
-                        didSelectOption: (ChatSettings settings, bool newValue) {
-                          _chatDetailsCubit.toggleChatSetting(
-                            settings: settings, 
-                            newValue: newValue, 
-                            id: widget.chatEntity.chatId,
-                            callback: (ChatPermissions permissons) {
-                              context.read<ChatGlobalCubit>().updateChatSettings(
-                                chatPermissions: permissons, id: widget.chatEntity.chatId
-                              );
-                            } 
-                          );
-                        },
-                      ),
-                      Divider()
-                    ],
-                  ChatSettingItem(
-                    chatSetting: ChatSettings.noSound,
-                    isOn: !ChatSettings.noSound.getValue(state.chatDetailed?.settings),
-                    onToggle: (value) {
-                      _chatDetailsCubit.toggleChatSetting(
-                        settings: ChatSettings.noSound, 
-                        newValue: value, 
-                        id: widget.chatEntity.chatId,
-                        callback: (ChatPermissions permissons) {
-                          context.read<ChatGlobalCubit>().updateChatSettings(
-                            chatPermissions: permissons, id: widget.chatEntity.chatId
-                          );
-                        } 
-                      );
-                    },
-                  ),
-                  _buildSeparator(),
-                  ChatMediaBlock(
-                    media: state.chatDetailed.media
-                  ),
-                  _buildSeparator(),
+      builder: (context, state) {
+        if (!(state is ChatDetailsLoading)) {
+          return SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ChatDetailHeader(chatDetailed: state.chatDetailed),
+                if (state.chatDetailed?.chatMemberRole == ChatMember.admin && !(state.chatDetailed?.chat?.isPrivate ?? false))
+                  ...[
+                    ChatAdminSettings(
+                      permissions: state.chatDetailed?.settings,
+                      didSelectOption: (ChatSettings settings, bool newValue) {
+                        _chatDetailsCubit.toggleChatSetting(
+                          settings: settings, 
+                          newValue: newValue, 
+                          id: widget.chatEntity.chatId,
+                          callback: (ChatPermissions permissons) {
+                            context.read<ChatGlobalCubit>().updateChatSettings(
+                              chatPermissions: permissons, id: widget.chatEntity.chatId
+                            );
+                          } 
+                        );
+                      },
+                    ),
+                    Divider()
+                  ],
+                ChatSettingItem(
+                  chatSetting: ChatSettings.noSound,
+                  isOn: !ChatSettings.noSound.getValue(state.chatDetailed?.settings),
+                  onToggle: (value) {
+                    _chatDetailsCubit.toggleChatSetting(
+                      settings: ChatSettings.noSound, 
+                      newValue: value, 
+                      id: widget.chatEntity.chatId,
+                      callback: (ChatPermissions permissons) {
+                        context.read<ChatGlobalCubit>().updateChatSettings(
+                          chatPermissions: permissons, id: widget.chatEntity.chatId
+                        );
+                      } 
+                    );
+                  },
+                ),
+                _buildSeparator(),
+                ChatMediaBlock(
+                  media: state.chatDetailed.media
+                ),
+                _buildSeparator(),
+                if (!(state.chatDetailed?.chat?.isPrivate ?? false))
                   IconTextButton(
                     imageAssetPath: 'assets/icons/create.png',
                     onPress: () {
@@ -120,36 +111,38 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> implements ContactC
                     },
                     title: 'Добавить участников',
                   ),
-                  _buildSeparator(),
-                  ChatMembersBlock(
-                    members: state.chatDetailed.members, 
-                    membersCount: state.chatDetailed.membersCount, 
-                    onShowMoreClick: () {
-                      _navigator.push(ChatMembersScreen.route(
-                        state.chatDetailed.chat.chatId, widget.getChatDetails
-                      ));
-                    }
+                _buildSeparator(),
+                ChatMembersBlock(
+                  members: state.chatDetailed.members, 
+                  membersCount: state.chatDetailed.membersCount, 
+                  onShowMoreClick: () {
+                    _navigator.push(ChatMembersScreen.route(
+                      state.chatDetailed.chat.chatId, widget.getChatDetails
+                    ));
+                  },
+                  onTapItem: (item) {
+                    _handleContactDeletionAlert(item);
+                  }
+                ),
+                _buildSeparator(),
+                ProfileItem(
+                  profileItemData: ProfileItemData(
+                    icon: Icons.exit_to_app,
+                    title: 'Выйти',
+                    isRed: true,
                   ),
-                  _buildSeparator(),
-                  ProfileItem(
-                    profileItemData: ProfileItemData(
-                      icon: Icons.exit_to_app,
-                      title: 'Выйти',
-                      isRed: true,
-                    ),
-                    onTap: () {
-                      _chatDetailsCubit.doLeaveChat(widget.chatEntity.chatId);
-                    },
-                  ),
-                  _buildSeparator(height: 200)
-                ],
-              ),
-            );
-          } else {
-            return ChatSkeletonPage();
-          }
-        },
-      ),
+                  onTap: () {
+                    _chatDetailsCubit.doLeaveChat(widget.chatEntity.chatId);
+                  },
+                ),
+                _buildSeparator(height: 200)
+              ],
+            ),
+          );
+        } else {
+          return ChatSkeletonPage();
+        }
+      },
     );
   }
 
@@ -193,6 +186,32 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> implements ContactC
       height: height ?? 20,
       color: Colors.grey[200],
     );
+  }
+
+  // MARK: - Contact Deletion
+
+  void _handleContactDeletionAlert (ContactEntity entity) {
+    showDialog(context: context, builder: (context) => DialogsView(
+      title: 'Удалить участника',
+      description: 'Это действие нельзя отменить',
+      actionButton: [
+        DialogActionButton(
+          title: 'Назад',
+          buttonStyle: DialogActionButtonStyle.cancel,
+          onPress: () {
+            Navigator.of(context).pop();
+          }
+        ),
+        DialogActionButton(
+          title: 'Удалить',
+          buttonStyle: DialogActionButtonStyle.dangerous,
+          onPress: () {
+            Navigator.of(context).pop();
+            _chatDetailsCubit.kickMember(widget.chatEntity.chatId, entity.id);
+          }
+        )
+      ]
+    ));
   }
 
   @override

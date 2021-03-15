@@ -102,6 +102,24 @@ class ChatRepositoryImpl extends ChatRepository {
 
 
   @override
+  Future<Either<Failure, ChatDetailed>> kickMember(int id, int userID) async {
+    if (await networkInfo.isConnected) {
+      try {
+        final reponse = await chatDataSource.kickMember(id, userID);
+        return Right(reponse);
+      } catch (e) {
+        if (e is Failure) {
+          return Left(e);
+        } else {
+          return Left(ServerFailure(message: e.toString()));
+        }
+      }
+    } else {
+      return Left(ConnectionFailure());
+    }
+  }
+
+  @override
   Future<Either<Failure, NoParams>> leaveChat(int id) async {
     if (await networkInfo.isConnected) { 
       try {

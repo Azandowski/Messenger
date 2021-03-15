@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:messenger_mobile/modules/chat/domain/entities/chat_actions.dart';
 
 import '../../domain/entities/message.dart';
@@ -9,12 +10,14 @@ class MessageModel extends Message {
   final DateTime dateTime;
   final String text;
   final MessageUser user;
+  final MessageUser toUser;
   final ChatActions chatActions;
   final int colorId;
   final int deletionSeconds;
   final DateTime willBeDeletedAt;
   final List<Message> transfer;
   final MessageStatus messageStatus;
+  final MessageChat chat;
 
   MessageModel({
     this.id,
@@ -28,6 +31,8 @@ class MessageModel extends Message {
     this.deletionSeconds,
     this.willBeDeletedAt,
     this.messageStatus = MessageStatus.sent,
+    this.toUser,
+    this.chat
   }) : super(
     id: id,
     isRead: isRead,
@@ -39,7 +44,9 @@ class MessageModel extends Message {
     chatActions: chatActions,
     willBeDeletedAt: willBeDeletedAt,
     deletionSeconds: deletionSeconds,
-    messageStatus: messageStatus
+    messageStatus: messageStatus,
+    toUser: toUser,
+    chat: chat
   );
 
   factory MessageModel.fromJson(Map json) {
@@ -48,6 +55,8 @@ class MessageModel extends Message {
       colorId: json['color'] is Map ? json['color']['color'] : json['color'],
       user: json['from_contact'] != null ? 
         MessageUserModel.fromJson(json['from_contact']) : null,
+      toUser: json['to_contact'] != null ?
+        MessageUserModel.fromJson(json['to_contact']) : null,
       text: json['text'],
       isRead: json['is_read'] == 1,
       dateTime: DateTime.parse(json['created_at']).toLocal(),
@@ -58,6 +67,8 @@ class MessageModel extends Message {
       deletionSeconds: json['time_deleted'],
       transfer: json['transfer'] != null ? 
         (json['transfer'] as List).map((v) => Transfer.fromJson(v)).toList() : [],
+      chat: json['chat'] == null ? null :
+       MessageChatModel.fromJson(json['chat'])
     );
   }
 
@@ -70,6 +81,7 @@ class MessageModel extends Message {
       'is_read': isRead ? 1 : 0,
       'created_at': dateTime.toIso8601String(),
       'action': chatActions?.key,
+      'to_contact': toUser?.toJson()
     };
   }
 }
@@ -134,5 +146,31 @@ class Transfer extends Message {
     data['is_read'] = this.isRead;
     data['updated_at'] = this.updatedAt;
     return data;
+  }
+}
+
+
+class MessageChatModel extends MessageChat {
+  final int id;
+  final String name;
+
+  MessageChatModel({
+    @required this.id,
+    @required this.name
+  }) : super(id: id, name: name);
+
+
+  factory MessageChatModel.fromJson(Map<String, dynamic> json) {
+    return MessageChatModel(
+      id: json['id'],
+      name: json['name']
+    );
+  }
+
+  Map toJson () { 
+    return {
+      'id': id,
+      'name': name,
+    };
   }
 }
