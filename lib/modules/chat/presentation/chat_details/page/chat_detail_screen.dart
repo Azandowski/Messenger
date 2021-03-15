@@ -1,28 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:messenger_mobile/core/blocs/chat/bloc/bloc/chat_cubit.dart';
-import 'package:messenger_mobile/core/widgets/independent/buttons/icon_text_button.dart';
 import 'package:messenger_mobile/core/widgets/independent/dialogs/dialog_action_button.dart';
 import 'package:messenger_mobile/core/widgets/independent/dialogs/dialog_params.dart';
 import 'package:messenger_mobile/core/widgets/independent/dialogs/dialogs.dart';
 import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
-import 'package:messenger_mobile/modules/category/domain/entities/chat_permissions.dart';
-import 'package:messenger_mobile/modules/chat/domain/entities/chat_detailed.dart';
-import 'package:messenger_mobile/modules/chat/domain/usecases/get_chat_details.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chat_details/cubit/chat_details_cubit.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chat_details/page/chat_skeleton_page.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chat_details/widgets/chat_admin_settings.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chat_details/widgets/chat_detail_header.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chat_details/widgets/chat_media_block.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chat_details/widgets/chat_members_block.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chat_details/widgets/chat_setting_item.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chat_members/chat_members_screen.dart';
-import 'package:messenger_mobile/modules/creation_module/domain/entities/contact.dart';
-import 'package:messenger_mobile/modules/groupChat/presentation/choose_contacts/choose_contacts_page.dart';
-import 'package:messenger_mobile/modules/groupChat/presentation/choose_contacts/choose_contacts_screen.dart';
-import 'package:messenger_mobile/modules/profile/presentation/widgets/profile_item.dart';
 
+import '../../../../../core/blocs/chat/bloc/bloc/chat_cubit.dart';
+import '../../../../../core/widgets/independent/buttons/icon_text_button.dart';
 import '../../../../../main.dart';
+import '../../../../category/domain/entities/chat_permissions.dart';
+import '../../../../creation_module/domain/entities/contact.dart';
+import '../../../../groupChat/presentation/choose_contacts/choose_contacts_page.dart';
+import '../../../../groupChat/presentation/choose_contacts/choose_contacts_screen.dart';
+import '../../../../profile/presentation/widgets/profile_item.dart';
+import '../../../domain/entities/chat_detailed.dart';
+import '../../../domain/usecases/get_chat_details.dart';
+import '../../chat_members/chat_members_screen.dart';
+import '../cubit/chat_details_cubit.dart';
+import '../widgets/chat_admin_settings.dart';
+import '../widgets/chat_detail_header.dart';
+import '../widgets/chat_media_block.dart';
+import '../widgets/chat_members_block.dart';
+import '../widgets/chat_setting_item.dart';
+import 'chat_skeleton_page.dart';
 
 class ChatDetailScreen extends StatefulWidget {
   final ChatEntity chatEntity;

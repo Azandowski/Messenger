@@ -1,36 +1,9 @@
-import 'dart:io';
-
-import 'package:flutter/services.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:messenger_mobile/app/appTheme.dart';
-import 'package:messenger_mobile/core/blocs/category/bloc/category_bloc.dart';
-import 'package:messenger_mobile/core/blocs/chat/bloc/bloc/chat_cubit.dart' as main_chat_cubit;
-import 'package:messenger_mobile/core/widgets/independent/placeholders/load_widget.dart';
-import 'package:messenger_mobile/locator.dart';
-import 'package:messenger_mobile/modules/category/data/models/chat_view_model.dart';
-import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
-import 'package:messenger_mobile/modules/chat/data/datasources/chat_datasource.dart';
-import 'package:messenger_mobile/modules/chat/data/models/message_view_model.dart';
-import 'package:messenger_mobile/modules/chat/data/repositories/chat_repository.dart';
 import 'package:messenger_mobile/modules/chat/domain/entities/chat_actions.dart';
-import 'package:messenger_mobile/modules/chat/domain/entities/message.dart';
-import 'package:messenger_mobile/modules/chat/domain/repositories/chat_repository.dart';
-import 'package:messenger_mobile/modules/chat/domain/usecases/get_messages.dart';
-import 'package:messenger_mobile/modules/chat/domain/usecases/send_message.dart';
-import 'package:messenger_mobile/modules/chat/domain/usecases/set_time_deleted.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chat_details/page/chat_detail_page.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chats_screen/bloc/chat_bloc.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chats_screen/helpers/messageCellAction.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/chatControlPanel/chatControlPanel.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/chatControlPanel/cubit/panel_bloc_cubit.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/chatHeading.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/chat_action_view.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/chat_screen_actions.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/message_cell.dart';
-import 'package:messenger_mobile/core/utils/list_helper.dart';
-import 'package:messenger_mobile/modules/chat/presentation/time_picker/time_picker_screen.dart';
-import '../../../../../main.dart';
+
+import '../widgets/remove_dialog_view.dart';
+
+import '../../../../../core/blocs/chat/bloc/bloc/chat_cubit.dart' as main_chat_cubit;
+import 'chat_screen_import.dart';
 
 
 class ChatScreen extends StatefulWidget {
@@ -46,10 +19,16 @@ class _ChatScreenState extends State<ChatScreen> implements TimePickerDelegate {
 
   NavigatorState get _navigator => navigatorKey.currentState;
   
+  // MARK: - Props
+
   TextEditingController messageTextController = TextEditingController();
   CategoryBloc categoryBloc;
   ChatBloc _chatBloc;
   PanelBlocCubit _panelBlocCubit;
+  ChatTodoCubit _chatTodoCubit;
+  
+  // MARK: - Life-Cycle
+  
   @override
   void initState() {
     final ChatRepository chatRepository = ChatRepositoryImpl(
@@ -60,6 +39,11 @@ class _ChatScreenState extends State<ChatScreen> implements TimePickerDelegate {
         client: sl()
       )
     );
+
+    _chatTodoCubit = ChatTodoCubit(
+      deleteMessageUseCase: DeleteMessage(repository: chatRepository),
+    );
+    
     categoryBloc = context.read<CategoryBloc>();
     _panelBlocCubit = PanelBlocCubit();
     _chatBloc = ChatBloc(
@@ -80,122 +64,171 @@ class _ChatScreenState extends State<ChatScreen> implements TimePickerDelegate {
     super.dispose();
   }
 
+
+  // MARK: - UI
+
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.width;
     ChatViewModel chatViewModel = ChatViewModel(widget.chatEntity);
 
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: false,
-        titleSpacing: 0.0,
-        title: ChatHeading(
-          title: chatViewModel.title ?? '',
-          description: chatViewModel.description ?? '',
-          avatarURL: chatViewModel.imageURL,
-          onTap: () {
-            _navigator.push(ChatDetailPage.route(widget.chatEntity));
-          }
-        ),
-        actions: [
-          ChatScreenActions(
-            timePickerDelegate: this,
-            chatEntity: widget.chatEntity
-          )
-        ],
-      ),
-      backgroundColor: AppColors.pinkBackgroundColor,
-      body: BlocProvider(
-        lazy: false,
-        create: (context) => _panelBlocCubit,
-        child: BlocProvider(
-        lazy: false,
-        create: (context) => _chatBloc,
-        child: BlocBuilder<ChatBloc, ChatState>(
-          builder: (context, state) {
-            return BlocListener<ChatBloc, ChatState>(
+    return BlocProvider(
+      lazy: false,
+      create: (context) => _chatTodoCubit,
+      child: BlocBuilder<ChatTodoCubit, ChatTodoState>(
+        builder: (context, cubit) {
+          return BlocProvider(
+            create: (context) => _chatBloc,
+            child: BlocConsumer<ChatBloc, ChatState>(
               listener: (context, state) {
                 _handleListener(state);
               },
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Expanded(
-                    child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 16),
-                      decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: state.wallpaperPath != null ? 
-                          FileImage(File(state.wallpaperPath)) : 
-                            AssetImage('assets/images/bg-home.png'),
-                        fit: BoxFit.cover),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.only(bottom: 20.0),
-                        child: ListView.separated(
-                          controller: _chatBloc.scrollController,
-                          itemBuilder: (context, int index) {
-                            if (state is ChatLoading && getItemsCount(state) - 1 == index) {
-                              return LoadWidget(size: 20);
-                            } else if (getItemsCount(state) - 1 == index) {
-                              if (state.messages.getItemAt(index - 1) != null) {
-                                return ChatActionView(
-                                  chatAction: TimeAction(
-                                    action: ChatActions.newDay,
-                                    dateTime: state.messages[index - 1].dateTime
-                                  )
-                                );
-                              } 
-                              return Container();
-                            } else {
-                              int nextMessageUserID = state.messages.getItemAt(index - 1)?.user?.id;
-                              int prevMessageUserID = state.messages.getItemAt(index + 1)?.user?.id;
-                              Message currentMessage = state.messages[index];
-                              
-                              return currentMessage.chatActions == null ? 
-                                MessageCell(
-                                  onReply: (MessageViewModel message){
-                                    _panelBlocCubit.addMessage(message);
-                                  },
-                                  onAction: (MessageCellActions action){
-                                    messageActionProcess(action, context, MessageViewModel(currentMessage));
-                                  },
-                                  messageViewModel: MessageViewModel(currentMessage),
-                                  nextMessageUserID: nextMessageUserID,
-                                  prevMessageUserID: prevMessageUserID,
-                                ) : ChatActionView(
-                                  chatAction: _buildChatAction(currentMessage)
-                                );
-                            }
-                          },
-                          scrollDirection: Axis.vertical,
-                          itemCount: getItemsCount(state),
-                          reverse: true,
-                          separatorBuilder: (_, int index) {
-                            return _buildSeparator(index, state);
-                          }
+              builder: (context, state) {
+                return Scaffold(
+                  appBar: cubit is ChatTodoSelection ? SelectionAppBar(
+                      chatViewModel: chatViewModel, 
+                      widget: widget, 
+                      delegate: this,
+                      chatTodoCubit: _chatTodoCubit,
+                      appBar: AppBar(),
+                    ) : ChatAppBar(
+                      chatViewModel: chatViewModel, 
+                      navigator: _navigator, 
+                      widget: widget, 
+                      delegate: this,
+                      appBar: AppBar(),
+                    ),
+                  backgroundColor: AppColors.pinkBackgroundColor,
+                  body: BlocProvider(
+                    lazy: false,
+                    create: (context) => _panelBlocCubit,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Expanded(
+                          child: Container(
+                            decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: state.wallpaperPath != null ? 
+                                FileImage(File(state.wallpaperPath)) : 
+                                  AssetImage('assets/images/bg-home.png'),
+                              fit: BoxFit.cover),
+                            ),
+                            child: ListView.separated(
+                              controller: _chatBloc.scrollController,
+                              itemBuilder: (context, int index) {
+                                if (state is ChatLoading && getItemsCount(state) - 1 == index) {
+                                  return LoadWidget(size: 20);
+                                } else if (getItemsCount(state) - 1 == index) {
+                                  if (state.messages.getItemAt(index - 1) != null) {
+                                    return ChatActionView(
+                                      chatAction: TimeAction(
+                                        action: ChatActions.newDay,
+                                        dateTime: state.messages[index - 1].dateTime
+                                      )
+                                    );
+                                  }
+
+                                  return Container();
+                                } else {
+                                  int nextMessageUserID = state.messages.getItemAt(index - 1)?.user?.id;
+                                  int prevMessageUserID = state.messages.getItemAt(index + 1)?.user?.id;
+                                  Message currentMessage = state.messages[index];
+                                  bool isSelected = false;
+                                  
+                                  if (cubit is ChatTodoSelection) {
+                                    isSelected = cubit.selectedMessages
+                                      .where((element) => element.id == currentMessage.id)
+                                      .toList().length > 0;
+                                  }
+
+                                  return currentMessage.chatActions == null ? 
+                                    MessageCell(
+                                      nextMessageUserID: nextMessageUserID,
+                                      prevMessageUserID: prevMessageUserID,
+                                      onReply: (MessageViewModel message){
+                                        _panelBlocCubit.addMessage(message);
+                                      },
+                                      onAction: (MessageCellActions action){
+                                        messageActionProcess(action, context, MessageViewModel(currentMessage));
+                                      },
+                                      messageViewModel: MessageViewModel(
+                                        currentMessage,
+                                        isSelected: isSelected,
+                                      ),
+                                      onTap: () {
+                                        if (cubit is ChatTodoSelection) {
+                                          if (isSelected) {
+                                            _chatTodoCubit.removeMessage(currentMessage);
+                                          } else {
+                                            _chatTodoCubit.selectMessage(currentMessage);
+                                          }
+                                        }
+                                      },
+                                    ) : ChatActionView(
+                                      chatAction: _buildChatAction(currentMessage)
+                                    );
+                                }
+                              },
+                              scrollDirection: Axis.vertical,
+                              itemCount: getItemsCount(state),
+                              reverse: true,
+                              separatorBuilder: (_, int index) {
+                                return _buildSeparator(index, state);
+                              }
+                            ),
+                          ),
                         ),
-                      ),
+                        cubit is ChatTodoSelection || cubit is ChatToDoLoading ? 
+                          Container(
+                          color: Colors.white,
+                          padding: EdgeInsets.fromLTRB(16,8,16,8),
+                          child: ActionButton(
+                            isLoading: cubit is ChatToDoLoading,
+                            text: cubit.isDelete ? 'Удалить' : 'Переслать',
+                            onTap: () {
+                              if (cubit.isDelete) {
+                                showDialog(context: context, builder: (ctx) {
+                                  return DeleteDialogView(onDelete: (forMe){
+                                    _chatTodoCubit.deleteMessage(
+                                      chatID: widget.chatEntity.chatId,
+                                      forMe: forMe
+                                    );
+                                  });
+                                });
+                              } else {
+                              
+                              }
+                            },
+                          ),
+                        ) : ChatControlPanel(
+                              messageTextController: messageTextController, 
+                              width: width,
+                              height: height
+                            ),
+                      ],
                     ),
                   ),
-                  ChatControlPanel(
-                    messageTextController: messageTextController, 
-                    width: width,
-                    height: height
-                  ),
-                ],
-              ),
-            );
-          }
-        ),
-       ),
-      ),
+                );
+              }
+            )
+          );
+        },
+      )
     );
   }
 
-  Future<void> messageActionProcess(MessageCellActions action,BuildContext context, MessageViewModel messageViewModel) async {
+
+
+  // MARK: - Actions
+
+  Future<void> messageActionProcess(
+    MessageCellActions action, 
+    BuildContext context, 
+    MessageViewModel messageViewModel
+  ) async {
     switch (action){
       case MessageCellActions.copyMessage:
         Clipboard.setData(ClipboardData(text: messageViewModel.messageText))
@@ -213,10 +246,10 @@ class _ChatScreenState extends State<ChatScreen> implements TimePickerDelegate {
         _panelBlocCubit.addMessage(messageViewModel);
         break;
       case MessageCellActions.replyMore:
-        // TODO: Handle this case.
+        _chatTodoCubit.enableSelectionMode(messageViewModel.message, false);
         break;
       case MessageCellActions.deleteMessage:
-        // TODO: Handle this case.
+        _chatTodoCubit.enableSelectionMode(messageViewModel.message, true);
         break;
     }
   }
@@ -308,3 +341,4 @@ class _ChatScreenState extends State<ChatScreen> implements TimePickerDelegate {
     _chatBloc.add(SetInitialTime(option: option));
   }
 }
+

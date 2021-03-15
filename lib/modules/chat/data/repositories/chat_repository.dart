@@ -1,20 +1,21 @@
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
-import 'package:messenger_mobile/core/services/network/network_info.dart';
-import 'package:messenger_mobile/core/services/network/paginatedResult.dart';
-import 'package:messenger_mobile/core/usecases/usecase.dart';
-import 'package:messenger_mobile/core/utils/pagination.dart';
-import 'package:messenger_mobile/modules/category/data/models/chat_permission_model.dart';
-import 'package:messenger_mobile/modules/category/domain/entities/chat_permissions.dart';
-import 'package:messenger_mobile/modules/chat/data/datasources/chat_datasource.dart';
-import 'package:messenger_mobile/modules/chat/domain/entities/chat_detailed.dart';
-import 'package:messenger_mobile/core/error/failures.dart';
 import 'package:dartz/dartz.dart';
-import 'package:messenger_mobile/modules/chat/domain/entities/message.dart';
-import 'package:messenger_mobile/modules/chat/domain/repositories/chat_repository.dart';
-import 'package:messenger_mobile/modules/chat/domain/usecases/params.dart';
-import 'package:messenger_mobile/modules/creation_module/domain/entities/contact.dart';
+import 'package:flutter/foundation.dart';
+
+import '../../../../core/error/failures.dart';
+import '../../../../core/services/network/network_info.dart';
+import '../../../../core/services/network/paginatedResult.dart';
+import '../../../../core/usecases/usecase.dart';
+import '../../../../core/utils/pagination.dart';
+import '../../../category/data/models/chat_permission_model.dart';
+import '../../../category/domain/entities/chat_permissions.dart';
+import '../../../creation_module/domain/entities/contact.dart';
+import '../../domain/entities/chat_detailed.dart';
+import '../../domain/entities/message.dart';
+import '../../domain/repositories/chat_repository.dart';
+import '../../domain/usecases/params.dart';
+import '../datasources/chat_datasource.dart';
 
 class ChatRepositoryImpl extends ChatRepository {
   final ChatDataSource chatDataSource;
@@ -200,6 +201,20 @@ class ChatRepositoryImpl extends ChatRepository {
   
   @override
   Future<void> disposeChat() {
-    chatDataSource.disposeChat();
+    return chatDataSource.disposeChat();
+  }
+
+  @override
+  Future<Either<Failure, bool>> deleteMessage(DeleteMessageParams params) async {
+    try {
+        await chatDataSource.deleteMessage(params);
+        return Right(true);
+      } catch (e) {
+        if (e is Failure) {
+          return Left(e);
+        } else {
+          return Left(ServerFailure(message: e.toString()));
+      }
+    }
   }
 }

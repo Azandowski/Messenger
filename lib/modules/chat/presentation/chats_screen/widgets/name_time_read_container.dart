@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/app/appTheme.dart';
-import 'package:messenger_mobile/modules/chat/data/models/message_view_model.dart';
+import '../../../../../app/appTheme.dart';
+import '../../../data/models/message_view_model.dart';
 class NameTimeBloc extends StatelessWidget {
   final MessageViewModel messageViewModel;
 

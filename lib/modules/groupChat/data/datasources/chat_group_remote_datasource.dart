@@ -3,13 +3,13 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
-import 'package:messenger_mobile/modules/category/data/models/chat_entity_model.dart';
-import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
 
 import '../../../../core/error/failures.dart';
 import '../../../../core/services/network/Endpoints.dart';
 import '../../../../core/utils/http_response_extension.dart';
 import '../../../../core/utils/multipart_request_helper.dart';
+import '../../../category/data/models/chat_entity_model.dart';
+import '../../../category/domain/entities/chat_entity.dart';
 import '../../domain/usecases/params.dart';
 
 

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
-import 'package:messenger_mobile/modules/category/domain/entities/create_category_screen_params.dart';
-import 'package:messenger_mobile/modules/chats/domain/entities/category.dart';
 import '../choose_contacts/cubit/choosecontact_cubit.dart';
 import '../../../../locator.dart';
 import 'create_group_screen.dart';

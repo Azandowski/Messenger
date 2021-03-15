@@ -1,12 +1,12 @@
 
 import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/core/services/network/paginatedResult.dart';
-import 'package:messenger_mobile/modules/creation_module/domain/entities/contact.dart';
 
 import '../../../../core/error/failures.dart';
 import '../../../../core/services/network/network_info.dart';
+import '../../../../core/services/network/paginatedResult.dart';
 import '../../../../core/utils/pagination.dart';
+import '../../domain/entities/contact.dart';
 import '../../domain/repositories/creation_module_repository.dart';
 import '../datasources/creation_module_datasource.dart';
 

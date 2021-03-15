@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/modules/chat/domain/entities/chat_detailed.dart';
 
+import '../../../domain/entities/chat_detailed.dart';
 import 'divider_wrapper.dart';
 
 class ChatMediaBlock extends StatelessWidget {

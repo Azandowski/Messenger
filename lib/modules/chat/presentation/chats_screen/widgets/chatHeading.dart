@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/app/appTheme.dart';
-import 'package:messenger_mobile/core/widgets/independent/images/ImageWithCorner.dart';
 
+import '../../../../../app/appTheme.dart';
+import '../../../../../core/widgets/independent/images/ImageWithCorner.dart';
 import 'marqueText.dart';
 
 

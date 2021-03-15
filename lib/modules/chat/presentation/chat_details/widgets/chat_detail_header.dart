@@ -1,8 +1,8 @@
 
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/app/appTheme.dart';
 import 'package:messenger_mobile/modules/category/data/models/chat_view_model.dart';
-import 'package:messenger_mobile/modules/chat/domain/entities/chat_detailed.dart';
+import '../../../../../app/appTheme.dart';
+import '../../../domain/entities/chat_detailed.dart';
 
 class ChatDetailHeader extends StatelessWidget {
   

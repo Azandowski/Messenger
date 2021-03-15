@@ -3,13 +3,12 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/core/blocs/chat/bloc/bloc/chat_cubit.dart';
-import 'package:messenger_mobile/modules/profile/presentation/widgets/profile_shimmer.dart';
 
 import '../../../../modules/category/domain/repositories/category_repository.dart';
 import '../../../../modules/category/domain/usecases/delete_category.dart';
 import '../../../../modules/category/domain/usecases/reorder_category.dart';
 import '../../../../modules/chats/domain/entities/category.dart';
+import '../../chat/bloc/bloc/chat_cubit.dart';
 
 part 'category_event.dart';
 part 'category_state.dart';

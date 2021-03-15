@@ -1,8 +1,9 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
-import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
-import 'package:messenger_mobile/modules/category/domain/entities/chat_permissions.dart';
-import 'package:messenger_mobile/modules/creation_module/domain/entities/contact.dart';
+
+import '../../../category/domain/entities/chat_entity.dart';
+import '../../../category/domain/entities/chat_permissions.dart';
+import '../../../creation_module/domain/entities/contact.dart';
 
 class ChatDetailed extends Equatable {
   final ChatEntity chat;

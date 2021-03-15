@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:messenger_mobile/modules/chat/domain/entities/chat_actions.dart';
 
+import '../../domain/entities/chat_actions.dart';
 import '../../domain/entities/message.dart';
 import 'message_user_model.dart';
 

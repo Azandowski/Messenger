@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:messenger_mobile/modules/authentication/domain/repositories/authentication_repository.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:messenger_mobile/modules/creation_module/presentation/pages/creation_module_screen.dart';
+
 import '../../locator.dart';
 import '../../main.dart';
+import '../../modules/authentication/domain/repositories/authentication_repository.dart';
 import '../../modules/chats/presentation/pages/chats_screen.dart';
 import '../../modules/creation_module/presentation/pages/creation_module_screen.dart';
 import '../../modules/profile/presentation/pages/profile_page.dart';

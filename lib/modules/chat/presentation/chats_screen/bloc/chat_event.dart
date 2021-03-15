@@ -63,7 +63,3 @@ class DisposeChat extends ChatEvent{
   List<Object> get props => [];
 }
 
-class EnableSelectMode extends ChatEvent{
-  @override
-  List<Object> get props => [];
-}

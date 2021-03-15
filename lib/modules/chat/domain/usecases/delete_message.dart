@@ -1,20 +1,20 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
+import 'params.dart';
 
 import '../../../../core/error/failures.dart';
 import '../../../../core/usecases/usecase.dart';
-import '../entities/chat_detailed.dart';
 import '../repositories/chat_repository.dart';
 
-class GetChatDetails implements UseCase<ChatDetailed, int> {
+class DeleteMessage implements UseCase<bool, DeleteMessageParams> {
   final ChatRepository repository;
 
-  GetChatDetails({
+  DeleteMessage({
     @required this.repository
   });
 
   @override
-  Future<Either<Failure, ChatDetailed>> call(int params) async {
-    return repository.getChatDetails(params);
-  } 
+  Future<Either<Failure, bool>> call(DeleteMessageParams ids) {
+    return repository.deleteMessage(ids);
+  }
 }

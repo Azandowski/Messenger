@@ -1,19 +1,19 @@
 import 'dart:async';
-
 import 'dart:io';
+
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
-import 'package:messenger_mobile/modules/category/data/models/chat_entity_model.dart';
-import 'package:messenger_mobile/modules/chats/data/datasource/local_chats_datasource.dart';
 import 'package:messenger_mobile/modules/chats/domain/entities/chat_search_response.dart';
 
 import '../../../../core/error/failures.dart';
 import '../../../../core/services/network/network_info.dart';
 import '../../../../core/services/network/paginatedResult.dart';
+import '../../../category/data/models/chat_entity_model.dart';
 import '../../../category/domain/entities/chat_entity.dart';
 import '../../domain/repositories/chats_repository.dart';
 import '../../domain/usecase/params.dart';
 import '../datasource/chats_datasource.dart';
+import '../datasource/local_chats_datasource.dart';
 
 class ChatsRepositoryImpl extends ChatsRepository {
   final ChatsDataSource chatsDataSource;

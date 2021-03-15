@@ -2,21 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger_mobile/core/blocs/chat/bloc/bloc/chat_cubit.dart';
 import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
-import 'package:messenger_mobile/modules/chat/data/datasources/chat_datasource.dart';
-import 'package:messenger_mobile/modules/chat/data/repositories/chat_repository.dart';
-import 'package:messenger_mobile/modules/chat/domain/usecases/add_members.dart';
-import 'package:messenger_mobile/modules/chat/domain/usecases/get_chat_details.dart';
 import 'package:messenger_mobile/modules/chat/domain/usecases/kick_member.dart';
-import 'package:messenger_mobile/modules/chat/domain/usecases/leave_chat.dart';
-import 'package:messenger_mobile/modules/chat/domain/usecases/update_chat_settings.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chat_details/cubit/chat_details_cubit.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chat_details/page/chat_detail_screen.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chat_details/widgets/chat_detail_appbar.dart';
 import 'package:messenger_mobile/modules/groupChat/presentation/create_group/create_group_page.dart';
 import 'package:messenger_mobile/modules/groupChat/presentation/create_group/create_group_screen.dart';
 
 import '../../../../../locator.dart';
 import '../../../../../main.dart';
+import '../../../data/datasources/chat_datasource.dart';
+import '../../../data/repositories/chat_repository.dart';
+import '../../../domain/usecases/add_members.dart';
+import '../../../domain/usecases/get_chat_details.dart';
+import '../../../domain/usecases/leave_chat.dart';
+import '../../../domain/usecases/update_chat_settings.dart';
+import '../cubit/chat_details_cubit.dart';
+import 'chat_detail_screen.dart';
 
 class ChatDetailPage extends StatefulWidget {
 

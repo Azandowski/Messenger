@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/app/appTheme.dart';
-import 'package:messenger_mobile/core/widgets/independent/buttons/bottom_action_button.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chat_details/widgets/divider_wrapper.dart';
-import 'package:messenger_mobile/modules/chat/presentation/time_picker/widgets/option_view.dart';
+import '../../../../app/appTheme.dart';
+import '../../../../core/widgets/independent/buttons/bottom_action_button.dart';
+import '../chat_details/widgets/divider_wrapper.dart';
+import 'widgets/option_view.dart';
 
 
 abstract class TimePickerDelegate {

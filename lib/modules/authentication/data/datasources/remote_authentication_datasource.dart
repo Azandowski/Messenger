@@ -3,15 +3,12 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
-import 'package:messenger_mobile/core/config/auth_config.dart';
-import 'package:messenger_mobile/core/utils/error_handler.dart';
-import 'package:messenger_mobile/core/utils/multipart_request_helper.dart';
-import 'package:messenger_mobile/locator.dart';
 
 import '../../../../core/config/auth_config.dart';
 import '../../../../core/config/settings.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/services/network/Endpoints.dart';
+import '../../../../core/utils/error_handler.dart';
 import '../../../../core/utils/multipart_request_helper.dart';
 import '../../../../locator.dart';
 import '../../../profile/data/models/user_model.dart';

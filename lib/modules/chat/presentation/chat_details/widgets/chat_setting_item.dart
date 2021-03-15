@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/app/appTheme.dart';
-import 'package:messenger_mobile/modules/category/domain/entities/chat_permissions.dart';
+
+import '../../../../../app/appTheme.dart';
+import '../../../../category/domain/entities/chat_permissions.dart';
 
 class ChatSettingItem extends StatelessWidget {
   

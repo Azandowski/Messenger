@@ -5,6 +5,7 @@ abstract class AppColors {
   static get secondary => Colors.grey[200];
   static get iconSelected => Color.fromRGBO(66, 115, 175, 1);
   static get indicatorColor => Color(0xff9357CD);
+  static get paleIndicatorColor => Color(0xff9357CD).withOpacity(0.4);
   static get accentBlueColor => Color(0xff396FB4);
   static get greyColor => Color(0xff898989);
   static get successGreenColor => Color(0xff3BE388);
@@ -36,6 +37,13 @@ abstract class AppFontStyles {
     color: Colors.black,
     fontWeight: FontWeight.w500,
     fontSize: 15,
+  );
+
+  static get black16 => TextStyle(
+    color: Colors.black,
+    fontWeight: FontWeight.w500,
+    fontSize: 16,
+    height: 0.6
   );
 
   // For Medium Texts
@@ -113,6 +121,14 @@ abstract class AppFontStyles {
     height: 0.75,
     fontSize: 12,
   );
+
+  static get purple15 => TextStyle(
+    color: AppColors.indicatorColor,
+    fontWeight: FontWeight.w400,
+    height: 0.75,
+    fontSize: 15,
+  );
+
 }
 
 abstract class AppTheme {

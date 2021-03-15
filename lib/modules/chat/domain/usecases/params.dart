@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
-import 'package:messenger_mobile/core/utils/pagination.dart';
-import 'package:messenger_mobile/modules/category/data/models/chat_permission_model.dart';
+
+import '../../../../core/utils/pagination.dart';
+import '../../../category/data/models/chat_permission_model.dart';
 
 class GetChatMembersParams {
   final int id;
@@ -68,4 +69,24 @@ class SetTimeDeletedParams {
     @required this.id,
     @required this.seconds
   });
+}
+
+class DeleteMessageParams {
+  final String ids;
+  final int forMe;
+  final int chatID; 
+
+  DeleteMessageParams({
+    @required this.ids,
+    @required this.forMe,
+    @required this.chatID,
+  });
+
+  Map get body {
+    return {
+      'for_me': forMe.toString(),
+      'messages': ids,
+      'chat_id': chatID.toString(),
+    };
+  }
 }
