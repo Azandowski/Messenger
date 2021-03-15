@@ -1,12 +1,12 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/core/config/auth_config.dart';
-import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
-import 'package:messenger_mobile/modules/groupChat/domain/usecases/create_chat_group.dart';
-import 'package:messenger_mobile/modules/groupChat/domain/usecases/params.dart';
 
+import '../../../../../core/config/auth_config.dart';
 import '../../../../../locator.dart';
+import '../../../../category/domain/entities/chat_entity.dart';
+import '../../../../groupChat/domain/usecases/create_chat_group.dart';
+import '../../../../groupChat/domain/usecases/params.dart';
 
 part 'creation_module_state.dart';
 

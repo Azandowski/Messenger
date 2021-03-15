@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/core/utils/feedbac_taptic_helper.dart';
 import 'package:vibrate/vibrate.dart';
 
 import '../../../../app/appTheme.dart';
+import '../../../utils/feedbac_taptic_helper.dart';
 import 'dialog_action_button.dart';
 import 'dialog_params.dart';
 

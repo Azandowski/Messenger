@@ -1,26 +1,21 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
-import 'package:messenger_mobile/core/config/auth_config.dart';
-import 'package:messenger_mobile/core/services/network/socket_service.dart';
+import 'package:path_provider/path_provider.dart';
+
+import '../../../../core/config/auth_config.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/services/network/Endpoints.dart';
 import '../../../../core/services/network/paginatedResult.dart';
+import '../../../../core/services/network/socket_service.dart';
+import '../../../../core/utils/error_handler.dart';
 import '../../../../core/utils/http_response_extension.dart';
 import '../../../../locator.dart';
 import '../../../category/data/models/chat_entity_model.dart';
 import '../../../category/domain/entities/chat_entity.dart';
-import 'dart:io';
-import 'package:messenger_mobile/core/error/failures.dart';
-import 'package:messenger_mobile/core/services/network/Endpoints.dart';
-import 'package:messenger_mobile/core/services/network/paginatedResult.dart';
-import 'package:messenger_mobile/core/utils/error_handler.dart';
-import 'package:messenger_mobile/modules/category/data/models/chat_entity_model.dart';
-import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
-import 'package:messenger_mobile/core/utils/http_response_extension.dart';
-import 'package:path_provider/path_provider.dart';
 
 abstract class ChatsDataSource {
   Future<PaginatedResultViaLastItem<ChatEntity>> getUserChats ({

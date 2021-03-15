@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/core/widgets/independent/dialogs/dialog_action_button.dart';
-import 'package:messenger_mobile/core/widgets/independent/dialogs/dialog_params.dart';
-import 'package:messenger_mobile/core/widgets/independent/dialogs/dialogs.dart';
-import 'package:messenger_mobile/modules/category/domain/entities/chat_permissions.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chat_details/widgets/chat_setting_item.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chat_details/widgets/divider_wrapper.dart';
+
+import '../../../../../core/widgets/independent/dialogs/dialog_action_button.dart';
+import '../../../../../core/widgets/independent/dialogs/dialog_params.dart';
+import '../../../../../core/widgets/independent/dialogs/dialogs.dart';
+import '../../../../category/domain/entities/chat_permissions.dart';
+import 'chat_setting_item.dart';
+import 'divider_wrapper.dart';
 
 class ChatAdminSettings extends StatefulWidget {
   

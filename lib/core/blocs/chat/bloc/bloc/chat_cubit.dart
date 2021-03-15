@@ -4,18 +4,18 @@ import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
-import 'package:messenger_mobile/core/blocs/category/bloc/category_bloc.dart';
-import 'package:messenger_mobile/core/error/failures.dart';
-import 'package:messenger_mobile/core/services/network/paginatedResult.dart';
-import 'package:messenger_mobile/modules/category/domain/entities/chat_permissions.dart';
-import 'package:messenger_mobile/modules/chats/domain/usecase/get_category_chats.dart';
+
 import '../../../../../locator.dart';
 import '../../../../../modules/category/domain/entities/chat_entity.dart';
+import '../../../../../modules/category/domain/entities/chat_permissions.dart';
 import '../../../../../modules/chats/domain/repositories/chats_repository.dart';
+import '../../../../../modules/chats/domain/usecase/get_category_chats.dart';
 import '../../../../../modules/chats/domain/usecase/get_chats.dart';
 import '../../../../../modules/chats/domain/usecase/params.dart';
 import '../../../../config/auth_config.dart';
-import 'package:messenger_mobile/core/utils/list_helper.dart';
+import '../../../../error/failures.dart';
+import '../../../../services/network/paginatedResult.dart';
+import '../../../../utils/list_helper.dart';
 
 part 'chat_state.dart';
 

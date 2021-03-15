@@ -1,8 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 
-import '../../../../core/services/network/paginatedResult.dart';
-
 class GetChatsParams extends Equatable {
   final String token;
   final int lastChatID;

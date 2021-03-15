@@ -1,14 +1,14 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:messenger_mobile/modules/chat/data/repositories/chat_repository.dart';
-import 'package:messenger_mobile/modules/chats/data/repositories/chats_repository_impl.dart';
-import 'package:messenger_mobile/modules/chats/domain/repositories/chats_repository.dart';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../category/domain/entities/chat_entity.dart';
+import '../../../data/repositories/chats_repository_impl.dart';
+import '../../../domain/repositories/chats_repository.dart';
 
 part 'chats_cubit_state.dart';
 

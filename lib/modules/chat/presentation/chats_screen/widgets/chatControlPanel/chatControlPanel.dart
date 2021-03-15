@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:messenger_mobile/app/appTheme.dart';
-import 'package:messenger_mobile/modules/chat/domain/entities/message.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chats_screen/bloc/chat_bloc.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/chatControlPanel/cubit/panel_bloc_cubit.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/chatControlPanel/reply_container.dart';
 import 'package:provider/provider.dart';
+
+import '../../../../../../app/appTheme.dart';
+import '../../../../domain/entities/message.dart';
+import '../../bloc/chat_bloc.dart';
+import 'cubit/panel_bloc_cubit.dart';
+import 'reply_container.dart';
 
 class ChatControlPanel extends StatefulWidget {
   const ChatControlPanel({

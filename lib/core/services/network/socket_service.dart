@@ -1,7 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:laravel_echo/laravel_echo.dart';
-import 'package:messenger_mobile/core/config/auth_config.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
+
+import '../../config/auth_config.dart';
 
 
 class SocketService {

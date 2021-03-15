@@ -1,21 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:messenger_mobile/core/config/auth_config.dart';
-import 'package:messenger_mobile/core/utils/paginated_scroll_controller.dart';
-import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
-import 'package:messenger_mobile/modules/creation_module/domain/entities/contact.dart';
-import 'package:messenger_mobile/modules/groupChat/domain/usecases/create_chat_group.dart';
-import 'package:messenger_mobile/modules/groupChat/domain/usecases/params.dart';
 
+import '../../../../core/utils/paginated_scroll_controller.dart';
 import '../../../../core/widgets/independent/small_widgets/cell_skeleton_item.dart';
 import '../../../../core/widgets/independent/small_widgets/chat_count_view.dart';
-import '../../../../locator.dart';
+import '../../domain/entities/contact.dart';
 import '../bloc/contact_bloc/contact_bloc.dart';
 import 'contact_cell.dart';
-import 'package:messenger_mobile/core/widgets/independent/small_widgets/cell_skeleton_item.dart';
-import 'package:messenger_mobile/core/widgets/independent/small_widgets/chat_count_view.dart';
-import 'package:messenger_mobile/modules/creation_module/presentation/bloc/contact_bloc/contact_bloc.dart';
-import 'package:messenger_mobile/modules/creation_module/presentation/widgets/contact_cell.dart';
 
 class ContactsList extends StatefulWidget {
   

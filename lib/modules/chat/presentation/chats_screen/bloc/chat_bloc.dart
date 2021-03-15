@@ -5,21 +5,21 @@ import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/core/config/auth_config.dart';
-import 'package:messenger_mobile/core/error/failures.dart';
-import 'package:messenger_mobile/core/services/network/paginatedResult.dart';
-import 'package:messenger_mobile/core/usecases/usecase.dart';
-import 'package:messenger_mobile/core/utils/paginated_scroll_controller.dart';
-import 'package:messenger_mobile/locator.dart';
-import 'package:messenger_mobile/modules/chat/domain/entities/message.dart';
-import 'package:messenger_mobile/modules/chat/domain/repositories/chat_repository.dart';
-import 'package:messenger_mobile/modules/chat/domain/usecases/get_messages.dart';
-import 'package:messenger_mobile/modules/chat/domain/usecases/params.dart';
-import 'package:messenger_mobile/modules/chat/domain/usecases/send_message.dart';
-import 'package:messenger_mobile/core/utils/list_helper.dart';
-import 'package:messenger_mobile/modules/chat/domain/usecases/set_time_deleted.dart';
-import 'package:messenger_mobile/modules/chat/presentation/time_picker/time_picker_screen.dart';
-import 'package:messenger_mobile/modules/chats/domain/repositories/chats_repository.dart';
+import '../../../../../core/config/auth_config.dart';
+import '../../../../../core/error/failures.dart';
+import '../../../../../core/services/network/paginatedResult.dart';
+import '../../../../../core/usecases/usecase.dart';
+import '../../../../../core/utils/paginated_scroll_controller.dart';
+import '../../../../../locator.dart';
+import '../../../domain/entities/message.dart';
+import '../../../domain/repositories/chat_repository.dart';
+import '../../../domain/usecases/get_messages.dart';
+import '../../../domain/usecases/params.dart';
+import '../../../domain/usecases/send_message.dart';
+import '../../../../../core/utils/list_helper.dart';
+import '../../../domain/usecases/set_time_deleted.dart';
+import '../../time_picker/time_picker_screen.dart';
+import '../../../../chats/domain/repositories/chats_repository.dart';
 part 'chat_event.dart';
 part 'chat_state.dart';
 
@@ -116,18 +116,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       currentLeftTime = 10;
     } else if (event is DisposeChat) {
       await chatRepository.disposeChat();
-    } else if (event is EnableSelectMode){
-      yield ChatSelection(
-        messages: state.messages, 
-        hasReachedMax: this.state.hasReachedMax
-      );
-    } else if (event is DisableSelectMode){
-      yield ChatInitial(
-        messages: this.state.messages,
-        hasReachedMax: this.state.hasReachedMax,
-        wallpaperPath: this.state.wallpaperPath
-      );
-    }
+    } 
   }
 
   Stream<ChatState> _eitherSentOrErrorState(
@@ -141,8 +130,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         wallpaperPath: this.state.wallpaperPath
       ),
       (message) {
-        print('succeded and ');
-        print(message.colorId);
         var i = list.indexWhere((element) => element.identificator == message.identificator);
         list[i]= message.copyWith(
           identificator: message.id,

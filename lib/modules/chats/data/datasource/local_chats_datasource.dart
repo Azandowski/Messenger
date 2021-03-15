@@ -1,6 +1,6 @@
-import 'package:messenger_mobile/core/services/localdb/app_database.dart';
-import 'package:messenger_mobile/modules/category/data/models/chat_entity_model.dart';
-import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
+import '../../../../core/services/localdb/app_database.dart';
+import '../../../category/data/models/chat_entity_model.dart';
+import '../../../category/domain/entities/chat_entity.dart';
 import 'package:sembast/sembast.dart';
 import 'dart:async';
 

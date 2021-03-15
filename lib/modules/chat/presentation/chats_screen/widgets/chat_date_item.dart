@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/core/utils/date_helper.dart';
 
+import '../../../../../core/utils/date_helper.dart';
 import '../../../../../locator.dart';
 
 class ChatDateItem extends StatelessWidget {

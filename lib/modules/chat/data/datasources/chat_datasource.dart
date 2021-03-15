@@ -1,26 +1,27 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
-import 'package:messenger_mobile/core/config/auth_config.dart';
-import 'package:messenger_mobile/core/error/failures.dart';
-import 'package:messenger_mobile/core/services/network/Endpoints.dart';
-import 'package:messenger_mobile/core/services/network/paginatedResult.dart';
-import 'package:messenger_mobile/core/services/network/socket_service.dart';
-import 'package:messenger_mobile/core/utils/error_handler.dart';
-import 'package:messenger_mobile/core/utils/pagination.dart';
-import 'package:messenger_mobile/modules/category/data/models/chat_permission_model.dart';
-import 'package:messenger_mobile/modules/category/domain/entities/chat_permissions.dart';
-import 'package:messenger_mobile/modules/chat/data/models/chat_detailed_model.dart';
-import 'package:messenger_mobile/modules/chat/data/models/message_model.dart';
-import 'package:messenger_mobile/modules/chat/domain/entities/chat_detailed.dart';
-import 'package:http/http.dart' as http;
-import 'package:messenger_mobile/core/utils/http_response_extension.dart';
-import 'package:messenger_mobile/modules/chat/domain/usecases/params.dart';
-import 'package:messenger_mobile/modules/creation_module/data/models/contact_model.dart';
-import 'package:messenger_mobile/modules/creation_module/domain/entities/contact.dart';
-import 'package:messenger_mobile/modules/chat/domain/entities/message.dart';
 
+import 'package:flutter/foundation.dart';
+import 'package:http/http.dart' as http;
+
+import '../../../../core/config/auth_config.dart';
+import '../../../../core/error/failures.dart';
+import '../../../../core/services/network/Endpoints.dart';
+import '../../../../core/services/network/paginatedResult.dart';
+import '../../../../core/services/network/socket_service.dart';
+import '../../../../core/utils/error_handler.dart';
+import '../../../../core/utils/http_response_extension.dart';
+import '../../../../core/utils/pagination.dart';
 import '../../../../locator.dart';
+import '../../../category/data/models/chat_permission_model.dart';
+import '../../../category/domain/entities/chat_permissions.dart';
+import '../../../creation_module/data/models/contact_model.dart';
+import '../../../creation_module/domain/entities/contact.dart';
+import '../../domain/entities/chat_detailed.dart';
+import '../../domain/entities/message.dart';
+import '../../domain/usecases/params.dart';
+import '../models/chat_detailed_model.dart';
+import '../models/message_model.dart';
 
 abstract class ChatDataSource {
   Future<ChatDetailed> getChatDetails (int id);
@@ -28,6 +29,7 @@ abstract class ChatDataSource {
   Future<ChatDetailed> addMembers (int id, List<int> userIDs);
   Stream<Message> get messages;
   Future<Message> sendMessage(SendMessageParams params);
+  Future<bool> deleteMessage(DeleteMessageParams params);
   Future<void> leaveChat (int id);
   Future<ChatPermissions> updateChatSettings ({
     Map chatUpdates,
@@ -242,6 +244,22 @@ class ChatDataSourceImpl implements ChatDataSource {
     );
 
     if (!response.isSuccess) { 
+      throw ServerFailure(message: ErrorHandler.getErrorMessage(response.body.toString()));
+    }
+  }
+
+  @override
+  Future<bool> deleteMessage(DeleteMessageParams params) async {
+     http.Response response = await client.post(
+      Endpoints.deleteMessage.buildURL(),
+      body: json.encode(params.body),
+      headers: Endpoints.changeChatSettings.getHeaders(token: sl<AuthConfig>().token),
+    );
+    print(response.statusCode);
+    print(response.body);
+    if (response.isSuccess) {
+      return true;
+    } else {
       throw ServerFailure(message: ErrorHandler.getErrorMessage(response.body.toString()));
     }
   }

@@ -5,12 +5,9 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 import '../../../../core/config/auth_config.dart';
-import 'package:messenger_mobile/core/config/auth_config.dart';
-import 'package:messenger_mobile/core/services/network/Endpoints.dart';
-import 'package:messenger_mobile/core/utils/error_handler.dart';
-import 'package:messenger_mobile/locator.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/services/network/Endpoints.dart';
+import '../../../../core/utils/error_handler.dart';
 import '../../../../core/utils/http_response_extension.dart';
 import '../../../../core/utils/multipart_request_helper.dart';
 import '../../../../locator.dart';

@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/app/appTheme.dart';
-import 'package:messenger_mobile/core/config/auth_config.dart';
-import 'package:messenger_mobile/modules/chat/domain/entities/message.dart';
 import 'package:intl/intl.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chats_screen/helpers/messageCellAction.dart';
 
+import '../../../../app/appTheme.dart';
+import '../../../../core/config/auth_config.dart';
 import '../../../../locator.dart';
+import '../../domain/entities/message.dart';
+import '../../presentation/chats_screen/helpers/messageCellAction.dart';
 
 class MessageViewModel {
   final Message message;
+  final bool isSelected;
 
-  MessageViewModel (this.message); 
+  MessageViewModel (
+    this.message, {this.isSelected = false
+  }); 
 
   // MARK: - For UI
 
@@ -100,4 +103,5 @@ class MessageViewModel {
   MessageStatus get messageStatus {
     return message.messageStatus;
   }
+
 }

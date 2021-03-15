@@ -19,7 +19,7 @@ enum Endpoints {
   transferChats,
   categoryChats,
   reorderCategories,
-
+  deleteMessage,
   //contacts
   sendContacts,
   fetchContacts,
@@ -109,6 +109,8 @@ extension EndpointsExtension on Endpoints {
         return '${Config.baseAPIpath.value}/messenger/category/${params[0]}';
       case Endpoints.setTimeDeleted:
         return '${Config.baseAPIpath.value}/messenger/chat/set-time-deleted';
+      case Endpoints.deleteMessage:
+        return '${Config.baseAPIpath.value}/messenger/delete-message';   
     }
   }
 

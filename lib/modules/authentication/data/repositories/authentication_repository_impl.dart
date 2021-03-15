@@ -3,14 +3,15 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dartz/dartz.dart';
-import 'package:messenger_mobile/core/services/network/socket_service.dart';
 import 'package:meta/meta.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sembast/sembast.dart';
+
 import '../../../../core/blocs/authorization/bloc/auth_bloc.dart';
 import '../../../../core/config/auth_config.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/services/network/network_info.dart';
+import '../../../../core/services/network/socket_service.dart';
 import '../../../../core/usecases/usecase.dart';
 import '../../../../locator.dart';
 import '../../../category/domain/usecases/get_categories.dart';

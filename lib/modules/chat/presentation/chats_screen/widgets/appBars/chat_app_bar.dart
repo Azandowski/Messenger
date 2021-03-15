@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/modules/category/data/models/chat_view_model.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chat_details/page/chat_detail_page.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/chatHeading.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/chat_screen_actions.dart';
-import 'package:messenger_mobile/modules/chat/presentation/time_picker/time_picker_screen.dart';
+
+import '../../../../../category/data/models/chat_view_model.dart';
+import '../../../chat_details/page/chat_detail_page.dart';
+import '../../../time_picker/time_picker_screen.dart';
+import '../../pages/chat_screen.dart';
+import '../chatHeading.dart';
+import '../chat_screen_actions.dart';
 class ChatAppBar extends StatelessWidget implements PreferredSizeWidget{
   const ChatAppBar({
     Key key,

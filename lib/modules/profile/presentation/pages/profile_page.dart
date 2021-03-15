@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:messenger_mobile/modules/creation_module/presentation/bloc/contact_bloc/contact_bloc.dart';
 
 import '../../../../core/blocs/authorization/bloc/auth_bloc.dart';
 import '../../../../core/blocs/category/bloc/category_bloc.dart';
 import '../../../../core/blocs/chat/bloc/bloc/chat_cubit.dart';
 import '../../../../locator.dart';
+import '../../../creation_module/presentation/bloc/contact_bloc/contact_bloc.dart';
 import '../../../edit_profile/presentation/pages/edit_profile_page.dart';
 import '../bloc/index.dart';
 import '../bloc/profile_cubit.dart';

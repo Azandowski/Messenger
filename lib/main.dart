@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:messenger_mobile/core/screens/splash_screen.dart';
+import 'core/screens/splash_screen.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'app/appTheme.dart';
 import 'bloc_observer.dart';

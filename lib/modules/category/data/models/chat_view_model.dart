@@ -1,7 +1,8 @@
-import '../../../../core/services/network/config.dart';
-import '../../domain/entities/chat_entity.dart';
 import 'package:intl/intl.dart';
-import 'package:messenger_mobile/modules/chat/domain/entities/chat_actions.dart';
+
+import '../../../../core/services/network/config.dart';
+import '../../../chat/domain/entities/chat_actions.dart';
+import '../../domain/entities/chat_entity.dart';
 
 class ChatViewModel {
   final ChatEntity entity;

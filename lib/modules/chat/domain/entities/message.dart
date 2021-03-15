@@ -1,8 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/modules/chat/data/models/message_model.dart';
-import 'package:messenger_mobile/modules/chat/domain/entities/chat_actions.dart';
+
+import 'chat_actions.dart';
 
 enum MessageStatus {sending, sent,}
 

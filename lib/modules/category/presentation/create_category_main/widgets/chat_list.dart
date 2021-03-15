@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/core/widgets/independent/images/ImageWithCorner.dart';
 
 import '../../../../../app/appTheme.dart';
+import '../../../../../core/widgets/independent/images/ImageWithCorner.dart';
 import '../../../../../core/widgets/independent/placeholders/load_widget.dart';
 import '../../../../../core/widgets/independent/small_widgets/cell_skeleton_item.dart';
 import '../../../data/models/chat_view_model.dart';

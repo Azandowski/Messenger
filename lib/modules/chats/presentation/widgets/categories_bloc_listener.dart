@@ -1,9 +1,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:messenger_mobile/core/blocs/chat/bloc/bloc/chat_cubit.dart';
-import 'package:messenger_mobile/modules/chats/domain/entities/category.dart';
 
 import '../../../../core/blocs/category/bloc/category_bloc.dart';
+import '../../../../core/blocs/chat/bloc/bloc/chat_cubit.dart';
 import '../../../category/presentation/category_list/category_list.dart';
 import '../bloc/cubit/chats_cubit_cubit.dart';
 import 'category_items.dart';

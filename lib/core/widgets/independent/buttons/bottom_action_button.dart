@@ -23,7 +23,7 @@ class BottomActionButtonContainer extends StatelessWidget {
       child: Container(
         color: Theme.of(context).primaryColor,
         padding: const EdgeInsets.symmetric(
-          vertical: 8,
+          vertical: 12,
           horizontal: 16
         ),
         child: ActionButton(

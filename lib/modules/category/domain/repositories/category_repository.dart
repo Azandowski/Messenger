@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:dartz/dartz.dart';
 
 import '../../../../core/error/failures.dart';
-
 import '../../../chats/domain/entities/category.dart';
 import '../../../chats/domain/entities/usecases/params.dart';
 import '../usecases/params.dart';

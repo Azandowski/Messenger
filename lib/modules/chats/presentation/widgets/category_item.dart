@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/modules/chats/presentation/widgets/chat_item/chat_notification_view.dart';
 
 import '../../../../app/appTheme.dart';
 import '../../../../core/widgets/independent/images/ImageWithCorner.dart';
 import '../../domain/entities/category.dart';
+import 'chat_item/chat_notification_view.dart';
 
 class CategoryItem extends StatelessWidget {
   final CategoryEntity entity;

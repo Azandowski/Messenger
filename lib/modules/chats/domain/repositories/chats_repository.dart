@@ -1,12 +1,12 @@
 
 import 'dart:async';
-
 import 'dart:io';
+
 import 'package:dartz/dartz.dart';
-import 'package:messenger_mobile/modules/category/data/models/chat_entity_model.dart';
 
 import '../../../../core/error/failures.dart';
 import '../../../../core/services/network/paginatedResult.dart';
+import '../../../category/data/models/chat_entity_model.dart';
 import '../../../category/domain/entities/chat_entity.dart';
 import '../usecase/params.dart';
 
