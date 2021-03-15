@@ -29,6 +29,7 @@ abstract class ChatDataSource {
   Future<ChatDetailed> addMembers (int id, List<int> userIDs);
   Future<ChatDetailed> kickMember (int id, int userID);
   Stream<Message> get messages;
+  Stream<List<int>> get deleteIds;
   Future<Message> sendMessage(SendMessageParams params);
   Future<bool> deleteMessage(DeleteMessageParams params);
   Future<void> leaveChat (int id);
@@ -58,15 +59,34 @@ class ChatDataSourceImpl implements ChatDataSource {
     @required this.client,
     @required this.socketService,
   }) {
-    socketService.echo.channel(SocketChannels.getChatByID(44))
+    socketService.echo.channel(SocketChannels.getChatByID(id))
       .listen(
         '.messages.$id', 
         (updates) {
-          _controller.add(MessageModel.fromJson(updates['message']));
+          MessageModel messageModel = MessageModel.fromJson(updates['message']);
+          messageModel.messageHandleType = handleTypeMessage(updates['type']);
+          _controller.add(messageModel);
+        }
+      );
+    socketService.echo.channel(SocketChannels.getChatDeleteById(id))
+      .listen(
+        '.deleted.message.$id', 
+        (deletions) {
+          List<int> data = ((deletions['messages_id'] ?? []) as List).cast<int>();
+          _deleteController.add(data);
         }
       );
     }
-
+  
+  MessageHandleType handleTypeMessage(String type){
+    switch(type){
+      case 'NewMessage':
+        return MessageHandleType.newMessage;
+      case 'deleteMessage':
+        return MessageHandleType.delete;
+    }
+  }
+   
   @override
   Future<ChatDetailed> getChatDetails(int id) async {
     http.Response response = await client.get(
@@ -108,13 +128,20 @@ class ChatDataSourceImpl implements ChatDataSource {
   }
 
   @override 
-  final StreamController _controller = StreamController<Message>();
+  final StreamController<Message> _controller = StreamController<Message>();
+
+  @override 
+  final StreamController<List<int>> _deleteController = StreamController<List<int>>();
 
   @override
   Stream<Message> get messages async* {
     yield* _controller.stream;
   }
-  
+   @override
+  Stream<List<int>> get deleteIds async* {
+    yield* _deleteController.stream;
+  }
+
   @override
   Future<Message> sendMessage(SendMessageParams params) async {
     var forward = params.forwardIds.map((e) => e.toString()).join(',');
@@ -244,6 +271,7 @@ class ChatDataSourceImpl implements ChatDataSource {
   @override
   Future<void> disposeChat() {
     socketService.echo.leave(SocketChannels.getChatByID(id));
+    socketService.echo.leave(SocketChannels.getChatDeleteById(id));
   }
 
 

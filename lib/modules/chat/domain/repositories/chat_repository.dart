@@ -22,6 +22,7 @@ abstract class ChatRepository {
   Future<Either<Failure, ChatDetailed>> addMembers (int id, List<int> members);
   Future<Either<Failure, ChatDetailed>> kickMember (int id, int userID);
   Stream<Message> message;
+  Stream<List<int>> deleteIds;
   Future<Either<Failure, NoParams>> leaveChat (int id);
   Future<Either<Failure, ChatPermissions>> updateChatSettings({ ChatPermissionModel permissions, int id }); 
   Future<Either<Failure, PaginatedResultViaLastItem<Message>>> getChatMessages (int lastMessageId);

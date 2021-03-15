@@ -65,6 +65,12 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       }
     );
 
+    _chatDeleteSubscription = chatRepository.deleteIds.listen(
+      (ids) {
+        add(MessageDelete(ids: ids));
+      }
+    );
+
     scrollController.addListener(() {
       if (scrollController.isPaginated && !(state is ChatLoading) && !state.hasReachedMax) {
         // Load More
@@ -77,6 +83,9 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
  
   StreamSubscription<Message> _chatSubscription;
 
+  StreamSubscription<List<int>> _chatDeleteSubscription;
+
+
 
   // * * Main
 
@@ -88,6 +97,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       yield* _messageAddedToState(event);
     } else if (event is MessageSend) {
       yield* _messageSendToState(event);
+    } else if (event is MessageDelete) {
+      yield* _messageDeleteToState(event);
     } else if (event is LoadMessages) {
       yield ChatLoading(
         isPagination: event.isPagination,
@@ -235,6 +246,20 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     ));
 
     yield* _eitherSentOrErrorState(response);
+  }
+
+  Stream<ChatState> _messageDeleteToState(MessageDelete event) async* {
+    var list = getCopyMessages(); 
+
+    event.ids.forEach((id) { 
+      list.removeWhere((message) => message.id == id);
+    });
+
+    yield ChatInitial(
+      messages: list,
+      hasReachedMax: this.state.hasReachedMax,
+      wallpaperPath: this.state.wallpaperPath
+    );
   }
 
   // * * Time Deletion

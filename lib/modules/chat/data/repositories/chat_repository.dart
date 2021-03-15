@@ -66,10 +66,14 @@ class ChatRepositoryImpl extends ChatRepository {
   }
   
   @override
-  Stream<Message> get message async*{
+  Stream<Message> get message async* {
     yield* chatDataSource.messages;
   }
 
+  @override
+  Stream<List<int>> get deleteIds async* {
+    yield* chatDataSource.deleteIds;
+  }
 
   @override
   Future<Either<Failure, Message>> sendMessage(SendMessageParams params) async {

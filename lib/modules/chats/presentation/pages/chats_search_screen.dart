@@ -7,7 +7,6 @@ import 'package:messenger_mobile/core/utils/search_engine.dart';
 import 'package:messenger_mobile/core/widgets/independent/small_widgets/cell_skeleton_item.dart';
 import 'package:messenger_mobile/core/widgets/independent/small_widgets/chat_count_view.dart';
 import 'package:messenger_mobile/modules/category/data/models/chat_view_model.dart';
-import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
 import 'package:messenger_mobile/modules/chat/domain/entities/message.dart';
 import 'package:messenger_mobile/modules/chats/domain/repositories/chats_repository.dart';
 import 'package:messenger_mobile/modules/chats/presentation/bloc/search_chats/search_chats_cubit.dart';
