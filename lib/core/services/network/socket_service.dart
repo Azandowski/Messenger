@@ -52,4 +52,8 @@ abstract class SocketChannels {
   static String getChatsUpdates (int id) {
     return 'get.index.$id';
   }
+
+  static String getChatDeleteById (int id) {
+    return 'deleted.message.$id';
+  } 
 }

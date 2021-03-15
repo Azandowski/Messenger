@@ -12,7 +12,7 @@ import '../../../../../core/config/auth_config.dart';
 import '../../../../../core/error/failures.dart';
 import '../../../../../core/services/network/paginatedResult.dart';
 import '../../../../../core/usecases/usecase.dart';
-import '../../../../../core/utils/paginated_scroll_controller.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen_helper.dart';
 import '../../../../../locator.dart';
 import '../../../domain/entities/message.dart';
 import '../../../domain/repositories/chat_repository.dart';
@@ -67,9 +67,28 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         add(MessageAdded(message: message));
       }
     );
+
+    _chatDeleteSubscription = chatRepository.deleteIds.listen(
+      (ids) {
+        add(MessageDelete(ids: ids));
+      }
+    );
+
+    scrollController.addListener(() {
+      if (scrollController.isPaginated && !(state is ChatLoading) && !state.hasReachedMax) {
+        // Load More
+        this.add(LoadMessages(
+          isPagination: true
+        ));
+      }
+    });
   }
  
   StreamSubscription<Message> _chatSubscription;
+
+  StreamSubscription<List<int>> _chatDeleteSubscription;
+
+
 
   // * * Main
 
@@ -81,6 +100,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       yield* _messageAddedToState(event);
     } else if (event is MessageSend) {
       yield* _messageSendToState(event);
+    } else if (event is MessageDelete) {
+      yield* _messageDeleteToState(event);
     } else if (event is LoadMessages) {
       yield ChatLoading(
         isPagination: event.isPagination,
@@ -257,6 +278,20 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     ));
 
     yield* _eitherSentOrErrorState(response);
+  }
+
+  Stream<ChatState> _messageDeleteToState(MessageDelete event) async* {
+    var list = getCopyMessages(); 
+
+    event.ids.forEach((id) { 
+      list.removeWhere((message) => message.id == id);
+    });
+
+    yield ChatInitial(
+      messages: list,
+      hasReachedMax: this.state.hasReachedMax,
+      wallpaperPath: this.state.wallpaperPath
+    );
   }
 
   // * * Time Deletion

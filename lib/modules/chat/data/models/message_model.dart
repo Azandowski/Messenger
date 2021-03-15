@@ -19,6 +19,7 @@ class MessageModel extends Message {
   final List<Message> transfer;
   final MessageStatus messageStatus;
   final MessageChat chat;
+  MessageHandleType messageHandleType;
 
   MessageModel({
     this.id,
@@ -33,7 +34,8 @@ class MessageModel extends Message {
     this.willBeDeletedAt,
     this.messageStatus = MessageStatus.sent,
     this.toUser,
-    this.chat
+    this.chat,
+    this.messageHandleType = MessageHandleType.delete,
   }) : super(
     id: id,
     isRead: isRead,
@@ -47,7 +49,8 @@ class MessageModel extends Message {
     deletionSeconds: deletionSeconds,
     messageStatus: messageStatus,
     toUser: toUser,
-    chat: chat
+    chat: chat,
+    messageHandleType: messageHandleType,
   );
 
   factory MessageModel.fromJson(Map json) {

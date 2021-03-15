@@ -6,12 +6,8 @@ PODS:
   - Firebase/DynamicLinks (7.3.0):
     - Firebase/CoreOnly
     - FirebaseDynamicLinks (~> 7.3.0)
-  - firebase_core (0.7.0):
-    - Firebase/CoreOnly (= 7.3.0)
-    - Flutter
-  - firebase_dynamic_links (0.7.0-1):
-    - Firebase/DynamicLinks (= 7.3.0)
-    - firebase_core
+  - firebase_dynamic_links (0.1.0):
+    - Firebase/DynamicLinks
     - Flutter
   - FirebaseCore (7.3.0):
     - FirebaseCoreDiagnostics (~> 7.0)
@@ -54,7 +50,6 @@ PODS:
 
 DEPENDENCIES:
   - contacts_service (from `.symlinks/plugins/contacts_service/ios`)
-  - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - firebase_dynamic_links (from `.symlinks/plugins/firebase_dynamic_links/ios`)
   - Flutter (from `Flutter`)
   - flutter_secure_storage (from `.symlinks/plugins/flutter_secure_storage/ios`)
@@ -79,8 +74,6 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   contacts_service:
     :path: ".symlinks/plugins/contacts_service/ios"
-  firebase_core:
-    :path: ".symlinks/plugins/firebase_core/ios"
   firebase_dynamic_links:
     :path: ".symlinks/plugins/firebase_dynamic_links/ios"
   Flutter:
@@ -103,8 +96,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   contacts_service: 849e1f84281804c8bfbec1b4c3eedcb23c5d3eca
   Firebase: 26223c695fe322633274198cb19dca8cb7e54416
-  firebase_core: 91b27774a52f41f8b58484a75edf71197ac01c59
-  firebase_dynamic_links: 14bf04008446c471b5c9f6e6542e14210bf26bd5
+  firebase_dynamic_links: 6aa278fc5e6e8cca17d5aa4c7aa46283f2b94749
   FirebaseCore: 4d3c72622ce0e2106aaa07bb4b2935ba2c370972
   FirebaseCoreDiagnostics: 179bf3831213451c8addd036aca7fcf5492ec154
   FirebaseDynamicLinks: a6df95d6dbc746c2bbf7d511343cda1344e2cf70
