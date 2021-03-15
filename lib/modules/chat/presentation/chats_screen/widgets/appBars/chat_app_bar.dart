@@ -6,6 +6,7 @@ import '../../../time_picker/time_picker_screen.dart';
 import '../../pages/chat_screen.dart';
 import '../chatHeading.dart';
 import '../chat_screen_actions.dart';
+
 class ChatAppBar extends StatelessWidget implements PreferredSizeWidget{
   const ChatAppBar({
     Key key,
@@ -21,6 +22,7 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget{
   final ChatScreen widget;
   final AppBar appBar;
   final TimePickerDelegate delegate;
+  
   @override
   Widget build(BuildContext context) {
     return AppBar(
@@ -31,7 +33,7 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget{
         description: chatViewModel.description ?? '',
         avatarURL: chatViewModel.imageURL,
         onTap: () {
-          _navigator.push(ChatDetailPage.route(widget.chatEntity.chatId));
+          _navigator.push(ChatDetailPage.route(widget.chatEntity));
         }
       ),
       actions: [
@@ -42,5 +44,4 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget{
 
   @override
   Size get preferredSize => new Size.fromHeight(appBar.preferredSize.height);
-
 }

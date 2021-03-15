@@ -33,5 +33,4 @@ export '../widgets/appBars/selection_app_bar.dart';
 export '../widgets/chatControlPanel/chatControlPanel.dart';
 export '../widgets/chatControlPanel/cubit/panel_bloc_cubit.dart';
 export '../widgets/chat_action_view.dart';
-export '../widgets/chat_date_item.dart';
 export '../widgets/message_cell.dart';
