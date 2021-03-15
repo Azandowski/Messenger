@@ -18,6 +18,7 @@ class CreationModuleRepositoryImpl implements CreationModuleRepository {
    @required this.dataSource,
    @required this.networkInfo,
   });
+
   @override
   Future<Either<Failure, PaginatedResult<ContactEntity>>> fetchContacts(Pagination pagination) async {
     try {
@@ -26,6 +27,27 @@ class CreationModuleRepositoryImpl implements CreationModuleRepository {
       return Right(contactResponse);
     } on ServerFailure catch(e) {
       return Left(ServerFailure(message: e.message));
+    }
+  }
+
+  @override
+  Future<Either<Failure, PaginatedResult<ContactEntity>>> searchContacts(
+    String phoneNumber, 
+    Uri nextPageURL
+  ) async {
+    if (await networkInfo.isConnected) {
+      try {
+        final response = await dataSource.searchContacts(phoneNumber, nextPageURL);
+        return Right(response);
+      } catch (e) {
+        if (e is Failure) {
+          return Left(e);
+        } else {
+          return Left(ServerFailure(message: e.toString()));
+        }
+      }
+    } else {
+      return Left(ConnectionFailure());
     }
   }
 }

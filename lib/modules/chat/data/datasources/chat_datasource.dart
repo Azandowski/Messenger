@@ -23,6 +23,23 @@ import '../../domain/usecases/params.dart';
 import '../models/chat_detailed_model.dart';
 import '../models/message_model.dart';
 
+
+enum RequestDirection {
+  top, bottom
+}
+
+extension RequestExension on RequestDirection {
+  String get key {
+    switch (this) {
+      case RequestDirection.top:
+        return 'top';
+      case RequestDirection.bottom:
+        return 'bot';
+    }
+  }
+}
+
+
 abstract class ChatDataSource {
   Future<ChatDetailed> getChatDetails (int id);
   Future<PaginatedResult<ContactEntity>> getChatMembers (int id, Pagination pagination);
@@ -36,8 +53,11 @@ abstract class ChatDataSource {
     Map chatUpdates,
     int id
   });
-  Future<PaginatedResultViaLastItem<Message>> getChatMessages (int lastMessageId);
-  
+  Future<PaginatedResultViaLastItem<Message>> getChatMessages (
+    int lastMessageId, RequestDirection direction
+  );
+  Future<PaginatedResultViaLastItem<Message>> getChatMessageContext (int chatID, int messageID);
+
   // TODO: Finish later
   Future<void> setTimeDeleted ({
     int id, int timeInSeconds
@@ -215,13 +235,18 @@ class ChatDataSourceImpl implements ChatDataSource {
   }
 
   @override 
-  Future<PaginatedResultViaLastItem<Message>> getChatMessages (int lastMessageId) async {
+  Future<PaginatedResultViaLastItem<Message>> getChatMessages (
+    int lastMessageId,
+    RequestDirection direction
+  ) async {
     http.Response response = await client.get(
       Endpoints.getChatMessages.buildURL(
         urlParams: [
           '$id'
         ],
         queryParameters: {
+          'type': direction != null ? 
+            direction.key : RequestDirection.bottom.key,
           if (lastMessageId != null)
             'last_message_id': '$lastMessageId'
         }
@@ -235,6 +260,33 @@ class ChatDataSourceImpl implements ChatDataSource {
       return PaginatedResultViaLastItem<Message>(
         data: data.cast<Message>(),
         hasReachMax: !responseJSON['hasMoreResults']
+      );
+    } else {
+      throw ServerFailure(message: ErrorHandler.getErrorMessage(response.body.toString()));
+    }
+  }
+
+  @override
+  Future<PaginatedResultViaLastItem<Message>> getChatMessageContext(int chatID, int messageID) async {
+    http.Response response = await client.get(
+      Endpoints.getMessagesContext.buildURL(
+        urlParams: [
+          '$chatID'
+        ], queryParameters: {
+          'message_id': '$messageID'
+        }
+      ),
+      headers: Endpoints.getMessagesContext.getHeaders(token: sl<AuthConfig>().token)
+    );
+
+    if (response.isSuccess) {
+      var responseJSON = json.decode(response.body);
+      List data = ((responseJSON['messages'] ?? [])).map((e) => MessageModel.fromJson(e)).toList();
+
+      return PaginatedResultViaLastItem<Message>(
+        data: data.cast<Message>(),
+        hasReachMax: !responseJSON['has_more_results_top'],
+        hasReachMaxSecondSide: !responseJSON['has_more_results_bot']
       );
     } else {
       throw ServerFailure(message: ErrorHandler.getErrorMessage(response.body.toString()));

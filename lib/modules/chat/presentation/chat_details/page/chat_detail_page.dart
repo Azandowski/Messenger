@@ -3,10 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger_mobile/core/blocs/chat/bloc/bloc/chat_cubit.dart';
 import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
 import 'package:messenger_mobile/modules/chat/domain/usecases/kick_member.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chat_details/widgets/chat_detail_appbar.dart';
-import 'package:messenger_mobile/modules/groupChat/presentation/create_group/create_group_page.dart';
-import 'package:messenger_mobile/modules/groupChat/presentation/create_group/create_group_screen.dart';
-
 import '../../../../../locator.dart';
 import '../../../../../main.dart';
 import '../../../data/datasources/chat_datasource.dart';
@@ -91,36 +87,40 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => _chatDetailsCubit,
-      child: Scaffold(
-        body: Stack(
-          children: [
-            ChatDetailScreen(
+      child: BlocConsumer<ChatDetailsCubit, ChatDetailsState>(
+        listener: (context, state) {
+          _handleListener(state);
+        },
+        builder: (context, state) {
+          return Scaffold(
+            body: ChatDetailScreen(
               chatEntity: widget.chatEntity, 
               getChatDetails: getChatDetails
             ),
-            ChildDetailAppBar(
-              onPressRightIcon: () {
-                _navigator.push(CreateGroupPage.route(
-                  mode: CreateGroupScreenMode.edit,
-                  chatEntity: widget.chatEntity
-                ));
-              },
-              onPressLeftIcon: () {
-                _chatDetailsCubit.onFinish(
-                  id: widget.chatEntity.chatId, 
-                  callback: (newPermissions) {
-                    navigatorKey.currentContext.read<ChatGlobalCubit>().updateChatSettings(
-                      chatPermissions: newPermissions, id: widget.chatEntity.chatId
-                    );
-                  }
-                );
-
-                Navigator.of(context).pop();
-              },
-            ),
-          ]
-        )
+          );
+        },
       ),
     );
+  }
+
+  void _handleListener (ChatDetailsState state) {
+    if (state is ChatDetailsError) {
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(SnackBar(content: Text(state.message)));
+    } else if (state is ChatDetailsProccessing) {
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(content: LinearProgressIndicator(), duration: Duration(days: 2),)
+        );
+    } else {
+      if (state is ChatDetailsLeave) {
+        context.read<ChatGlobalCubit>().leaveFromChat(id: widget.chatEntity.chatId);
+        Navigator.of(context).popUntil((route) => route.isFirst);
+      }
+
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    }
   }
 }

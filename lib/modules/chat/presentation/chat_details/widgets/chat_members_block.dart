@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:messenger_mobile/core/config/auth_config.dart';
+import 'package:messenger_mobile/modules/chat/domain/entities/chat_detailed.dart';
 
 import '../../../../../app/appTheme.dart';
 import '../../../../creation_module/domain/entities/contact.dart';
@@ -13,12 +14,14 @@ class ChatMembersBlock extends StatelessWidget {
   final int membersCount;
   final Function onShowMoreClick;
   final Function(ContactEntity) onTapItem;
+  final ChatMember memberRole;
 
   const ChatMembersBlock({
     @required this.members,
     @required this.membersCount,
     @required this.onShowMoreClick,
     @required this.onTapItem,
+    @required this.memberRole,
     Key key, 
   }) : super(key: key);
 
@@ -49,7 +52,7 @@ class ChatMembersBlock extends StatelessWidget {
         ),
         ...members.map((e) => ContactCell(
           contactItem: e,
-          cellType: currentUserID == e.id ? ContactCellType.write :
+          cellType: currentUserID == e.id || memberRole != ChatMember.admin ? ContactCellType.write :
             ContactCellType.delete,
           onTrilinIconTapped: () {
             onTapItem(e);

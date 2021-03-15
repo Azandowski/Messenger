@@ -24,8 +24,9 @@ enum Endpoints {
   sendContacts,
   fetchContacts,
   chatMembers,
+  searchContacts,
   changeChatSettings,
-
+  getMessagesContext,
   //Group chat
   createGroupChat,
   getChatDetails,
@@ -116,6 +117,10 @@ extension EndpointsExtension on Endpoints {
         return '${Config.baseAPIpath.value}/messenger/message/search/all';
       case Endpoints.deleteMessage:
         return '${Config.baseAPIpath.value}/messenger/delete-message';   
+      case Endpoints.searchContacts:
+        return '${Config.baseAPIpath.value}/messenger/get-contact';
+      case Endpoints.getMessagesContext:
+        return '${Config.baseAPIpath.value}/messenger/chat/${params[0]}/get-messages-by-search';
     }
   }
 

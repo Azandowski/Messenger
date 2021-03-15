@@ -108,14 +108,16 @@ class ChatsRepositoryImpl extends ChatsRepository {
 
   @override
   Future<Either<Failure, ChatMessageResponse>> searchChats({
-    int lastChatId, 
-    String queryText
+    Uri nextPageURL, 
+    String queryText,
+    int chatID
   }) async {
     if (await networkInfo.isConnected) {
       try {
         final response = await chatsDataSource.searchChats(
-          lastChatId: lastChatId,
-          queryText: queryText
+          nextPageURL: nextPageURL,
+          queryText: queryText,
+          chatID: chatID
         );
 
         return Right(response);

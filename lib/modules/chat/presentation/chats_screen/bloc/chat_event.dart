@@ -4,7 +4,6 @@ abstract class ChatEvent extends Equatable {
   const ChatEvent();
 }
 
-
 class ChatScreenStarted extends ChatEvent {
   @override
   List<Object> get props => [];
@@ -12,14 +11,20 @@ class ChatScreenStarted extends ChatEvent {
 
 class LoadMessages extends ChatEvent {
   final bool isPagination;
+  final RequestDirection direction;
+
+  /// Non-Null if chat should load message's region
+  final int messageID;
 
   LoadMessages({
-    @required this.isPagination
+    @required this.isPagination,
+    this.direction,
+    this.messageID
   });
 
   @override
   List<Object> get props => [
-    isPagination
+    isPagination, messageID, direction
   ];
 }
 

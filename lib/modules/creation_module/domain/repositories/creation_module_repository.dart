@@ -7,4 +7,7 @@ import '../entities/contact.dart';
 
 abstract class CreationModuleRepository {
   Future<Either<Failure, PaginatedResult<ContactEntity>>> fetchContacts(Pagination pagination);
+  Future<Either<Failure, PaginatedResult<ContactEntity>>> searchContacts(
+    String phoneNumber, Uri nextPageURL
+  );
 }

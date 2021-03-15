@@ -38,8 +38,9 @@ abstract class ChatsDataSource {
   Future<void> setLocalWallpaper(File file); 
 
   Future<ChatMessageResponse> searchChats ({
-    int lastChatId,
-    String queryText
+    Uri nextPageURL,
+    String queryText,
+    int chatID
   });
 }
 
@@ -101,15 +102,16 @@ class ChatsDataSourceImpl implements ChatsDataSource {
 
   @override
   Future<ChatMessageResponse> searchChats({
-    int lastChatId,
-    String queryText
+    Uri nextPageURL,
+    String queryText,
+    int chatID
   }) async {
     http.Response response = await client.get(
-      Endpoints.searchChats.buildURL(
+      nextPageURL ?? Endpoints.searchChats.buildURL(
         queryParameters: {
           'search': queryText,
-          if (lastChatId != null)
-            ...{'last_message_id': '$lastChatId'}
+          if (chatID != null) 
+            ...{'chat_id': '$chatID'}
         }
       ),
       headers: Endpoints.searchChats.getHeaders(token: sl<AuthConfig>().token)

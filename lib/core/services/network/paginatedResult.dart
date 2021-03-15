@@ -67,10 +67,14 @@ class PaginationData extends Equatable {
 
 class PaginatedResultViaLastItem<T> {
   final List<T> data;
+  // first side pagination
   final bool hasReachMax;
+  // second side pagination
+  final bool hasReachMaxSecondSide;
 
   PaginatedResultViaLastItem({
     @required this.data,
-    @required this.hasReachMax
+    @required this.hasReachMax,
+    this.hasReachMaxSecondSide = true
   });
 }

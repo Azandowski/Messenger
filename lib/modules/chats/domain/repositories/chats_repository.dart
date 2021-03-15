@@ -31,7 +31,8 @@ abstract class ChatsRepository {
   Future<void> removeAllChats ();
 
   Future<Either<Failure, ChatMessageResponse>> searchChats ({
-    int lastChatId,
-    String queryText
+    Uri nextPageURL,
+    String queryText,
+    int chatID
   });
 }

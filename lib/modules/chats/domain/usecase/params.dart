@@ -35,17 +35,20 @@ class GetCategoryChatsParams extends Equatable {
 
 class SearchChatParams extends Equatable {
   
-  final int lastItemID;
+  final Uri nextPageURL;
   final String queryText;
+  final int chatID;
 
   SearchChatParams({
-    @required this.lastItemID,
-    @required this.queryText
+    @required this.nextPageURL,
+    @required this.queryText,
+    this.chatID
   });
 
   @override
   List<Object> get props => [
-    lastItemID,
-    queryText
+    nextPageURL,
+    queryText,
+    chatID
   ];
 }

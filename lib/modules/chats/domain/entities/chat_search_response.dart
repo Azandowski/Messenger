@@ -6,7 +6,7 @@ import 'package:messenger_mobile/modules/chat/domain/entities/message.dart';
 
 class ChatMessageResponse extends Equatable {
   final List<ChatEntity> chats;
-  final PaginatedResultViaLastItem<Message> messages;
+  final PaginatedResult<Message> messages;
 
   ChatMessageResponse({
     @required this.chats,

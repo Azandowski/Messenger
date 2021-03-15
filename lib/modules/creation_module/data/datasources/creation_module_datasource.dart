@@ -16,6 +16,9 @@ import '../models/contact_model.dart';
 
 abstract class CreationModuleDataSource {
   Future<PaginatedResult<ContactEntity>> fetchContacts(Pagination pagination);
+  Future<PaginatedResult<ContactEntity>> searchContacts (
+    String phoneNumber, Uri nextPageURL
+  );
 }
 
 class CreationModuleDataSourceImpl implements CreationModuleDataSource {
@@ -41,6 +44,30 @@ class CreationModuleDataSourceImpl implements CreationModuleDataSource {
     if (response.isSuccess) {
       var jsonMap = json.decode(response.body)['contacts'];
       return  PaginatedResult<ContactEntity>.fromJson(
+        jsonMap, 
+        (data) => ContactModel.fromJson(data));
+    } else {
+      throw ServerFailure(message: ErrorHandler.getErrorMessage(response.body.toString()));
+    }
+  }
+
+  Future<PaginatedResult<ContactEntity>> searchContacts (
+    String phoneNumber,
+    Uri nextPageURL
+  ) async {
+
+    http.Response response = await client.get(
+      nextPageURL ?? Endpoints.searchContacts.buildURL(
+        queryParameters: {
+          'search': phoneNumber
+        }
+      ),
+      headers: Endpoints.searchContacts.getHeaders(token: sl<AuthConfig>().token)
+    );
+
+    if (response.isSuccess) {
+      var jsonMap = json.decode(response.body);
+      return PaginatedResult<ContactEntity>.fromJson(
         jsonMap, 
         (data) => ContactModel.fromJson(data));
     } else {

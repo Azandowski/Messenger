@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_share/flutter_share.dart';
+import 'package:messenger_mobile/modules/creation_module/presentation/pages/search_contact/search_contact_page.dart';
 
 import '../../../../app/appTheme.dart';
 import '../../../../core/utils/paginated_scroll_controller.dart';
@@ -50,6 +51,16 @@ class _CreationModuleScreenState extends State<CreationModuleScreen> {
           'Создать',
           style: AppFontStyles.headingTextSyle,
         ),
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.search
+            ), 
+            onPressed: () {
+              _navigator.push(SearchContactPage.route());
+            }
+          )
+        ],
       ),
       body: BlocProvider(
         create: (context) => CreationModuleCubit(

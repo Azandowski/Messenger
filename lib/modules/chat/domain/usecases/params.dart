@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:messenger_mobile/modules/chat/data/datasources/chat_datasource.dart';
 
 import '../../../../core/utils/pagination.dart';
 import '../../../category/data/models/chat_permission_model.dart';
@@ -89,4 +90,26 @@ class DeleteMessageParams {
       'chat_id': chatID.toString(),
     };
   }
+}
+
+
+class GetMessagesContextParams {
+  final int chatID;
+  final int messageID;
+
+  GetMessagesContextParams({
+    @required this.chatID,
+    @required this.messageID
+  });
+}
+
+
+class GetMessagesParams {
+  final int lastMessageId;
+  final RequestDirection direction;
+
+  GetMessagesParams({
+    @required this.lastMessageId,
+    @required this.direction
+  });
 }

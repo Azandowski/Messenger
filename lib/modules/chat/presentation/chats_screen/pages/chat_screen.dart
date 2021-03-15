@@ -1,25 +1,31 @@
 import 'package:messenger_mobile/modules/chat/domain/entities/chat_actions.dart';
-
-import '../widgets/remove_dialog_view.dart';
-
-import '../../../../../core/blocs/chat/bloc/bloc/chat_cubit.dart' as main_chat_cubit;
+import 'package:messenger_mobile/modules/chat/domain/usecases/get_messages_context.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 import 'chat_screen_import.dart';
-
+import 'chat_screen_helper.dart';
 
 class ChatScreen extends StatefulWidget {
   final ChatEntity chatEntity;
+  
+  // Non-Null if have to show region of the message 
+  final int messageID;
 
-  const ChatScreen({Key key, @required this.chatEntity}) : super(key: key);
+  const ChatScreen({
+    @required this.chatEntity,
+    this.messageID,
+    Key key, 
+  }) : super(key: key);
 
   @override
-  _ChatScreenState createState() => _ChatScreenState();
+  ChatScreenState createState() => ChatScreenState();
 }
 
-class _ChatScreenState extends State<ChatScreen> implements TimePickerDelegate {
+class ChatScreenState extends State<ChatScreen> implements TimePickerDelegate {
 
   NavigatorState get _navigator => navigatorKey.currentState;
   
   // MARK: - Props
+
 
   TextEditingController messageTextController = TextEditingController();
   CategoryBloc categoryBloc;
@@ -51,9 +57,36 @@ class _ChatScreenState extends State<ChatScreen> implements TimePickerDelegate {
       chatRepository: chatRepository,
       sendMessage: SendMessage(repository: chatRepository),
       getMessages: GetMessages(repository: chatRepository),
+      getMessagesContext: GetMessagesContext(repository: chatRepository),
       chatsRepository: sl(),
       setTimeDeleted: SetTimeDeleted(repository: chatRepository)
-    )..add(LoadMessages(isPagination: true));
+    )..add(LoadMessages(
+      isPagination: false,
+      messageID: widget.messageID,
+    ));
+
+    _chatBloc.scrollController = AutoScrollController(
+      viewportBoundaryGetter: () =>
+        Rect.fromLTRB(0, 0, 0, MediaQuery.of(context).padding.bottom),
+      axis: Axis.vertical
+    );
+
+    _chatBloc.scrollController.addListener(() {
+      if (!(_chatBloc.state is ChatLoading)) {
+        if (_chatBloc.scrollController.isPaginated && !_chatBloc.state.hasReachedMax) {
+          _chatBloc.add(LoadMessages(
+            isPagination: true,
+            direction: RequestDirection.top
+          ));
+        } else if (_chatBloc.scrollController.isReverslyPaginated && !_chatBloc.state.hasReachBottomMax) {
+          _chatBloc.add(LoadMessages(
+            isPagination: true,
+            direction: RequestDirection.bottom
+          ));
+        }
+      }
+    });
+
     super.initState();
   }
 
@@ -82,23 +115,13 @@ class _ChatScreenState extends State<ChatScreen> implements TimePickerDelegate {
             create: (context) => _chatBloc,
             child: BlocConsumer<ChatBloc, ChatState>(
               listener: (context, state) {
-                _handleListener(state);
+                handleListener(state, scrollController: _chatBloc.scrollController);
               },
               builder: (context, state) {
                 return Scaffold(
-                  appBar: cubit is ChatTodoSelection ? SelectionAppBar(
-                      chatViewModel: chatViewModel, 
-                      widget: widget, 
-                      delegate: this,
-                      chatTodoCubit: _chatTodoCubit,
-                      appBar: AppBar(),
-                    ) : ChatAppBar(
-                      chatViewModel: chatViewModel, 
-                      navigator: _navigator, 
-                      widget: widget, 
-                      delegate: this,
-                      appBar: AppBar(),
-                    ),
+                  appBar: this.buildAppBar(
+                    _chatTodoCubit, cubit, chatViewModel, _navigator
+                  ),
                   backgroundColor: AppColors.pinkBackgroundColor,
                   body: BlocProvider(
                     lazy: false,
@@ -110,11 +133,7 @@ class _ChatScreenState extends State<ChatScreen> implements TimePickerDelegate {
                         Expanded(
                           child: Container(
                             decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: state.wallpaperPath != null ? 
-                                FileImage(File(state.wallpaperPath)) : 
-                                  AssetImage('assets/images/bg-home.png'),
-                              fit: BoxFit.cover),
+                              image: this.getBackground(state)
                             ),
                             child: ListView.separated(
                               controller: _chatBloc.scrollController,
@@ -152,7 +171,11 @@ class _ChatScreenState extends State<ChatScreen> implements TimePickerDelegate {
                                         _panelBlocCubit.addMessage(message);
                                       },
                                       onAction: (MessageCellActions action){
-                                        messageActionProcess(action, context, MessageViewModel(currentMessage));
+                                        messageActionProcess(
+                                          action, context, 
+                                          MessageViewModel(currentMessage), 
+                                          _panelBlocCubit, _chatTodoCubit
+                                        );
                                       },
                                       messageViewModel: MessageViewModel(
                                         currentMessage,
@@ -176,38 +199,15 @@ class _ChatScreenState extends State<ChatScreen> implements TimePickerDelegate {
                               itemCount: getItemsCount(state),
                               reverse: true,
                               separatorBuilder: (_, int index) {
-                                return _buildSeparator(index, state);
+                                return buildSeparator(index, state);
                               }
                             ),
                           ),
                         ),
-                        cubit is ChatTodoSelection || cubit is ChatToDoLoading ? 
-                          Container(
-                          color: Colors.white,
-                          padding: EdgeInsets.fromLTRB(16,8,16,8),
-                          child: ActionButton(
-                            isLoading: cubit is ChatToDoLoading,
-                            text: cubit.isDelete ? 'Удалить' : 'Переслать',
-                            onTap: () {
-                              if (cubit.isDelete) {
-                                showDialog(context: context, builder: (ctx) {
-                                  return DeleteDialogView(onDelete: (forMe){
-                                    _chatTodoCubit.deleteMessage(
-                                      chatID: widget.chatEntity.chatId,
-                                      forMe: forMe
-                                    );
-                                  });
-                                });
-                              } else {
-                              
-                              }
-                            },
-                          ),
-                        ) : ChatControlPanel(
-                              messageTextController: messageTextController, 
-                              width: width,
-                              height: height
-                            ),
+                        this.buildChatBottom(
+                          cubit, _chatTodoCubit, 
+                          width, height
+                        )
                       ],
                     ),
                   ),
@@ -221,82 +221,10 @@ class _ChatScreenState extends State<ChatScreen> implements TimePickerDelegate {
   }
 
 
-
-  // MARK: - Actions
-
-  Future<void> messageActionProcess(
-    MessageCellActions action, 
-    BuildContext context, 
-    MessageViewModel messageViewModel
-  ) async {
-    switch (action){
-      case MessageCellActions.copyMessage:
-        Clipboard.setData(ClipboardData(text: messageViewModel.messageText))
-        ..then((result) {
-          final snackBar = SnackBar(
-            content: Text('Скопировано в буфер обмена'),
-          );
-          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-        });
-        break;
-      case MessageCellActions.attachMessage:
-        // TODO: Handle this case.
-        break;
-      case MessageCellActions.replyMessage:
-        _panelBlocCubit.addMessage(messageViewModel);
-        break;
-      case MessageCellActions.replyMore:
-        _chatTodoCubit.enableSelectionMode(messageViewModel.message, false);
-        break;
-      case MessageCellActions.deleteMessage:
-        _chatTodoCubit.enableSelectionMode(messageViewModel.message, true);
-        break;
-    }
-  }
-
   // * * Helpers
 
   int getItemsCount (ChatState state) {
     return state.messages.length + 1;
-  }
-
-  void _handleListener (ChatState state) {
-    if (state is ChatError) {
-      ScaffoldMessenger.of(context)
-        ..hideCurrentSnackBar()
-        ..showSnackBar(
-          SnackBar(content: Text(state.message)),
-        );
-    } else if (state is ChatLoadingSilently) {
-      ScaffoldMessenger.of(context)
-        ..hideCurrentSnackBar()
-        ..showSnackBar(SnackBar(
-          content: LinearProgressIndicator(), 
-          duration: Duration(days: 2),
-        ));
-    } else if (state is ChatInitial) {
-      // Update Notification Badge
-
-      var chatGlobalCubit = context.read<main_chat_cubit.ChatGlobalCubit>();
-      var globalIndexOfChat = chatGlobalCubit.state.chats.indexWhere((e) => e.chatId == widget.chatEntity.chatId);
-
-      if (globalIndexOfChat != -1) {
-        if (chatGlobalCubit.state.chats[globalIndexOfChat].unreadCount != 0) {
-          context.read<main_chat_cubit.ChatGlobalCubit>().resetChatNoReadCounts(chatId: widget.chatEntity.chatId);
-          if (widget.chatEntity.chatCategory?.id != null) {
-
-            int index = categoryBloc.state.categoryList.indexWhere((e) => e.id == widget.chatEntity.chatCategory?.id);
-
-            categoryBloc.add(CategoryReadCountChanged(
-              categoryID: widget.chatEntity.chatCategory?.id,
-              newReadCount: categoryBloc.state.categoryList[index].noReadCount - 1
-            ));
-          }
-        }
-      }
-    } else {
-      ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    }
   }
 
   // Get Chat Action model from the message 
@@ -312,28 +240,6 @@ class _ChatScreenState extends State<ChatScreen> implements TimePickerDelegate {
     }
   }
 
-
-  Widget _buildSeparator (int index, ChatState state) {
-    if (!(state is ChatLoading && getItemsCount(state) - 1 == index)) {
-      Message nextMessage = state.messages.getItemAt(index + 1);
-    
-      if (
-        nextMessage != null && 
-        nextMessage.dateTime?.day != null && 
-        state.messages[index].dateTime?.day != null && 
-        nextMessage.dateTime?.day != state.messages[index].dateTime?.day
-      ) {
-        return ChatActionView(
-          chatAction: TimeAction(
-            dateTime: state.messages[index].dateTime,
-            action: ChatActions.newDay
-          )
-        );
-      } 
-    } 
- 
-    return Container();
-  }
 
   @override
   void didSelectTimeOption(TimeOptions option) {

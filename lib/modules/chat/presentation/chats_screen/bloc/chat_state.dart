@@ -3,38 +3,44 @@ part of 'chat_bloc.dart';
 abstract class ChatState extends Equatable {
   final List<Message> messages;
   final bool hasReachedMax;
+  final bool hasReachBottomMax;
   final String wallpaperPath;
 
   const ChatState({
     @required this.messages,
     @required this.hasReachedMax,
+    this.hasReachBottomMax = true,
     this.wallpaperPath
   });
 
   @override
   List<Object> get props => [
-    messages, hasReachedMax, wallpaperPath
+    messages, hasReachedMax, wallpaperPath, hasReachBottomMax
   ];
 }
 
 class ChatInitial extends ChatState {
-
+  final bool hasReachBottomMax;
   final List<Message> messages;
   final bool hasReachedMax;
   final String wallpaperPath;
+  final int focusMessageID;
 
   ChatInitial({
     @required this.messages,
     @required this.hasReachedMax,
-    this.wallpaperPath
+    this.wallpaperPath,
+    this.hasReachBottomMax = true,
+    this.focusMessageID
   }) : super(
     messages: messages, 
     hasReachedMax: hasReachedMax,
-    wallpaperPath: wallpaperPath
+    wallpaperPath: wallpaperPath,
+    hasReachBottomMax: hasReachBottomMax
   );
 
   @override
-  List<Object> get props => [messages, hasReachedMax, wallpaperPath];
+  List<Object> get props => [messages, hasReachedMax, wallpaperPath, hasReachBottomMax, focusMessageID];
 }
 
 class ChatLoading extends ChatState {
@@ -42,16 +48,19 @@ class ChatLoading extends ChatState {
   final List<Message> messages;
   final bool hasReachedMax;
   final String wallpaperPath;
+  final bool hasReachBottomMax;
 
   ChatLoading({
     @required this.isPagination,
     @required this.messages,
     @required this.hasReachedMax,
-    this.wallpaperPath
+    this.wallpaperPath,
+    this.hasReachBottomMax = true 
   }) : super(
     messages: messages, 
     hasReachedMax: hasReachedMax,
-    wallpaperPath: wallpaperPath
+    wallpaperPath: wallpaperPath,
+    hasReachBottomMax: hasReachBottomMax
   );
 
   @override
@@ -59,7 +68,8 @@ class ChatLoading extends ChatState {
     isPagination,
     hasReachedMax,
     messages,
-    wallpaperPath
+    wallpaperPath,
+    hasReachBottomMax
   ];  
 }
 
@@ -70,24 +80,27 @@ class ChatLoadingSilently extends ChatState {
   final List<Message> messages;
   final bool hasReachedMax;
   final String wallpaperPath;
+  final bool hasReachBottomMax;
 
   ChatLoadingSilently({
     @required this.messages,
     @required this.hasReachedMax,
-    @required this.wallpaperPath
+    @required this.wallpaperPath,
+    this.hasReachBottomMax = true 
   });
 
   @override
   List<Object> get props => [
     messages, 
     hasReachedMax,
-    wallpaperPath
+    wallpaperPath,
+    hasReachBottomMax
   ];
 }
 
 
 class ChatError extends ChatState {
-
+  final bool hasReachBottomMax;
   final List<Message> messages;
   final String message;
   final bool hasReachedMax;
@@ -97,11 +110,13 @@ class ChatError extends ChatState {
     @required this.messages,
     @required this.message,
     @required this.hasReachedMax,
-    this.wallpaperPath
+    this.wallpaperPath,
+    this.hasReachBottomMax = true 
   }) : super(
     messages: messages, 
     hasReachedMax: hasReachedMax,
-    wallpaperPath: wallpaperPath
+    wallpaperPath: wallpaperPath,
+    hasReachBottomMax: hasReachBottomMax
   );
 
   @override
@@ -109,6 +124,7 @@ class ChatError extends ChatState {
     messages, 
     message, 
     hasReachedMax,
-    wallpaperPath
+    wallpaperPath,
+    hasReachBottomMax
   ];
 }

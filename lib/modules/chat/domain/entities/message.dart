@@ -80,7 +80,7 @@ class Message extends Equatable {
       text: text ?? this.text,
       dateTime: dateTime ?? this.dateTime,
       user: user ?? this.user,
-      chatActions: chatActions ?? null,
+      chatActions: chatActions ?? this.chatActions,
       messageStatus: status ?? this.messageStatus,
       identificator: identificator ?? this.identificator,
       transfer: transfer ?? this.transfer,

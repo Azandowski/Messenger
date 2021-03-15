@@ -4,6 +4,9 @@ import 'package:messenger_mobile/core/widgets/independent/dialogs/dialog_action_
 import 'package:messenger_mobile/core/widgets/independent/dialogs/dialog_params.dart';
 import 'package:messenger_mobile/core/widgets/independent/dialogs/dialogs.dart';
 import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chat_details/widgets/chat_detail_appbar.dart';
+import 'package:messenger_mobile/modules/groupChat/presentation/create_group/create_group_page.dart';
+import 'package:messenger_mobile/modules/groupChat/presentation/create_group/create_group_screen.dart';
 
 import '../../../../../core/blocs/chat/bloc/bloc/chat_cubit.dart';
 import '../../../../../core/widgets/independent/buttons/icon_text_button.dart';
@@ -58,19 +61,39 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> implements ContactC
       },
       builder: (context, state) {
         if (!(state is ChatDetailsLoading)) {
-          return SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ChatDetailHeader(chatDetailed: state.chatDetailed),
-                if (state.chatDetailed?.chatMemberRole == ChatMember.admin && !(state.chatDetailed?.chat?.isPrivate ?? false))
-                  ...[
-                    ChatAdminSettings(
-                      permissions: state.chatDetailed?.settings,
-                      didSelectOption: (ChatSettings settings, bool newValue) {
+          return Stack(
+            children: [
+              SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ChatDetailHeader(chatDetailed: state.chatDetailed),
+                    if (state.chatDetailed?.chatMemberRole == ChatMember.admin && !(state.chatDetailed?.chat?.isPrivate ?? false))
+                      ...[
+                        ChatAdminSettings(
+                          permissions: state.chatDetailed?.settings,
+                          didSelectOption: (ChatSettings settings, bool newValue) {
+                            _chatDetailsCubit.toggleChatSetting(
+                              settings: settings, 
+                              newValue: newValue, 
+                              id: widget.chatEntity.chatId,
+                              callback: (ChatPermissions permissons) {
+                                context.read<ChatGlobalCubit>().updateChatSettings(
+                                  chatPermissions: permissons, id: widget.chatEntity.chatId
+                                );
+                              } 
+                            );
+                          },
+                        ),
+                        Divider()
+                      ],
+                    ChatSettingItem(
+                      chatSetting: ChatSettings.noSound,
+                      isOn: !ChatSettings.noSound.getValue(state.chatDetailed?.settings),
+                      onToggle: (value) {
                         _chatDetailsCubit.toggleChatSetting(
-                          settings: settings, 
-                          newValue: newValue, 
+                          settings: ChatSettings.noSound, 
+                          newValue: value, 
                           id: widget.chatEntity.chatId,
                           callback: (ChatPermissions permissons) {
                             context.read<ChatGlobalCubit>().updateChatSettings(
@@ -80,65 +103,71 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> implements ContactC
                         );
                       },
                     ),
-                    Divider()
+                    _buildSeparator(),
+                    ChatMediaBlock(
+                      media: state.chatDetailed.media
+                    ),
+                    _buildSeparator(),
+                    if (!(state.chatDetailed?.chat?.isPrivate ?? false))
+                      IconTextButton(
+                        imageAssetPath: 'assets/icons/create.png',
+                        onPress: () {
+                          _navigator.push(ChooseContactsPage.route(this));
+                        },
+                        title: 'Добавить участников',
+                      ),
+                    _buildSeparator(),
+                    ChatMembersBlock(
+                      members: state.chatDetailed.members, 
+                      membersCount: state.chatDetailed.membersCount, 
+                      memberRole: state.chatDetailed.chatMemberRole,
+                      onShowMoreClick: () {
+                        _navigator.push(ChatMembersScreen.route(
+                          state.chatDetailed.chat.chatId, widget.getChatDetails
+                        ));
+                      },
+                      onTapItem: (item) {
+                        _handleContactDeletionAlert(item);
+                      }
+                    ),
+                    _buildSeparator(),
+                    ProfileItem(
+                      profileItemData: ProfileItemData(
+                        icon: Icons.exit_to_app,
+                        title: 'Выйти',
+                        isRed: true,
+                      ),
+                      onTap: () {
+                        _chatDetailsCubit.doLeaveChat(widget.chatEntity.chatId);
+                      },
+                    ),
+                    _buildSeparator(height: 200)
                   ],
-                ChatSettingItem(
-                  chatSetting: ChatSettings.noSound,
-                  isOn: !ChatSettings.noSound.getValue(state.chatDetailed?.settings),
-                  onToggle: (value) {
-                    _chatDetailsCubit.toggleChatSetting(
-                      settings: ChatSettings.noSound, 
-                      newValue: value, 
-                      id: widget.chatEntity.chatId,
-                      callback: (ChatPermissions permissons) {
-                        context.read<ChatGlobalCubit>().updateChatSettings(
-                          chatPermissions: permissons, id: widget.chatEntity.chatId
-                        );
-                      } 
-                    );
-                  },
                 ),
-                _buildSeparator(),
-                ChatMediaBlock(
-                  media: state.chatDetailed.media
-                ),
-                _buildSeparator(),
-                if (!(state.chatDetailed?.chat?.isPrivate ?? false))
-                  IconTextButton(
-                    imageAssetPath: 'assets/icons/create.png',
-                    onPress: () {
-                      _navigator.push(ChooseContactsPage.route(this));
-                    },
-                    title: 'Добавить участников',
-                  ),
-                _buildSeparator(),
-                ChatMembersBlock(
-                  members: state.chatDetailed.members, 
-                  membersCount: state.chatDetailed.membersCount, 
-                  onShowMoreClick: () {
-                    _navigator.push(ChatMembersScreen.route(
-                      state.chatDetailed.chat.chatId, widget.getChatDetails
-                    ));
-                  },
-                  onTapItem: (item) {
-                    _handleContactDeletionAlert(item);
-                  }
-                ),
-                _buildSeparator(),
-                ProfileItem(
-                  profileItemData: ProfileItemData(
-                    icon: Icons.exit_to_app,
-                    title: 'Выйти',
-                    isRed: true,
-                  ),
-                  onTap: () {
-                    _chatDetailsCubit.doLeaveChat(widget.chatEntity.chatId);
-                  },
-                ),
-                _buildSeparator(height: 200)
-              ],
-            ),
-          );
+              ),
+              ChildDetailAppBar(
+                canEdit: state.chatDetailed.chatMemberRole == ChatMember.admin,
+                onPressRightIcon: () {
+                  _navigator.push(CreateGroupPage.route(
+                    mode: CreateGroupScreenMode.edit,
+                    chatEntity: widget.chatEntity
+                  ));
+                },
+                onPressLeftIcon: () {
+                  _chatDetailsCubit.onFinish(
+                    id: widget.chatEntity.chatId, 
+                    callback: (newPermissions) {
+                      navigatorKey.currentContext.read<ChatGlobalCubit>().updateChatSettings(
+                        chatPermissions: newPermissions, id: widget.chatEntity.chatId
+                      );
+                    }
+                  );
+  
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );  
         } else {
           return ChatSkeletonPage();
         }

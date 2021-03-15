@@ -9,6 +9,7 @@ import 'package:messenger_mobile/core/widgets/independent/small_widgets/chat_cou
 import 'package:messenger_mobile/modules/category/data/models/chat_view_model.dart';
 import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
 import 'package:messenger_mobile/modules/chat/domain/entities/message.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen.dart';
 import 'package:messenger_mobile/modules/chats/domain/repositories/chats_repository.dart';
 import 'package:messenger_mobile/modules/chats/presentation/bloc/search_chats/search_chats_cubit.dart';
 import 'package:messenger_mobile/modules/chats/presentation/widgets/chat_item/chat_preview_item.dart';
@@ -18,8 +19,19 @@ import '../../../../locator.dart';
 
 class ChatsSearchScreen extends StatefulWidget  {
   
-  static Route route() {
-    return MaterialPageRoute<void>(builder: (_) => ChatsSearchScreen());
+  final ChatEntity chatEntity;
+
+  const ChatsSearchScreen({
+    @required this.chatEntity,
+    Key key, 
+  }) : super(key: key); 
+
+  static Route route({
+    ChatEntity chatEntity
+  }) {
+    return MaterialPageRoute<void>(builder: (_) => ChatsSearchScreen(
+      chatEntity: chatEntity
+    ));
   }
 
   @override
@@ -52,6 +64,10 @@ class _ChatsSearchScreenState extends State<ChatsSearchScreen> implements Search
         searchEngine.onTextChanged(text);
       },
       buildDefaultAppBar: buildAppBar,
+      onChanged: (String newStr) {
+        _searchChatsCubit.showLoading(isPagination: false);
+        searchEngine.onTextChanged(newStr);
+      }
     );
 
     searchBar.isSearching.value = true;
@@ -118,11 +134,25 @@ class _ChatsSearchScreenState extends State<ChatsSearchScreen> implements Search
                   int newIndex = index - state.data.chats.length - 1;
                   var currentItem = state.data.messages.data[newIndex];
   
-                  return ChatSearchResultItem(
-                    time: _getDate(currentItem),
-                    title: currentItem.chat?.name ?? '',
-                    contentText: currentItem.text,
-                    searchText: searchBar.controller.text.trim()
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => ChatScreen(
+                          chatEntity: ChatEntity(
+                            title: currentItem.chat.name, 
+                            chatId: currentItem.chat.id, 
+                            description: ''
+                          ),
+                          messageID: currentItem.id,
+                        )
+                      ));
+                    },
+                    child: ChatSearchResultItem(
+                      time: _getDate(currentItem),
+                      title: currentItem.chat?.name ?? '',
+                      contentText: currentItem.text,
+                      searchText: searchBar.controller.text.trim()
+                    ),
                   );
                 }
               }, 
@@ -155,10 +185,11 @@ class _ChatsSearchScreenState extends State<ChatsSearchScreen> implements Search
 
   void _onScroll () {
     var state = _searchChatsCubit.state;
-    if (scrollController.isPaginated && !(state is SearchChatsLoading) && !state.data.messages.hasReachMax) {
+    if (scrollController.isPaginated && !(state is SearchChatsLoading) && !state.data.messages.paginationData.hasNextPage) {
       _searchChatsCubit.search(
         queryText: searchBar.controller.text.trim(),
-        lastItemID: state.data.messages.data.last?.id
+        isPagination: true,
+        chatID: widget.chatEntity?.chatId
       );
     }
   }
@@ -169,7 +200,8 @@ class _ChatsSearchScreenState extends State<ChatsSearchScreen> implements Search
   }) {
     _searchChatsCubit.search(
       queryText: text.trim(),
-      lastItemID: null
+      isPagination: false,
+      chatID: widget.chatEntity?.chatId
     );
   }
 }

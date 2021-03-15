@@ -26,9 +26,7 @@ class SearchEngine {
     }
 
     debounce = Timer(Duration(seconds: 2), () async {
-      if (newText.length >= 3) { 
-        delegate.startSearching(text: newText);
-      }
+      delegate.startSearching(text: newText);
     });
   }
 }

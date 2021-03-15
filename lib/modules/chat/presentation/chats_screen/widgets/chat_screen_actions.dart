@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
+import 'package:messenger_mobile/modules/chats/presentation/pages/chats_search_screen.dart';
 import '../../../../../app/appTheme.dart';
 import '../../../../../core/widgets/independent/dialogs/dialog_action_button.dart';
 import '../../../../../core/widgets/independent/dialogs/dialog_params.dart';
@@ -59,6 +60,14 @@ class ChatScreenActions extends StatelessWidget {
                     buttonStyle: DialogActionButtonStyle.black,
                     onPress: () {
                       _navigator.push(ChatDetailPage.route(chatEntity));
+                    }
+                  ),
+                  DialogActionButton(
+                    title: 'Поиск', 
+                    iconData: Icons.search,
+                    buttonStyle: DialogActionButtonStyle.black,
+                    onPress: () {
+                      _navigator.push(ChatsSearchScreen.route(chatEntity: chatEntity));
                     }
                   ),
                   DialogActionButton(

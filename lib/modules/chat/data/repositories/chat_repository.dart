@@ -164,10 +164,13 @@ class ChatRepositoryImpl extends ChatRepository {
   }
 
   @override
-  Future<Either<Failure, PaginatedResultViaLastItem<Message>>> getChatMessages(int lastMessageId) async {
+  Future<Either<Failure, PaginatedResultViaLastItem<Message>>> getChatMessages(
+    int lastMessageId,
+    RequestDirection direction
+  ) async {
     if (await networkInfo.isConnected) {
       try {
-        final response = await chatDataSource.getChatMessages(lastMessageId);
+        final response = await chatDataSource.getChatMessages(lastMessageId, direction);
         return Right(response);
       } catch (e) {
         if (e is Failure) {
@@ -207,14 +210,32 @@ class ChatRepositoryImpl extends ChatRepository {
   @override
   Future<Either<Failure, bool>> deleteMessage(DeleteMessageParams params) async {
     try {
-        await chatDataSource.deleteMessage(params);
-        return Right(true);
+      await chatDataSource.deleteMessage(params);
+      return Right(true);
+    } catch (e) {
+      if (e is Failure) {
+        return Left(e);
+      } else {
+        return Left(ServerFailure(message: e.toString()));
+      } 
+    }
+  }
+
+  @override
+  Future<Either<Failure, PaginatedResultViaLastItem<Message>>> getChatMessageContext(int chatID, int messageID) async {
+    if (await networkInfo.isConnected) {
+      try {
+        final response = await chatDataSource.getChatMessageContext(chatID, messageID);
+        return Right(response);
       } catch (e) {
         if (e is Failure) {
           return Left(e);
         } else {
           return Left(ServerFailure(message: e.toString()));
+        }
       }
+    } else {
+      return Left(ConnectionFailure());
     }
   }
 }

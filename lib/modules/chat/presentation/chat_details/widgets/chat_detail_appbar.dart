@@ -6,10 +6,12 @@ class ChildDetailAppBar extends StatelessWidget {
   
   final Function onPressRightIcon;
   final Function onPressLeftIcon;
+  final bool canEdit;
 
   const ChildDetailAppBar({
     @required this.onPressRightIcon,
     @required this.onPressLeftIcon,
+    @required this.canEdit,
     Key key,
   }) : super(key: key);
 
@@ -31,15 +33,16 @@ class ChildDetailAppBar extends StatelessWidget {
                 onPressLeftIcon();
               },
             ),
-            IconButton(
-              icon: Icon(
-                Icons.edit_outlined,
-                color: Colors.white,
-              ),
-              onPressed: () {
-                onPressRightIcon();
-              },
-            )
+            if (canEdit)
+              IconButton(
+                icon: Icon(
+                  Icons.edit_outlined,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  onPressRightIcon();
+                },
+              )
           ],
         ),
       )
