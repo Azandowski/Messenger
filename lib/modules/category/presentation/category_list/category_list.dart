@@ -59,13 +59,13 @@ class _CategoryListState extends State<CategoryList> {
       body: BlocConsumer<CategoryBloc, CategoryState>(
         listener: (context, state) {
           if (state is CategoriesUpdating) {
-            Scaffold.of(context).hideCurrentSnackBar();
-            Scaffold.of(context).showSnackBar(SnackBar(content: LinearProgressIndicator(), duration: Duration(days: 2),));
+            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: LinearProgressIndicator(), duration: Duration(days: 2),));
           } else if (state is CategoriesErrorHappened) {
-            Scaffold.of(context).hideCurrentSnackBar();
-            Scaffold.of(context).showSnackBar(SnackBar(content: Text(state.message)));
+            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.message)));
           } else if (state is CategoryLoaded){
-            Scaffold.of(context).hideCurrentSnackBar();
+            ScaffoldMessenger.of(context).hideCurrentSnackBar();
           }
         },
         builder: (context, state) {

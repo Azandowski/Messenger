@@ -1,3 +1,4 @@
+import 'package:messenger_mobile/modules/category/presentation/chooseChats/presentation/chat_choose_page.dart';
 import 'package:messenger_mobile/modules/chat/domain/entities/chat_actions.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen_import.dart';
@@ -17,14 +18,12 @@ extension ChatScreenStateHelper on ChatScreenState {
     return state is ChatTodoSelection ? SelectionAppBar(
       chatViewModel: chatViewModel, 
       widget: widget, 
-      delegate: this,
       chatTodoCubit: chatTodoCubit,
       appBar: AppBar(),
     ) : ChatAppBar(
       chatViewModel: chatViewModel, 
       navigator: navigator, 
       widget: widget, 
-      delegate: this,
       appBar: AppBar(),
     );
   }
@@ -59,7 +58,9 @@ extension ChatScreenStateHelper on ChatScreenState {
                   );
                 });
               });
-            } 
+            } else {
+              Navigator.push(context, ChooseChatsPage.route(this, actionText: 'Переслать'));
+            }
           }
         ),
       );
@@ -112,7 +113,7 @@ extension ChatScreenStateHelper on ChatScreenState {
         });
         break;
       case MessageCellActions.attachMessage:
-        // TODO: Handle this case.
+        chatTodoCubit.attachMessage(messageViewModel.message);
         break;
       case MessageCellActions.replyMessage:
         panelBlocCubit.addMessage(messageViewModel);

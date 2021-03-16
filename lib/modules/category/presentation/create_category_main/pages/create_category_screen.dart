@@ -69,7 +69,7 @@ class _CreateCategoryScreenState extends State<CreateCategoryScreen> implements 
         cubit: cubit,
         listener: (context, state) {
           if (state is CreateCategoryError) {
-            Scaffold.of(context).showSnackBar(
+            ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(state.message, style: TextStyle(color: Colors.red)),
               ), // SnackBar

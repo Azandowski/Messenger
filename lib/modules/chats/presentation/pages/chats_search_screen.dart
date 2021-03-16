@@ -7,6 +7,7 @@ import 'package:messenger_mobile/core/utils/search_engine.dart';
 import 'package:messenger_mobile/core/widgets/independent/small_widgets/cell_skeleton_item.dart';
 import 'package:messenger_mobile/core/widgets/independent/small_widgets/chat_count_view.dart';
 import 'package:messenger_mobile/modules/category/data/models/chat_view_model.dart';
+import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
 import 'package:messenger_mobile/modules/chat/domain/entities/message.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen.dart';
 import 'package:messenger_mobile/modules/chats/domain/repositories/chats_repository.dart';
@@ -140,7 +141,8 @@ class _ChatsSearchScreenState extends State<ChatsSearchScreen> implements Search
                           chatEntity: ChatEntity(
                             title: currentItem.chat.name, 
                             chatId: currentItem.chat.id, 
-                            description: ''
+                            description: '',
+                            date: currentItem.dateTime,
                           ),
                           messageID: currentItem.id,
                         )

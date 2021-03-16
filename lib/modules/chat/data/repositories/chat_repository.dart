@@ -242,4 +242,18 @@ class ChatRepositoryImpl extends ChatRepository {
       return Left(ConnectionFailure());
     }
   }
+
+  @override
+  Future<Either<Failure, bool>> attachMessage(Message message) async {
+    try {
+      await chatDataSource.attachMessage(message);
+      return Right(true);
+    } catch (e) {
+      if (e is Failure) {
+        return Left(e);
+      } else {
+        return Left(ServerFailure(message: e.toString()));
+      } 
+    }
+  }
 }

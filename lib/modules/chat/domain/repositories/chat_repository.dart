@@ -34,5 +34,6 @@ abstract class ChatRepository {
     int id, int timeInSeconds
   });
   Future<void> disposeChat();
+  Future<Either<Failure, bool>> attachMessage(Message message);
   Future<Either<Failure, PaginatedResultViaLastItem<Message>>> getChatMessageContext (int chatID, int messageID);
 }

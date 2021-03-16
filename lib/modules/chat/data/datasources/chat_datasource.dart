@@ -49,6 +49,7 @@ abstract class ChatDataSource {
   Stream<List<int>> get deleteIds;
   Future<Message> sendMessage(SendMessageParams params);
   Future<bool> deleteMessage(DeleteMessageParams params);
+  Future<bool> attachMessage(Message message);
   Future<void> leaveChat (int id);
   Future<ChatPermissions> updateChatSettings ({
     Map chatUpdates,
@@ -104,6 +105,8 @@ class ChatDataSourceImpl implements ChatDataSource {
         return MessageHandleType.newMessage;
       case 'deleteMessage':
         return MessageHandleType.delete;
+      case 'SetTopMessage':
+        return MessageHandleType.setTopMessage;
     }
   }
    
@@ -355,8 +358,28 @@ class ChatDataSourceImpl implements ChatDataSource {
       body: json.encode(params.body),
       headers: Endpoints.changeChatSettings.getHeaders(token: sl<AuthConfig>().token),
     );
-    print(response.statusCode);
+    if (response.isSuccess) {
+      return true;
+    } else {
+      throw ServerFailure(message: ErrorHandler.getErrorMessage(response.body.toString()));
+    }
+  }
+
+  @override
+  Future<bool> attachMessage(Message message) async {
+    http.Response response = await client.post(
+      Endpoints.attachMessage.buildURL(
+        urlParams: [
+          '$id'
+        ]
+      ),
+      body: json.encode({
+        'message_id': message.id.toString()
+      }),
+      headers: Endpoints.changeChatSettings.getHeaders(token: sl<AuthConfig>().token),
+    );
     print(response.body);
+    print(response.statusCode);
     if (response.isSuccess) {
       return true;
     } else {

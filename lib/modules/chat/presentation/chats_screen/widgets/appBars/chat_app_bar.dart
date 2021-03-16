@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../../../../category/data/models/chat_view_model.dart';
 import '../../../chat_details/page/chat_detail_page.dart';
-import '../../../time_picker/time_picker_screen.dart';
 import '../../pages/chat_screen.dart';
 import '../chatHeading.dart';
 import '../chat_screen_actions.dart';
@@ -13,7 +12,6 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget{
     @required this.chatViewModel,
     @required this.appBar,
     @required NavigatorState navigator,
-    @required this.delegate,
     @required this.widget,
   }) : _navigator = navigator, super(key: key);
 
@@ -21,7 +19,6 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget{
   final NavigatorState _navigator;
   final ChatScreen widget;
   final AppBar appBar;
-  final TimePickerDelegate delegate;
   
   @override
   Widget build(BuildContext context) {
@@ -37,7 +34,7 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget{
         }
       ),
       actions: [
-        ChatScreenActions(timePickerDelegate: delegate,)
+        ChatScreenActions()
       ],
     );
   }

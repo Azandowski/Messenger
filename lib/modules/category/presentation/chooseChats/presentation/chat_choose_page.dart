@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:messenger_mobile/modules/category/presentation/chooseChats/presentation/cubit/chat_select_cubit.dart';
 
 import '../../../../../app/appTheme.dart';
 import '../../../../../core/blocs/chat/bloc/bloc/chat_cubit.dart';
@@ -15,14 +16,15 @@ abstract class ChatChooseDelegate{
 
 class ChooseChatsPage extends StatefulWidget {
 
-  static Route route(ChatChooseDelegate delegate) {
+  static Route route(ChatChooseDelegate delegate, {String actionText}) {
     return MaterialPageRoute<void>(builder: (_) => ChooseChatsPage(delegate: delegate,));
   }
-
+  final String actionText;
   final ChatChooseDelegate delegate;
   
   ChooseChatsPage({
     @required this.delegate,
+    this.actionText = 'Добавить чаты',
     Key key,
   }) : super(key: key);
 
@@ -32,24 +34,22 @@ class ChooseChatsPage extends StatefulWidget {
 
 class _ChooseChatsPageState extends State<ChooseChatsPage> {
   
-  // * * Props
-  
-  int _chatsCount = 0;
-  List<ChatViewModel> chatEntities = [];
-
   // * * Life-Cycle
-
+  ChatSelectCubit _chatSelectCubit;
   @override
   void initState() {
+
+    _chatSelectCubit = ChatSelectCubit();
+
     ChatGlobalCubit _cubit = context.read<ChatGlobalCubit>();
-    if (_cubit.state.currentCategory != 0) {
+    if (_cubit.state.currentCategory != 0 && _cubit.state.currentCategory != null) {
       
       // Load All Chats
       _cubit.loadChats(isPagination: false);
     }
 
     if (_cubit.state is ChatsLoaded) {
-      assignEntities((_cubit.state as ChatsLoaded).chats);
+
     }
 
     super.initState();
@@ -59,70 +59,67 @@ class _ChooseChatsPageState extends State<ChooseChatsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<ChatGlobalCubit, ChatState>(
-      listener: (context, state) {
-        if (state is ChatsLoaded) {
-          assignEntities(state.chats);
-          _chatsCount = chatEntities.where((e) => e.isSelected).toList().length;
-        } 
-      },
-      builder: (context, state) {
-        return Scaffold(
-          appBar: AppBar(
-            title: Text('Выбрано: $_chatsCount'),
-          ),
-          body: Stack(
-            alignment: Alignment.center,
-            children: [
-              Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                    child: Container(
-                      child: Text(
-                        'Выберите те чаты, которые вы хотите добавить',
-                        style: AppFontStyles.placeholderStyle,
-                      ),
-                    ),
-                  ),
-                  returnStateWidget(state, context),
-                ],
-              ),
-              if (state is ChatsLoaded)  
-                Positioned(
-                  bottom: 40,
-                  child: ActionButton(
-                    text: 'Добавить чаты', 
-                    onTap: () {
-                      List<ChatEntity> selectedChats = [];
-                      if (state is ChatsLoaded) {
-                        selectedChats = chatEntities.where((e) => e.isSelected).map((e) => e.entity).toList();
-                      }
-
-                      widget.delegate.didSaveChats(selectedChats);
-                      Navigator.pop(context);
-                    }
-                  ),
+    return BlocProvider(
+      create: (context) => _chatSelectCubit,
+      child: BlocBuilder<ChatSelectCubit, ChatSelectState>(
+        builder: (context, selectState) {
+          return BlocConsumer<ChatGlobalCubit, ChatState>(
+            listener: (context, state) {
+              if (state is ChatsLoaded) {
+                //TODO: ADD ChatViewModels when pagination cames to Cubit
+              } 
+            },
+            builder: (context, state) {
+              return Scaffold(
+                appBar: AppBar(
+                  title: Text('Выбрано: ${selectState.selectedChats.length}'),
                 ),
-            ],
-          )
-       );
-     }
+                body: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                          child: Container(
+                            child: Text(
+                              'Выберите те чаты, которые вы хотите добавить',
+                              style: AppFontStyles.placeholderStyle,
+                            ),
+                          ),
+                        ),
+                        returnStateWidget(state, context, selectState),
+                      ],
+                    ),
+                    if (state is ChatsLoaded)  
+                      Positioned(
+                        bottom: 40,
+                        child: ActionButton(
+                          text: 'Добавить чаты', 
+                          onTap: () {
+                            widget.delegate.didSaveChats(selectState.selectedChats);
+                            Navigator.pop(context);
+                          }
+                        ),
+                      ),
+                  ],
+                )
+              );
+            }
+          );
+        },
+      ),
     );
   }
 
-  Widget returnStateWidget(state, context){
+  Widget returnStateWidget(state, context, ChatSelectState selectState){
     if (state is ChatsLoaded) {
+      var chatEntities = assignEntities(state.chats, selectState.selectedChats);
       return ChatsList(
         items: chatEntities,
         cellType: ChatCellType.addChat,
-        onSelect: (ChatEntity chatEntity) {
-          var index = chatEntities.indexWhere((e) => e.entity.chatId == chatEntity.chatId);
-          if (index != null) {
-            setState(() {
-              chatEntities[index].isSelected = !chatEntities[index].isSelected;
-            });
-          }
+        onSelect: (ChatViewModel chatViewModel) {
+          _chatSelectCubit.addChat(chatViewModel);
         },
       );
     } else if (state is ChatLoading) {
@@ -141,9 +138,12 @@ class _ChooseChatsPageState extends State<ChooseChatsPage> {
 
   // * * Methods
 
-  void assignEntities (List<ChatEntity> entities) {
-    chatEntities = entities.map(
-      (e) => ChatViewModel(e)
+  List<ChatViewModel> assignEntities (List<ChatEntity> entities, List<ChatEntity> selectedChats) {
+    return entities.map(
+      (e) { 
+        var index = selectedChats.indexWhere((element) => element.chatId == e.chatId);
+        return ChatViewModel(e, isSelected: index != -1);
+      }
     ).toList();
   }
 }

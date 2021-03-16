@@ -5,12 +5,13 @@ abstract class ChatState extends Equatable {
   final bool hasReachedMax;
   final bool hasReachBottomMax;
   final String wallpaperPath;
-
+  final Message topMessage;
   const ChatState({
     @required this.messages,
     @required this.hasReachedMax,
     this.hasReachBottomMax = true,
-    this.wallpaperPath
+    this.wallpaperPath,
+    this.topMessage,
   });
 
   @override
@@ -25,22 +26,25 @@ class ChatInitial extends ChatState {
   final bool hasReachedMax;
   final String wallpaperPath;
   final int focusMessageID;
+  final Message topMessage;
 
   ChatInitial({
     @required this.messages,
     @required this.hasReachedMax,
     this.wallpaperPath,
     this.hasReachBottomMax = true,
-    this.focusMessageID
+    this.focusMessageID,
+    this.topMessage,
   }) : super(
     messages: messages, 
     hasReachedMax: hasReachedMax,
     wallpaperPath: wallpaperPath,
+    topMessage: topMessage,
     hasReachBottomMax: hasReachBottomMax
   );
 
   @override
-  List<Object> get props => [messages, hasReachedMax, wallpaperPath, hasReachBottomMax, focusMessageID];
+  List<Object> get props => [messages, hasReachedMax, wallpaperPath, hasReachBottomMax, focusMessageID, topMessage];
 }
 
 class ChatLoading extends ChatState {

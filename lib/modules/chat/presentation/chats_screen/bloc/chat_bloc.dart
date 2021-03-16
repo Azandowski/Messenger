@@ -73,15 +73,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         add(MessageDelete(ids: ids));
       }
     );
-
-    scrollController.addListener(() {
-      if (scrollController.isPaginated && !(state is ChatLoading) && !state.hasReachedMax) {
-        // Load More
-        this.add(LoadMessages(
-          isPagination: true
-        ));
-      }
-    });
   }
  
   StreamSubscription<Message> _chatSubscription;
@@ -290,7 +281,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     yield ChatInitial(
       messages: list,
       hasReachedMax: this.state.hasReachedMax,
-      wallpaperPath: this.state.wallpaperPath
+      wallpaperPath: this.state.wallpaperPath,
     );
   }
 

@@ -6,7 +6,7 @@ import 'chat_actions.dart';
 
 enum MessageStatus {sending, sent,}
 
-enum MessageHandleType {delete, newMessage}
+enum MessageHandleType {delete, newMessage, setTopMessage}
 
 class Message extends Equatable {
   final int id;

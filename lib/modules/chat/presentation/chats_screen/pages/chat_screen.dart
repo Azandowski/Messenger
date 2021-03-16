@@ -1,4 +1,6 @@
+import 'package:messenger_mobile/modules/category/presentation/chooseChats/presentation/chat_choose_page.dart';
 import 'package:messenger_mobile/modules/chat/domain/entities/chat_actions.dart';
+import 'package:messenger_mobile/modules/chat/domain/usecases/attachMessage.dart';
 import 'package:messenger_mobile/modules/chat/domain/usecases/get_messages_context.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'chat_screen_import.dart';
@@ -20,7 +22,7 @@ class ChatScreen extends StatefulWidget {
   ChatScreenState createState() => ChatScreenState();
 }
 
-class ChatScreenState extends State<ChatScreen> implements TimePickerDelegate {
+class ChatScreenState extends State<ChatScreen> implements ChatChooseDelegate{
 
   NavigatorState get _navigator => navigatorKey.currentState;
   
@@ -48,6 +50,7 @@ class ChatScreenState extends State<ChatScreen> implements TimePickerDelegate {
 
     _chatTodoCubit = ChatTodoCubit(
       deleteMessageUseCase: DeleteMessage(repository: chatRepository),
+      attachMessageUseCase: AttachMessage(repository: chatRepository),
     );
     
     categoryBloc = context.read<CategoryBloc>();
@@ -245,6 +248,11 @@ class ChatScreenState extends State<ChatScreen> implements TimePickerDelegate {
   void didSelectTimeOption(TimeOptions option) {
     Navigator.of(context).pop();
     _chatBloc.add(SetInitialTime(option: option));
+  }
+
+  @override
+  void didSaveChats(List<ChatEntity> chats) {
+   _chatTodoCubit.deleteMessage(chatID: 2, forMe: false);
   }
 }
 

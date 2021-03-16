@@ -11,7 +11,7 @@ class ChatsList extends StatelessWidget {
   final List<ChatViewModel> items;
   final List<int> loadingItemsIDS;
   final ChatCellType cellType;
-  final Function(ChatEntity) onSelect;
+  final Function(ChatViewModel) onSelect;
   final Function(ChatCellActionType, ChatEntity) onSelectedOption;
   final bool isScrollable;
   final bool showSpinner;
@@ -49,7 +49,6 @@ class ChatsList extends StatelessWidget {
         if (!showSpinner) {
           ChatViewModel item = items[i];
           bool isSelected = cellType == ChatCellType.addChat && item.isSelected;
-          
           return Container(
             color: isSelected ? AppColors.lightPinkColor : Colors.white,
             child: ListTile(
@@ -108,7 +107,7 @@ class ChatsList extends StatelessWidget {
                   }
                 ) : SizedBox(),
               onTap: (){
-                onSelect(item.entity);
+                onSelect(item);
               },
             ),
           );

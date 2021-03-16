@@ -1,6 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:messenger_mobile/modules/category/data/models/chat_view_model.dart';
+import 'package:messenger_mobile/modules/chat/domain/usecases/attachMessage.dart';
 import '../../../domain/usecases/delete_message.dart';
 import '../../../domain/usecases/params.dart';
 
@@ -9,10 +11,11 @@ import '../../../domain/entities/message.dart';
 part 'chat_todo_state.dart';
 
 class ChatTodoCubit extends Cubit<ChatTodoState> {
-  DeleteMessage deleteMessageUseCase;
-
+  final DeleteMessage deleteMessageUseCase;
+  final AttachMessage attachMessageUseCase;
   ChatTodoCubit({
     @required this.deleteMessageUseCase,
+    @required this.attachMessageUseCase,
   }) : super(ChatToDoDisabled());
 
   void selectMessage(Message newMessage){
@@ -38,7 +41,7 @@ class ChatTodoCubit extends Cubit<ChatTodoState> {
   void deleteMessage({@required int chatID,@required  bool forMe}) async {
     emit(ChatToDoLoading(
       selectedMessages: this.state.selectedMessages,
-      isDelete: this.state.isDelete,
+      isDelete: true,
     ));
     var ids = this.state.selectedMessages.map((e) => e.id.toString()).join(',');
     final result = await deleteMessageUseCase(
@@ -51,5 +54,18 @@ class ChatTodoCubit extends Cubit<ChatTodoState> {
     result.fold((l) => emit(ChatToDoError(errorMessage: l.message)), (r) => emit(ChatToDoDisabled()));
   }
 
+  void replyMessageToMore({List<ChatViewModel> chatIds}) async {
+    // emit(ChatToDoLoading(-
+    //   selectedMessages: this.state.selectedMessages,
+    //   isDelete: false,
+    // ));
+    var ids = this.state.selectedMessages.map((e) => e.id.toString()).join(',');
+    //TODO: ADD New ReplyMore UseCase
+   
+  }
+
+  void attachMessage(Message message) async {
+    await attachMessageUseCase(message);
+  }
 
 }
