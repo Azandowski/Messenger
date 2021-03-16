@@ -16,7 +16,7 @@ class MessageModel extends Message {
   final int colorId;
   final int deletionSeconds;
   final DateTime willBeDeletedAt;
-  final List<Message> transfer;
+  List<Message> transfer;
   final MessageStatus messageStatus;
   final MessageChat chat;
   MessageHandleType messageHandleType;
@@ -35,7 +35,7 @@ class MessageModel extends Message {
     this.messageStatus = MessageStatus.sent,
     this.toUser,
     this.chat,
-    this.messageHandleType = MessageHandleType.delete,
+    this.messageHandleType = MessageHandleType.newMessage,
   }) : super(
     id: id,
     isRead: isRead,

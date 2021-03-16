@@ -8,6 +8,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "14.0.0"
+  achievement_view:
+    dependency: "direct main"
+    description:
+      name: achievement_view
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.1"
   analyzer:
     dependency: transitive
     description:

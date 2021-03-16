@@ -18,7 +18,7 @@ class CreateGroupPage extends StatefulWidget {
 
   static Route route({ CreateGroupScreenMode mode, ChatEntity chatEntity}) {
     return MaterialPageRoute<void>(builder: (_) => CreateGroupPage(
-      mode: mode, entity: chatEntity,
+      mode: mode ?? CreateGroupScreenMode.create, entity: chatEntity,
     ));
   }
 

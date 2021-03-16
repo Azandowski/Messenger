@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:messenger_mobile/app/application.dart';
 
 import '../../../../../core/widgets/independent/buttons/bottom_action_button.dart';
 import '../../../../../core/widgets/independent/pickers/photo_picker.dart';
@@ -45,7 +46,7 @@ class CreateCategoryScreen extends StatefulWidget {
 // * * State
 
 class _CreateCategoryScreenState extends State<CreateCategoryScreen> implements ChatChooseDelegate {
-  NavigatorState get _navigator => navigatorKey.currentState;
+  NavigatorState get _navigator => sl<Application>().navKey.currentState;
   final CreateCategoryCubit cubit = sl<CreateCategoryCubit>();
   List<ChatViewModel> chats = [];
 
@@ -69,7 +70,7 @@ class _CreateCategoryScreenState extends State<CreateCategoryScreen> implements 
         cubit: cubit,
         listener: (context, state) {
           if (state is CreateCategoryError) {
-            Scaffold.of(context).showSnackBar(
+            ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(state.message, style: TextStyle(color: Colors.red)),
               ), // SnackBar

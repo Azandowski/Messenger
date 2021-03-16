@@ -20,6 +20,9 @@ enum Endpoints {
   categoryChats,
   reorderCategories,
   deleteMessage,
+  attachMessage,
+  disAttachMessage,
+  replyMore,
   //contacts
   sendContacts,
   fetchContacts,
@@ -121,6 +124,13 @@ extension EndpointsExtension on Endpoints {
         return '${Config.baseAPIpath.value}/messenger/get-contact';
       case Endpoints.getMessagesContext:
         return '${Config.baseAPIpath.value}/messenger/chat/${params[0]}/get-messages-by-search/${params[1]}';
+        return '${Config.baseAPIpath.value}/messenger/chat/${params[0]}/get-messages-by-search';
+      case Endpoints.attachMessage:
+        return '${Config.baseAPIpath.value}/messenger/chat/${params[0]}/set-top_message';
+      case Endpoints.disAttachMessage:
+        return '${Config.baseAPIpath.value}/messenger/chat/${params[0]}/unset-top_message';
+      case Endpoints.replyMore:
+        return '${Config.baseAPIpath.value}/messenger/chat/forward';
     }
   }
 

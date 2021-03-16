@@ -1,19 +1,20 @@
 
 import 'package:flutter/material.dart';
+import 'package:messenger_mobile/app/application.dart';
 import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
 import 'package:messenger_mobile/modules/chats/presentation/pages/chats_search_screen.dart';
 import '../../../../../app/appTheme.dart';
 import '../../../../../core/widgets/independent/dialogs/dialog_action_button.dart';
 import '../../../../../core/widgets/independent/dialogs/dialog_params.dart';
 import '../../../../../core/widgets/independent/dialogs/dialogs.dart';
+import '../../../../../locator.dart';
 import '../../chat_details/page/chat_detail_page.dart';
 import '../../time_picker/time_picker_screen.dart';
 
-import '../../../../../main.dart';
 
 class ChatScreenActions extends StatelessWidget {
   
-  NavigatorState get _navigator => navigatorKey.currentState;
+  NavigatorState get _navigator => sl<Application>().navKey.currentState;
   
   final TimePickerDelegate timePickerDelegate;
   final ChatEntity chatEntity;

@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:messenger_mobile/core/usecases/usecase.dart';
 import 'package:messenger_mobile/modules/chat/data/models/chat_message_response.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen_import.dart';
 
@@ -51,6 +52,9 @@ abstract class ChatDataSource {
   Stream<List<int>> get deleteIds;
   Future<Message> sendMessage(SendMessageParams params);
   Future<bool> deleteMessage(DeleteMessageParams params);
+  Future<bool> attachMessage(Message message);
+  Future<bool> disAttachMessage(NoParams noParams);
+  Future<bool> replyMore(ReplyMoreParams params);
   Future<void> leaveChat (int id);
   Future<ChatPermissions> updateChatSettings ({
     Map chatUpdates,
@@ -87,6 +91,11 @@ class ChatDataSourceImpl implements ChatDataSource {
         (updates) {
           MessageModel messageModel = MessageModel.fromJson(updates['message']);
           messageModel.messageHandleType = handleTypeMessage(updates['type']);
+          var transfers;
+          if(updates['transfer'] != null){
+            transfers = ((updates['transfer'] ?? []) as List).map((e) => Transfer.fromJson(e)).toList();
+          }
+          messageModel.transfer = transfers;
           _controller.add(messageModel);
         }
       );
@@ -104,8 +113,10 @@ class ChatDataSourceImpl implements ChatDataSource {
     switch(type){
       case 'NewMessage':
         return MessageHandleType.newMessage;
-      case 'deleteMessage':
-        return MessageHandleType.delete;
+      case 'SetTopMessage':
+        return MessageHandleType.setTopMessage;
+      case 'unSetTopMessage':
+        return MessageHandleType.unSetTopMessage;
     }
   }
    
@@ -364,8 +375,62 @@ class ChatDataSourceImpl implements ChatDataSource {
       body: json.encode(params.body),
       headers: Endpoints.changeChatSettings.getHeaders(token: sl<AuthConfig>().token),
     );
-    print(response.statusCode);
+    if (response.isSuccess) {
+      return true;
+    } else {
+      throw ServerFailure(message: ErrorHandler.getErrorMessage(response.body.toString()));
+    }
+  }
+
+  @override
+  Future<bool> attachMessage(Message message) async {
+    http.Response response = await client.post(
+      Endpoints.attachMessage.buildURL(
+        urlParams: [
+          '$id'
+        ]
+      ),
+      body: json.encode({
+        'message_id': message.id.toString()
+      }),
+      headers: Endpoints.changeChatSettings.getHeaders(token: sl<AuthConfig>().token),
+    );
     print(response.body);
+    print(response.statusCode);
+    if (response.isSuccess) {
+      return true;
+    } else {
+      throw ServerFailure(message: ErrorHandler.getErrorMessage(response.body.toString()));
+    }
+  }
+
+  @override
+  Future<bool> disAttachMessage(NoParams noParams) async {
+    http.Response response = await client.post(
+      Endpoints.disAttachMessage.buildURL(
+        urlParams: [
+          '$id'
+        ]
+      ),
+      headers: Endpoints.changeChatSettings.getHeaders(token: sl<AuthConfig>().token),
+    );
+    if (response.isSuccess) {
+      return true;
+    } else {
+      throw ServerFailure(message: ErrorHandler.getErrorMessage(response.body.toString()));
+    }
+  }
+
+  @override
+  Future<bool> replyMore(ReplyMoreParams params) async {
+    http.Response response = await client.post(
+      Endpoints.replyMore.buildURL(),
+      body: json.encode({
+        'chats':   params.chatIds.map((e) => e.toString()).join(','),
+        'forward': params.messageIds.map((e) => e.toString()).join(',')
+      }),
+      headers: Endpoints.changeChatSettings.getHeaders(token: sl<AuthConfig>().token),
+    );
     if (response.isSuccess) {
       return true;
     } else {

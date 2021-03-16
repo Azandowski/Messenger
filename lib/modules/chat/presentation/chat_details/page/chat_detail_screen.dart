@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:messenger_mobile/app/application.dart';
 import 'package:messenger_mobile/core/widgets/independent/dialogs/dialog_action_button.dart';
 import 'package:messenger_mobile/core/widgets/independent/dialogs/dialog_params.dart';
 import 'package:messenger_mobile/core/widgets/independent/dialogs/dialogs.dart';
@@ -10,7 +11,7 @@ import 'package:messenger_mobile/modules/groupChat/presentation/create_group/cre
 
 import '../../../../../core/blocs/chat/bloc/bloc/chat_cubit.dart';
 import '../../../../../core/widgets/independent/buttons/icon_text_button.dart';
-import '../../../../../main.dart';
+import '../../../../../locator.dart';
 import '../../../../category/domain/entities/chat_permissions.dart';
 import '../../../../creation_module/domain/entities/contact.dart';
 import '../../../../groupChat/presentation/choose_contacts/choose_contacts_page.dart';
@@ -44,7 +45,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> implements ContactC
   
   ChatDetailsCubit _chatDetailsCubit;
 
-  NavigatorState get _navigator => navigatorKey.currentState;
+  NavigatorState get _navigator => sl<Application>().navKey.currentState;
 
   @override
   void initState() {
@@ -157,7 +158,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> implements ContactC
                   _chatDetailsCubit.onFinish(
                     id: widget.chatEntity.chatId, 
                     callback: (newPermissions) {
-                      navigatorKey.currentContext.read<ChatGlobalCubit>().updateChatSettings(
+                      sl<Application>().navKey.currentContext.read<ChatGlobalCubit>().updateChatSettings(
                         chatPermissions: newPermissions, id: widget.chatEntity.chatId
                       );
                     }

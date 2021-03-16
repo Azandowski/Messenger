@@ -18,7 +18,7 @@ class MarqueText extends StatelessWidget {
       scrollAxis: Axis.horizontal,
       crossAxisAlignment: CrossAxisAlignment.start,
       blankSpace: 8.0,
-      velocity: 15.0,
+      velocity: text.length.toDouble(),
       showFadingOnlyWhenScrolling: false,
       accelerationDuration: Duration(seconds: 1),
       accelerationCurve: Curves.bounceOut,

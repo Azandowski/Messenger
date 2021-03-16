@@ -113,3 +113,13 @@ class GetMessagesParams {
     @required this.direction
   });
 }
+
+class ReplyMoreParams {
+  final List<int> chatIds;
+  final List<int> messageIds;
+
+  ReplyMoreParams({
+    @required this.chatIds,
+    @required this.messageIds
+  });
+}

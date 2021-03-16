@@ -37,5 +37,8 @@ abstract class ChatRepository {
   });
   
   Future<void> disposeChat();
+  Future<Either<Failure, bool>> attachMessage(Message message);
+  Future<Either<Failure, bool>> disAttachMessage(NoParams noParams);
+  Future<Either<Failure, bool>> replyMore(ReplyMoreParams params);
   Future<Either<Failure, ChatMessageResponse>> getChatMessageContext (int chatID, int messageID);
 }

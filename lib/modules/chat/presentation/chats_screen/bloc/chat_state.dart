@@ -8,19 +8,21 @@ abstract class ChatState extends Equatable {
   final int unreadCount;
   final bool showBottomPin;
 
+  final Message topMessage;
   const ChatState({
     @required this.messages,
     @required this.hasReachedMax,
     this.hasReachBottomMax = true,
     this.wallpaperPath,
     this.unreadCount,
-    this.showBottomPin
+    this.showBottomPin,
+    this.topMessage,
   });
 
   @override
   List<Object> get props => [
     messages, hasReachedMax, wallpaperPath, hasReachBottomMax,
-    unreadCount, showBottomPin, showBottomPin
+    unreadCount, showBottomPin, showBottomPin, topMessage
   ];
 
   ChatState copyWith ({
@@ -41,6 +43,7 @@ class ChatInitial extends ChatState {
   final int focusMessageID;
   final int unreadCount;
   final bool showBottomPin;
+  final Message topMessage;
 
   ChatInitial({
     @required this.messages,
@@ -49,13 +52,15 @@ class ChatInitial extends ChatState {
     this.hasReachBottomMax = true,
     this.focusMessageID,
     this.unreadCount,
-    this.showBottomPin
+    this.showBottomPin,
+    this.topMessage,
   }) : super(
     messages: messages, 
     hasReachedMax: hasReachedMax,
     wallpaperPath: wallpaperPath,
     hasReachBottomMax: hasReachBottomMax,
-    unreadCount: unreadCount
+    unreadCount: unreadCount,
+    topMessage: topMessage
   );
 
   @override
@@ -87,7 +92,8 @@ class ChatInitial extends ChatState {
     hasReachBottomMax, 
     focusMessageID,
     unreadCount,
-    showBottomPin
+    showBottomPin,
+    topMessage
   ];
 }
 
@@ -97,6 +103,7 @@ class ChatLoading extends ChatState {
   final List<Message> messages;
   final bool hasReachedMax;
   final bool hasReachBottomMax;
+  final Message topMessage;
   final String wallpaperPath;
   final RequestDirection direction;
   final int unreadCount;
@@ -106,6 +113,7 @@ class ChatLoading extends ChatState {
     @required this.isPagination,
     @required this.messages,
     @required this.hasReachedMax,
+    this.topMessage,
     this.wallpaperPath,
     this.hasReachBottomMax = true ,
     this.direction,
@@ -116,7 +124,8 @@ class ChatLoading extends ChatState {
     hasReachedMax: hasReachedMax,
     wallpaperPath: wallpaperPath,
     hasReachBottomMax: hasReachBottomMax,
-    unreadCount: unreadCount
+    unreadCount: unreadCount,
+    topMessage: topMessage
   );
 
   @override 
@@ -150,7 +159,8 @@ class ChatLoading extends ChatState {
     hasReachBottomMax,
     direction,
     unreadCount,
-    showBottomPin
+    showBottomPin,
+    topMessage
   ];  
 }
 
@@ -164,6 +174,7 @@ class ChatLoadingSilently extends ChatState {
   final bool hasReachBottomMax;
   final int unreadCount;
   final bool showBottomPin;
+  final Message topMessage;
 
   ChatLoadingSilently({
     @required this.messages,
@@ -171,13 +182,15 @@ class ChatLoadingSilently extends ChatState {
     @required this.wallpaperPath,
     this.hasReachBottomMax = true,
     this.unreadCount,
-    this.showBottomPin
+    this.showBottomPin,
+    this.topMessage
   }) : super(
     messages: messages,
     hasReachBottomMax: hasReachBottomMax,
     hasReachedMax: hasReachedMax,
     unreadCount: unreadCount,
-    wallpaperPath: wallpaperPath
+    wallpaperPath: wallpaperPath,
+    topMessage: topMessage
   );
 
   @override 
@@ -205,10 +218,12 @@ class ChatLoadingSilently extends ChatState {
   List<Object> get props => [
     messages, 
     hasReachedMax,
+    topMessage,
     wallpaperPath,
     hasReachBottomMax,
     unreadCount,
-    showBottomPin
+    showBottomPin,
+    topMessage
   ];
 }
 
@@ -221,11 +236,13 @@ class ChatError extends ChatState {
   final String wallpaperPath;
   final int unreadCount;
   final bool showBottomPin;
+  final Message topMessage;
 
   ChatError({
     @required this.messages,
     @required this.message,
     @required this.hasReachedMax,
+    this.topMessage,
     this.wallpaperPath,
     this.hasReachBottomMax = true,
     this.unreadCount,
@@ -235,7 +252,8 @@ class ChatError extends ChatState {
     hasReachedMax: hasReachedMax,
     wallpaperPath: wallpaperPath,
     hasReachBottomMax: hasReachBottomMax,
-    unreadCount: unreadCount
+    unreadCount: unreadCount,
+    topMessage: topMessage
   );
 
   @override 
@@ -269,6 +287,7 @@ class ChatError extends ChatState {
     wallpaperPath,
     hasReachBottomMax,
     unreadCount,
-    showBottomPin
+    showBottomPin,
+    topMessage
   ];
 }

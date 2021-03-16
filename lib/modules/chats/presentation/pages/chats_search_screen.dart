@@ -141,7 +141,8 @@ class _ChatsSearchScreenState extends State<ChatsSearchScreen> implements Search
                           chatEntity: ChatEntity(
                             title: currentItem.chat.name, 
                             chatId: currentItem.chat.id, 
-                            description: ''
+                            description: '',
+                            date: currentItem.dateTime,
                           ),
                           messageID: currentItem.id,
                         )
