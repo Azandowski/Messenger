@@ -128,6 +128,11 @@ class ChatDetailsCubit extends Cubit<ChatDetailsState> {
           adminMessageSend: newValue
         );
         break;
+      case ChatSettings.forwardMessages:
+        newPermissions = this.state.chatDetailed.settings?.copyWith(
+          isForwardOn: newValue
+        );
+        break;
     }
 
     var newState = this.state.copyWith(chatDetailed: this.state.chatDetailed.copyWith(
@@ -150,7 +155,8 @@ class ChatDetailsCubit extends Cubit<ChatDetailsState> {
         permissionModel: ChatPermissionModel(
           isSoundOn: newPermissions.isSoundOn,
           isMediaSendOn: newPermissions.isMediaSendOn,
-          adminMessageSend: newPermissions.adminMessageSend
+          adminMessageSend: newPermissions.adminMessageSend,
+          isForwardOn: newPermissions.isForwardOn
         )
       ));
 
@@ -167,6 +173,7 @@ class ChatDetailsCubit extends Cubit<ChatDetailsState> {
     return 
       initialPermissions?.isSoundOn != this.state.chatDetailed?.settings?.isSoundOn || 
         initialPermissions?.isMediaSendOn != this.state.chatDetailed?.settings?.isMediaSendOn ||
-          initialPermissions.adminMessageSend != this.state.chatDetailed?.settings?.adminMessageSend;
+          initialPermissions.adminMessageSend != this.state.chatDetailed?.settings?.adminMessageSend || 
+            initialPermissions.isForwardOn != this.state.chatDetailed?.settings?.isForwardOn; 
   }
 }

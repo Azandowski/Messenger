@@ -7,6 +7,7 @@ import 'package:messenger_mobile/core/utils/search_engine.dart';
 import 'package:messenger_mobile/core/widgets/independent/small_widgets/cell_skeleton_item.dart';
 import 'package:messenger_mobile/core/widgets/independent/small_widgets/chat_count_view.dart';
 import 'package:messenger_mobile/modules/category/data/models/chat_view_model.dart';
+import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
 import 'package:messenger_mobile/modules/chat/domain/entities/message.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen.dart';
 import 'package:messenger_mobile/modules/chats/domain/repositories/chats_repository.dart';
@@ -184,7 +185,7 @@ class _ChatsSearchScreenState extends State<ChatsSearchScreen> implements Search
 
   void _onScroll () {
     var state = _searchChatsCubit.state;
-    if (scrollController.isPaginated && !(state is SearchChatsLoading) && !state.data.messages.paginationData.hasNextPage) {
+    if (scrollController.isPaginated && !(state is SearchChatsLoading) && state.data.messages.paginationData.hasNextPage) {
       _searchChatsCubit.search(
         queryText: searchBar.controller.text.trim(),
         isPagination: true,

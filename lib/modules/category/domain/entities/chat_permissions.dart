@@ -5,22 +5,26 @@ class ChatPermissions extends Equatable {
   // Only Admins
   final bool isMediaSendOn;
   final bool adminMessageSend;
+  final bool isForwardOn;
 
   ChatPermissions({
     this.isSoundOn = true,
     this.isMediaSendOn = true,
-    this.adminMessageSend = false
+    this.isForwardOn = true,
+    this.adminMessageSend = false,
   });
 
   ChatPermissions copyWith({
     bool isSoundOn,
     bool isMediaSendOn,
-    bool adminMessageSend
+    bool adminMessageSend,
+    bool isForwardOn
   }) {
     return ChatPermissions(
       isSoundOn: isSoundOn ?? this.isSoundOn,
       isMediaSendOn: isMediaSendOn ?? this.isMediaSendOn,
-      adminMessageSend: adminMessageSend ?? this.adminMessageSend
+      adminMessageSend: adminMessageSend ?? this.adminMessageSend,
+      isForwardOn: isForwardOn ?? this.isForwardOn
     );
   }
 
@@ -28,6 +32,7 @@ class ChatPermissions extends Equatable {
   List<Object> get props => [
     isSoundOn, 
     isMediaSendOn,
-    adminMessageSend
+    adminMessageSend,
+    isForwardOn
   ];
 }

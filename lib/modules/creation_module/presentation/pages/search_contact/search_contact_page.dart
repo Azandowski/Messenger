@@ -5,15 +5,26 @@ import 'package:messenger_mobile/core/widgets/independent/small_widgets/cell_ske
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen_import.dart';
 import 'package:messenger_mobile/modules/creation_module/data/datasources/creation_module_datasource.dart';
 import 'package:messenger_mobile/modules/creation_module/data/repositories/creation_module_repository.dart';
+import 'package:messenger_mobile/modules/creation_module/domain/entities/contact.dart';
 import 'package:messenger_mobile/modules/creation_module/domain/repositories/creation_module_repository.dart';
 import 'package:messenger_mobile/modules/creation_module/domain/usecases/search_contacts.dart';
 import 'package:messenger_mobile/modules/creation_module/presentation/bloc/search_contact_cubit/search_contact_cubit.dart';
 import 'package:messenger_mobile/modules/creation_module/presentation/widgets/contact_cell.dart';
 
 class SearchContactPage extends StatefulWidget {
-  
-  static Route route() {
-    return MaterialPageRoute<void>(builder: (_) => SearchContactPage());
+
+  final List<ContactEntity> initialContacts;
+
+  SearchContactPage({
+    @required this.initialContacts
+  });
+
+  static Route route({
+    List<ContactEntity> initialContacts
+  }) {
+    return MaterialPageRoute<void>(builder: (_) => SearchContactPage(
+      initialContacts: initialContacts
+    ));
   }
   
   @override
@@ -65,6 +76,8 @@ class _SearchContactPageState extends State<SearchContactPage> implements Search
        ))
     );
 
+    _searchContactCubit.initInitialContacts(widget.initialContacts ?? []);
+
     super.initState();
   }
 
@@ -93,23 +106,19 @@ class _SearchContactPageState extends State<SearchContactPage> implements Search
             return ListView.separated(
               controller: scrollController,
               itemBuilder: (context, int index) {
-                if (
-                  state is SearchContactsLoading && 
-                  (!state.isPagination || 
-                    index >= state.contacts.data.length
-                  )) {
-                  return CellShimmerItem(circleSize: 35,);
-                } else {
-                  return ContactCell(
-                    contactItem: state.contacts.data[index],
-                    onTrilinIconTapped: () async {
-                      print("HERE START CHAT");
-                    }
-                  );
+                if (index >= state.contacts.data.length) {
+                  return CellShimmerItem(circleSize: 35);
                 }
+
+                return ContactCell(
+                  contactItem: state.contacts.data[index],
+                  onTrilinIconTapped: () async {
+                    print("HERE START CHAT");
+                  }
+                );
               }, 
               separatorBuilder: (_, int index) => Divider(), 
-              itemCount: state.contacts.data.length + (state is SearchContactsLoading ? 10 : 0)
+              itemCount: state.contacts.data.length + (state is SearchContactsLoading ? 3 : 0)
             );
           }, 
         )
@@ -130,7 +139,7 @@ class _SearchContactPageState extends State<SearchContactPage> implements Search
 
   void _onScroll () {
     var state = _searchContactCubit.state;
-    if (scrollController.isPaginated && !(state is SearchContactsLoading) && !state.contacts.paginationData.hasNextPage) {
+    if (scrollController.isPaginated && !(state is SearchContactsLoading) && state.contacts.paginationData.hasNextPage) {
       _searchContactCubit.search(
         phoneNumber: searchBar.controller.text.trim(),
         isPagination: true,

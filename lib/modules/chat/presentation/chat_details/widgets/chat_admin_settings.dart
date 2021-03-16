@@ -53,6 +53,19 @@ class _ChatAdminSettingsState extends State<ChatAdminSettings> {
               ChatSettings.noMedia
             );
           }
+        ),
+        _buildItem(
+          title: ChatSettings.forwardMessages.title,
+          value: ChatSettings.forwardMessages.getValueText(widget.permissions),
+          onPress: () {
+            _showDialog(
+              context,
+              (int newValue) {
+                widget.didSelectOption(ChatSettings.forwardMessages, newValue == 1);
+              },
+              ChatSettings.forwardMessages
+            );
+          }
         )
       ],
     );

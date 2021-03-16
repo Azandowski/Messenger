@@ -42,7 +42,7 @@ class _ChooseChatsPageState extends State<ChooseChatsPage> {
   @override
   void initState() {
     ChatGlobalCubit _cubit = context.read<ChatGlobalCubit>();
-    if (_cubit.state.currentCategory != 0) {
+    if (_cubit.state.currentCategory != 0 && _cubit.state.currentCategory != null) {
       
       // Load All Chats
       _cubit.loadChats(isPagination: false);

@@ -30,7 +30,7 @@ class ChatSettingItem extends StatelessWidget {
 }
 
 enum ChatSettings {
-  noSound, noMedia, adminSendMessage
+  noSound, noMedia, adminSendMessage, forwardMessages
 }
 
 extension ChatSettingsUIExtension on ChatSettings {
@@ -42,6 +42,8 @@ extension ChatSettingsUIExtension on ChatSettings {
         return 'Без фото и видео';
       case ChatSettings.adminSendMessage:
         return 'Отправка сообщений';
+      case ChatSettings.forwardMessages:
+        return 'Запрет на перессылки';
       default:
         return '';
     }
@@ -55,6 +57,8 @@ extension ChatSettingsUIExtension on ChatSettings {
         return permissions?.isMediaSendOn ?? false;
       case ChatSettings.adminSendMessage:
         return permissions?.adminMessageSend ?? false;
+      case ChatSettings.forwardMessages:
+        return permissions?.isForwardOn ?? true;
       default:
         return false;
     }
@@ -72,6 +76,11 @@ extension ChatSettingsUIExtension on ChatSettings {
           'Только Админы',
           'Все участники'
         ];
+      case ChatSettings.forwardMessages:
+        return [
+          'Да',
+          'Нет'
+        ];
       default:
         return null;
     }
@@ -84,6 +93,8 @@ extension ChatSettingsUIExtension on ChatSettings {
         return (permissions?.adminMessageSend ?? false) ? 'Только админы' : 'Все участники';
       case ChatSettings.noMedia:
         return (permissions?.isMediaSendOn ?? true) ? 'Все участники' : 'Только админы';
+      case ChatSettings.forwardMessages:
+        return (permissions?.isForwardOn ?? true) ? 'Нет' : 'Да';
       default:
         return null;
     }
@@ -95,6 +106,8 @@ extension ChatSettingsUIExtension on ChatSettings {
         return 'Выберите, кто может отправлять сообщения в группе';
       case ChatSettings.noMedia:
         return 'Выберите, кто может отправлять фото, видео и документы в группе';
+      case ChatSettings.forwardMessages:
+        return 'Выберите можно ли переслать сообщения';
       default:
         return null;
     }

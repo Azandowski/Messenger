@@ -167,9 +167,11 @@ extension ChatScreenStateHelper on ChatScreenState {
 
 
       if (scrollController != null && state.focusMessageID != null) {
-        int index = state.messages.indexWhere((e) => e.id == 597);
+        int index = state.messages.indexWhere((e) => e.id == state.focusMessageID);
         if (index != -1) {
-          scrollController.scrollToIndex(index);
+          scrollController.scrollToIndex(
+            index, duration: Duration(seconds: 2), preferPosition: AutoScrollPosition.middle
+          );
         }
       }
     } else {

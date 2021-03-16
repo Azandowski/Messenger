@@ -1,4 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:messenger_mobile/app/appTheme.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chats_screen/helpers/message_user_viewmodel.dart';
 
 import '../../../../core/services/network/config.dart';
 import '../../../chat/domain/entities/chat_actions.dart';
@@ -31,13 +34,29 @@ class ChatViewModel {
       return 'Сейчас в прямом эфире'.toUpperCase();
     } else if (entity.lastMessage != null) {
       if (entity.lastMessage.chatActions != null) {
-        return entity.lastMessage.chatActions.key;
+        var userViewModel = MessageUserViewModel(entity.lastMessage.toUser);
+        
+        return entity.lastMessage.chatActions.getDescription(
+          userViewModel.name
+        );
       }
       return entity.lastMessage.text ?? '';
     } else if (entity.chatCategory != null){
       return entity.chatCategory.name ?? '';
     } else {
       return entity.description ?? '';
+    }
+  }
+
+  TextStyle get descriptionStyle {
+    if (isInLive) {
+      return TextStyle(
+        color: AppColors.indicatorColor, fontSize: 12, fontWeight: FontWeight.w500
+      ); 
+    } else if (entity.lastMessage?.chatActions != null) {
+      return AppFontStyles.placeholderStyle;
+    } else {
+      return AppFontStyles.mediumStyle;
     }
   }
 
