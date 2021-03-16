@@ -154,6 +154,7 @@ Future<void> init() async {
       createCategory: sl(),
       getImageUseCase: sl(),
       transferChats: sl(),
+      authConfig: sl(),
       getCategoryChats: sl()));
 
   //Use Cases

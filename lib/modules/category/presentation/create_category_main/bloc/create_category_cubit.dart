@@ -21,137 +21,115 @@ import '../../../domain/usecases/transfer_chat.dart';
 part 'create_category_state.dart';
 
 class CreateCategoryCubit extends Cubit<CreateCategoryState> {
-  
   // * * Constructor
-  
+
   final CreateCategoryUseCase createCategory;
   final GetImage getImageUseCase;
   final TransferChats transferChats;
   final GetCategoryChats getCategoryChats;
+  final AuthConfig authConfig;
 
   CreateCategoryCubit({
     @required this.createCategory,
     @required this.getImageUseCase,
     @required this.transferChats,
-    @required this.getCategoryChats
-  }) : super(CreateCategoryLoading(
-    imageFile: null,
-    chats: []
-  )) {
+    @required this.getCategoryChats,
+    @required this.authConfig,
+  }) : super(CreateCategoryLoading(imageFile: null, chats: [])) {
     initCubit();
   }
 
   // * * Events
 
-  void initCubit () {
-    emit(CreateCategoryNormal(
-      imageFile: this.state.imageFile, 
-      chats: [])
-    );
+  void initCubit() {
+    emit(CreateCategoryNormal(imageFile: this.state.imageFile, chats: []));
   }
 
-  Future<void> selectPhoto (ImageSource imageSource) async {
+  Future<void> selectPhoto(ImageSource imageSource) async {
     var pickedFile = await getImageUseCase(imageSource);
     pickedFile.fold(
-      (failure) => emit(CreateCategoryError(message: 'Unable to get image')), 
-      (image) {
-        emit(CreateCategoryNormal(imageFile: image, chats: this.state.chats));
+        (failure) => emit(CreateCategoryError(message: 'Unable to get image')),
+        (image) {
+      emit(CreateCategoryNormal(imageFile: image, chats: this.state.chats));
     });
   }
 
-  Future<void> sendData (CreateCategoryScreenMode mode, int categoryId) async {
+  Future<void> sendData(CreateCategoryScreenMode mode, int categoryId) async {
     // TODO: Update Chat IDS
-    
+
     emit(CreateCategoryLoading(
-      imageFile: this.state.imageFile,
-      chats: this.state.chats
-    ));
-    
+        imageFile: this.state.imageFile, chats: this.state.chats));
+
     var response = await createCategory(CreateCategoryParams(
-      token: sl<AuthConfig>().token, 
-      avatarFile: this.state.imageFile,
-      name: nameController.text, 
-      chatIds: this.state.chats.map((e) => e.chatId).toList(),
-      isCreate: mode == CreateCategoryScreenMode.create,
-      categoryID: categoryId
-    ));
+        token: authConfig.token,
+        avatarFile: this.state.imageFile,
+        name: nameController.text,
+        chatIds: this.state.chats.map((e) => e.chatId).toList(),
+        isCreate: mode == CreateCategoryScreenMode.create,
+        categoryID: categoryId));
 
     response.fold(
-      (failure) => emit(CreateCategoryError(message: failure.message)), 
-      (categories) => emit(CreateCategorySuccess(
-        updatedCategories: categories,
-        chats: this.state.chats,
-        imageFile: this.state.imageFile
-      ))
-    );
+        (failure) => emit(CreateCategoryError(message: failure.message)),
+        (categories) => emit(CreateCategorySuccess(
+            updatedCategories: categories,
+            chats: this.state.chats,
+            imageFile: this.state.imageFile)));
   }
 
-  Future<void> doTransferChats (int newCategory) async {
+  Future<void> doTransferChats(int newCategory) async {
     emit(CreateCategoryTransferLoading(
-      chats: this.state.chats, 
-      imageFile: this.state.imageFile, 
-      categoryID: newCategory, 
-      chatsIDs: movingChats
-    ));
-    
-    var response = await transferChats(TransferChatsParams(
-      newCategoryId: newCategory, chatsIDs: movingChats
-    ));
+        chats: this.state.chats,
+        imageFile: this.state.imageFile,
+        categoryID: newCategory,
+        chatsIDs: movingChats));
+
+    var response = await transferChats(
+        TransferChatsParams(newCategoryId: newCategory, chatsIDs: movingChats));
 
     response.fold(
-      (failure) => emit(CreateCategoryError(message: failure.message)), 
-      (_) {
-        var updatedChats = this.state.chats
+        (failure) => emit(CreateCategoryError(message: failure.message)), (_) {
+      var updatedChats = this
+          .state
+          .chats
           .where((e) => !movingChats.contains(e.chatId))
-          .map((e) => e.clone()).toList();
-        emit(CreateCategoryNormal(
-          imageFile: this.state.imageFile, 
-          chats: updatedChats)
-        );
+          .map((e) => e.clone())
+          .toList();
+      emit(CreateCategoryNormal(
+          imageFile: this.state.imageFile, chats: updatedChats));
     });
-  } 
-
-  void addChats (List<ChatEntity> comingChats){
-    emit(CreateCategoryNormal(
-      imageFile: this.state.imageFile, 
-      chats: comingChats)
-    );
   }
 
-  void deleteChat (ChatEntity chat){
-    var updatedChats = this.state.chats
-      .where((e) => e.chatId != chat.chatId)
-      .map((e) => e.clone()).toList();
-
+  void addChats(List<ChatEntity> comingChats) {
     emit(CreateCategoryNormal(
-      imageFile: this.state.imageFile, 
-      chats: updatedChats)
-    );
+        imageFile: this.state.imageFile, chats: comingChats));
   }
 
-  Future<void> prepareEditing (CategoryEntity entity) async {
+  void deleteChat(ChatEntity chat) {
+    var updatedChats = this
+        .state
+        .chats
+        .where((e) => e.chatId != chat.chatId)
+        .map((e) => e.clone())
+        .toList();
+
+    emit(CreateCategoryNormal(
+        imageFile: this.state.imageFile, chats: updatedChats));
+  }
+
+  Future<void> prepareEditing(CategoryEntity entity) async {
     nameController.text = entity.name;
     defaultImageUrl = entity.avatar;
 
-    emit(CreateCategoryChatsLoading(
-      imageFile: null,
-      chats: []
-    ));
+    emit(CreateCategoryChatsLoading(imageFile: null, chats: []));
 
-    var response = await getCategoryChats(GetCategoryChatsParams(
-      token: sl<AuthConfig>().token, 
-      categoryID: entity.id
-    ));
+    var response = await getCategoryChats(
+      GetCategoryChatsParams(token: authConfig.token, categoryID: entity.id),
+    );
 
     response.fold(
-      (failure) => emit(CreateCategoryError(message: failure.message)), 
-      (chats) => emit(
-        CreateCategoryNormal(
-          imageFile: this.state.imageFile,
-          chats: chats
-        )
-      )
-    );
+        (failure) => emit(CreateCategoryError(message: failure.message)),
+        (chats) => emit(CreateCategoryNormal(
+            imageFile: this.state.imageFile, chats: chats)));
   }
 
   // * * Local Data
