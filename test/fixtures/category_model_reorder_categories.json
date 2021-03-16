@@ -1,0 +1,11 @@
+{
+    "categories":[
+        {
+            "id": 1,
+            "name":"name",
+            "avatar":"avatar",
+            "full_link":"avatar",
+            "total_chats":1
+        }
+    ]
+}

@@ -42,22 +42,26 @@ abstract class CategoryDataSource {
 class CategoryDataSourceImpl implements CategoryDataSource {
   http.MultipartRequest multipartRequest;
   final http.Client client;
+  final AuthConfig authConfig;
 
   CategoryDataSourceImpl(
-      {@required this.multipartRequest, @required this.client});
+      {@required this.multipartRequest,
+      @required this.client,
+      @required this.authConfig});
 
   /**
    * * Request to create new category
    * * Returns: List of categories of the user
    */
   @override
-  Future<List<CategoryEntity>> createCategory(
-      {bool isCreate,
-      int categoryID,
-      File file,
-      String name,
-      List<int> chatIds,
-      String token}) async {
+  Future<List<CategoryEntity>> createCategory({
+    bool isCreate,
+    int categoryID,
+    File file,
+    String name,
+    List<int> chatIds,
+    String token,
+  }) async {
     var url = isCreate
         ? Endpoints.createCategory.buildURL()
         : Endpoints.updateCategory.buildURL(urlParams: ['$categoryID']);
@@ -107,11 +111,10 @@ class CategoryDataSourceImpl implements CategoryDataSource {
     var ednpoint = Endpoints.deleteCategory;
     http.Response response = await client.delete(
         ednpoint.buildURL(urlParams: [id.toString()]),
-        headers:
-            Endpoints.getCurrentUser.getHeaders(token: sl<AuthConfig>().token));
+        headers: Endpoints.getCurrentUser.getHeaders(token: authConfig.token));
     if (response.statusCode >= 200 && response.statusCode <= 299) {
       final categories = (json.decode(response.body) as List)
-          .map((e) => CategoryModel.fromJson(e))
+          .map<CategoryModel>((e) => CategoryModel.fromJson(e))
           .toList();
       return categories;
     } else {
@@ -126,7 +129,7 @@ class CategoryDataSourceImpl implements CategoryDataSource {
     Endpoints endpoint = Endpoints.transferChats;
 
     http.Response response = await client.post(endpoint.buildURL(),
-        headers: endpoint.getHeaders(token: sl<AuthConfig>().token),
+        headers: endpoint.getHeaders(token: authConfig.token),
         body: json.encode(
             {'new_category': '$categoryID', 'chats': chatsIDs.join(',')}));
 
@@ -148,7 +151,7 @@ class CategoryDataSourceImpl implements CategoryDataSource {
 
     http.Response response = await client.post(endpoint.buildURL(),
         headers: endpoint.getHeaders(
-          token: sl<AuthConfig>().token,
+          token: authConfig.token,
         ),
         body: json.encode({'orders': categoryUpdates}));
 

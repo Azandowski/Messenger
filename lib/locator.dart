@@ -87,7 +87,6 @@ Future<void> init() async {
   sl.registerLazySingleton(() => SaveToken(sl()));
   sl.registerLazySingleton(() => GetChats(sl()));
 
-
   // Repository
 
   sl.registerLazySingleton<AuthenticationRepository>(
@@ -119,23 +118,20 @@ Future<void> init() async {
   );
 
   sl.registerLazySingleton<ProfileDataSource>(
-    () => ProfileDataSourceImpl(client: sl()));
+      () => ProfileDataSourceImpl(client: sl()));
 
   sl.registerLazySingleton<ChatsDataSource>(
       () => ChatsDataSourceImpl(client: sl(), socketService: sl()));
 
   sl.registerLazySingleton<SocketService>(
-    () =>  SocketService(
-      authConfig: sl()
-    )
-  );
+      () => SocketService(authConfig: sl()));
 
   //USECASE
   sl.registerLazySingleton(() => FetchContacts(CreationModuleRepositoryImpl(
       networkInfo: sl(),
       dataSource: CreationModuleDataSourceImpl(client: sl()))));
   sl.registerLazySingleton(() => CreateChatGruopUseCase(repository: sl()));
-  
+
   // Bloc
   sl.registerFactory(() => ContactBloc(fetchContacts: sl()));
 
@@ -145,14 +141,11 @@ Future<void> init() async {
       ));
 
   // DataSources
-  sl.registerLazySingleton<ChatGroupRemoteDataSource>(
-    () => ChatGroupRemoteDataSourceImpl(
-      client: sl(),
-      multipartRequest: http.MultipartRequest(
-        'POST', Endpoints.createGroupChat.buildURL()
-      )
-    )
-  );
+  sl.registerLazySingleton<ChatGroupRemoteDataSource>(() =>
+      ChatGroupRemoteDataSourceImpl(
+          client: sl(),
+          multipartRequest: http.MultipartRequest(
+              'POST', Endpoints.createGroupChat.buildURL())));
 
   // CreateCategory
 
@@ -180,6 +173,7 @@ Future<void> init() async {
   sl.registerLazySingleton<CategoryDataSource>(() => CategoryDataSourceImpl(
       multipartRequest:
           http.MultipartRequest('POST', Endpoints.createCategory.buildURL()),
+      authConfig: sl(),
       client: sl()));
 
   //! Core
