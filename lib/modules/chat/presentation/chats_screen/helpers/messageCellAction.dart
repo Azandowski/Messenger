@@ -31,7 +31,7 @@ extension MessageCellActionsUiExtensin on MessageCellActions {
       case MessageCellActions.copyMessage:
         return Icon(Icons.copy);
       case MessageCellActions.attachMessage:
-        return Icon(Icons.attach_money);
+        return Icon(Icons.push_pin);
       case MessageCellActions.replyMessage:
         return Icon(Icons.reply_rounded);
       case MessageCellActions.replyMore:
