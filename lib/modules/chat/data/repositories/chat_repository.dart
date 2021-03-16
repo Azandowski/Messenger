@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
+import 'package:messenger_mobile/modules/chat/data/models/chat_message_response.dart';
 
 import '../../../../core/error/failures.dart';
 import '../../../../core/services/network/network_info.dart';
@@ -168,7 +169,7 @@ class ChatRepositoryImpl extends ChatRepository {
   }
 
   @override
-  Future<Either<Failure, PaginatedResultViaLastItem<Message>>> getChatMessages(
+  Future<Either<Failure, ChatMessageResponse>> getChatMessages(
     int lastMessageId,
     RequestDirection direction
   ) async {
@@ -226,7 +227,7 @@ class ChatRepositoryImpl extends ChatRepository {
   }
 
   @override
-  Future<Either<Failure, PaginatedResultViaLastItem<Message>>> getChatMessageContext(int chatID, int messageID) async {
+  Future<Either<Failure, ChatMessageResponse>> getChatMessageContext(int chatID, int messageID) async {
     if (await networkInfo.isConnected) {
       try {
         final response = await chatDataSource.getChatMessageContext(chatID, messageID);

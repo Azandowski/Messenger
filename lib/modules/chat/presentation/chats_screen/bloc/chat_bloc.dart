@@ -6,6 +6,7 @@ import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:messenger_mobile/modules/chat/data/datasources/chat_datasource.dart';
+import 'package:messenger_mobile/modules/chat/data/models/chat_message_response.dart';
 import 'package:messenger_mobile/modules/chat/domain/usecases/get_messages_context.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import '../../../../../core/config/auth_config.dart';
@@ -100,9 +101,10 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         hasReachedMax: this.state.hasReachedMax,
         hasReachBottomMax: this.state.hasReachBottomMax,
         wallpaperPath: this.state.wallpaperPath,
+        direction: event.direction
       );
 
-      Either<Failure, PaginatedResultViaLastItem<Message>> response;
+      Either<Failure, ChatMessageResponse> response;
       
       if (event.messageID != null) {
         response = await getMessagesContext(GetMessagesContextParams(
@@ -111,7 +113,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         ));
       } else {
         response = await getMessages(GetMessagesParams(
-          lastMessageId: event.isPagination ? this.state.messages?.lastItem?.id : null, 
+          lastMessageId: event.isPagination ?  event.direction == null || event.direction == RequestDirection.top ?
+            this.state.messages?.lastItem?.id : this.state.messages.getItemAt(0)?.id : null, 
           direction: event.direction
         ));
       }
@@ -171,7 +174,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   }
   
   Stream<ChatState> _eitherMessagesOrErrorState (
-    Either<Failure, PaginatedResultViaLastItem<Message>> failureOrMessage,
+    Either<Failure, ChatMessageResponse> failureOrMessage,
     bool isPagination,
     RequestDirection direction,
     int focusMessageID
@@ -186,15 +189,15 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       ),
       (result) {
         List<Message> newMessages = isPagination ? direction == RequestDirection.top ? 
-          ((this.state.messages ?? []) + result.data) : result.data + (state.messages ?? []) : result.data;
+          ((this.state.messages ?? []) + result.result.data) : result.result.data + (state.messages ?? []) : result.result.data;
         
         return ChatInitial(
           messages: newMessages,
           hasReachedMax: isPagination && direction != RequestDirection.top ? 
-            state.hasReachedMax : result.hasReachMax,
+            state.hasReachedMax : result.result.hasReachMax,
           wallpaperPath: this.state.wallpaperPath,
           hasReachBottomMax: isPagination && direction != RequestDirection.bottom ? 
-            state.hasReachBottomMax : result.hasReachMaxSecondSide,
+            state.hasReachBottomMax : result.result.hasReachMax,
           focusMessageID: focusMessageID
         );
       }

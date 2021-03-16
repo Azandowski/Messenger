@@ -36,7 +36,7 @@ class SearchContactCubit extends Cubit<SearchContactState> {
         state.contacts.paginationData.nextPageUrl : null, 
       phoneNumber: phoneNumber
     ));
-
+    
     response.fold((failure) => emit(
       SearchContactsError(
         message: failure.message,
@@ -49,15 +49,27 @@ class SearchContactCubit extends Cubit<SearchContactState> {
     ));
   }
 
+
+  initInitialContacts (List<ContactEntity> contacts) {
+    emit(SearchContactsLoaded(
+      contacts: PaginatedResult(
+        paginationData: PaginationData(
+          nextPageUrl: null
+        ),
+        data: contacts
+      )
+    ));
+  }
+
   void showLoading ({
     bool isPagination
   }) {
     emit(SearchContactsLoading(
-      contacts: PaginatedResult(
+      contacts: isPagination ? this.state.contacts : PaginatedResult(
+        data: [],
         paginationData: PaginationData(
           nextPageUrl: null 
         ),
-        data: []
       ),
       isPagination: isPagination
     ));

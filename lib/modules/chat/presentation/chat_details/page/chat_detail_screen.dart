@@ -176,19 +176,6 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> implements ContactC
   }
 
 
-  List<ChatSettings> _getChatSettings (ChatDetailsState state) {
-    if ((state.chatDetailed?.chatMemberRole ?? ChatMember.member) == ChatMember.admin) {
-      return [
-        ChatSettings.noSound,
-        ChatSettings.noMedia
-      ];
-    } else {
-      return [
-        ChatSettings.noSound
-      ];
-    }
-  }
-
   void _handleListener (ChatDetailsState state) {
     if (state is ChatDetailsError) {
       ScaffoldMessenger.of(context)

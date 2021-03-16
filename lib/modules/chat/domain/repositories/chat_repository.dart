@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:dartz/dartz.dart';
 import 'package:messenger_mobile/modules/chat/data/datasources/chat_datasource.dart';
+import 'package:messenger_mobile/modules/chat/data/models/chat_message_response.dart';
 
 import '../../../../core/error/failures.dart';
 import '../../../../core/services/network/paginatedResult.dart';
@@ -26,14 +27,16 @@ abstract class ChatRepository {
   Stream<List<int>> deleteIds;
   Future<Either<Failure, NoParams>> leaveChat (int id);
   Future<Either<Failure, ChatPermissions>> updateChatSettings({ ChatPermissionModel permissions, int id }); 
-  Future<Either<Failure, PaginatedResultViaLastItem<Message>>> getChatMessages (
+  Future<Either<Failure, ChatMessageResponse>> getChatMessages (
     int lastMessageId,
     RequestDirection direction
   );
+  
   Future<Either<Failure, NoParams>> setTimeDeleted ({
     int id, int timeInSeconds
   });
+  
   Future<void> disposeChat();
   Future<Either<Failure, bool>> attachMessage(Message message);
-  Future<Either<Failure, PaginatedResultViaLastItem<Message>>> getChatMessageContext (int chatID, int messageID);
+  Future<Either<Failure, ChatMessageResponse>> getChatMessageContext (int chatID, int messageID);
 }

@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:messenger_mobile/modules/category/data/models/chat_permission_model.dart';
 
 import '../../../chat/data/models/message_model.dart';
 import '../../../chats/domain/entities/category.dart';
@@ -56,7 +57,8 @@ class ChatEntity extends Equatable {
       date: this.date,
       permissions: permissions ?? ChatPermissions(
         isSoundOn: this.permissions.isSoundOn,
-        isMediaSendOn: this.permissions.isMediaSendOn
+        isMediaSendOn: this.permissions.isMediaSendOn,
+        isForwardOn: this.permissions.isForwardOn
       ),
       lastMessage: this.lastMessage,
       unreadCount: unreadCount ?? this.unreadCount,
@@ -77,10 +79,7 @@ class ChatEntity extends Equatable {
         'total_chats': chatCategory.totalChats,
       },
       'created_at': date == null ? null : date.toIso8601String(),
-      'settings': {
-        'sound': permissions.isSoundOn ? 1 : 0,
-        'admin_media_send': permissions.isSoundOn ? 1 : 0
-      },
+      'settings': (permissions as ChatPermissionModel).toJson(),
       'last_message': lastMessage?.toJson(),
       'no_read_message': unreadCount,
       'description': description,

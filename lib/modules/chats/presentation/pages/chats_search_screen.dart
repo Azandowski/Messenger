@@ -186,7 +186,7 @@ class _ChatsSearchScreenState extends State<ChatsSearchScreen> implements Search
 
   void _onScroll () {
     var state = _searchChatsCubit.state;
-    if (scrollController.isPaginated && !(state is SearchChatsLoading) && !state.data.messages.paginationData.hasNextPage) {
+    if (scrollController.isPaginated && !(state is SearchChatsLoading) && state.data.messages.paginationData.hasNextPage) {
       _searchChatsCubit.search(
         queryText: searchBar.controller.text.trim(),
         isPagination: true,

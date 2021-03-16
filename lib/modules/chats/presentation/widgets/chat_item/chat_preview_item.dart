@@ -57,9 +57,7 @@ class ChatPreviewItem extends StatelessWidget {
                     Expanded(
                       child: Text(
                         viewModel.description,
-                        style: viewModel.isInLive ? TextStyle(
-                          color: AppColors.indicatorColor, fontSize: 12, fontWeight: FontWeight.w500
-                        ) : AppFontStyles.mediumStyle,
+                        style: viewModel.descriptionStyle,
                         overflow: TextOverflow.ellipsis,
                         maxLines: 2,
                       ),

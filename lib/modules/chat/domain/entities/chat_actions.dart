@@ -41,6 +41,17 @@ extension ChatActionsExtension on ChatActions {
         return null;
     }
   }
+
+  String getDescription (String userName) {
+    switch (this) {
+      case ChatActions.addUser:
+        return '$userName добавлен(а)';
+      case ChatActions.kickUser:
+        return '$userName исключен(а)';
+      default:
+        return null;
+    }
+  }
 }
 
 

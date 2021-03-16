@@ -141,7 +141,13 @@ class ChatScreenState extends State<ChatScreen> implements ChatChooseDelegate{
                             child: ListView.separated(
                               controller: _chatBloc.scrollController,
                               itemBuilder: (context, int index) {
-                                if (state is ChatLoading && getItemsCount(state) - 1 == index) {
+                                var spinnerIndex;
+                                if (state is ChatLoading) {
+                                  spinnerIndex = state.direction == null || state.direction == RequestDirection.top ? 
+                                    getItemsCount(state) - 1 : 0;
+                                }
+
+                                if (state is ChatLoading && spinnerIndex == index) {
                                   return LoadWidget(size: 20);
                                 } else if (getItemsCount(state) - 1 == index) {
                                   if (state.messages.getItemAt(index - 1) != null) {
@@ -155,9 +161,16 @@ class ChatScreenState extends State<ChatScreen> implements ChatChooseDelegate{
 
                                   return Container();
                                 } else {
-                                  int nextMessageUserID = state.messages.getItemAt(index - 1)?.user?.id;
-                                  int prevMessageUserID = state.messages.getItemAt(index + 1)?.user?.id;
-                                  Message currentMessage = state.messages[index];
+                                  var indexMinus = 0;
+                                  if (state is ChatLoading) {
+                                    if (!(state.direction == null || state.direction == RequestDirection.top)) {
+                                      indexMinus = 1;
+                                    }
+                                  }
+                                  int currentIndex = index - indexMinus;
+                                  int nextMessageUserID = state.messages.getItemAt(currentIndex - 1)?.user?.id;
+                                  int prevMessageUserID = state.messages.getItemAt(currentIndex + 1)?.user?.id;
+                                  Message currentMessage = state.messages[currentIndex];
                                   bool isSelected = false;
                                   
                                   if (cubit is ChatTodoSelection) {
@@ -166,7 +179,7 @@ class ChatScreenState extends State<ChatScreen> implements ChatChooseDelegate{
                                       .toList().length > 0;
                                   }
 
-                                  return currentMessage.chatActions == null ? 
+                                  final body = currentMessage.chatActions == null ? 
                                     MessageCell(
                                       nextMessageUserID: nextMessageUserID,
                                       prevMessageUserID: prevMessageUserID,
@@ -196,6 +209,13 @@ class ChatScreenState extends State<ChatScreen> implements ChatChooseDelegate{
                                     ) : ChatActionView(
                                       chatAction: _buildChatAction(currentMessage)
                                     );
+
+                                  return AutoScrollTag(
+                                    key: ValueKey(index),
+                                    controller: _chatBloc.scrollController,
+                                    index: index,
+                                    child: body
+                                  );
                                 }
                               },
                               scrollDirection: Axis.vertical,

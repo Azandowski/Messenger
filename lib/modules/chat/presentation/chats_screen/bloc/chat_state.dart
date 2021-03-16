@@ -51,15 +51,17 @@ class ChatLoading extends ChatState {
   final bool isPagination;
   final List<Message> messages;
   final bool hasReachedMax;
-  final String wallpaperPath;
   final bool hasReachBottomMax;
+  final String wallpaperPath;
+  final RequestDirection direction;
 
   ChatLoading({
     @required this.isPagination,
     @required this.messages,
     @required this.hasReachedMax,
     this.wallpaperPath,
-    this.hasReachBottomMax = true 
+    this.hasReachBottomMax = true ,
+    this.direction
   }) : super(
     messages: messages, 
     hasReachedMax: hasReachedMax,
@@ -73,7 +75,8 @@ class ChatLoading extends ChatState {
     hasReachedMax,
     messages,
     wallpaperPath,
-    hasReachBottomMax
+    hasReachBottomMax,
+    direction
   ];  
 }
 

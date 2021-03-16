@@ -57,7 +57,9 @@ class _CreationModuleScreenState extends State<CreationModuleScreen> {
               Icons.search
             ), 
             onPressed: () {
-              _navigator.push(SearchContactPage.route());
+              _navigator.push(SearchContactPage.route(
+                initialContacts: context.read<ContactBloc>().state.contacts
+              ));
             }
           )
         ],
