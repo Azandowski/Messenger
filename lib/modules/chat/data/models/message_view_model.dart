@@ -22,7 +22,11 @@ class MessageViewModel {
   }
 
   String get time {
-    return new DateFormat("Hm").format(message.dateTime); 
+    if (message.dateTime != null) {
+      return new DateFormat("Hm").format(message.dateTime); 
+    } else {
+      return '';
+    }
   }
 
   String get readImageName {
@@ -39,11 +43,10 @@ class MessageViewModel {
       color: !isMine ? Colors.white : (isMine && messageStatus == MessageStatus.sending) ?
         AppColors.greyColor : AppColors.messageBlueBackground,
       borderRadius: BorderRadius.only(
-        topLeft: 
-         Radius.circular(10),
-        bottomLeft: Radius.circular(!isMine ? 0 : 10),
-        bottomRight: Radius.circular(isMine ? 0 : 10),
-        topRight: Radius.circular(10),
+        topLeft: isMine || previousMessageUserID != message.user.id ? Radius.circular(10) : Radius.zero,
+        bottomLeft: isMine || nextMessageUserID != message.user.id ?  Radius.circular(10) : Radius.zero,
+        bottomRight: !isMine || nextMessageUserID !=  message.user.id ? Radius.circular(10) : Radius.zero,
+        topRight: !isMine || previousMessageUserID !=  message.user.id ? Radius.circular(10) : Radius.zero,
       ),
       border: Border.all(color: AppColors.indicatorColor)
     );

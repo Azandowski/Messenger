@@ -75,6 +75,16 @@ void main() {
         verify(mockLocalDataSource.getToken());
       },
     );
+    test(
+      'should get contacts from localDataSource',
+      () async {
+        // act
+        repository.initToken();
+
+        // assert
+        // verify(mockLocalDataSource.getContacts());
+      },
+    );
   });
 
   group('AuthenticationRepositoryImpl.createCode', () {
