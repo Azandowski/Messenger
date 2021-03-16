@@ -14,6 +14,7 @@ class MockMultiPartRequest extends Mock implements http.MultipartRequest {}
 
 class MockAuthConfig extends Mock implements AuthConfig {}
 
+//test
 void main() {
   CategoryDataSourceImpl dataSource;
   MockHttpClient httpClient;
