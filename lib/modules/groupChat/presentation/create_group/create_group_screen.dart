@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:messenger_mobile/app/application.dart';
 import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
 import '../../../../core/widgets/independent/buttons/bottom_action_button.dart';
 import '../../../../core/widgets/independent/pickers/photo_picker.dart';
 import '../../../../core/widgets/independent/small_widgets/chat_count_view.dart';
+import '../../../../locator.dart';
 import '../../../../main.dart';
 import '../../../creation_module/domain/entities/contact.dart';
 import '../../../creation_module/presentation/widgets/contact_cell.dart';
@@ -36,7 +38,7 @@ class CreateGroupScreen extends StatefulWidget {
 // * * State
 
 class _CreateGroupScreenState extends State<CreateGroupScreen> implements ContactChooseDelegate {
-  NavigatorState get _navigator => navigatorKey.currentState;
+  NavigatorState get _navigator => sl<Application>().navKey.currentState;
   
   CreateGroupCubit _groupCubit;
   List<ContactViewModel> contacts = [];

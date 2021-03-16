@@ -1,7 +1,10 @@
+import 'package:messenger_mobile/app/application.dart';
 import 'package:messenger_mobile/modules/category/presentation/chooseChats/presentation/chat_choose_page.dart';
 import 'package:messenger_mobile/modules/chat/domain/entities/chat_actions.dart';
 import 'package:messenger_mobile/modules/chat/domain/usecases/attachMessage.dart';
+import 'package:messenger_mobile/modules/chat/domain/usecases/disattachMessage.dart';
 import 'package:messenger_mobile/modules/chat/domain/usecases/get_messages_context.dart';
+import 'package:messenger_mobile/modules/chat/domain/usecases/reply_more.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'chat_screen_import.dart';
 import 'chat_screen_helper.dart';
@@ -24,7 +27,7 @@ class ChatScreen extends StatefulWidget {
 
 class ChatScreenState extends State<ChatScreen> implements ChatChooseDelegate{
 
-  NavigatorState get _navigator => navigatorKey.currentState;
+  NavigatorState get _navigator => sl<Application>().navKey.currentState;
   
   // MARK: - Props
 
@@ -49,8 +52,11 @@ class ChatScreenState extends State<ChatScreen> implements ChatChooseDelegate{
     );
 
     _chatTodoCubit = ChatTodoCubit(
+      context: context,
       deleteMessageUseCase: DeleteMessage(repository: chatRepository),
       attachMessageUseCase: AttachMessage(repository: chatRepository),
+      disAttachMessageUseCase: DisAttachMessage(repository: chatRepository),
+      replyMoreUseCase: ReplyMore(repository: chatRepository)
     );
     
     categoryBloc = context.read<CategoryBloc>();
@@ -123,7 +129,7 @@ class ChatScreenState extends State<ChatScreen> implements ChatChooseDelegate{
               builder: (context, state) {
                 return Scaffold(
                   appBar: this.buildAppBar(
-                    _chatTodoCubit, cubit, chatViewModel, _navigator
+                    _chatTodoCubit, cubit, chatViewModel, _navigator,
                   ),
                   backgroundColor: AppColors.pinkBackgroundColor,
                   body: BlocProvider(
@@ -133,6 +139,9 @@ class ChatScreenState extends State<ChatScreen> implements ChatChooseDelegate{
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
+                        if(state.topMessage != null) this.buildTopMessage(state,
+                          width, height, _chatTodoCubit,
+                        ),
                         Expanded(
                           child: Container(
                             decoration: BoxDecoration(
@@ -272,7 +281,7 @@ class ChatScreenState extends State<ChatScreen> implements ChatChooseDelegate{
 
   @override
   void didSaveChats(List<ChatEntity> chats) {
-   _chatTodoCubit.deleteMessage(chatID: 2, forMe: false);
+   _chatTodoCubit.replyMessageToMore(chatIds: chats);
   }
 }
 

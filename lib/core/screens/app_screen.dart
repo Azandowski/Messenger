@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:messenger_mobile/app/application.dart';
 import 'package:permission_handler/permission_handler.dart';
-
 import '../../locator.dart';
-import '../../main.dart';
 import '../../modules/authentication/domain/repositories/authentication_repository.dart';
 import '../../modules/chats/presentation/pages/chats_screen.dart';
 import '../../modules/creation_module/presentation/pages/creation_module_screen.dart';
@@ -60,7 +59,7 @@ class _AppScreenState extends State<AppScreen> {
 
   final bucket = PageStorageBucket();
 
-  NavigatorState get _navigator => navigatorKey.currentState;
+  NavigatorState get _navigator => sl<Application>().navKey.currentState;
 
   final pages = [
     ChatsScreen(),

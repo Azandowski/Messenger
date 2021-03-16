@@ -1,8 +1,13 @@
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/modules/category/data/models/chat_view_model.dart';
+import 'package:messenger_mobile/core/usecases/usecase.dart';
+import 'package:messenger_mobile/core/widgets/independent/dialogs/achievment_view.dart';
+import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
 import 'package:messenger_mobile/modules/chat/domain/usecases/attachMessage.dart';
+import 'package:messenger_mobile/modules/chat/domain/usecases/disattachMessage.dart';
+import 'package:messenger_mobile/modules/chat/domain/usecases/reply_more.dart';
 import '../../../domain/usecases/delete_message.dart';
 import '../../../domain/usecases/params.dart';
 
@@ -11,11 +16,17 @@ import '../../../domain/entities/message.dart';
 part 'chat_todo_state.dart';
 
 class ChatTodoCubit extends Cubit<ChatTodoState> {
+  final BuildContext context;
   final DeleteMessage deleteMessageUseCase;
   final AttachMessage attachMessageUseCase;
+  final DisAttachMessage disAttachMessageUseCase;
+  final ReplyMore replyMoreUseCase;
   ChatTodoCubit({
     @required this.deleteMessageUseCase,
+    @required this.disAttachMessageUseCase,
     @required this.attachMessageUseCase,
+    @required this.replyMoreUseCase,
+    @required this.context,
   }) : super(ChatToDoDisabled());
 
   void selectMessage(Message newMessage){
@@ -54,18 +65,31 @@ class ChatTodoCubit extends Cubit<ChatTodoState> {
     result.fold((l) => emit(ChatToDoError(errorMessage: l.message)), (r) => emit(ChatToDoDisabled()));
   }
 
-  void replyMessageToMore({List<ChatViewModel> chatIds}) async {
-    // emit(ChatToDoLoading(-
-    //   selectedMessages: this.state.selectedMessages,
-    //   isDelete: false,
-    // ));
-    var ids = this.state.selectedMessages.map((e) => e.id.toString()).join(',');
-    //TODO: ADD New ReplyMore UseCase
-   
+  void replyMessageToMore({List<ChatEntity> chatIds}) async {
+    emit(ChatToDoLoading(
+      selectedMessages: this.state.selectedMessages,
+      isDelete: false,
+    ));
+    var messageIds = this.state.selectedMessages.map((e) => e.id).toList();
+    var chatsId = chatIds.map((e) => e.chatId).toList();
+    final response = await replyMoreUseCase(ReplyMoreParams(chatIds: chatsId, messageIds: messageIds));
+    response.fold((l) => emit(ChatToDoError(errorMessage: l.message)), (r) { 
+      emit(ChatToDoDisabled());
+      AchievementService().showAchievmentView(
+        context: context,
+        isError: false,
+        mainText: 'Успешно',
+        subTitle: 'Все сообщения пересланы'
+      );
+      
+    });
   }
 
   void attachMessage(Message message) async {
     await attachMessageUseCase(message);
   }
 
+  void disattachMessage() async {
+    await disAttachMessageUseCase(NoParams());
+  }
 }

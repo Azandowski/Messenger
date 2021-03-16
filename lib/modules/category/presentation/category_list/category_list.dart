@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:messenger_mobile/app/application.dart';
 
 import '../../../../app/appTheme.dart';
 import '../../../../core/blocs/category/bloc/category_bloc.dart';
@@ -8,6 +9,7 @@ import '../../../../core/widgets/independent/dialogs/dialog_action_button.dart';
 import '../../../../core/widgets/independent/dialogs/dialog_params.dart';
 import '../../../../core/widgets/independent/dialogs/dialogs.dart';
 import '../../../../core/widgets/independent/small_widgets/cell_skeleton_item.dart';
+import '../../../../locator.dart';
 import '../../../../main.dart';
 import '../../../chats/domain/entities/category.dart';
 import '../../domain/entities/create_category_screen_params.dart';
@@ -34,7 +36,7 @@ class CategoryList extends StatefulWidget {
 }
 
 class _CategoryListState extends State<CategoryList> {
-  NavigatorState get _navigator => navigatorKey.currentState;
+  NavigatorState get _navigator => sl<Application>().navKey.currentState;
 
   List<CategoryEntity> reorderedCategories = [];
   bool _didReorderItems = false;

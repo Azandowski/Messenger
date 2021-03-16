@@ -1,7 +1,8 @@
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
-import 'modules/chat/domain/usecases/delete_message.dart';
+import 'package:messenger_mobile/app/application.dart';
+import 'package:messenger_mobile/core/widgets/independent/dialogs/achievment_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'core/blocs/authorization/bloc/auth_bloc.dart';
@@ -58,6 +59,10 @@ import 'modules/profile/presentation/bloc/profile_cubit.dart';
 final sl = GetIt.instance;
 
 Future<void> init() async {
+
+  //UI
+  sl.registerLazySingleton(() => Application());
+
   //! FEATURES
   // Authentication
 

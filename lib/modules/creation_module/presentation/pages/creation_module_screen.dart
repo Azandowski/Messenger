@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_share/flutter_share.dart';
+import 'package:messenger_mobile/app/application.dart';
 import 'package:messenger_mobile/modules/creation_module/presentation/pages/search_contact/search_contact_page.dart';
 
 import '../../../../app/appTheme.dart';
 import '../../../../core/utils/paginated_scroll_controller.dart';
 import '../../../../locator.dart';
-import '../../../../main.dart';
 import '../../../chat/presentation/chats_screen/pages/chat_screen.dart';
 import '../../../groupChat/domain/usecases/create_chat_group.dart';
 import '../../../groupChat/presentation/create_group/create_group_page.dart';
@@ -33,7 +33,7 @@ class _CreationModuleScreenState extends State<CreationModuleScreen> {
   
   PaginatedScrollController _scrollController = PaginatedScrollController();
 
-  NavigatorState get _navigator => navigatorKey.currentState;
+  NavigatorState get _navigator => sl<Application>().navKey.currentState;
 
 
   @override

@@ -1,3 +1,6 @@
+import 'package:achievement_view/achievement_view.dart';
+import 'package:messenger_mobile/app/application.dart';
+import 'package:messenger_mobile/core/widgets/independent/dialogs/achievment_view.dart';
 import 'package:messenger_mobile/modules/category/presentation/chooseChats/presentation/chat_choose_page.dart';
 import 'package:messenger_mobile/modules/chat/domain/entities/chat_actions.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen.dart';
@@ -71,6 +74,79 @@ extension ChatScreenStateHelper on ChatScreenState {
         height: height
       );
     }
+  }
+
+  Widget buildTopMessage (ChatState state,
+    double width, double height, ChatTodoCubit cubit){
+    return Container(
+      color: Colors.white,
+      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Container(
+            color: AppColors.indicatorColor,
+            width: 2,
+            height: 55,
+          ),
+          SizedBox(width: 8,),
+          Expanded(
+            child: Column( 
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Закрепленное сообщение',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    height: 1.4,
+                    color: AppColors.indicatorColor,
+                  ),
+                ),
+                Container(
+                  child: Text(state.topMessage.text,
+                    style: AppFontStyles.black14w400.copyWith(
+                      height: 1.4,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                    softWrap: true,
+                    maxLines: 1,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          IconButton(icon: Icon(Icons.close), onPressed: (){
+            showDialog(context: context, builder: (ctx){
+              return DialogsView( 
+                title: 'Вы хотите открепить сообщение?',
+                actionButton: [
+                  DialogActionButton(
+                    title: 'Отмена', 
+                    buttonStyle: DialogActionButtonStyle.cancel,
+                    onPress: () {
+                      Navigator.pop(context);
+                    }
+                  ),
+                  DialogActionButton(
+                    title: 'Открепить', 
+                    buttonStyle: DialogActionButtonStyle.submit,
+                    onPress: () {
+                      cubit.disattachMessage();
+                      Navigator.pop(context);
+                    }
+                  ),
+                ],
+              );
+            });
+          // cubit.detachMessage();
+          })
+        ],
+      ),
+    );
   }
 
   Widget buildSeparator (int index, ChatState state) {

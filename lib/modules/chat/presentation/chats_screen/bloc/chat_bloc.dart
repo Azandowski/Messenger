@@ -11,9 +11,7 @@ import 'package:messenger_mobile/modules/chat/domain/usecases/get_messages_conte
 import 'package:scroll_to_index/scroll_to_index.dart';
 import '../../../../../core/config/auth_config.dart';
 import '../../../../../core/error/failures.dart';
-import '../../../../../core/services/network/paginatedResult.dart';
 import '../../../../../core/usecases/usecase.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen_helper.dart';
 import '../../../../../locator.dart';
 import '../../../domain/entities/message.dart';
 import '../../../domain/repositories/chat_repository.dart';
@@ -96,6 +94,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       yield* _messageDeleteToState(event);
     } else if (event is LoadMessages) {
       yield ChatLoading(
+        topMessage: this.state.topMessage,
         isPagination: event.isPagination,
         messages: this.state.messages,
         hasReachedMax: this.state.hasReachedMax,
@@ -127,6 +126,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       );
     } else if (event is SetInitialTime) {
       yield ChatLoadingSilently(
+        topMessage: this.state.topMessage,
         messages: this.state.messages, 
         hasReachedMax: this.state.hasReachedMax, 
         wallpaperPath: this.state.wallpaperPath,
@@ -164,6 +164,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
           status: list[i].messageStatus,
         );
         return ChatInitial(
+          topMessage: this.state.topMessage,
           messages: list,
           hasReachedMax: this.state.hasReachedMax,
           wallpaperPath: this.state.wallpaperPath,
@@ -181,6 +182,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   ) async* {
     yield failureOrMessage.fold(
       (failure) => ChatError(
+        topMessage: this.state.topMessage,
         messages: this.state.messages, 
         message: failure.message,
         hasReachedMax: this.state.hasReachedMax,
@@ -192,6 +194,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
           ((this.state.messages ?? []) + result.result.data) : result.result.data + (state.messages ?? []) : result.result.data;
         
         return ChatInitial(
+          topMessage: result.topMessage,
           messages: newMessages,
           hasReachedMax: isPagination && direction != RequestDirection.top ? 
             state.hasReachedMax : result.result.hasReachMax,
@@ -205,28 +208,52 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   }
 
   Stream<ChatState> _messageAddedToState(MessageAdded event) async* {
-    var list = getCopyMessages();
-      
-    var i = list.indexWhere((element) => element.identificator == event.message.id);
-    
-    if (i != -1) {
-      list.removeAt(i);
-    }
+    switch(event.message.messageHandleType){
+      case MessageHandleType.newMessage:
+        var list = getCopyMessages();
 
-    list.insert(0, event.message);
-    
-    yield ChatInitial(
-      messages: list,
-      hasReachedMax: this.state.hasReachedMax,
-      wallpaperPath: this.state.wallpaperPath,
-      hasReachBottomMax: this.state.hasReachBottomMax
-    );
+        var i = list.indexWhere((element) => element.identificator == event.message.id);
+      
+        if (i != -1) {
+          list.removeAt(i);
+        }
+
+        list.insert(0, event.message);
+        
+        yield ChatInitial(
+          topMessage: this.state.topMessage,
+          messages: list,
+          hasReachedMax: this.state.hasReachedMax,
+          wallpaperPath: this.state.wallpaperPath,
+          hasReachBottomMax: this.state.hasReachBottomMax
+        );
+        break;
+      case MessageHandleType.setTopMessage:
+        yield ChatInitial(
+          topMessage: event.message,
+          messages: this.state.messages,
+          hasReachedMax: this.state.hasReachedMax,
+          wallpaperPath: this.state.wallpaperPath,
+          hasReachBottomMax: this.state.hasReachBottomMax
+        );
+        break;
+      case MessageHandleType.unSetTopMessage:
+         yield ChatInitial(
+          topMessage: null,
+          messages: this.state.messages,
+          hasReachedMax: this.state.hasReachedMax,
+          wallpaperPath: this.state.wallpaperPath,
+          hasReachBottomMax: this.state.hasReachBottomMax
+        );
+        break;
+    }
   }
 
   Stream<ChatState> _chatInitialEventToState() async* {
     File wallpaperFile = await chatsRepository.getLocalWallpaper();
     if (wallpaperFile != null) {
       yield ChatInitial(
+        topMessage: this.state.topMessage,
         messages: this.state.messages,
         hasReachedMax: this.state.hasReachedMax,
         wallpaperPath: wallpaperFile.path,
@@ -253,6 +280,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     list.insert(0, newMessage);    
 
     yield ChatInitial(
+      topMessage: this.state.topMessage,
       messages: list,
       hasReachedMax: this.state.hasReachedMax,
       wallpaperPath: this.state.wallpaperPath,
@@ -282,6 +310,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     });
 
     yield ChatInitial(
+      topMessage: this.state.topMessage,
       messages: list,
       hasReachedMax: this.state.hasReachedMax,
       wallpaperPath: this.state.wallpaperPath,
@@ -296,6 +325,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   ) async* {
     yield failureOrNoParams.fold(
       (failure) => ChatInitial(
+        topMessage: this.state.topMessage,
         messages: this.state.messages,
         hasReachedMax: this.state.hasReachedMax,
         wallpaperPath: this.state.wallpaperPath,
@@ -304,6 +334,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       (_) {
         _handleTimerNewValue(event);
         return ChatInitial(
+          topMessage: this.state.topMessage,
           messages: this.state.messages,
           hasReachedMax: this.state.hasReachedMax,
           wallpaperPath: this.state.wallpaperPath,

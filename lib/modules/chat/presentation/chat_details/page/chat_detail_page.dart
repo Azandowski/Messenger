@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:messenger_mobile/app/application.dart';
 import 'package:messenger_mobile/core/blocs/chat/bloc/bloc/chat_cubit.dart';
 import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
 import 'package:messenger_mobile/modules/chat/domain/usecases/kick_member.dart';
@@ -33,7 +34,7 @@ class ChatDetailPage extends StatefulWidget {
 
 class _ChatDetailPageState extends State<ChatDetailPage> {
 
-  NavigatorState get _navigator => navigatorKey.currentState;
+  NavigatorState get _navigator => sl<Application>().navKey.currentState;
 
   GetChatDetails getChatDetails;
   AddMembers addMembers;

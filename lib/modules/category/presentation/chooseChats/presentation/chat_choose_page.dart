@@ -17,7 +17,7 @@ abstract class ChatChooseDelegate{
 class ChooseChatsPage extends StatefulWidget {
 
   static Route route(ChatChooseDelegate delegate, {String actionText}) {
-    return MaterialPageRoute<void>(builder: (_) => ChooseChatsPage(delegate: delegate,));
+    return MaterialPageRoute<void>(builder: (_) => ChooseChatsPage(delegate: delegate,actionText: actionText ?? 'Добавить чаты',));
   }
   final String actionText;
   final ChatChooseDelegate delegate;
@@ -95,7 +95,7 @@ class _ChooseChatsPageState extends State<ChooseChatsPage> {
                       Positioned(
                         bottom: 40,
                         child: ActionButton(
-                          text: 'Добавить чаты', 
+                          text: widget.actionText, 
                           onTap: () {
                             widget.delegate.didSaveChats(selectState.selectedChats);
                             Navigator.pop(context);

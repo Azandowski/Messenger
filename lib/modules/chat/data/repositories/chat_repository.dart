@@ -257,4 +257,32 @@ class ChatRepositoryImpl extends ChatRepository {
       } 
     }
   }
+
+  @override
+  Future<Either<Failure, bool>> disAttachMessage(NoParams noParams) async {
+    try {
+      await chatDataSource.disAttachMessage(noParams);
+      return Right(true);
+    } catch (e) {
+      if (e is Failure) {
+        return Left(e);
+      } else {
+        return Left(ServerFailure(message: e.toString()));
+      } 
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> replyMore(ReplyMoreParams params) async {
+     try {
+      await chatDataSource.replyMore(params);
+      return Right(true);
+    } catch (e) {
+      if (e is Failure) {
+        return Left(e);
+      } else {
+        return Left(ServerFailure(message: e.toString()));
+      } 
+    }
+  }
 }
