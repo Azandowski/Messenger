@@ -120,7 +120,7 @@ extension EndpointsExtension on Endpoints {
       case Endpoints.searchContacts:
         return '${Config.baseAPIpath.value}/messenger/get-contact';
       case Endpoints.getMessagesContext:
-        return '${Config.baseAPIpath.value}/messenger/chat/${params[0]}/get-messages-by-search';
+        return '${Config.baseAPIpath.value}/messenger/chat/${params[0]}/get-messages-by-search/${params[1]}';
     }
   }
 

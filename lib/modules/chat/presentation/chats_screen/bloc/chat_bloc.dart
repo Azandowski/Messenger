@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:messenger_mobile/modules/chat/data/datasources/chat_datasource.dart';
 import 'package:messenger_mobile/modules/chat/data/models/chat_message_response.dart';
 import 'package:messenger_mobile/modules/chat/domain/usecases/get_messages_context.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen_import.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import '../../../../../core/config/auth_config.dart';
 import '../../../../../core/error/failures.dart';
@@ -104,42 +105,54 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     } else if (event is MessageDelete) {
       yield* _messageDeleteToState(event);
     } else if (event is LoadMessages) {
-      yield ChatLoading(
-        isPagination: event.isPagination,
-        messages: this.state.messages,
-        hasReachedMax: this.state.hasReachedMax,
-        hasReachBottomMax: this.state.hasReachBottomMax,
-        wallpaperPath: this.state.wallpaperPath,
-        direction: event.direction
-      );
-
-      Either<Failure, ChatMessageResponse> response;
       
-      if (event.messageID != null) {
-        response = await getMessagesContext(GetMessagesContextParams(
-          chatID: chatId, 
-          messageID: event.messageID
-        ));
+      if (this.state.hasReachBottomMax && event.resetAll) {
+        scrollController.animateTo(0, duration: Duration(seconds: 1), curve: Curves.bounceInOut);
       } else {
-        response = await getMessages(GetMessagesParams(
-          lastMessageId: event.isPagination ?  event.direction == null || event.direction == RequestDirection.top ?
-            this.state.messages?.lastItem?.id : this.state.messages.getItemAt(0)?.id : null, 
-          direction: event.direction
-        ));
-      }
+        yield ChatLoading(
+          isPagination: event.isPagination,
+          messages: event.resetAll ? [] : this.state.messages,
+          hasReachedMax: event.resetAll ? false : this.state.hasReachedMax,
+          hasReachBottomMax: event.resetAll ? false : this.state.hasReachBottomMax,
+          wallpaperPath: this.state.wallpaperPath,
+          direction: event.resetAll ? null : event.direction,
+          unreadCount: event.resetAll ? null : state.unreadCount,
+          showBottomPin: state.showBottomPin
+        );
 
-      yield* _eitherMessagesOrErrorState(
-        response, 
-        event.isPagination, 
-        event.direction,
-        event.messageID
-      );
+        Either<Failure, ChatMessageResponse> response;
+        
+        if (event.messageID != null) {
+          response = await getMessagesContext(GetMessagesContextParams(
+            chatID: chatId, 
+            messageID: event.messageID
+          ));
+        } else {
+          response = await getMessages(GetMessagesParams(
+            lastMessageId: event.isPagination ? 
+              event.direction == null || event.direction == RequestDirection.top ?
+                this.state.messages?.lastItem?.id : 
+                this.state.messages.getItemAt(0)?.id 
+              : null, 
+            direction: event.direction
+          ));
+        }
+
+        yield* _eitherMessagesOrErrorState(
+          response, 
+          event.isPagination, 
+          event.direction,
+          event.messageID
+        );
+      }
     } else if (event is SetInitialTime) {
       yield ChatLoadingSilently(
         messages: this.state.messages, 
         hasReachedMax: this.state.hasReachedMax, 
         wallpaperPath: this.state.wallpaperPath,
         hasReachBottomMax: this.state.hasReachBottomMax,
+        unreadCount: state.unreadCount,
+        showBottomPin: state.showBottomPin
       );
 
       final response = await setTimeDeleted(SetTimeDeletedParams(
@@ -152,7 +165,16 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       currentLeftTime = 10;
     } else if (event is DisposeChat) {
       await chatRepository.disposeChat();
-    } 
+    } else if (event is ToggleBottomPin) {
+      yield ChatInitial(
+        wallpaperPath: state.wallpaperPath,
+        hasReachedMax: state.hasReachedMax,
+        hasReachBottomMax: state.hasReachBottomMax,
+        unreadCount: event.newUnreadCount ?? state.unreadCount,
+        messages: state.messages,
+        showBottomPin: event.show,
+      );
+    }
   }
 
   Stream<ChatState> _eitherSentOrErrorState(
@@ -165,6 +187,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         hasReachedMax: this.state.hasReachedMax,
         wallpaperPath: this.state.wallpaperPath,
         hasReachBottomMax: this.state.hasReachBottomMax,
+        unreadCount: state.unreadCount,
+        showBottomPin: state.showBottomPin
       ),
       (message) {
         var i = list.indexWhere((element) => element.identificator == message.identificator);
@@ -177,6 +201,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
           hasReachedMax: this.state.hasReachedMax,
           wallpaperPath: this.state.wallpaperPath,
           hasReachBottomMax: this.state.hasReachBottomMax,
+          unreadCount: state.unreadCount,
+          showBottomPin: state.showBottomPin
         );
       }
     );
@@ -194,42 +220,63 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         message: failure.message,
         hasReachedMax: this.state.hasReachedMax,
         hasReachBottomMax: this.state.hasReachBottomMax,
-        wallpaperPath: this.state.wallpaperPath
+        wallpaperPath: this.state.wallpaperPath,
+        unreadCount: state.unreadCount,
+        showBottomPin: state.showBottomPin
       ),
       (result) {
         List<Message> newMessages = isPagination ? direction == RequestDirection.top ? 
           ((this.state.messages ?? []) + result.result.data) : result.result.data + (state.messages ?? []) : result.result.data;
         
+        bool hasReachBottom = direction != RequestDirection.bottom ? 
+          state.hasReachBottomMax : result.result.hasReachMax;
+
         return ChatInitial(
           messages: newMessages,
           hasReachedMax: isPagination && direction != RequestDirection.top ? 
             state.hasReachedMax : result.result.hasReachMax,
           wallpaperPath: this.state.wallpaperPath,
-          hasReachBottomMax: isPagination && direction != RequestDirection.bottom ? 
-            state.hasReachBottomMax : result.result.hasReachMax,
-          focusMessageID: focusMessageID
+          hasReachBottomMax: hasReachBottom,
+          focusMessageID: focusMessageID,
+          unreadCount: hasReachBottom ? null : state.unreadCount,
+          showBottomPin: state.showBottomPin
         );
       }
     );
   }
 
-  Stream<ChatState> _messageAddedToState(MessageAdded event) async* {
-    var list = getCopyMessages();
+  Stream<ChatState> _messageAddedToState(MessageAdded event) async* {    
+    if (state.hasReachBottomMax) {
+      var list = getCopyMessages();
+      var i = list.indexWhere((element) => element.identificator == event.message.id);
       
-    var i = list.indexWhere((element) => element.identificator == event.message.id);
-    
-    if (i != -1) {
-      list.removeAt(i);
-    }
+      if (i != -1) {
+        list.removeAt(i);
+      }
 
-    list.insert(0, event.message);
-    
-    yield ChatInitial(
-      messages: list,
-      hasReachedMax: this.state.hasReachedMax,
-      wallpaperPath: this.state.wallpaperPath,
-      hasReachBottomMax: this.state.hasReachBottomMax
-    );
+      list.insert(0, event.message);
+      
+      bool didNotRead = 
+        scrollController.offset > scrollController.position.viewportDimension * 1.5;
+
+      yield ChatInitial(
+        messages: list,
+        hasReachedMax: this.state.hasReachedMax,
+        wallpaperPath: this.state.wallpaperPath,
+        hasReachBottomMax: this.state.hasReachBottomMax,
+        unreadCount: didNotRead ? (state.unreadCount ?? 0) + 1 : state.unreadCount,
+        showBottomPin: state.showBottomPin,
+      );
+    } else {
+      yield ChatInitial (
+        messages: state.messages,
+        hasReachedMax: this.state.hasReachedMax,
+        wallpaperPath: this.state.wallpaperPath,
+        hasReachBottomMax: this.state.hasReachBottomMax,
+        unreadCount: (state.unreadCount ?? 0) + 1,
+        showBottomPin: state.showBottomPin
+      );
+    }
   }
 
   Stream<ChatState> _chatInitialEventToState() async* {
@@ -240,6 +287,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         hasReachedMax: this.state.hasReachedMax,
         wallpaperPath: wallpaperFile.path,
         hasReachBottomMax: this.state.hasReachBottomMax,
+        unreadCount: state.unreadCount
       );
     }
   }
@@ -266,6 +314,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       hasReachedMax: this.state.hasReachedMax,
       wallpaperPath: this.state.wallpaperPath,
       hasReachBottomMax: this.state.hasReachBottomMax,
+      unreadCount: state.unreadCount,
+      showBottomPin: state.showBottomPin
     );
     
     List<int> forwardArray = [];
@@ -293,7 +343,9 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     yield ChatInitial(
       messages: list,
       hasReachedMax: this.state.hasReachedMax,
-      wallpaperPath: this.state.wallpaperPath
+      wallpaperPath: this.state.wallpaperPath,
+      unreadCount: state.unreadCount,
+      showBottomPin: state.showBottomPin
     );
   }
 
@@ -309,6 +361,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         hasReachedMax: this.state.hasReachedMax,
         wallpaperPath: this.state.wallpaperPath,
         hasReachBottomMax: this.state.hasReachBottomMax,
+        unreadCount: state.unreadCount,
+        showBottomPin: state.showBottomPin
       ),
       (_) {
         _handleTimerNewValue(event);
@@ -317,6 +371,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
           hasReachedMax: this.state.hasReachedMax,
           wallpaperPath: this.state.wallpaperPath,
           hasReachBottomMax: this.state.hasReachBottomMax,
+          unreadCount: state.unreadCount,
+          showBottomPin: state.showBottomPin
         );
       }
     );

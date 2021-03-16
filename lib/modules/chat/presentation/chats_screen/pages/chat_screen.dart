@@ -1,5 +1,7 @@
+import 'package:flutter/rendering.dart';
 import 'package:messenger_mobile/modules/chat/domain/entities/chat_actions.dart';
 import 'package:messenger_mobile/modules/chat/domain/usecases/get_messages_context.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/bottom_pin.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'chat_screen_import.dart';
 import 'chat_screen_helper.dart';
@@ -25,7 +27,6 @@ class ChatScreenState extends State<ChatScreen> implements TimePickerDelegate {
   NavigatorState get _navigator => navigatorKey.currentState;
   
   // MARK: - Props
-
 
   TextEditingController messageTextController = TextEditingController();
   CategoryBloc categoryBloc;
@@ -72,19 +73,7 @@ class ChatScreenState extends State<ChatScreen> implements TimePickerDelegate {
     );
 
     _chatBloc.scrollController.addListener(() {
-      if (!(_chatBloc.state is ChatLoading)) {
-        if (_chatBloc.scrollController.isPaginated && !_chatBloc.state.hasReachedMax) {
-          _chatBloc.add(LoadMessages(
-            isPagination: true,
-            direction: RequestDirection.top
-          ));
-        } else if (_chatBloc.scrollController.isReverslyPaginated && !_chatBloc.state.hasReachBottomMax) {
-          _chatBloc.add(LoadMessages(
-            isPagination: true,
-            direction: RequestDirection.bottom
-          ));
-        }
-      }
+      this.handleScrollControllerChanges(_chatBloc);
     });
 
     super.initState();
@@ -115,13 +104,27 @@ class ChatScreenState extends State<ChatScreen> implements TimePickerDelegate {
             create: (context) => _chatBloc,
             child: BlocConsumer<ChatBloc, ChatState>(
               listener: (context, state) {
-                handleListener(state, scrollController: _chatBloc.scrollController);
+                handleListener(
+                  state, 
+                  scrollController: _chatBloc.scrollController, 
+                  todoCubit: _chatTodoCubit
+                );
               },
               builder: (context, state) {
                 return Scaffold(
                   appBar: this.buildAppBar(
                     _chatTodoCubit, cubit, chatViewModel, _navigator
                   ),
+                  floatingActionButton: shouldShowBottomPin(state) ?
+                    BottomPin(
+                      state: state,
+                      onPress: () {
+                        _chatBloc.add(LoadMessages(
+                          isPagination: false,
+                          resetAll: true
+                        ));
+                      }
+                    ) : null,
                   backgroundColor: AppColors.pinkBackgroundColor,
                   body: BlocProvider(
                     lazy: false,
@@ -136,6 +139,8 @@ class ChatScreenState extends State<ChatScreen> implements TimePickerDelegate {
                               image: this.getBackground(state)
                             ),
                             child: ListView.separated(
+                              key: PageStorageKey('feed'),
+                              // physics: CustomBouncingScrollPhysics(),
                               controller: _chatBloc.scrollController,
                               itemBuilder: (context, int index) {
                                 var spinnerIndex;
@@ -145,7 +150,10 @@ class ChatScreenState extends State<ChatScreen> implements TimePickerDelegate {
                                 }
 
                                 if (state is ChatLoading && spinnerIndex == index) {
-                                  return LoadWidget(size: 20);
+                                  return Padding(
+                                    padding: const EdgeInsets.only(bottom: 20),
+                                    child: LoadWidget(size: 20)
+                                  );
                                 } else if (getItemsCount(state) - 1 == index) {
                                   if (state.messages.getItemAt(index - 1) != null) {
                                     return ChatActionView(
@@ -245,6 +253,12 @@ class ChatScreenState extends State<ChatScreen> implements TimePickerDelegate {
 
   int getItemsCount (ChatState state) {
     return state.messages.length + 1;
+  }
+
+  bool shouldShowBottomPin (ChatState state) {
+    return (state.unreadCount != null && state.unreadCount != 0) ||
+      (state.showBottomPin != null && state.showBottomPin) || 
+        !state.hasReachBottomMax;
   }
 
   // Get Chat Action model from the message 

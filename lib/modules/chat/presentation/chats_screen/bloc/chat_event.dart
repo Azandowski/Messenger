@@ -12,6 +12,7 @@ class ChatScreenStarted extends ChatEvent {
 class LoadMessages extends ChatEvent {
   final bool isPagination;
   final RequestDirection direction;
+  final bool resetAll;
 
   /// Non-Null if chat should load message's region
   final int messageID;
@@ -19,12 +20,13 @@ class LoadMessages extends ChatEvent {
   LoadMessages({
     @required this.isPagination,
     this.direction,
-    this.messageID
+    this.messageID,
+    this.resetAll = false
   });
 
   @override
   List<Object> get props => [
-    isPagination, messageID, direction
+    isPagination, messageID, direction, resetAll
   ];
 }
 
@@ -74,8 +76,22 @@ class SetInitialTime extends ChatEvent {
   List<Object> get props => [option];
 }
 
-class DisposeChat extends ChatEvent{
+class DisposeChat extends ChatEvent {
   @override
   List<Object> get props => [];
 }
 
+class ToggleBottomPin extends ChatEvent {
+  final bool show;
+  final int newUnreadCount;
+  
+  ToggleBottomPin({
+    @required this.show,
+    this.newUnreadCount
+  });
+
+  @override
+  List<Object> get props => [
+    show, newUnreadCount
+  ];
+}

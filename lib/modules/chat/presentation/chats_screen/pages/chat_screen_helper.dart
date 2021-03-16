@@ -1,3 +1,4 @@
+import 'package:flutter/rendering.dart';
 import 'package:messenger_mobile/modules/chat/domain/entities/chat_actions.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen_import.dart';
@@ -126,10 +127,14 @@ extension ChatScreenStateHelper on ChatScreenState {
     }
   }
 
+  
 
   void handleListener (
     ChatState state, 
-    {AutoScrollController scrollController}
+    {
+      AutoScrollController scrollController,
+      ChatTodoCubit todoCubit
+    }
   ) {
     if (state is ChatError) {
       ScaffoldMessenger.of(context)
@@ -165,10 +170,10 @@ extension ChatScreenStateHelper on ChatScreenState {
         }
       }
 
-
       if (scrollController != null && state.focusMessageID != null) {
         int index = state.messages.indexWhere((e) => e.id == state.focusMessageID);
         if (index != -1) {
+          todoCubit.enableSelectionMode(state.messages[index], false);
           scrollController.scrollToIndex(
             index, duration: Duration(seconds: 2), preferPosition: AutoScrollPosition.middle
           );
@@ -178,11 +183,61 @@ extension ChatScreenStateHelper on ChatScreenState {
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
     }
   }
+
+
+  void handleScrollControllerChanges (ChatBloc chatBloc) {
+    // MARK: - Pagination 
+    if (!(chatBloc.state is ChatLoading)) {
+      if (chatBloc.scrollController.isPaginated && !chatBloc.state.hasReachedMax) {
+        if (chatBloc.scrollController.position.userScrollDirection == ScrollDirection.reverse) {
+          chatBloc.add(LoadMessages(
+            isPagination: true,
+            direction: RequestDirection.top
+          ));
+        }
+      } else if (chatBloc.scrollController.isReverslyPaginated && !chatBloc.state.hasReachBottomMax) {
+        if (chatBloc.scrollController.position.userScrollDirection == ScrollDirection.forward) { 
+          chatBloc.add(LoadMessages(
+            isPagination: true,
+            direction: RequestDirection.bottom
+          ));
+        }
+      }
+
+
+      // Hide/Show Bottom Pin
+      if (chatBloc.scrollController.offset > chatBloc.scrollController.position.viewportDimension * 2) {
+        bool isBottomPinShown = chatBloc.state.unreadCount != null &&  chatBloc.state.unreadCount != 0
+          && chatBloc.state.showBottomPin != null 
+            && chatBloc.state.showBottomPin
+              && !chatBloc.state.hasReachBottomMax;
+
+        if (!isBottomPinShown) {
+          chatBloc.add(ToggleBottomPin(show: true));
+        }
+      } else {
+        var isShownBefore = 
+          (chatBloc.state.unreadCount == null || chatBloc.state.unreadCount == 0)
+            && (chatBloc.state.showBottomPin == null || chatBloc.state.showBottomPin) 
+              && chatBloc.state.hasReachBottomMax;
+        if (isShownBefore) {
+            chatBloc.add(ToggleBottomPin(show: false));
+        }
+      }
+
+      if (chatBloc.scrollController.offset < chatBloc.scrollController.position.viewportDimension * 0.5) {
+        if (chatBloc.state.unreadCount != null) {
+          chatBloc.add(ToggleBottomPin(show: false, newUnreadCount: 0));
+        } 
+      }
+    }
+  }
 }
 
 
 
 extension AutoScrollControllerReversedExtension on AutoScrollController {
+  
   bool get isPaginated {
     var triggerFetchMoreSize = 0.7 * position.maxScrollExtent;
     return offset > triggerFetchMoreSize;

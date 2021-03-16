@@ -275,10 +275,10 @@ class ChatDataSourceImpl implements ChatDataSource {
           '$id'
         ],
         queryParameters: {
-          'type': direction != null ? 
-            direction.key : RequestDirection.bottom.key,
+          if (direction != null)
+          ...{'type': direction.key},
           if (lastMessageId != null)
-            'last_message_id': '$lastMessageId'
+            ...{'last_message_id': '$lastMessageId'}
         }
       ),
       headers: Endpoints.changeChatSettings.getHeaders(token: sl<AuthConfig>().token),
@@ -286,14 +286,14 @@ class ChatDataSourceImpl implements ChatDataSource {
 
     if (response.isSuccess) {
       var responseJSON = json.decode(response.body);
-      print('response $responseJSON');
       List data = ((responseJSON['messages'] ?? [])).map((e) => MessageModel.fromJson(e)).toList();
       return ChatMessageResponse(
         result: PaginatedResultViaLastItem<Message>(
           data: data.cast<Message>(),
           hasReachMax: !responseJSON['hasMoreResults']
         ),
-        topMessage: MessageModel.fromJson(responseJSON['top_message'])
+        topMessage: responseJSON['top_message'] != null ?
+          MessageModel.fromJson(responseJSON['top_message']) : null
       );
     } else {
       throw ServerFailure(message: ErrorHandler.getErrorMessage(response.body.toString()));
@@ -305,10 +305,9 @@ class ChatDataSourceImpl implements ChatDataSource {
     http.Response response = await client.get(
       Endpoints.getMessagesContext.buildURL(
         urlParams: [
-          '$chatID'
-        ], queryParameters: {
-          'message_id': '$messageID'
-        }
+          '$chatID',
+          '$messageID'
+        ]
       ),
       headers: Endpoints.getMessagesContext.getHeaders(token: sl<AuthConfig>().token)
     );
@@ -322,7 +321,8 @@ class ChatDataSourceImpl implements ChatDataSource {
           hasReachMax: !responseJSON['has_more_results_top'],
           hasReachMaxSecondSide: !responseJSON['has_more_results_bot']
         ),
-        topMessage: MessageModel.fromJson(responseJSON['top_message'])
+        topMessage: responseJSON['top_message'] != null ? 
+          MessageModel.fromJson(responseJSON['top_message']) : null
       );
     } else {
       throw ServerFailure(message: ErrorHandler.getErrorMessage(response.body.toString()));
