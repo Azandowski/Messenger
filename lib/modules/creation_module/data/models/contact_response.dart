@@ -1,3 +1,5 @@
+import 'package:equatable/equatable.dart';
+
 import 'contact_model.dart';
 
 class ContactResponse {
@@ -7,8 +9,8 @@ class ContactResponse {
 
   ContactResponse.fromJson(Map<String, dynamic> json) {
     contacts = json['contacts'] != null
-      ? new Contacts.fromJson(json['contacts'])
-      : null;
+        ? new Contacts.fromJson(json['contacts'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -20,7 +22,7 @@ class ContactResponse {
   }
 }
 
-class Contacts {
+class Contacts extends Equatable {
   int currentPage;
   List<ContactModel> data;
   String firstPageUrl;
@@ -36,7 +38,7 @@ class Contacts {
   int total;
 
   Contacts(
-{this.currentPage,
+      {this.currentPage,
       this.data,
       this.firstPageUrl,
       this.from,
@@ -97,9 +99,26 @@ class Contacts {
     data['total'] = this.total;
     return data;
   }
+
+  @override
+  List<Object> get props => [
+        currentPage,
+        data,
+        firstPageUrl,
+        from,
+        lastPage,
+        lastPageUrl,
+        links,
+        nextPageUrl,
+        path,
+        perPage,
+        prevPageUrl,
+        to,
+        total,
+      ];
 }
 
-class Links {
+class Links extends Equatable {
   String url;
   String label;
   bool active;
@@ -118,5 +137,13 @@ class Links {
     data['label'] = this.label;
     data['active'] = this.active;
     return data;
+  }
+
+  @override
+  List<Object> get props => [url, label, active];
+
+  @override
+  String toString() {
+    return "$url $label $active";
   }
 }

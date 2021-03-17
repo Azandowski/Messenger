@@ -10,6 +10,11 @@ class ContactModel extends ContactEntity {
   final String avatar;
   final DateTime lastVisit;
 
+  @override
+  String toString() {
+    return "$id $name $surname $patronym $avatar $lastVisit";
+  }
+
   ContactModel({
     this.avatar,
     @required this.name,
@@ -18,23 +23,25 @@ class ContactModel extends ContactEntity {
     this.lastVisit,
     @required this.id,
   }) : super(
-    lastVisit: lastVisit,
-    name: name,
-    avatar: avatar,
-    surname: surname,
-    patronym: patronym,
-    id: id,
-  );
+          lastVisit: lastVisit,
+          name: name,
+          avatar: avatar,
+          surname: surname,
+          patronym: patronym,
+          id: id,
+        );
 
-   factory ContactModel.fromJson(Map<String, dynamic> json) {
+  factory ContactModel.fromJson(Map<String, dynamic> json) {
     return ContactModel(
       id: json['id'],
       name: json['name'],
       patronym: json['patronym'] ?? '',
       surname: json['surname'] ?? '',
-      lastVisit: json['last_visit'] != null ? DateTime.parse(json['last_visit']) : null,
+      lastVisit: json['last_visit'] != null
+          ? DateTime.parse(json['last_visit'])
+          : null,
       avatar: json['avatar'],
-      );
+    );
   }
 
   Map<String, dynamic> toJson() {
@@ -47,4 +54,7 @@ class ContactModel extends ContactEntity {
     data['last_visit'] = this.lastVisit;
     return data;
   }
+
+  @override
+  List<Object> get props => [id, name, surname, patronym, avatar, lastVisit];
 }
