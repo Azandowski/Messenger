@@ -10,13 +10,15 @@ import '../../../../core/utils/pagination.dart';
 import '../../data/models/contact_response.dart';
 import '../repositories/creation_module_repository.dart';
 
-class FetchContacts implements UseCase<PaginatedResult<ContactEntity>, Pagination> {
+class FetchContacts
+    implements UseCase<PaginatedResult<ContactEntity>, Pagination> {
   final CreationModuleRepository repository;
 
   FetchContacts(this.repository);
 
   @override
-  Future<Either<Failure, PaginatedResult<ContactEntity>>> call(Pagination pagination) async {
+  Future<Either<Failure, PaginatedResult<ContactEntity>>> call(
+      Pagination pagination) async {
     return await repository.fetchContacts(pagination);
   }
 }

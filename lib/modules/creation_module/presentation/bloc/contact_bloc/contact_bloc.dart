@@ -18,7 +18,6 @@ import '../../../domain/usecases/fetch_contacts.dart';
 part 'contact_event.dart';
 part 'contact_state.dart';
 
-
 abstract class ContactMode {}
 
 class GetChatMembersMode implements ContactMode {
@@ -30,7 +29,6 @@ class GetChatMembersMode implements ContactMode {
 class GetUserContactsMode implements ContactMode {}
 
 class ContactBloc extends Bloc<ContactEvent, ContactState> {
-  
   ContactBloc({
     this.fetchContacts,
     this.getChatMembers,
@@ -38,7 +36,7 @@ class ContactBloc extends Bloc<ContactEvent, ContactState> {
   }) : super(const ContactState()) {
     if (this.mode == null) {
       mode = GetUserContactsMode();
-    } 
+    }
   }
 
   ContactMode mode;
@@ -49,54 +47,48 @@ class ContactBloc extends Bloc<ContactEvent, ContactState> {
   Stream<ContactState> mapEventToState(ContactEvent event) async* {
     if (event is ContactFetched) {
       var status = state.status;
+      print("hi");
 
-      yield state.copyWith(
-        status: ContactStatus.loading
-      );
+      yield state.copyWith(status: ContactStatus.loading);
 
       yield await _mapPostFetchedToState(state, status);
     } else if (event is RefreshContacts) {
       var status = state.status;
       _pagintaion = Pagination();
       yield state.copyWith(
-        status: ContactStatus.loading,
-        contacts: [],
-        hasReachedMax: false
-      );
-      
+          status: ContactStatus.loading, contacts: [], hasReachedMax: false);
+
       yield await _mapPostFetchedToState(state, status);
     }
   }
-  
+
   var _pagintaion = Pagination();
 
   Future<ContactState> _mapPostFetchedToState(
-    ContactState state, ContactStatus status
-  ) async {
-    if (state.hasReachedMax) return state.copyWith(status: ContactStatus.success);
+      ContactState state, ContactStatus status) async {
+    if (state.hasReachedMax)
+      return state.copyWith(status: ContactStatus.success);
     try {
       if (status == ContactStatus.initial) {
         PaginatedResult<ContactEntity> response = await _getData(_pagintaion);
         _pagintaion.next();
-        
+
         return state.copyWith(
-          status: ContactStatus.success,
-          contacts: response.data,
-          hasReachedMax: !response.paginationData.hasNextPage,
-          maxTotal: response.paginationData.total
-        );
+            status: ContactStatus.success,
+            contacts: response.data,
+            hasReachedMax: !response.paginationData.hasNextPage,
+            maxTotal: response.paginationData.total);
       } else {
         PaginatedResult<ContactEntity> response = await _getData(_pagintaion);
-        
+
         if (response.data.isEmpty) {
           return state.copyWith(hasReachedMax: true);
         } else {
           _pagintaion.next();
           return state.copyWith(
-            status: ContactStatus.success,
-            contacts: List.of(state.contacts)..addAll(response.data),
-            hasReachedMax: !response.paginationData.hasNextPage
-          );
+              status: ContactStatus.success,
+              contacts: List.of(state.contacts)..addAll(response.data),
+              hasReachedMax: !response.paginationData.hasNextPage);
         }
       }
     } on Exception {
@@ -104,7 +96,7 @@ class ContactBloc extends Bloc<ContactEvent, ContactState> {
     }
   }
 
-  Future<PaginatedResult<ContactEntity>> _getData (Pagination pagination) async {
+  Future<PaginatedResult<ContactEntity>> _getData(Pagination pagination) async {
     if (mode is GetChatMembersMode) {
       return _getChatMembers(pagination);
     } else {
@@ -112,18 +104,18 @@ class ContactBloc extends Bloc<ContactEvent, ContactState> {
     }
   }
 
-  Future<PaginatedResult<ContactEntity>> _fetchContacts(Pagination pagination) async {
-    var failOrContacts =  await fetchContacts(pagination);
+  Future<PaginatedResult<ContactEntity>> _fetchContacts(
+      Pagination pagination) async {
+    var failOrContacts = await fetchContacts(pagination);
     return failOrContacts.fold((l) => throw Exception, (r) {
       return r;
     });
   }
 
-  Future<PaginatedResult<ContactEntity>> _getChatMembers (Pagination pagination) async {
-    var failOrContacts =  await getChatMembers(GetChatMembersParams(
-      id: (mode as GetChatMembersMode).id, 
-      pagination: pagination)
-    );
+  Future<PaginatedResult<ContactEntity>> _getChatMembers(
+      Pagination pagination) async {
+    var failOrContacts = await getChatMembers(GetChatMembersParams(
+        id: (mode as GetChatMembersMode).id, pagination: pagination));
 
     return failOrContacts.fold((l) => throw Exception, (r) {
       return r;

@@ -45,17 +45,12 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
 
       authConfig.token = token;
 
-<<<<<<< HEAD
-      print(token);  
+      print(token);
       // print(sl<AuthConfig>().user.id);
-=======
-      print('token=$token');
->>>>>>> 65fd42ed91581e5432d64e7a6d035e785c05f8ab
 
       await getCurrentUser(token);
 
       getCategories(GetCategoriesParams(token: token));
-
     } on StorageFailure {
       params.add(AuthParams(null, null));
     }
@@ -170,7 +165,6 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
 
     File file = await _writeJson(jsonEncode(contactsShouldBeUpdated));
     var result = await remoteDataSource.sendContacts(file);
-
 
     if (result) {
       return localDataSource.saveContacts(deviceContacts);
