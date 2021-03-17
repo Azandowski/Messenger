@@ -50,9 +50,10 @@ class ChatsRepositoryImpl extends ChatsRepository {
         hasReachMax: false
       ));
     } else if (await networkInfo.isConnected) {
-      
-      hasInitialized = true;
-      await localChatsDataSource.resetAll();
+      if (params.lastChatID == null) {
+        hasInitialized = true;
+        await localChatsDataSource.resetAll();
+      }
 
       try {
         final response = await chatsDataSource.getUserChats(
@@ -90,7 +91,7 @@ class ChatsRepositoryImpl extends ChatsRepository {
           categoryID: params.categoryID,
           lastChatId: params.lastChatID
         );
-
+    
         // Save chats in local storage
         await localChatsDataSource.setCategoryChats(response.data);
         return Right(response);

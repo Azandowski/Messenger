@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 
 import '../../../../../app/appTheme.dart';
 import '../../../../../core/widgets/independent/images/ImageWithCorner.dart';
@@ -9,21 +10,27 @@ import '../../../domain/entities/chat_entity.dart';
 
 class ChatsList extends StatelessWidget {
   final List<ChatViewModel> items;
+  final int itemsCount;
   final List<int> loadingItemsIDS;
   final ChatCellType cellType;
   final Function(ChatViewModel) onSelect;
   final Function(ChatCellActionType, ChatEntity) onSelectedOption;
   final bool isScrollable;
   final bool showSpinner;
+  final ScrollController scrollController;
+  final bool isAutoScrollable;
 
   ChatsList({
     @required this.items,
     @required this.cellType,
+    this.itemsCount,
+    this.scrollController,
     this.loadingItemsIDS,
     this.onSelect,
     this.onSelectedOption,
     this.isScrollable = true,
     this.showSpinner = false,
+    this.isAutoScrollable = false,
     Key key,
   }) : super(key: key) {
     assert(
@@ -46,10 +53,13 @@ class ChatsList extends StatelessWidget {
       physics: isScrollable ? BouncingScrollPhysics() : NeverScrollableScrollPhysics(),
       shrinkWrap: !isScrollable,
       itemBuilder: (context, i) {
-        if (!showSpinner) {
+        bool isNotLoadingElement = i + 1 <= items.length;
+
+        if (!showSpinner && isNotLoadingElement) {
           ChatViewModel item = items[i];
           bool isSelected = cellType == ChatCellType.addChat && item.isSelected;
-          return Container(
+          
+          final body = Container(
             color: isSelected ? AppColors.lightPinkColor : Colors.white,
             child: ListTile(
               contentPadding: EdgeInsets.symmetric(vertical: 12,horizontal: 16),
@@ -111,11 +121,20 @@ class ChatsList extends StatelessWidget {
               },
             ),
           );
+
+          return isAutoScrollable ?? false ? 
+            AutoScrollTag(
+              key: ValueKey(i),
+              controller: scrollController,
+              index: i,
+              child: body
+            ) : body;
         } else {
           return CellShimmerItem();
         }
       },
-      itemCount: showSpinner ? 10 : items.length,
+      itemCount: showSpinner ? 10 : itemsCount ?? items.length,
+      controller: scrollController,
     );
 
     return isScrollable ? Expanded(

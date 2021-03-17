@@ -19,14 +19,14 @@ class ChatEntity extends Equatable {
   final bool isPrivate;
 
   ChatEntity({
-    @required this.chatCategory,
+    this.chatCategory,
     @required this.title,
-    @required this.imageUrl,
+    this.imageUrl,
     @required this.chatId,
     @required this.date,
-    @required this.permissions,
-    @required this.unreadCount,
-    @required this.description,
+    this.permissions,
+    this.unreadCount,
+    this.description,
     this.lastMessage,
     this.isPrivate = false
   });

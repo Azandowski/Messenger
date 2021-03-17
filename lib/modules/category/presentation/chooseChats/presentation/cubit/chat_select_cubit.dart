@@ -10,12 +10,17 @@ class ChatSelectCubit extends Cubit<ChatSelectState> {
 
   addChat(ChatViewModel chatViewModel){
     var list = getCopyChats();
-    if(!chatViewModel.isSelected){
-     list.add(chatViewModel.entity);
-     emit(ChatSelectInitial(selectedChats: list));
-    }else{
+    
+    if (!chatViewModel.isSelected) {
+      list.add(chatViewModel.entity.clone());
+      emit(ChatSelectInitial(
+        selectedChats: list
+      ));
+    } else {
       list.removeWhere((e) => e.chatId == chatViewModel.entity.chatId);
-      emit(ChatSelectInitial(selectedChats: list));
+      emit(
+        ChatSelectInitial(selectedChats: list)
+      );
     }
   }
 

@@ -8,6 +8,7 @@ import 'package:messenger_mobile/core/widgets/independent/small_widgets/cell_ske
 import 'package:messenger_mobile/core/widgets/independent/small_widgets/chat_count_view.dart';
 import 'package:messenger_mobile/modules/category/data/models/chat_view_model.dart';
 import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
+import 'package:messenger_mobile/modules/category/presentation/chooseChats/presentation/chat_choose_page.dart';
 import 'package:messenger_mobile/modules/chat/domain/entities/message.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen.dart';
 import 'package:messenger_mobile/modules/chats/domain/repositories/chats_repository.dart';
@@ -17,20 +18,41 @@ import 'package:messenger_mobile/modules/chats/presentation/widgets/chat_item/ch
 
 import '../../../../locator.dart';
 
+enum ChatDesignStyle { onlyChats, chatsMessages }
+
+enum ChatInteractionType { delegateMethod, openItem }
+
+abstract class ChatsSearchDelegate {
+  void didSelectChatItem (ChatEntity entity);
+}
+
+
 class ChatsSearchScreen extends StatefulWidget  {
   
   final ChatEntity chatEntity;
+  final ChatDesignStyle designStyle;
+  final ChatInteractionType interactionType;
+  final ChatsSearchDelegate delegate;
 
-  const ChatsSearchScreen({
+  ChatsSearchScreen({
     @required this.chatEntity,
+    this.designStyle = ChatDesignStyle.chatsMessages,
+    this.interactionType = ChatInteractionType.openItem,
+    this.delegate,
     Key key, 
   }) : super(key: key); 
 
   static Route route({
-    ChatEntity chatEntity
+    ChatEntity chatEntity,
+    ChatsSearchDelegate delegate,
+    ChatInteractionType interactionType,
+    ChatDesignStyle designStyle
   }) {
     return MaterialPageRoute<void>(builder: (_) => ChatsSearchScreen(
-      chatEntity: chatEntity
+      chatEntity: chatEntity, 
+      interactionType: interactionType ?? ChatInteractionType.openItem,
+      delegate: delegate,
+      designStyle: designStyle ?? ChatDesignStyle.chatsMessages
     ));
   }
 
@@ -116,16 +138,23 @@ class _ChatsSearchScreenState extends State<ChatsSearchScreen> implements Search
                 if (
                   state is SearchChatsLoading && 
                   (!state.isPagination || 
-                    index >= state.data.chats.length + state.data.messages.data.length + 1
+                    index >= getChatsLength(state) + 1
                   )) {
                     return CellShimmerItem();
                 } else if (index + 1 <= state.data.chats.length) {
-                  return ChatPreviewItem(
-                    ChatViewModel(
-                      state.data.chats[index]
-                    )
+                  return GestureDetector(
+                    onTap: () {
+                      widget.delegate?.didSelectChatItem(state.data.chats[index]);
+                    },
+                    child: ChatPreviewItem(
+                      ChatViewModel(
+                        state.data.chats[index]
+                      )
+                    ),
                   );
-                } else if (index == state.data.chats.length) {
+                } else if (
+                  index == state.data.chats.length 
+                    && widget.designStyle == ChatDesignStyle.chatsMessages) {
                   return CellHeaderView(
                     title: 'Сообщения'
                   );
@@ -158,8 +187,7 @@ class _ChatsSearchScreenState extends State<ChatsSearchScreen> implements Search
                 }
               }, 
               separatorBuilder: (context, int index) => Divider(), 
-              itemCount: state is SearchChatsLoading ? state.data.chats.length + state.data.messages.data.length + 11 : 
-                state.data.chats.length + state.data.messages.data.length + 1
+              itemCount: getItemsCount(state)
             );
           },
         )
@@ -169,6 +197,21 @@ class _ChatsSearchScreenState extends State<ChatsSearchScreen> implements Search
 
 
   // MARK: - UI Helpers
+
+  int getItemsCount (SearchChatsState state) {
+    int itemsCount = getChatsLength(state);
+
+    if (state is SearchChatsLoading) {
+      return itemsCount + 11;
+    } else {
+      return itemsCount + (widget.designStyle == ChatDesignStyle.onlyChats ? 0 : 1);
+    }
+  }
+
+  int getChatsLength (SearchChatsState state) {
+    return widget.designStyle == ChatDesignStyle.onlyChats ? 
+      state.data.chats.length : state.data.chats.length + state.data.messages.data.length;
+  }
 
   AppBar buildAppBar(BuildContext context) {
     return new AppBar(

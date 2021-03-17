@@ -10,12 +10,14 @@ abstract class ChatSelectState extends Equatable {
 }
 
 class ChatSelectInitial extends ChatSelectState {
-  ChatSelectInitial({this.selectedChats})
-  : super(selectedChats: selectedChats);
+  ChatSelectInitial({
+    this.selectedChats
+  }) : super(selectedChats: selectedChats);
 
   final List<ChatEntity> selectedChats;
 
   @override
-  List<Object> get props => [selectedChats];
-
+  List<Object> get props => [
+    selectedChats
+  ];
 }

@@ -105,7 +105,9 @@ class _CreateCategoryScreenState extends State<CreateCategoryScreen> implements 
                               });
                           },
                           onAddChats: () {
-                            _navigator.push(ChooseChatsPage.route(this));
+                            _navigator.push(ChooseChatsPage.route(
+                              this, excludeChats: state.chats
+                            ));
                           } 
                         ),
                         CellHeaderView(

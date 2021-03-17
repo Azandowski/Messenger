@@ -220,8 +220,15 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         List<Message> newMessages = isPagination ? direction == RequestDirection.top ? 
           ((this.state.messages ?? []) + result.result.data) : result.result.data + (state.messages ?? []) : result.result.data;
         
-        bool hasReachBottom = direction != RequestDirection.bottom ? 
-          state.hasReachBottomMax : result.result.hasReachMax;
+        bool hasReachBottom;
+        if (focusMessageID != null) {
+          hasReachBottom =  false;
+        } else if (direction == RequestDirection.bottom) {
+          hasReachBottom = result.result.hasReachMax;
+        } else {
+          hasReachBottom = direction != RequestDirection.top ?
+            state.hasReachBottomMax : result.result.hasReachMax;
+        }
 
         return ChatInitial(
           topMessage: result.topMessage,

@@ -122,9 +122,11 @@ class CreateCategoryCubit extends Cubit<CreateCategoryState> {
   } 
 
   void addChats (List<ChatEntity> comingChats){
+    List<ChatEntity> newChats = [...comingChats, ...state.chats];
+
     emit(CreateCategoryNormal(
       imageFile: this.state.imageFile, 
-      chats: comingChats)
+      chats: newChats)
     );
   }
 

@@ -18,7 +18,7 @@ class BottomPin extends StatelessWidget {
       backgroundColor: AppColors.indicatorColor,
       child: Container(
         child: Center(
-          child: !(state.unreadCount != null && state.unreadCount != 0) ? 
+          child: (state.unreadCount != null && state.unreadCount != 0) ? 
             Container(
               width: 30,
               height: 30,
@@ -28,7 +28,7 @@ class BottomPin extends StatelessWidget {
               ),
               child: Center(
                 child: Text(
-                  '${state.unreadCount ?? 9}',
+                  '${state.unreadCount}',
                   style: TextStyle(color: AppColors.accentBlueColor),
                 ),
               ),
