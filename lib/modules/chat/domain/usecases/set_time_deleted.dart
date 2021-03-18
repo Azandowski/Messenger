@@ -1,12 +1,13 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
+import 'package:messenger_mobile/modules/category/domain/entities/chat_permissions.dart';
 
 import '../../../../core/error/failures.dart';
 import '../../../../core/usecases/usecase.dart';
 import '../repositories/chat_repository.dart';
 import 'params.dart';
 
-class SetTimeDeleted implements UseCase<NoParams, SetTimeDeletedParams> {
+class SetTimeDeleted implements UseCase<ChatPermissions, SetTimeDeletedParams> {
   final ChatRepository repository;
 
   SetTimeDeleted({
@@ -14,7 +15,7 @@ class SetTimeDeleted implements UseCase<NoParams, SetTimeDeletedParams> {
   });
 
   @override
-  Future<Either<Failure, NoParams>> call(SetTimeDeletedParams params) {
-    return repository.setTimeDeleted(id: params.id, timeInSeconds: params.seconds);
+  Future<Either<Failure, ChatPermissions>> call(SetTimeDeletedParams params) {
+    return repository.setTimeDeleted(id: params.id, isOn: params.isOn);
   }
 }

@@ -7,6 +7,7 @@ abstract class ChatState extends Equatable {
   final String wallpaperPath;
   final int unreadCount;
   final bool showBottomPin;
+  final bool isSecretModeOn;
 
   final Message topMessage;
   const ChatState({
@@ -17,12 +18,14 @@ abstract class ChatState extends Equatable {
     this.unreadCount,
     this.showBottomPin,
     this.topMessage,
+    this.isSecretModeOn
   });
 
   @override
   List<Object> get props => [
     messages, hasReachedMax, wallpaperPath, hasReachBottomMax,
-    unreadCount, showBottomPin, showBottomPin, topMessage
+    unreadCount, showBottomPin, showBottomPin, topMessage,
+    isSecretModeOn
   ];
 
   ChatState copyWith ({
@@ -44,6 +47,7 @@ class ChatInitial extends ChatState {
   final int unreadCount;
   final bool showBottomPin;
   final Message topMessage;
+  final bool isSecretModeOn;
 
   ChatInitial({
     @required this.messages,
@@ -54,13 +58,15 @@ class ChatInitial extends ChatState {
     this.unreadCount,
     this.showBottomPin,
     this.topMessage,
+    this.isSecretModeOn
   }) : super(
     messages: messages, 
     hasReachedMax: hasReachedMax,
     wallpaperPath: wallpaperPath,
     hasReachBottomMax: hasReachBottomMax,
     unreadCount: unreadCount,
-    topMessage: topMessage
+    topMessage: topMessage,
+    isSecretModeOn: isSecretModeOn
   );
 
   @override
@@ -93,7 +99,8 @@ class ChatInitial extends ChatState {
     focusMessageID,
     unreadCount,
     showBottomPin,
-    topMessage
+    topMessage,
+    isSecretModeOn
   ];
 }
 
@@ -108,6 +115,7 @@ class ChatLoading extends ChatState {
   final RequestDirection direction;
   final int unreadCount;
   final bool showBottomPin;
+  final bool isSecretModeOn;
 
   ChatLoading({
     @required this.isPagination,
@@ -118,14 +126,16 @@ class ChatLoading extends ChatState {
     this.hasReachBottomMax = true ,
     this.direction,
     this.unreadCount,
-    this.showBottomPin
+    this.showBottomPin,
+    this.isSecretModeOn
   }) : super(
     messages: messages, 
     hasReachedMax: hasReachedMax,
     wallpaperPath: wallpaperPath,
     hasReachBottomMax: hasReachBottomMax,
     unreadCount: unreadCount,
-    topMessage: topMessage
+    topMessage: topMessage,
+    isSecretModeOn: isSecretModeOn
   );
 
   @override 
@@ -160,7 +170,8 @@ class ChatLoading extends ChatState {
     direction,
     unreadCount,
     showBottomPin,
-    topMessage
+    topMessage,
+    isSecretModeOn
   ];  
 }
 
@@ -175,6 +186,7 @@ class ChatLoadingSilently extends ChatState {
   final int unreadCount;
   final bool showBottomPin;
   final Message topMessage;
+  final bool isSecretModeOn;
 
   ChatLoadingSilently({
     @required this.messages,
@@ -183,14 +195,16 @@ class ChatLoadingSilently extends ChatState {
     this.hasReachBottomMax = true,
     this.unreadCount,
     this.showBottomPin,
-    this.topMessage
+    this.topMessage,
+    this.isSecretModeOn
   }) : super(
     messages: messages,
     hasReachBottomMax: hasReachBottomMax,
     hasReachedMax: hasReachedMax,
     unreadCount: unreadCount,
     wallpaperPath: wallpaperPath,
-    topMessage: topMessage
+    topMessage: topMessage,
+    isSecretModeOn: isSecretModeOn
   );
 
   @override 
@@ -223,7 +237,8 @@ class ChatLoadingSilently extends ChatState {
     hasReachBottomMax,
     unreadCount,
     showBottomPin,
-    topMessage
+    topMessage,
+    isSecretModeOn
   ];
 }
 
@@ -237,6 +252,7 @@ class ChatError extends ChatState {
   final int unreadCount;
   final bool showBottomPin;
   final Message topMessage;
+  final bool isSecretModeOn;
 
   ChatError({
     @required this.messages,
@@ -246,14 +262,16 @@ class ChatError extends ChatState {
     this.wallpaperPath,
     this.hasReachBottomMax = true,
     this.unreadCount,
-    this.showBottomPin
+    this.showBottomPin,
+    this.isSecretModeOn
   }) : super(
     messages: messages, 
     hasReachedMax: hasReachedMax,
     wallpaperPath: wallpaperPath,
     hasReachBottomMax: hasReachBottomMax,
     unreadCount: unreadCount,
-    topMessage: topMessage
+    topMessage: topMessage,
+    isSecretModeOn: isSecretModeOn
   );
 
   @override 
@@ -288,6 +306,7 @@ class ChatError extends ChatState {
     hasReachBottomMax,
     unreadCount,
     showBottomPin,
-    topMessage
+    topMessage,
+    isSecretModeOn
   ];
 }

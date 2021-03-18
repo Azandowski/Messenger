@@ -191,4 +191,23 @@ class ChatGlobalCubit extends Cubit<ChatState> {
       ));
     }
   }
+
+  void setSecretMode ({
+    @required bool isOn,
+    @required int chatId
+  }) {  
+    int index = this.state.chats.indexWhere((element) => element.chatId == chatId);
+    if (index != -1) {
+      var newChatModel = this.state.chats[index].clone(
+        permissions: this.state.chats[index].permissions.copyWith(isSecret: isOn)
+      );
+      var newChats = this.state.chats.map((e) => e.chatId == chatId ? newChatModel : e.clone()).toList();
+      
+      emit(ChatsLoaded(
+        hasReachedMax: this.state.hasReachedMax ?? false,
+        chats: newChats,
+        currentCategory: this.state.currentCategory
+      ));
+    } 
+  }
 }

@@ -190,11 +190,17 @@ class ChatRepositoryImpl extends ChatRepository {
   }
 
   @override
-  Future<Either<Failure, NoParams>> setTimeDeleted({int id, int timeInSeconds}) async {
+  Future<Either<Failure, ChatPermissions>> setTimeDeleted({int id, bool isOn}) async {
     if (await networkInfo.isConnected) { 
       try {
-        final response = await chatDataSource.setTimeDeleted(id: id, timeInSeconds: timeInSeconds);
-        return Right(NoParams());
+        final response = await chatDataSource.updateChatSettings(
+          id: id,
+          chatUpdates: {
+            'is_secret': isOn ? '1' : '0'
+          }
+        );
+
+        return Right(response);
       } catch (e) {
         if (e is Failure) {
           return Left(e);

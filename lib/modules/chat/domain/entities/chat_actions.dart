@@ -4,13 +4,18 @@ import 'package:messenger_mobile/modules/chat/domain/entities/message.dart';
 enum ChatActions {
   addUser,
   kickUser,
-  newDay
+  newDay,
+  setSecret,
+  unsetSecret
 }
 
 extension ChatActionsLogicExtension on ChatActions {
   ChatActionTypes get actionType {
     if (
-      this == ChatActions.addUser || this == ChatActions.kickUser
+      this == ChatActions.addUser 
+        || this == ChatActions.kickUser 
+          || this == ChatActions.setSecret
+            || this == ChatActions.unsetSecret
     ) {
       return ChatActionTypes.group;
     } else {
@@ -26,17 +31,29 @@ extension ChatActionsExtension on ChatActions {
         return 'Ad User';
       case ChatActions.kickUser:
         return 'Kick User';
+      case ChatActions.setSecret:
+        return 'SetSecretChat';
+      case ChatActions.unsetSecret:
+        return 'UnsetTimeSecret';
       default: 
         return null;
     }
   }
 
-  String get hintText {
+  String getHintText (bool isMe) {
     switch (this) {
       case ChatActions.addUser:
-        return 'добавил(а) участника';
+        return isMe ? 'добавили участника' : 
+          'добавил(а) участника';
       case ChatActions.kickUser:
-        return 'удалил участника';
+        return isMe ? 'удалили участника' : 
+          'удалил(а) участника';
+      case ChatActions.setSecret:
+        return isMe ? 'включили таймер сгорания' : 
+          'включил(a) таймер сгорания';
+      case ChatActions.unsetSecret:
+        return isMe? 'выключил таймер сгроания' : 
+          'выключил(а) таймер сгорания';
       default:
         return null;
     }
@@ -48,6 +65,19 @@ extension ChatActionsExtension on ChatActions {
         return '$userName добавлен(а)';
       case ChatActions.kickUser:
         return '$userName исключен(а)';
+      case ChatActions.setSecret:
+        return 'Включен таймер сгорания';
+      case ChatActions.unsetSecret:
+        return 'Выключен таймер сгорания';
+      default:
+        return null;
+    }
+  }
+
+  String get imagePath {
+    switch (this) {
+      case ChatActions.setSecret:
+        return 'assets/icons/hot.png';
       default:
         return null;
     }

@@ -10,6 +10,7 @@ import '../../../../../core/widgets/independent/dialogs/dialogs.dart';
 import '../../../../../locator.dart';
 import '../../chat_details/page/chat_detail_page.dart';
 import '../../time_picker/time_picker_screen.dart';
+import 'appBars/chat_app_bar.dart';
 
 
 class ChatScreenActions extends StatelessWidget {
@@ -18,10 +19,14 @@ class ChatScreenActions extends StatelessWidget {
   
   final TimePickerDelegate timePickerDelegate;
   final ChatEntity chatEntity;
+  final bool isSecretModeOn;
+  final Function(ChatAppBarActions) onTapChatAction;
 
   const ChatScreenActions({
+    @required this.onTapChatAction,
     this.timePickerDelegate,
     this.chatEntity,
+    this.isSecretModeOn = false,
     Key key,
   }) : super(key: key);
 
@@ -72,11 +77,13 @@ class ChatScreenActions extends StatelessWidget {
                     }
                   ),
                   DialogActionButton(
-                    title: 'Таймер сгорания сообщений', 
+                    title: (isSecretModeOn ?? false) ? 'Выключить таймер сгорания' : 'Включить таймер сгорания', 
                     iconData: Icons.timer,
                     buttonStyle: DialogActionButtonStyle.dangerous,
                     onPress: () {
-                      _navigator.push(TimePickerScreen.route(timePickerDelegate));
+                      onTapChatAction(ChatAppBarActions.onOffSecretMode);
+                      Navigator.of(context).pop();
+                      // _navigator.push(TimePickerScreen.route(timePickerDelegate));
                     }
                   ),
                 ],

@@ -65,11 +65,6 @@ abstract class ChatDataSource {
   );
   Future<ChatMessageResponse> getChatMessageContext (int chatID, int messageID);
 
-  // TODO: Finish later
-  Future<void> setTimeDeleted ({
-    int id, int timeInSeconds
-  });
-
   Future<void> disposeChat();
 }
 
@@ -344,28 +339,6 @@ class ChatDataSourceImpl implements ChatDataSource {
   Future<void> disposeChat() {
     socketService.echo.leave(SocketChannels.getChatByID(id));
     socketService.echo.leave(SocketChannels.getChatDeleteById(id));
-  }
-
-
-  // TODO: Works Partly, No need to touch
-
-  @override 
-  Future<void> setTimeDeleted ({
-    @required int timeInSeconds,
-    @required int id
-  }) async {
-    http.Response response = await client.post(
-      Endpoints.setTimeDeleted.buildURL(),
-      headers: Endpoints.changeChatSettings.getHeaders(token: sl<AuthConfig>().token),
-      body: json.encode({
-        'time_deleted': '$timeInSeconds',
-        'chat_id': '$id'
-      })
-    );
-
-    if (!response.isSuccess) { 
-      throw ServerFailure(message: ErrorHandler.getErrorMessage(response.body.toString()));
-    }
   }
 
   @override

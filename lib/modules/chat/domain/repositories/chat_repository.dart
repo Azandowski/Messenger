@@ -32,8 +32,8 @@ abstract class ChatRepository {
     RequestDirection direction
   );
   
-  Future<Either<Failure, NoParams>> setTimeDeleted ({
-    int id, int timeInSeconds
+  Future<Either<Failure, ChatPermissions>> setTimeDeleted ({
+    int id, bool isOn
   });
   
   Future<void> disposeChat();

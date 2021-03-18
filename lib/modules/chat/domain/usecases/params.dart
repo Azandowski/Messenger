@@ -64,11 +64,11 @@ class UpdateChatSettingsParams {
 
 class SetTimeDeletedParams {
   final int id;
-  final int seconds;
+  final bool isOn;
 
   SetTimeDeletedParams({
     @required this.id,
-    @required this.seconds
+    @required this.isOn
   });
 }
 

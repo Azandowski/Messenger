@@ -13,8 +13,10 @@ extension ChatScreenStateHelper on ChatScreenState {
   PreferredSizeWidget buildAppBar (
     ChatTodoCubit chatTodoCubit,
     ChatTodoState state,
+    ChatState chatScreenState,
     ChatViewModel chatViewModel,
-    NavigatorState navigator
+    NavigatorState navigator,
+    Function(ChatAppBarActions) onTapChatAction
   ) {
     return state is ChatTodoSelection ? SelectionAppBar(
       chatViewModel: chatViewModel, 
@@ -26,6 +28,8 @@ extension ChatScreenStateHelper on ChatScreenState {
       navigator: navigator, 
       widget: widget, 
       appBar: AppBar(),
+      isSecretModeOn: chatScreenState.isSecretModeOn,
+      onTapChatAction: onTapChatAction
     );
   }
 
@@ -161,7 +165,7 @@ extension ChatScreenStateHelper on ChatScreenState {
           chatAction: TimeAction(
             dateTime: state.messages[index].dateTime,
             action: ChatActions.newDay
-          )
+          ),
         );
       } 
     } 
@@ -225,8 +229,12 @@ extension ChatScreenStateHelper on ChatScreenState {
         ));
     } else if (state is ChatInitial) {
       // Update Notification Badge
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
 
       var chatGlobalCubit = context.read<main_chat_cubit.ChatGlobalCubit>();
+      
+      chatGlobalCubit.setSecretMode(isOn: state.isSecretModeOn, chatId: widget.chatEntity.chatId);
+      
       var globalIndexOfChat = chatGlobalCubit.state.chats.indexWhere((e) => e.chatId == widget.chatEntity.chatId);
 
       if (globalIndexOfChat != -1) {

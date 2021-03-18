@@ -69,7 +69,8 @@ class ChatScreenState extends State<ChatScreen> implements ChatChooseDelegate{
       getMessages: GetMessages(repository: chatRepository),
       getMessagesContext: GetMessagesContext(repository: chatRepository),
       chatsRepository: sl(),
-      setTimeDeleted: SetTimeDeleted(repository: chatRepository)
+      setTimeDeleted: SetTimeDeleted(repository: chatRepository),
+      isSecretModeOn: widget.chatEntity.permissions?.isSecret ?? false
     )..add(LoadMessages(
       isPagination: false,
       messageID: widget.messageID,
@@ -122,17 +123,26 @@ class ChatScreenState extends State<ChatScreen> implements ChatChooseDelegate{
               builder: (context, state) {
                 return Scaffold(
                   appBar: this.buildAppBar(
-                    _chatTodoCubit, cubit, chatViewModel, _navigator,
+                    _chatTodoCubit, 
+                    cubit, state, chatViewModel, _navigator,
+                    (ChatAppBarActions action) {
+                      if (action == ChatAppBarActions.onOffSecretMode) {
+                        _chatBloc.add(SetInitialTime(isOn: !(state.isSecretModeOn ?? false)));
+                      }
+                    }
                   ),
                   floatingActionButton: shouldShowBottomPin(state) ?
-                    BottomPin(
-                      state: state,
-                      onPress: () {
-                        _chatBloc.add(LoadMessages(
-                          isPagination: false,
-                          resetAll: true
-                        ));
-                      }
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 60.0),
+                      child: BottomPin(
+                        state: state,
+                        onPress: () {
+                          _chatBloc.add(LoadMessages(
+                            isPagination: false,
+                            resetAll: true
+                          ));
+                        }
+                      ),
                     ) : null,
                   backgroundColor: AppColors.pinkBackgroundColor,
                   body: BlocProvider(
@@ -171,8 +181,8 @@ class ChatScreenState extends State<ChatScreen> implements ChatChooseDelegate{
                                     return ChatActionView(
                                       chatAction: TimeAction(
                                         action: ChatActions.newDay,
-                                        dateTime: state.messages[index - 1].dateTime
-                                      )
+                                        dateTime: state.messages[index - 1].dateTime,
+                                      ),
                                     );
                                   }
 
@@ -290,7 +300,7 @@ class ChatScreenState extends State<ChatScreen> implements ChatChooseDelegate{
   @override
   void didSelectTimeOption(TimeOptions option) {
     Navigator.of(context).pop();
-    _chatBloc.add(SetInitialTime(option: option));
+    // _chatBloc.add(SetInitialTime(option: option));
   }
 
   @override

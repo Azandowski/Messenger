@@ -6,20 +6,26 @@ import '../../pages/chat_screen.dart';
 import '../chatHeading.dart';
 import '../chat_screen_actions.dart';
 
+enum ChatAppBarActions { onOffSecretMode }
+
 class ChatAppBar extends StatelessWidget implements PreferredSizeWidget{
-  const ChatAppBar({
+  ChatAppBar({
     Key key,
+    @required this.onTapChatAction,
     @required this.chatViewModel,
     @required this.appBar,
     @required NavigatorState navigator,
     @required this.widget,
+    this.isSecretModeOn = false
   }) : _navigator = navigator, super(key: key);
 
   final ChatViewModel chatViewModel;
   final NavigatorState _navigator;
   final ChatScreen widget;
   final AppBar appBar;
-  
+  final bool isSecretModeOn;
+  final Function(ChatAppBarActions) onTapChatAction;
+
   @override
   Widget build(BuildContext context) {
     return AppBar(
@@ -34,7 +40,11 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget{
         }
       ),
       actions: [
-        ChatScreenActions()
+        ChatScreenActions(
+          chatEntity: chatViewModel.entity,
+          isSecretModeOn: isSecretModeOn,
+          onTapChatAction: onTapChatAction
+        )
       ],
     );
   }
