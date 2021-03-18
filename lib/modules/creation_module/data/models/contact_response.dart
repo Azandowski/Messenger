@@ -2,15 +2,17 @@ import 'package:equatable/equatable.dart';
 
 import 'contact_model.dart';
 
-class ContactResponse {
-  Contacts contacts;
+class ContactResponse extends Equatable {
+  final Contacts contacts;
 
   ContactResponse({this.contacts});
 
-  ContactResponse.fromJson(Map<String, dynamic> json) {
-    contacts = json['contacts'] != null
-        ? new Contacts.fromJson(json['contacts'])
-        : null;
+  factory ContactResponse.fromJson(Map<String, dynamic> json) {
+    return ContactResponse(
+      contacts: json['contacts'] != null
+          ? new Contacts.fromJson(json['contacts'])
+          : null,
+    );
   }
 
   Map<String, dynamic> toJson() {
@@ -20,22 +22,25 @@ class ContactResponse {
     }
     return data;
   }
+
+  @override
+  List<Object> get props => [contacts];
 }
 
 class Contacts extends Equatable {
-  int currentPage;
-  List<ContactModel> data;
-  String firstPageUrl;
-  int from;
-  int lastPage;
-  String lastPageUrl;
-  List<Links> links;
-  String nextPageUrl;
-  String path;
-  String perPage;
-  String prevPageUrl;
-  int to;
-  int total;
+  final int currentPage;
+  final List<ContactModel> data;
+  final String firstPageUrl;
+  final int from;
+  final int lastPage;
+  final String lastPageUrl;
+  final List<Links> links;
+  final String nextPageUrl;
+  final String path;
+  final String perPage;
+  final String prevPageUrl;
+  final int to;
+  final int total;
 
   Contacts(
       {this.currentPage,
@@ -52,30 +57,36 @@ class Contacts extends Equatable {
       this.to,
       this.total});
 
-  Contacts.fromJson(Map<String, dynamic> json) {
-    currentPage = json['current_page'];
+  factory Contacts.fromJson(Map<String, dynamic> json) {
+    List<ContactModel> data;
     if (json['data'] != null) {
       data = new List<ContactModel>();
       json['data'].forEach((v) {
         data.add(new ContactModel.fromJson(v));
       });
     }
-    firstPageUrl = json['first_page_url'];
-    from = json['from'];
-    lastPage = json['last_page'];
-    lastPageUrl = json['last_page_url'];
+    List<Links> links;
     if (json['links'] != null) {
       links = new List<Links>();
       json['links'].forEach((v) {
         links.add(new Links.fromJson(v));
       });
     }
-    nextPageUrl = json['next_page_url'];
-    path = json['path'];
-    perPage = json['per_page'];
-    prevPageUrl = json['prev_page_url'];
-    to = json['to'];
-    total = json['total'];
+    return Contacts(
+      firstPageUrl: json['first_page_url'],
+      from: json['from'],
+      lastPage: json['last_page'],
+      lastPageUrl: json['last_page_url'],
+      nextPageUrl: json['next_page_url'],
+      path: json['path'],
+      perPage: json['per_page'],
+      prevPageUrl: json['prev_page_url'],
+      to: json['to'],
+      total: json['total'],
+      currentPage: json['current_page'],
+      links: links,
+      data: data,
+    );
   }
 
   Map<String, dynamic> toJson() {
@@ -116,6 +127,11 @@ class Contacts extends Equatable {
         to,
         total,
       ];
+
+  @override
+  String toString() {
+    return "$currentPage $data $firstPageUrl $from $lastPage $lastPageUrl $links $nextPageUrl $path $perPage $prevPageUrl $to $total";
+  }
 }
 
 class Links extends Equatable {
