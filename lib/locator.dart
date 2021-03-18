@@ -129,7 +129,8 @@ Future<void> init() async {
   //USECASE
   sl.registerLazySingleton(() => FetchContacts(CreationModuleRepositoryImpl(
       networkInfo: sl(),
-      dataSource: CreationModuleDataSourceImpl(client: sl()))));
+      dataSource:
+          CreationModuleDataSourceImpl(authConfig: sl(), client: sl()))));
   sl.registerLazySingleton(() => CreateChatGruopUseCase(repository: sl()));
 
   // Bloc

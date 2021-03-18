@@ -9,11 +9,10 @@ import 'dart:convert';
 
 class MockHttpClient extends Mock implements http.Client {}
 
-
 main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   ChatsDataSourceImpl chatsDataSourceImpl;
-  MockHttpClient httpClient; 
+  MockHttpClient httpClient;
 
   setUp(() async {
     httpClient = MockHttpClient();
@@ -21,43 +20,30 @@ main() {
   });
 
   final List<CategoryModel> categories = [
-    CategoryModel(
-      id: 1,
-      totalChats: 1,
-      name: 'Superwork',
-      avatar: 'image.png'
-    )
+    CategoryModel(id: 1, totalChats: 1, name: 'Superwork', avatar: 'image.png')
   ];
 
-  group(
-    'Loading Categories for the chat',
-    () {
-      test (
-        'should successfully load categories',
-        () async {
-          when(httpClient.post(any, headers: anyNamed('headers'), body: anyNamed('body')))
-          .thenAnswer(
-            (_) async {
-              var jsonArray = categories.map((e) => e.toJson()).toList();
-              return http.Response(json.encode(jsonArray), 200);
-            });
+  group('Loading Categories for the chat', () {
+    test('should successfully load categories', () async {
+      when(httpClient.post(any,
+              headers: anyNamed('headers'), body: anyNamed('body')))
+          .thenAnswer((_) async {
+        var jsonArray = categories.map((e) => e.toJson()).toList();
+        return http.Response(json.encode(jsonArray), 200);
+      });
 
-            // final result = await chatsDataSourceImpl.getCategories('token');
+      // final result = await chatsDataSourceImpl.getCategories('token');
 
-            //  expect(result, equals(categories));
-          }
-      );
+      //  expect(result, equals(categories));
+    });
 
-      test (
-        'should send error',
-        () async {
-          when(httpClient.post(any, headers: anyNamed('headers'), body: anyNamed('body')))
-          .thenAnswer(
-            (_) async => http.Response('error is here', 400));
+    test('should send error', () async {
+      when(httpClient.post(any,
+              headers: anyNamed('headers'), body: anyNamed('body')))
+          .thenAnswer((_) async => http.Response('error is here', 400));
 
-            // final call = chatsDataSourceImpl.getCategories;
-            // expect(() => call('token'), throwsA(isA<ServerFailure>()));
-          }
-      ); 
+      // final call = chatsDataSourceImpl.getCategories;
+      // expect(() => call('token'), throwsA(isA<ServerFailure>()));
+    });
   });
 }

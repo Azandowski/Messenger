@@ -26,31 +26,31 @@ abstract class CreationModuleDataSource {
 
 class CreationModuleDataSourceImpl implements CreationModuleDataSource {
   final http.Client client;
+  final AuthConfig authConfig;
 
-  CreationModuleDataSourceImpl({
-    @required this.client
-  });
+  CreationModuleDataSourceImpl(
+      {@required this.client, @required this.authConfig});
 
   @override
   Future<PaginatedResult<ContactEntity>> fetchContacts(
-    Pagination pagination
-  ) async {
-    
+      Pagination pagination) async {
     http.Response response = await client.get(
       Endpoints.fetchContacts.buildURL(queryParameters: {
         'limit': pagination.limit.toString(),
         'page': pagination.page.toString(),
       }),
-      headers: Endpoints.getCurrentUser.getHeaders(token: sl<AuthConfig>().token),
+      headers: Endpoints.getCurrentUser.getHeaders(token: authConfig.token),
     );
 
     if (response.isSuccess) {
       var jsonMap = json.decode(response.body)['contacts'];
-      return  PaginatedResult<ContactEntity>.fromJson(
-        jsonMap, 
-        (data) => ContactModel.fromJson(data));
+      return PaginatedResult<ContactEntity>.fromJson(
+        jsonMap,
+        (data) => ContactModel.fromJson(data),
+      );
     } else {
-      throw ServerFailure(message: ErrorHandler.getErrorMessage(response.body.toString()));
+      throw ServerFailure(
+          message: ErrorHandler.getErrorMessage(response.body.toString()));
     }
   }
 }

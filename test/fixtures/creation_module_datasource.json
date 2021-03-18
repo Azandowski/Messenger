@@ -1,0 +1,14 @@
+{
+    "contacts":{
+        "next_page_url":"next_page_url",
+        "data":[
+            {
+                "id":1,
+                "name":"name",
+                "surname":"surname",
+                "patronym":"patronym",
+                "avatar":"avatar"
+            }
+        ]
+    }
+}

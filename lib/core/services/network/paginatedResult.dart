@@ -1,4 +1,3 @@
-
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 
@@ -7,29 +6,31 @@ import 'package:flutter/foundation.dart';
  * ! T should have fromJson method
  */
 
-class PaginatedResult <T> {
+class PaginatedResult<T> extends Equatable {
   final List<T> data;
   final PaginationData paginationData;
 
-  PaginatedResult({
-    this.data, 
-    this.paginationData
-  });
+  PaginatedResult({this.data, this.paginationData});
 
   factory PaginatedResult.fromJson(
-    Map<String, dynamic> json,
-    T factory(Map<String, dynamic> data)
-  ) {
+      Map<String, dynamic> json, T factory(Map<String, dynamic> data)) {
     List jsonDataArray = (json['data'] ?? []) as List;
     return PaginatedResult(
-      paginationData: PaginationData(
-        nextPageUrl: json['next_page_url'] != null ?
-           Uri.parse(json['next_page_url']) : null,
-        isFirstPage: false
-      ),
-      data: jsonDataArray.map((e) => factory(e)).toList()
-    );
+        paginationData: PaginationData(
+            nextPageUrl: json['next_page_url'] != null
+                ? Uri.parse(json['next_page_url'])
+                : null,
+            isFirstPage: false),
+        data: jsonDataArray.map((e) => factory(e)).toList());
   }
+
+  @override
+  String toString() {
+    return "$data $paginationData";
+  }
+
+  @override
+  List<Object> get props => [data, paginationData];
 }
 
 class PaginationData extends Equatable {
@@ -37,44 +38,34 @@ class PaginationData extends Equatable {
   final bool isFirstPage;
   final int total;
 
-  PaginationData({
-    @required this.nextPageUrl, 
-    this.isFirstPage = true,
-    this.total
-  });
+  PaginationData(
+      {@required this.nextPageUrl, this.isFirstPage = true, this.total});
 
-  factory PaginationData.defaultInit () {
-    return PaginationData(
-      nextPageUrl: null,
-      isFirstPage: true
-    );
+  factory PaginationData.defaultInit() {
+    return PaginationData(nextPageUrl: null, isFirstPage: true);
   }
 
-  factory PaginationData.fromJson(
-    Map<String, dynamic> json
-  ) {
+  factory PaginationData.fromJson(Map<String, dynamic> json) {
     return PaginationData(
-      nextPageUrl: json['next_page_url'],
-      total: json['total']
-    );
+        nextPageUrl: json['next_page_url'], total: json['total']);
   }
-  
+
   bool get hasNextPage {
     return nextPageUrl != null;
   }
 
   @override
   List<Object> get props => [nextPageUrl, isFirstPage];
+
+  @override
+  String toString() {
+    return "$nextPageUrl $isFirstPage $total";
+  }
 }
-
-
 
 class PaginatedResultViaLastItem<T> {
   final List<T> data;
   final bool hasReachMax;
 
-  PaginatedResultViaLastItem({
-    @required this.data,
-    @required this.hasReachMax
-  });
+  PaginatedResultViaLastItem({@required this.data, @required this.hasReachMax});
 }
