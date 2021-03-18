@@ -1,0 +1,30 @@
+{
+    "current_page":1,
+    "first_page_url":"first_page_url",
+    "from":1,
+    "last_page":1,
+    "last_page_url":"last_page_url",
+    "next_page_url":"next_page_url",
+    "path":"path",
+    "per_page":"per_page",
+    "prev_page_url":"prev_page_url",
+    "to":1,
+    "total":1,
+    "data":[
+        {
+            "id":1,
+            "name":"name",
+            "patronym":"patronym",
+            "surname":"surname",
+            "last_visit": "2021-03-15 17:08:04.860545",
+            "avatar":"avatar"
+        }
+    ],
+    "links":[
+        {
+            "url":"url",
+            "label":"label",
+            "active":true
+        }
+    ]
+}
