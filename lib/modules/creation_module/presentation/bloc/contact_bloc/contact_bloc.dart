@@ -47,7 +47,6 @@ class ContactBloc extends Bloc<ContactEvent, ContactState> {
   Stream<ContactState> mapEventToState(ContactEvent event) async* {
     if (event is ContactFetched) {
       var status = state.status;
-      print("hi");
 
       yield state.copyWith(status: ContactStatus.loading);
 
@@ -91,7 +90,7 @@ class ContactBloc extends Bloc<ContactEvent, ContactState> {
               hasReachedMax: !response.paginationData.hasNextPage);
         }
       }
-    } on Exception {
+    } catch (e) {
       return state.copyWith(status: ContactStatus.failure);
     }
   }
@@ -107,9 +106,11 @@ class ContactBloc extends Bloc<ContactEvent, ContactState> {
   Future<PaginatedResult<ContactEntity>> _fetchContacts(
       Pagination pagination) async {
     var failOrContacts = await fetchContacts(pagination);
-    return failOrContacts.fold((l) => throw Exception, (r) {
-      return r;
-    });
+
+    return failOrContacts.fold(
+      (l) => throw Exception,
+      (r) => r,
+    );
   }
 
   Future<PaginatedResult<ContactEntity>> _getChatMembers(
@@ -117,8 +118,9 @@ class ContactBloc extends Bloc<ContactEvent, ContactState> {
     var failOrContacts = await getChatMembers(GetChatMembersParams(
         id: (mode as GetChatMembersMode).id, pagination: pagination));
 
-    return failOrContacts.fold((l) => throw Exception, (r) {
-      return r;
-    });
+    return failOrContacts.fold(
+      (l) => throw Exception,
+      (r) => r,
+    );
   }
 }
