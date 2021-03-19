@@ -1,5 +1,5 @@
-import 'package:messenger_mobile/core/config/auth_config.dart';
-import 'package:messenger_mobile/modules/chat/domain/entities/message.dart';
+import '../../../../../core/config/auth_config.dart';
+import '../../../domain/entities/message.dart';
 
 import '../../../../../locator.dart';
 

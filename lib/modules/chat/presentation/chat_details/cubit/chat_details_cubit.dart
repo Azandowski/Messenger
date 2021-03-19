@@ -2,7 +2,6 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/modules/chat/domain/usecases/kick_member.dart';
 
 import '../../../../category/data/models/chat_permission_model.dart';
 import '../../../../category/domain/entities/chat_permissions.dart';
@@ -10,6 +9,7 @@ import '../../../../creation_module/domain/entities/contact.dart';
 import '../../../domain/entities/chat_detailed.dart';
 import '../../../domain/usecases/add_members.dart';
 import '../../../domain/usecases/get_chat_details.dart';
+import '../../../domain/usecases/kick_member.dart';
 import '../../../domain/usecases/leave_chat.dart';
 import '../../../domain/usecases/params.dart';
 import '../../../domain/usecases/update_chat_settings.dart';

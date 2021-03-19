@@ -1,8 +1,9 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
-import 'package:messenger_mobile/core/services/network/paginatedResult.dart';
-import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
-import 'package:messenger_mobile/modules/chat/domain/entities/message.dart';
+
+import '../../../../core/services/network/paginatedResult.dart';
+import '../../../category/domain/entities/chat_entity.dart';
+import '../../../chat/domain/entities/message.dart';
 
 class ChatMessageResponse extends Equatable {
   final List<ChatEntity> chats;

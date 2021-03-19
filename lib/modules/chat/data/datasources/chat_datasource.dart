@@ -3,15 +3,13 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
-import 'package:messenger_mobile/core/usecases/usecase.dart';
-import 'package:messenger_mobile/modules/chat/data/models/chat_message_response.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen_import.dart';
 
 import '../../../../core/config/auth_config.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/services/network/Endpoints.dart';
 import '../../../../core/services/network/paginatedResult.dart';
 import '../../../../core/services/network/socket_service.dart';
+import '../../../../core/usecases/usecase.dart';
 import '../../../../core/utils/error_handler.dart';
 import '../../../../core/utils/http_response_extension.dart';
 import '../../../../core/utils/pagination.dart';
@@ -23,7 +21,9 @@ import '../../../creation_module/domain/entities/contact.dart';
 import '../../domain/entities/chat_detailed.dart';
 import '../../domain/entities/message.dart';
 import '../../domain/usecases/params.dart';
+import '../../presentation/chats_screen/pages/chat_screen_import.dart';
 import '../models/chat_detailed_model.dart';
+import '../models/chat_message_response.dart';
 import '../models/message_model.dart';
 
 

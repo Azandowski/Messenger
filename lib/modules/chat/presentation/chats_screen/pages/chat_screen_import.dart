@@ -8,6 +8,7 @@ export 'package:messenger_mobile/core/widgets/independent/dialogs/dialog_action_
 export 'package:messenger_mobile/core/widgets/independent/dialogs/dialog_params.dart';
 export 'package:messenger_mobile/core/widgets/independent/dialogs/dialogs.dart';
 export 'package:messenger_mobile/modules/chat/domain/usecases/delete_message.dart';
+
 export '../../../../../app/appTheme.dart';
 export '../../../../../core/blocs/category/bloc/category_bloc.dart';
 export '../../../../../core/utils/list_helper.dart';
@@ -30,7 +31,6 @@ export '../cubit/chat_todo_cubit.dart';
 export '../helpers/messageCellAction.dart';
 export '../widgets/appBars/chat_app_bar.dart';
 export '../widgets/appBars/selection_app_bar.dart';
-export '../widgets/chatControlPanel/chatControlPanel.dart';
 export '../widgets/chatControlPanel/cubit/panel_bloc_cubit.dart';
 export '../widgets/chat_action_view.dart';
 export '../widgets/message_cell.dart';

@@ -1,15 +1,16 @@
 import 'package:flutter/rendering.dart';
-import 'package:messenger_mobile/app/application.dart';
-import 'package:messenger_mobile/modules/category/presentation/chooseChats/presentation/chat_choose_page.dart';
-import 'package:messenger_mobile/modules/chat/domain/entities/chat_actions.dart';
-import 'package:messenger_mobile/modules/chat/domain/usecases/attachMessage.dart';
-import 'package:messenger_mobile/modules/chat/domain/usecases/disattachMessage.dart';
-import 'package:messenger_mobile/modules/chat/domain/usecases/get_messages_context.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/bottom_pin.dart';
-import 'package:messenger_mobile/modules/chat/domain/usecases/reply_more.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
-import 'chat_screen_import.dart';
+
+import '../../../../../app/application.dart';
+import '../../../../category/presentation/chooseChats/presentation/chat_choose_page.dart';
+import '../../../domain/entities/chat_actions.dart';
+import '../../../domain/usecases/attachMessage.dart';
+import '../../../domain/usecases/disattachMessage.dart';
+import '../../../domain/usecases/get_messages_context.dart';
+import '../../../domain/usecases/reply_more.dart';
+import '../widgets/bottom_pin.dart';
 import 'chat_screen_helper.dart';
+import 'chat_screen_import.dart';
 
 class ChatScreen extends StatefulWidget {
   final ChatEntity chatEntity;
@@ -152,7 +153,6 @@ class ChatScreenState extends State<ChatScreen> implements ChatChooseDelegate{
                             ),
                             child: ListView.separated(
                               key: PageStorageKey('feed'),
-                              // physics: CustomBouncingScrollPhysics(),
                               controller: _chatBloc.scrollController,
                               itemBuilder: (context, int index) {
                                 var spinnerIndex;

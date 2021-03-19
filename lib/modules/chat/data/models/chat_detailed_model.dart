@@ -1,11 +1,12 @@
 
 import 'package:flutter/foundation.dart';
+
 import '../../../category/data/models/chat_entity_model.dart';
 import '../../../category/data/models/chat_permission_model.dart';
 import '../../../category/domain/entities/chat_entity.dart';
-import '../../domain/entities/chat_detailed.dart';
 import '../../../creation_module/data/models/contact_model.dart';
 import '../../../creation_module/domain/entities/contact.dart';
+import '../../domain/entities/chat_detailed.dart';
 
 class ChatDetailedModel extends ChatDetailed {
   final ChatEntity chat;

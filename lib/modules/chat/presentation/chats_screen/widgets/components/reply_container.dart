@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../../app/appTheme.dart';
-import 'cubit/panel_bloc_cubit.dart';
+import '../chatControlPanel/cubit/panel_bloc_cubit.dart';
 
 class ReplyContainer extends StatelessWidget {
   final PanelBlocCubit cubit;

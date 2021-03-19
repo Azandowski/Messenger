@@ -4,8 +4,6 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
-import 'package:messenger_mobile/modules/chats/data/model/chat_search_response_model.dart';
-import 'package:messenger_mobile/modules/chats/domain/entities/chat_search_response.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../../../../core/config/auth_config.dart';
@@ -18,6 +16,8 @@ import '../../../../core/utils/http_response_extension.dart';
 import '../../../../locator.dart';
 import '../../../category/data/models/chat_entity_model.dart';
 import '../../../category/domain/entities/chat_entity.dart';
+import '../../domain/entities/chat_search_response.dart';
+import '../model/chat_search_response_model.dart';
 
 abstract class ChatsDataSource {
   Future<PaginatedResultViaLastItem<ChatEntity>> getUserChats ({

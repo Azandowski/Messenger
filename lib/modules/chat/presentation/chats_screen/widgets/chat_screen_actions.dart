@@ -1,13 +1,14 @@
 
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/app/application.dart';
-import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
-import 'package:messenger_mobile/modules/chats/presentation/pages/chats_search_screen.dart';
+
 import '../../../../../app/appTheme.dart';
+import '../../../../../app/application.dart';
 import '../../../../../core/widgets/independent/dialogs/dialog_action_button.dart';
 import '../../../../../core/widgets/independent/dialogs/dialog_params.dart';
 import '../../../../../core/widgets/independent/dialogs/dialogs.dart';
 import '../../../../../locator.dart';
+import '../../../../category/domain/entities/chat_entity.dart';
+import '../../../../chats/presentation/pages/chats_search_screen.dart';
 import '../../chat_details/page/chat_detail_page.dart';
 import '../../time_picker/time_picker_screen.dart';
 

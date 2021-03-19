@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:messenger_mobile/modules/category/presentation/chooseChats/presentation/cubit/chat_select_cubit.dart';
 
 import '../../../../../app/appTheme.dart';
 import '../../../../../core/blocs/chat/bloc/bloc/chat_cubit.dart';
@@ -9,6 +8,7 @@ import '../../../../../core/widgets/independent/small_widgets/cell_skeleton_item
 import '../../../data/models/chat_view_model.dart';
 import '../../../domain/entities/chat_entity.dart';
 import '../../create_category_main/widgets/chat_list.dart';
+import 'cubit/chat_select_cubit.dart';
 
 abstract class ChatChooseDelegate{
   void didSaveChats(List<ChatEntity> chats);

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/app/appTheme.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chats_screen/bloc/chat_bloc.dart';
+
+import '../../../../../app/appTheme.dart';
+import '../bloc/chat_bloc.dart';
 
 class BottomPin extends StatelessWidget {
   const BottomPin({

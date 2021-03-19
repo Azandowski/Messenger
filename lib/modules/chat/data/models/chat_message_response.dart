@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
-import 'package:messenger_mobile/core/services/network/paginatedResult.dart';
-import 'package:messenger_mobile/modules/chat/domain/entities/message.dart';
+
+import '../../../../core/services/network/paginatedResult.dart';
+import '../../domain/entities/message.dart';
 
 class ChatMessageResponse {
   final PaginatedResultViaLastItem<Message> result;

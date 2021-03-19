@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:messenger_mobile/app/application.dart';
 
+import '../../../../../app/application.dart';
 import '../../../../../core/widgets/independent/buttons/bottom_action_button.dart';
 import '../../../../../core/widgets/independent/pickers/photo_picker.dart';
 import '../../../../../core/widgets/independent/small_widgets/chat_count_view.dart';
 import '../../../../../locator.dart';
-import '../../../../../main.dart';
 import '../../../../chats/domain/entities/category.dart';
 import '../../../data/models/chat_view_model.dart';
 import '../../../domain/entities/chat_entity.dart';
@@ -67,7 +66,7 @@ class _CreateCategoryScreenState extends State<CreateCategoryScreen> implements 
         title: Text('Создать категорию'),
       ),
       body: BlocConsumer<CreateCategoryCubit, CreateCategoryState>(
-        cubit: cubit,
+        bloc: cubit,
         listener: (context, state) {
           if (state is CreateCategoryError) {
             ScaffoldMessenger.of(context).showSnackBar(

@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
-import 'package:messenger_mobile/modules/chat/data/models/chat_message_response.dart';
 
 import '../../../../core/error/failures.dart';
 import '../../../../core/services/network/network_info.dart';
@@ -17,6 +16,7 @@ import '../../domain/entities/message.dart';
 import '../../domain/repositories/chat_repository.dart';
 import '../../domain/usecases/params.dart';
 import '../datasources/chat_datasource.dart';
+import '../models/chat_message_response.dart';
 
 class ChatRepositoryImpl extends ChatRepository {
   final ChatDataSource chatDataSource;

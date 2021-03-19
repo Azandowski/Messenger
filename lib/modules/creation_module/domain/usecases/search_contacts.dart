@@ -1,10 +1,11 @@
 import 'package:dartz/dartz.dart';
-import 'package:messenger_mobile/core/error/failures.dart';
-import 'package:messenger_mobile/core/services/network/paginatedResult.dart';
-import 'package:messenger_mobile/core/usecases/usecase.dart';
-import 'package:messenger_mobile/modules/creation_module/domain/entities/contact.dart';
-import 'package:messenger_mobile/modules/creation_module/domain/repositories/creation_module_repository.dart';
-import 'package:messenger_mobile/modules/creation_module/domain/usecases/params.dart';
+
+import '../../../../core/error/failures.dart';
+import '../../../../core/services/network/paginatedResult.dart';
+import '../../../../core/usecases/usecase.dart';
+import '../entities/contact.dart';
+import '../repositories/creation_module_repository.dart';
+import 'params.dart';
 
 class SearchContacts implements UseCase<PaginatedResult<ContactEntity>, SearchContactParams> {
   final CreationModuleRepository repository;

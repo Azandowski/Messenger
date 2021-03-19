@@ -1,8 +1,10 @@
+import 'dart:async';
+
+import 'package:sembast/sembast.dart';
+
 import '../../../../core/services/localdb/app_database.dart';
 import '../../../category/data/models/chat_entity_model.dart';
 import '../../../category/domain/entities/chat_entity.dart';
-import 'package:sembast/sembast.dart';
-import 'dart:async';
 
 abstract class LocalChatsDataSource {
   Future<List<ChatEntity>> getCategoryChats (int categoryID);

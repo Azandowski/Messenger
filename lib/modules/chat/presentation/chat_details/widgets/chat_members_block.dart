@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/core/config/auth_config.dart';
-import 'package:messenger_mobile/modules/chat/domain/entities/chat_detailed.dart';
 
 import '../../../../../app/appTheme.dart';
+import '../../../../../core/config/auth_config.dart';
+import '../../../../../locator.dart';
 import '../../../../creation_module/domain/entities/contact.dart';
 import '../../../../creation_module/presentation/widgets/contact_cell.dart';
+import '../../../domain/entities/chat_detailed.dart';
 import 'divider_wrapper.dart';
-
-import '../../../../../locator.dart';
 
 class ChatMembersBlock extends StatelessWidget {
   final List<ContactEntity> members;

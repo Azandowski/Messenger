@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:messenger_mobile/modules/category/data/models/chat_view_model.dart';
-import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
+import '../../../../data/models/chat_view_model.dart';
+import '../../../../domain/entities/chat_entity.dart';
 
 part 'chat_select_state.dart';
 

@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_share/flutter_share.dart';
-import 'package:messenger_mobile/app/application.dart';
-import 'package:messenger_mobile/modules/creation_module/presentation/pages/search_contact/search_contact_page.dart';
 
 import '../../../../app/appTheme.dart';
+import '../../../../app/application.dart';
 import '../../../../core/utils/paginated_scroll_controller.dart';
 import '../../../../locator.dart';
 import '../../../chat/presentation/chats_screen/pages/chat_screen.dart';
@@ -15,6 +14,7 @@ import '../bloc/creation_module_cubit/creation_module_cubit.dart';
 import '../helpers/creation_actions.dart';
 import '../widgets/actions_builder.dart';
 import '../widgets/contcats_list.dart';
+import 'search_contact/search_contact_page.dart';
 
 
 class CreationModuleScreen extends StatefulWidget {

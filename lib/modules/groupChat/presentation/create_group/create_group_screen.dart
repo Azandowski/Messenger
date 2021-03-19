@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:messenger_mobile/app/application.dart';
-import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
+
+import '../../../../app/application.dart';
 import '../../../../core/widgets/independent/buttons/bottom_action_button.dart';
 import '../../../../core/widgets/independent/pickers/photo_picker.dart';
 import '../../../../core/widgets/independent/small_widgets/chat_count_view.dart';
 import '../../../../locator.dart';
-import '../../../../main.dart';
+import '../../../category/domain/entities/chat_entity.dart';
 import '../../../creation_module/domain/entities/contact.dart';
 import '../../../creation_module/presentation/widgets/contact_cell.dart';
 import '../choose_contacts/choose_contacts_page.dart';
@@ -64,7 +64,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> implements Contac
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<CreateGroupCubit, CreateGroupState>(
-      cubit: _groupCubit,
+      bloc: _groupCubit,
       listener: (context, state) {
         if (state is CreateCategoryError) {
           Scaffold.of(context).showSnackBar(

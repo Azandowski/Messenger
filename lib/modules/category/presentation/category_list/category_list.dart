@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:messenger_mobile/app/application.dart';
+import '../../../../app/application.dart';
 
 import '../../../../app/appTheme.dart';
 import '../../../../core/blocs/category/bloc/category_bloc.dart';

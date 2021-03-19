@@ -1,8 +1,8 @@
 import 'package:dartz/dartz.dart';
-import 'package:messenger_mobile/modules/chats/domain/entities/chat_search_response.dart';
 
 import '../../../../core/error/failures.dart';
 import '../../../../core/usecases/usecase.dart';
+import '../entities/chat_search_response.dart';
 import '../repositories/chats_repository.dart';
 import 'params.dart';
 

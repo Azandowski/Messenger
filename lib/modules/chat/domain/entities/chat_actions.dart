@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
-import 'package:messenger_mobile/modules/chat/domain/entities/message.dart';
+
+import 'message.dart';
 
 enum ChatActions {
   addUser,

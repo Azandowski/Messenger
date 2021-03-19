@@ -1,9 +1,9 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/modules/category/data/models/chat_permission_model.dart';
 
 import '../../../chat/data/models/message_model.dart';
 import '../../../chats/domain/entities/category.dart';
+import '../../data/models/chat_permission_model.dart';
 import 'chat_permissions.dart';
 
 class ChatEntity extends Equatable {

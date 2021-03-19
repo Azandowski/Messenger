@@ -53,7 +53,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
             ),
             backgroundColor: Color.fromRGBO(250, 249, 255, 1)),
         body: BlocConsumer<EditProfileCubit, EditProfileState>(
-          cubit: cubit..initProfile(EditProfileInit(user: user)),
+          bloc: cubit..initProfile(EditProfileInit(user: user)),
           listener: (context, state) {
             if (state is EditProfileSuccess) {
               Navigator.of(context).pop(true);

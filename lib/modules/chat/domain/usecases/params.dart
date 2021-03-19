@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
-import 'package:messenger_mobile/modules/chat/data/datasources/chat_datasource.dart';
 
 import '../../../../core/utils/pagination.dart';
 import '../../../category/data/models/chat_permission_model.dart';
+import '../../data/datasources/chat_datasource.dart';
 
 class GetChatMembersParams {
   final int id;

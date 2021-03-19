@@ -1,8 +1,6 @@
 import 'dart:async';
 
 import 'package:dartz/dartz.dart';
-import 'package:messenger_mobile/modules/chat/data/datasources/chat_datasource.dart';
-import 'package:messenger_mobile/modules/chat/data/models/chat_message_response.dart';
 
 import '../../../../core/error/failures.dart';
 import '../../../../core/services/network/paginatedResult.dart';
@@ -11,6 +9,8 @@ import '../../../../core/utils/pagination.dart';
 import '../../../category/data/models/chat_permission_model.dart';
 import '../../../category/domain/entities/chat_permissions.dart';
 import '../../../creation_module/domain/entities/contact.dart';
+import '../../data/datasources/chat_datasource.dart';
+import '../../data/models/chat_message_response.dart';
 import '../entities/chat_detailed.dart';
 import '../entities/message.dart';
 import '../usecases/params.dart';

@@ -38,7 +38,7 @@ class _ProfilePageState extends State<ProfilePage> {
         backgroundColor: Color.fromRGBO(250, 249, 255, 1)),
       backgroundColor: Colors.grey[200],
       body: BlocListener(
-          cubit: cubit,
+          bloc: cubit,
           listener: (context, state) {
             if (state is ProfileError) {
               Scaffold.of(context).showSnackBar(

@@ -3,17 +3,16 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
-import 'package:messenger_mobile/core/config/auth_config.dart';
-import 'package:messenger_mobile/core/services/network/paginatedResult.dart';
-import 'package:messenger_mobile/core/utils/chat_search_util.dart';
-import 'package:messenger_mobile/modules/chat/domain/entities/message.dart';
-import 'package:messenger_mobile/modules/chats/domain/entities/chat_search_response.dart';
-import 'package:messenger_mobile/modules/chats/domain/repositories/chats_repository.dart';
-import 'package:messenger_mobile/modules/chats/domain/usecase/params.dart';
-import 'package:messenger_mobile/modules/chats/domain/usecase/search_chats.dart';
 
-
+import '../../../../../core/config/auth_config.dart';
+import '../../../../../core/services/network/paginatedResult.dart';
+import '../../../../../core/utils/chat_search_util.dart';
 import '../../../../../locator.dart';
+import '../../../../chat/domain/entities/message.dart';
+import '../../../domain/entities/chat_search_response.dart';
+import '../../../domain/repositories/chats_repository.dart';
+import '../../../domain/usecase/params.dart';
+import '../../../domain/usecase/search_chats.dart';
 
 part 'search_chats_state.dart';
 
