@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger_mobile/app/application.dart';
+import 'package:messenger_mobile/core/blocs/category/bloc/category_bloc.dart';
+import 'package:messenger_mobile/core/blocs/chat/bloc/bloc/chat_cubit.dart';
 import 'package:messenger_mobile/core/utils/paginated_scroll_controller.dart';
+import 'package:messenger_mobile/core/utils/snackbar_util.dart';
 
 import '../../../../../core/widgets/independent/buttons/bottom_action_button.dart';
 import '../../../../../core/widgets/independent/pickers/photo_picker.dart';
@@ -78,15 +81,23 @@ class _CreateCategoryScreenState extends State<CreateCategoryScreen> implements 
         cubit: cubit,
         listener: (context, state) {
           if (state is CreateCategoryError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.message, style: TextStyle(color: Colors.red)),
-              ), // SnackBar
-            );
+            SnackUtil.showError(context: context, message: state.message);
           } else if (state is CreateCategorySuccess) {
+            ScaffoldMessenger.of(context).hideCurrentSnackBar();
             Navigator.of(context).pop(state.updatedCategories);
           } else if (state is CreateCategoryNormal) {
+            ScaffoldMessenger.of(context).hideCurrentSnackBar();
             chats = (state.chats ?? []).map((e) => ChatViewModel(e)).toList();
+          } else {
+            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          }
+
+          if (state is CreateCategoryFinishedTransfer) {
+            var categoryBloc = context.read<CategoryBloc>();
+            var index = categoryBloc.state.categoryList.indexWhere((e) => e.id == state.categoryID);
+            if (index != -1) {
+              context.read<ChatGlobalCubit>().updateCategoryForChat(state.chatID, categoryBloc.state.categoryList[index]);
+            }
           }
         },
         builder: (context, state) {

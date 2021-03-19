@@ -6,9 +6,9 @@ import '../../../chat/data/models/message_model.dart';
 import '../../../chats/domain/entities/category.dart';
 import 'chat_permissions.dart';
 
+// ignore: must_be_immutable
 class ChatEntity extends Equatable {
   final int chatId;
-  final CategoryEntity chatCategory;
   final String title;
   final String imageUrl;
   final DateTime date;
@@ -17,6 +17,7 @@ class ChatEntity extends Equatable {
   final int unreadCount;
   final String description;
   final bool isPrivate;
+  CategoryEntity chatCategory;
 
   ChatEntity({
     this.chatCategory,

@@ -282,7 +282,7 @@ class ChatDataSourceImpl implements ChatDataSource {
           '$id'
         ],
         queryParameters: {
-          if (direction != null)
+          if (direction != null && lastMessageId != null)
           ...{'type': direction.key},
           if (lastMessageId != null)
             ...{'last_message_id': '$lastMessageId'}

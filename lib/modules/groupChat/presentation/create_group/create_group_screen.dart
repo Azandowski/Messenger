@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger_mobile/app/application.dart';
+import 'package:messenger_mobile/core/utils/snackbar_util.dart';
 import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
 import '../../../../core/widgets/independent/buttons/bottom_action_button.dart';
 import '../../../../core/widgets/independent/pickers/photo_picker.dart';
@@ -67,15 +68,14 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> implements Contac
       cubit: _groupCubit,
       listener: (context, state) {
         if (state is CreateCategoryError) {
-          Scaffold.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.message, style: TextStyle(color: Colors.red)),
-            ), // SnackBar
-          );
-        } else if (state is CreateGroupSuccess) {
-          Navigator.of(context).popUntil((route) => route.isFirst);
-        } else if (state is CreateGroupNormal) {
-          contacts = (state.contacts ?? []).map((e) => ContactViewModel(entity: e)).toList();
+          SnackUtil.showError(context: context, message: state.message);
+        } else {
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          if (state is CreateGroupSuccess) {
+            Navigator.of(context).popUntil((route) => route.isFirst);
+          } else if (state is CreateGroupNormal) {
+            contacts = (state.contacts ?? []).map((e) => ContactViewModel(entity: e)).toList();
+          }
         }
       },
       builder: (_, state) {

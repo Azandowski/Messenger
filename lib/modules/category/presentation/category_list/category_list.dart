@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger_mobile/app/application.dart';
+import 'package:messenger_mobile/core/utils/snackbar_util.dart';
 
 import '../../../../app/appTheme.dart';
 import '../../../../core/blocs/category/bloc/category_bloc.dart';
@@ -61,11 +62,9 @@ class _CategoryListState extends State<CategoryList> {
       body: BlocConsumer<CategoryBloc, CategoryState>(
         listener: (context, state) {
           if (state is CategoriesUpdating) {
-            ScaffoldMessenger.of(context).hideCurrentSnackBar();
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: LinearProgressIndicator(), duration: Duration(days: 2),));
+            SnackUtil.showLoading(context: context);
           } else if (state is CategoriesErrorHappened) {
-            ScaffoldMessenger.of(context).hideCurrentSnackBar();
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.message)));
+            SnackUtil.showError(context: context, message: state.message);
           } else if (state is CategoryLoaded){
             ScaffoldMessenger.of(context).hideCurrentSnackBar();
           }

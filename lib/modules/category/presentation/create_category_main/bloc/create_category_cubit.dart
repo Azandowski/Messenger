@@ -17,7 +17,7 @@ import '../../../domain/entities/create_category_screen_params.dart';
 import '../../../domain/usecases/create_category.dart';
 import '../../../domain/usecases/params.dart';
 import '../../../domain/usecases/transfer_chat.dart';
-
+import 'package:messenger_mobile/core/utils/list_helper.dart';
 part 'create_category_state.dart';
 
 class CreateCategoryCubit extends Cubit<CreateCategoryState> {
@@ -122,10 +122,12 @@ class CreateCategoryCubit extends Cubit<CreateCategoryState> {
         var updatedChats = this.state.chats
           .where((e) => !movingChats.contains(e.chatId))
           .map((e) => e.clone()).toList();
-        emit(CreateCategoryNormal(
+        emit(CreateCategoryFinishedTransfer(
           imageFile: this.state.imageFile, 
           chats: updatedChats,
-          hasReachMax: state.hasReachMax
+          hasReachMax: state.hasReachMax,
+          categoryID: newCategory,
+          chatID: movingChats.getItemAt(0)
         ));
     });
   } 

@@ -1,6 +1,7 @@
 import 'package:flutter_search_bar/flutter_search_bar.dart';
 import 'package:messenger_mobile/core/utils/paginated_scroll_controller.dart';
 import 'package:messenger_mobile/core/utils/search_engine.dart';
+import 'package:messenger_mobile/core/utils/snackbar_util.dart';
 import 'package:messenger_mobile/core/widgets/independent/small_widgets/cell_skeleton_item.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen_import.dart';
 import 'package:messenger_mobile/modules/creation_module/data/datasources/creation_module_datasource.dart';
@@ -93,11 +94,7 @@ class _SearchContactPageState extends State<SearchContactPage> implements Search
         body: BlocConsumer<SearchContactCubit, SearchContactState>(
           listener: (context, SearchContactState state) {
             if (state is SearchContactsError) {
-              ScaffoldMessenger.of(context)
-              ..hideCurrentSnackBar()
-              ..showSnackBar(
-                SnackBar(content: Text(state.message))
-              );
+              SnackUtil.showError(context: context, message: state.message);
             } else {
               ScaffoldMessenger.of(context).hideCurrentSnackBar();
             }

@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
+import 'package:messenger_mobile/modules/chats/domain/entities/category.dart';
 
 import '../../../../../locator.dart';
 import '../../../../../modules/category/domain/entities/chat_entity.dart';
@@ -202,6 +203,7 @@ class ChatGlobalCubit extends Cubit<ChatState> {
       var newChatModel = this.state.chats[index].clone(
         permissions: this.state.chats[index].permissions.copyWith(isSecret: isOn)
       );
+      
       var newChats = this.state.chats.map((e) => e.chatId == chatId ? newChatModel : e.clone()).toList();
       
       emit(ChatsLoaded(
@@ -210,5 +212,28 @@ class ChatGlobalCubit extends Cubit<ChatState> {
         currentCategory: this.state.currentCategory
       ));
     } 
+  }
+
+  void updateCategoryForChat (int chatId, CategoryEntity newCategory) {
+    int index = this.state.chats.indexWhere((element) => element.chatId == chatId);
+    if (index != -1) { 
+      var newChatModel = this.state.chats[index].clone();
+      newChatModel.chatCategory = newCategory;
+      chatsRepository.saveNewChatLocally(newChatModel);
+      var newChats = this.state.chats.map((e) => e.chatId == chatId ? newChatModel : e.clone()).toList();
+      
+      bool isAllChats = (lastCategoryID == null || lastCategoryID == 0);
+      bool newCategoryIsEmpty = newCategory.id == 0 || newCategory.id == null;
+      
+      if (!((isAllChats && newCategoryIsEmpty) || lastCategoryID == newCategory.id)) {
+        newChats.removeAt(index);
+      } 
+
+      emit(ChatsLoaded(
+        hasReachedMax: this.state.hasReachedMax ?? false,
+        chats: newChats,
+        currentCategory: this.state.currentCategory
+      ));
+    }
   }
 }

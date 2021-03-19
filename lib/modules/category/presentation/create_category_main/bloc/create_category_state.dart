@@ -34,6 +34,29 @@ class CreateCategoryNormal extends CreateCategoryState {
   List<Object> get props => [imageFile, chats, hasReachMax];
 }
 
+class CreateCategoryFinishedTransfer extends CreateCategoryNormal {
+  final File imageFile;
+  final List<ChatEntity> chats;
+  final bool hasReachMax;
+  final int categoryID;
+  final int chatID;
+
+  CreateCategoryFinishedTransfer({
+    @required this.imageFile, 
+    @required this.chats,
+    @required this.hasReachMax, 
+    @required this.categoryID,
+    @required this.chatID
+  }) : super(
+    imageFile: imageFile,
+    chats: chats,
+    hasReachMax: hasReachMax,
+  );
+
+  @override
+  List<Object> get props => [imageFile, chats, hasReachMax, categoryID, chatID];  
+}
+
 class CreateCategoryLoading extends CreateCategoryState {
   final List<ChatEntity> chats;
   final File imageFile;

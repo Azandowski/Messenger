@@ -118,7 +118,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
           unreadCount: event.resetAll ? null : state.unreadCount,
           showBottomPin: state.showBottomPin,
           isSecretModeOn: state.isSecretModeOn,
-          chatEntity: state.chatEntity
+          chatEntity: state.chatEntity,
+          topMessage: state.topMessage
         );
 
         Either<Failure, ChatMessageResponse> response;
@@ -142,6 +143,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         yield* _eitherMessagesOrErrorState(
           response, 
           event.isPagination, 
+          event.resetAll,
           event.direction,
           event.messageID
         );
@@ -156,7 +158,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         unreadCount: state.unreadCount,
         showBottomPin: state.showBottomPin,
         isSecretModeOn: state.isSecretModeOn,
-        chatEntity: state.chatEntity
+        chatEntity: state.chatEntity,
       );
 
       final response = await setTimeDeleted(SetTimeDeletedParams(
@@ -178,7 +180,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         messages: state.messages,
         showBottomPin: event.show,
         isSecretModeOn: state.isSecretModeOn,
-        chatEntity: state.chatEntity
+        chatEntity: state.chatEntity,
+        topMessage: state.topMessage
       );
     } else if (event is PermissionsUpdated) {
       yield state.copyWith(chatEntity: state.chatEntity.clone(permissions: event.newPermissions));
@@ -203,7 +206,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
           showBottomPin: state.showBottomPin,
           isSecretModeOn: state.isSecretModeOn,
           message: failure.message,
-          chatEntity: state.chatEntity
+          chatEntity: state.chatEntity,
+          topMessage: state.topMessage
         );
       },
       (message) {
@@ -232,6 +236,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   Stream<ChatState> _eitherMessagesOrErrorState (
     Either<Failure, ChatMessageResponse> failureOrMessage,
     bool isPagination,
+    bool isReset,
     RequestDirection direction,
     int focusMessageID
   ) async* {
@@ -254,9 +259,13 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         
         bool hasReachBottom;
         if (focusMessageID != null) {
-          hasReachBottom =  false;
+          hasReachBottom = false;
         } else if (direction == RequestDirection.bottom) {
-          hasReachBottom = result.result.hasReachMax;
+          if (isReset) {
+            hasReachBottom = true;
+          } else {
+            hasReachBottom = result.result.hasReachMax;
+          }
         } else {
           hasReachBottom = direction != RequestDirection.bottom  ?
             state.hasReachBottomMax : result.result.hasReachMax;
@@ -303,7 +312,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
             unreadCount: didNotRead ? (state.unreadCount ?? 0) + 1 : state.unreadCount,
             showBottomPin: state.showBottomPin,
             isSecretModeOn: state.isSecretModeOn,
-            chatEntity: state.chatEntity
+            chatEntity: state.chatEntity,
+            topMessage: state.topMessage
           );
         } else {
           yield ChatInitial (
@@ -314,7 +324,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
             unreadCount: (state.unreadCount ?? 0) + 1,
             showBottomPin: state.showBottomPin,
             isSecretModeOn: state.isSecretModeOn,
-            chatEntity: state.chatEntity
+            chatEntity: state.chatEntity,
+            topMessage: state.topMessage
           );
         }
         break;
@@ -325,7 +336,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
           hasReachedMax: this.state.hasReachedMax,
           wallpaperPath: this.state.wallpaperPath,
           hasReachBottomMax: this.state.hasReachBottomMax,
-          isSecretModeOn: state.isSecretModeOn
+          isSecretModeOn: state.isSecretModeOn,
         );
         break;
       case MessageHandleType.unSetTopMessage:
@@ -336,7 +347,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
           wallpaperPath: this.state.wallpaperPath,
           hasReachBottomMax: this.state.hasReachBottomMax,
           isSecretModeOn: state.isSecretModeOn,
-          chatEntity: state.chatEntity
+          chatEntity: state.chatEntity,
         );
         break;
     }

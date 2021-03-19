@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger_mobile/app/application.dart';
 import 'package:messenger_mobile/core/blocs/category/bloc/category_bloc.dart';
+import 'package:messenger_mobile/core/utils/snackbar_util.dart';
 import 'package:messenger_mobile/core/widgets/independent/small_widgets/image_text_view.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen.dart';
 import 'package:messenger_mobile/modules/chats/presentation/pages/chats_search_screen.dart';
@@ -129,12 +130,7 @@ class _ChatsScreenState extends State<ChatsScreen> {
 
   void _handleChatsUpdates(ChatState state) {
     if (state is ChatsError) {
-      Scaffold.of(context).showSnackBar(
-        SnackBar(
-          content:
-              Text(state.errorMessage, style: TextStyle(color: Colors.red)),
-        ), // SnackBar
-      );
+      SnackUtil.showError(context: context, message: state.errorMessage);
     }
   }
 

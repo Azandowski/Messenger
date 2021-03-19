@@ -140,7 +140,8 @@ class ChatScreenState extends State<ChatScreen> implements ChatChooseDelegate{
                         onPress: () {
                           _chatBloc.add(LoadMessages(
                             isPagination: false,
-                            resetAll: true
+                            resetAll: true,
+                            direction: RequestDirection.bottom
                           ));
                         }
                       ),
@@ -153,9 +154,18 @@ class ChatScreenState extends State<ChatScreen> implements ChatChooseDelegate{
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        if(state.topMessage != null) this.buildTopMessage(state,
-                          width, height, _chatTodoCubit,
-                        ),
+                        if (state.topMessage != null) 
+                          GestureDetector(
+                            onTap: () {
+                              _chatBloc.add(LoadMessages(
+                                messageID: state.topMessage.id,
+                                isPagination: false
+                              ));
+                            },
+                            child: this.buildTopMessage(state,
+                              width, height, _chatTodoCubit,
+                            ),
+                          ),
                         Expanded(
                           child: Container(
                             decoration: BoxDecoration(
@@ -163,7 +173,6 @@ class ChatScreenState extends State<ChatScreen> implements ChatChooseDelegate{
                             ),
                             child: ListView.separated(
                               key: PageStorageKey('feed'),
-                              // physics: CustomBouncingScrollPhysics(),
                               controller: _chatBloc.scrollController,
                               itemBuilder: (context, int index) {
                                 var spinnerIndex;

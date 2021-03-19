@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:messenger_mobile/core/utils/snackbar_util.dart';
 
 import '../../../../../../app/appTheme.dart';
 import '../../../../../../core/services/network/Endpoints.dart';
@@ -73,11 +74,7 @@ class _TypeNamePageState extends State<TypeNamePage> {
       child: BlocConsumer<TypeNameCubit, TypeNameState>(
         listener: (context, state) {
           if (state is ErrorUploading) {
-            Scaffold.of(context)
-              ..hideCurrentSnackBar()
-              ..showSnackBar(
-                SnackBar(content: Text('Error')),
-              );
+            SnackUtil.showError(context: context, message: 'Ошибка');
           }
         },
         builder: (context, state) {

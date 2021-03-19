@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
+import 'package:messenger_mobile/core/utils/snackbar_util.dart';
 
 import '../../../../core/config/auth_config.dart';
 import '../../../../core/services/network/Endpoints.dart';
@@ -58,12 +59,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
             if (state is EditProfileSuccess) {
               Navigator.of(context).pop(true);
             } else if (state is EditProfileError) {
-              Scaffold.of(context).showSnackBar(
-                SnackBar(
-                  content:
-                      Text(state.message, style: TextStyle(color: Colors.red)),
-                ), // SnackBar
-              );
+              SnackUtil.showError(context: context, message: state.message);
             }
           },
           builder: (context, state) {

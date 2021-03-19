@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger_mobile/app/application.dart';
 import 'package:messenger_mobile/core/config/auth_config.dart';
+import 'package:messenger_mobile/core/utils/snackbar_util.dart';
 import 'package:messenger_mobile/core/widgets/independent/dialogs/dialog_action_button.dart';
 import 'package:messenger_mobile/core/widgets/independent/dialogs/dialog_params.dart';
 import 'package:messenger_mobile/core/widgets/independent/dialogs/dialogs.dart';
@@ -207,15 +208,9 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> implements ContactC
 
   void _handleListener (ChatDetailsState state) {
     if (state is ChatDetailsError) {
-      ScaffoldMessenger.of(context)
-        ..hideCurrentSnackBar()
-        ..showSnackBar(SnackBar(content: Text(state.message)));
+      SnackUtil.showError(context: context, message: state.message);
     } else if (state is ChatDetailsProccessing) {
-      ScaffoldMessenger.of(context)
-        ..hideCurrentSnackBar()
-        ..showSnackBar(
-          SnackBar(content: LinearProgressIndicator(), duration: Duration(days: 2),)
-        );
+      SnackUtil.showLoading(context: context);
     } else {
       if (state is ChatDetailsLeave) {
         context.read<ChatGlobalCubit>().leaveFromChat(id: widget.chatEntity.chatId);

@@ -1,4 +1,5 @@
 import 'package:flutter/rendering.dart';
+import 'package:messenger_mobile/core/utils/snackbar_util.dart';
 import 'package:messenger_mobile/modules/category/presentation/chooseChats/presentation/chat_choose_page.dart';
 import 'package:messenger_mobile/modules/chat/domain/entities/chat_actions.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen.dart';
@@ -78,8 +79,12 @@ extension ChatScreenStateHelper on ChatScreenState {
     }
   }
 
-  Widget buildTopMessage (ChatState state,
-    double width, double height, ChatTodoCubit cubit){
+  Widget buildTopMessage (
+    ChatState state, 
+    double width, 
+    double height, 
+    ChatTodoCubit cubit
+  ) {
     return Container(
       color: Colors.white,
       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
@@ -187,6 +192,7 @@ extension ChatScreenStateHelper on ChatScreenState {
           final snackBar = SnackBar(
             content: Text('Скопировано в буфер обмена'),
           );
+          
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
         });
         break;
@@ -215,18 +221,9 @@ extension ChatScreenStateHelper on ChatScreenState {
     }
   ) {
     if (state is ChatError) {
-      ScaffoldMessenger.of(context)
-        ..hideCurrentSnackBar()
-        ..showSnackBar(
-          SnackBar(content: Text(state.message)),
-        );
+      SnackUtil.showError(context: context, message: state.message);
     } else if (state is ChatLoadingSilently) {
-      ScaffoldMessenger.of(context)
-        ..hideCurrentSnackBar()
-        ..showSnackBar(SnackBar(
-          content: LinearProgressIndicator(), 
-          duration: Duration(days: 2),
-        ));
+      SnackUtil.showLoading(context: context);
     } else if (state is ChatInitial) {
       // Update Notification Badge
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
@@ -257,7 +254,7 @@ extension ChatScreenStateHelper on ChatScreenState {
         if (index != -1) {
           todoCubit.enableSelectionMode(state.messages[index], false);
           scrollController.scrollToIndex(
-            index, duration: Duration(seconds: 2), preferPosition: AutoScrollPosition.middle
+            index, duration: Duration(seconds: 1), preferPosition: AutoScrollPosition.middle
           );
         }
       }

@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_search_bar/flutter_search_bar.dart';
 import 'package:messenger_mobile/core/utils/paginated_scroll_controller.dart';
 import 'package:messenger_mobile/core/utils/search_engine.dart';
+import 'package:messenger_mobile/core/utils/snackbar_util.dart';
 import 'package:messenger_mobile/core/widgets/independent/small_widgets/cell_skeleton_item.dart';
 import 'package:messenger_mobile/core/widgets/independent/small_widgets/chat_count_view.dart';
 import 'package:messenger_mobile/modules/category/data/models/chat_view_model.dart';
@@ -122,11 +123,7 @@ class _ChatsSearchScreenState extends State<ChatsSearchScreen> implements Search
         body: BlocConsumer<SearchChatsCubit, SearchChatsState>(
           listener: (context, state) {
             if (state is SearchChatsError) {
-              ScaffoldMessenger.of(context)
-              ..hideCurrentSnackBar()
-              ..showSnackBar(
-                SnackBar(content: Text(state.message),)
-              );
+              SnackUtil.showError(context: context, message: state.message);
             } else {
               ScaffoldMessenger.of(context).hideCurrentSnackBar();
             }

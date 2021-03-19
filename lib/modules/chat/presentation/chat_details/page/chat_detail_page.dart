@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger_mobile/app/application.dart';
 import 'package:messenger_mobile/core/blocs/chat/bloc/bloc/chat_cubit.dart';
+import 'package:messenger_mobile/core/utils/snackbar_util.dart';
 import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
 import 'package:messenger_mobile/modules/chat/domain/usecases/kick_member.dart';
 import '../../../../../locator.dart';
@@ -106,15 +107,9 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
 
   void _handleListener (ChatDetailsState state) {
     if (state is ChatDetailsError) {
-      ScaffoldMessenger.of(context)
-        ..hideCurrentSnackBar()
-        ..showSnackBar(SnackBar(content: Text(state.message)));
+      SnackUtil.showError(context: context, message: state.message);
     } else if (state is ChatDetailsProccessing) {
-      ScaffoldMessenger.of(context)
-        ..hideCurrentSnackBar()
-        ..showSnackBar(
-          SnackBar(content: LinearProgressIndicator(), duration: Duration(days: 2),)
-        );
+      SnackUtil.showLoading(context: context);
     } else {
       if (state is ChatDetailsLeave) {
         context.read<ChatGlobalCubit>().leaveFromChat(id: widget.chatEntity.chatId);
