@@ -128,7 +128,9 @@ class MessageContainer extends StatelessWidget {
         Text(
           widget.messageViewModel.messageText, 
           style: !widget.messageViewModel.isMine ? 
-          AppFontStyles.black14w400 : AppFontStyles.white14w400,
+          AppFontStyles.black14w400 : AppFontStyles.white14w400.copyWith(
+            height: 1.4
+          ),
           textAlign: TextAlign.left,
         ),
       ],

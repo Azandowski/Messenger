@@ -13,6 +13,7 @@ import 'core/blocs/chat/bloc/bloc/chat_cubit.dart';
 import 'core/config/routes.dart';
 import 'locator.dart' as serviceLocator;
 import 'modules/creation_module/presentation/bloc/contact_bloc/contact_bloc.dart';
+import 'modules/maps/presentation/pages/map_screen.dart';
 
 
 void main() async {
@@ -74,7 +75,7 @@ class MainApp extends StatelessWidget {
               builder: (BuildContext context) {
                 return MaterialApp(
                   debugShowCheckedModeBanner: false,
-                  home: SplashScreen(),
+                  home: MapScreen(),
                   theme: AppTheme.light,
                   navigatorKey: serviceLocator.sl<Application>().navKey,
                   localizationsDelegates: context.localizationDelegates,

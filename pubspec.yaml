@@ -33,7 +33,7 @@ dependencies:
   dartz: ^0.8.9
   # Remote API
   data_connection_checker: ^0.3.4
-  http: ^0.12.0+3
+  http: ^0.13.0
   # Local cache
   shared_preferences: ^2.0.3
   contacts_service: ^0.5.0-nullsafety.0
@@ -45,12 +45,12 @@ dependencies:
   swipeable: ^1.1.0
 
 
-  image_picker: ^0.6.7+22
+  image_picker: ^0.7.3
   shimmer: ^1.1.2
   pin_input_text_field: ^3.3.1
   sembast: ^2.4.10+4
   # Permissions
-  permission_handler: ^5.1.0+2
+  permission_handler: ^6.1.0
   focused_menu: ^1.0.4
   firebase_dynamic_links:
   flutter_share: ^1.0.5
@@ -70,6 +70,12 @@ dependencies:
   flutter_search_bar: ^2.1.0
   scroll_to_index: ^1.0.6
   achievement_view: ^0.2.1
+
+  # Packages for maps
+  geolocator: ^7.0.1
+  flutter_map: 
+    git: https://github.com/yerkejs/flutter_map.git
+  geocoding: ^2.0.0
 
 dev_dependencies:
   flutter_test:

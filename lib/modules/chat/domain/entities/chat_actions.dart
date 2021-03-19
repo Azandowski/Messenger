@@ -34,7 +34,7 @@ extension ChatActionsExtension on ChatActions {
       case ChatActions.setSecret:
         return 'SetSecretChat';
       case ChatActions.unsetSecret:
-        return 'UnsetTimeSecret';
+        return 'UnsetSecretChat';
       default: 
         return null;
     }
@@ -76,7 +76,7 @@ extension ChatActionsExtension on ChatActions {
 
   String get imagePath {
     switch (this) {
-      case ChatActions.setSecret:
+      case ChatActions.setSecret: case ChatActions.unsetSecret:
         return 'assets/icons/hot.png';
       default:
         return null;

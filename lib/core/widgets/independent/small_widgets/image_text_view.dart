@@ -3,11 +3,18 @@ import 'package:flutter/material.dart';
 import '../../../../app/appTheme.dart';
 
 class EmptyView extends StatelessWidget {
+
+  final String text;
+
+  EmptyView({
+    @required this.text
+  });
+
   @override
   Widget build(BuildContext context) {
     return ImageTextView(
       imageProvider: AssetImage('assets/images/empty.png'),
-      text: 'В этой категории еще нет чатов.\nСоздайте новую.',
+      text: text
     );
   }
 }

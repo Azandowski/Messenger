@@ -37,7 +37,7 @@ class _AppScreenState extends State<AppScreen> {
         permission != PermissionStatus.denied) {
       Map<Permission, PermissionStatus> statuses =
           await [Permission.contacts].request();
-      return statuses[Permission.contacts] ?? PermissionStatus.undetermined;
+      return statuses[Permission.contacts] ?? PermissionStatus.denied;
     } else {
       return permission;
     }
