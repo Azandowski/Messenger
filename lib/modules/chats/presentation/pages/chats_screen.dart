@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger_mobile/app/application.dart';
+import 'package:messenger_mobile/core/blocs/category/bloc/category_bloc.dart';
 import 'package:messenger_mobile/core/widgets/independent/small_widgets/image_text_view.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen.dart';
 import 'package:messenger_mobile/modules/chats/presentation/pages/chats_search_screen.dart';
@@ -42,7 +43,10 @@ class _ChatsScreenState extends State<ChatsScreen> {
 
       if (scrollController.isPaginated) {
         if (hasNextPage && !viewIsLoading) {
-          context.read<ChatGlobalCubit>().loadChats(isPagination: true);
+          context.read<ChatGlobalCubit>().loadChats(
+            isPagination: true,
+            categoryID: cubit.state.currentTabIndex == 0 ? null : cubit.state.currentTabIndex
+          );
         }
       }
     });

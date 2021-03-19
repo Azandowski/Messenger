@@ -5,7 +5,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-
+import 'package:messenger_mobile/core/utils/list_helper.dart';
 import '../../../../../core/config/auth_config.dart';
 import '../../../../../locator.dart';
 import '../../../../chats/domain/entities/category.dart';
@@ -36,7 +36,8 @@ class CreateCategoryCubit extends Cubit<CreateCategoryState> {
     @required this.getCategoryChats
   }) : super(CreateCategoryLoading(
     imageFile: null,
-    chats: []
+    chats: [],
+    hasReachMax: true
   )) {
     initCubit();
   }
@@ -46,8 +47,9 @@ class CreateCategoryCubit extends Cubit<CreateCategoryState> {
   void initCubit () {
     emit(CreateCategoryNormal(
       imageFile: this.state.imageFile, 
-      chats: [])
-    );
+      chats: [],
+      hasReachMax: true
+    ));
   }
 
   Future<void> selectPhoto (ImageSource imageSource) async {
@@ -55,16 +57,19 @@ class CreateCategoryCubit extends Cubit<CreateCategoryState> {
     pickedFile.fold(
       (failure) => emit(CreateCategoryError(message: 'Unable to get image')), 
       (image) {
-        emit(CreateCategoryNormal(imageFile: image, chats: this.state.chats));
+        emit(CreateCategoryNormal(
+          imageFile: image, 
+          chats: this.state.chats,
+          hasReachMax: state.hasReachMax
+        ));
     });
   }
 
   Future<void> sendData (CreateCategoryScreenMode mode, int categoryId) async {
-    // TODO: Update Chat IDS
-    
     emit(CreateCategoryLoading(
       imageFile: this.state.imageFile,
-      chats: this.state.chats
+      chats: this.state.chats,
+      hasReachMax: state.hasReachMax
     ));
     
     var response = await createCategory(CreateCategoryParams(
@@ -81,11 +86,13 @@ class CreateCategoryCubit extends Cubit<CreateCategoryState> {
         message: failure.message,
         imageFile: this.state.imageFile,
         chats: this.state.chats,
+        hasReachMax: state.hasReachMax
       )), 
       (categories) => emit(CreateCategorySuccess(
         updatedCategories: categories,
         chats: this.state.chats,
-        imageFile: this.state.imageFile
+        imageFile: this.state.imageFile,
+        hasReachMax: state.hasReachMax
       ))
     );
   }
@@ -95,7 +102,8 @@ class CreateCategoryCubit extends Cubit<CreateCategoryState> {
       chats: this.state.chats, 
       imageFile: this.state.imageFile, 
       categoryID: newCategory, 
-      chatsIDs: movingChats
+      chatsIDs: movingChats,
+      hasReachMax: state.hasReachMax
     ));
     
     var response = await transferChats(TransferChatsParams(
@@ -116,8 +124,9 @@ class CreateCategoryCubit extends Cubit<CreateCategoryState> {
           .map((e) => e.clone()).toList();
         emit(CreateCategoryNormal(
           imageFile: this.state.imageFile, 
-          chats: updatedChats)
-        );
+          chats: updatedChats,
+          hasReachMax: state.hasReachMax
+        ));
     });
   } 
 
@@ -126,33 +135,25 @@ class CreateCategoryCubit extends Cubit<CreateCategoryState> {
 
     emit(CreateCategoryNormal(
       imageFile: this.state.imageFile, 
-      chats: newChats)
-    );
+      chats: newChats,
+      hasReachMax: state.hasReachMax
+    ));
   }
 
-  void deleteChat (ChatEntity chat){
-    var updatedChats = this.state.chats
-      .where((e) => e.chatId != chat.chatId)
-      .map((e) => e.clone()).toList();
-
-    emit(CreateCategoryNormal(
-      imageFile: this.state.imageFile, 
-      chats: updatedChats)
-    );
-  }
-
+  
   Future<void> prepareEditing (CategoryEntity entity) async {
     nameController.text = entity.name;
     defaultImageUrl = entity.avatar;
 
     emit(CreateCategoryChatsLoading(
       imageFile: null,
-      chats: []
+      chats: [],
+      hasReachMax: state.hasReachMax
     ));
 
     var response = await getCategoryChats(GetCategoryChatsParams(
       token: sl<AuthConfig>().token, 
-      categoryID: entity.id
+      categoryID: entity.id,
     ));
 
     response.fold(
@@ -164,7 +165,37 @@ class CreateCategoryCubit extends Cubit<CreateCategoryState> {
       (chats) => emit(
         CreateCategoryNormal(
           imageFile: this.state.imageFile,
-          chats: chats.data
+          chats: chats.data,
+          hasReachMax: chats.hasReachMax
+        )
+      )
+    );
+  }
+
+  Future<void> loadChatsNextPage (int entityID) async {
+    emit(CreateCategoryChatsLoading(
+      imageFile: state.imageFile,
+      chats: state.chats,
+      hasReachMax: state.hasReachMax
+    ));
+
+    var response = await getCategoryChats(GetCategoryChatsParams(
+      token: sl<AuthConfig>().token, 
+      categoryID: entityID,
+      lastChatID: state.chats.lastItem?.chatId
+    ));
+
+    response.fold(
+      (failure) => emit(CreateCategoryError(
+        message: failure.message,
+        imageFile: this.state.imageFile,
+        chats: this.state.chats
+      )), 
+      (chats) => emit(
+        CreateCategoryNormal(
+          imageFile: this.state.imageFile,
+          chats: [...state.chats, ...chats.data],
+          hasReachMax: chats.hasReachMax
         )
       )
     );

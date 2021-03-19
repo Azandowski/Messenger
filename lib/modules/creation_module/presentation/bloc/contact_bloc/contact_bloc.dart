@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+
 import 'package:equatable/equatable.dart';
 
 import '../../../../../core/services/network/paginatedResult.dart';

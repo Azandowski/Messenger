@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger_mobile/app/application.dart';
+import 'package:messenger_mobile/core/config/auth_config.dart';
 import 'package:messenger_mobile/core/widgets/independent/dialogs/dialog_action_button.dart';
 import 'package:messenger_mobile/core/widgets/independent/dialogs/dialog_params.dart';
 import 'package:messenger_mobile/core/widgets/independent/dialogs/dialogs.dart';
 import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chat_details/widgets/chat_detail_appbar.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen.dart';
+import 'package:messenger_mobile/modules/creation_module/presentation/bloc/open_chat_cubit/open_chat_cubit.dart';
+import 'package:messenger_mobile/modules/creation_module/presentation/bloc/open_chat_cubit/open_chat_listener.dart';
+import 'package:messenger_mobile/modules/groupChat/domain/usecases/create_chat_group.dart';
 import 'package:messenger_mobile/modules/groupChat/presentation/create_group/create_group_page.dart';
 import 'package:messenger_mobile/modules/groupChat/presentation/create_group/create_group_screen.dart';
-
 import '../../../../../core/blocs/chat/bloc/bloc/chat_cubit.dart';
 import '../../../../../core/widgets/independent/buttons/icon_text_button.dart';
 import '../../../../../locator.dart';
@@ -44,14 +48,24 @@ class ChatDetailScreen extends StatefulWidget {
 class _ChatDetailScreenState extends State<ChatDetailScreen> implements ContactChooseDelegate {
   
   ChatDetailsCubit _chatDetailsCubit;
+  OpenChatCubit _openChatCubit;
+  final OpenChatListener _openChatListener = OpenChatListener();
 
   NavigatorState get _navigator => sl<Application>().navKey.currentState;
 
   @override
   void initState() {
     super.initState();
+   _openChatCubit = OpenChatCubit(createChatGruopUseCase: sl<CreateChatGruopUseCase>());
+
     _chatDetailsCubit = context.read<ChatDetailsCubit>();
     _chatDetailsCubit.loadDetails(widget.chatEntity.chatId);
+  }
+
+  @override
+  void dispose() {
+    _openChatCubit.close();
+    super.dispose();
   }
 
   @override
@@ -118,18 +132,32 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> implements ContactC
                         title: 'Добавить участников',
                       ),
                     _buildSeparator(),
-                    ChatMembersBlock(
-                      members: state.chatDetailed.members, 
-                      membersCount: state.chatDetailed.membersCount, 
-                      memberRole: state.chatDetailed.chatMemberRole,
-                      onShowMoreClick: () {
-                        _navigator.push(ChatMembersScreen.route(
-                          state.chatDetailed.chat.chatId, widget.getChatDetails
-                        ));
-                      },
-                      onTapItem: (item) {
-                        _handleContactDeletionAlert(item);
-                      }
+                    BlocProvider(
+                      create: (context) => _openChatCubit,
+                      child: BlocConsumer<OpenChatCubit, OpenChatState>(
+                        listener: (context, openChatState) {
+                          _openChatListener.handleStateUpdate(context, openChatState);
+                        },
+                        builder: (context, openChatState) {
+                          return ChatMembersBlock(
+                            members: state.chatDetailed.members, 
+                            membersCount: state.chatDetailed.membersCount, 
+                            memberRole: state.chatDetailed.chatMemberRole,
+                            onShowMoreClick: () {
+                              _navigator.push(ChatMembersScreen.route(
+                                state.chatDetailed.chat.chatId, widget.getChatDetails
+                              ));
+                            },
+                            onTapItem: (item) {
+                              if (item.id != sl<AuthConfig>().user.id) {
+                                _handleContactDeletionAlert(item);
+                              } else {
+                                _openChatCubit.createChatWithUser(item.id);
+                              }
+                            }
+                          );
+                        },
+                      ),
                     ),
                     _buildSeparator(),
                     ProfileItem(
@@ -164,7 +192,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> implements ContactC
                     }
                   );
   
-                  Navigator.of(context).pop();
+                  Navigator.of(context).pop(state.chatDetailed?.settings);
                 },
               ),
             ],

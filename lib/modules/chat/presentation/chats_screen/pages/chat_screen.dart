@@ -70,7 +70,8 @@ class ChatScreenState extends State<ChatScreen> implements ChatChooseDelegate{
       getMessagesContext: GetMessagesContext(repository: chatRepository),
       chatsRepository: sl(),
       setTimeDeleted: SetTimeDeleted(repository: chatRepository),
-      isSecretModeOn: widget.chatEntity.permissions?.isSecret ?? false
+      isSecretModeOn: widget.chatEntity.permissions?.isSecret ?? false,
+      chatEntity: widget.chatEntity
     )..add(LoadMessages(
       isPagination: false,
       messageID: widget.messageID,
@@ -208,6 +209,7 @@ class ChatScreenState extends State<ChatScreen> implements ChatChooseDelegate{
 
                                   final body = currentMessage.chatActions == null ? 
                                     MessageCell(
+                                      isSwipeEnabled: state.chatEntity.permissions?.isForwardOn ?? true,
                                       nextMessageUserID: nextMessageUserID,
                                       prevMessageUserID: prevMessageUserID,
                                       onReply: (MessageViewModel message){

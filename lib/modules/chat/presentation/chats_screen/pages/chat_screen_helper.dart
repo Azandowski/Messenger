@@ -243,10 +243,10 @@ extension ChatScreenStateHelper on ChatScreenState {
           if (widget.chatEntity.chatCategory?.id != null) {
 
             int index = categoryBloc.state.categoryList.indexWhere((e) => e.id == widget.chatEntity.chatCategory?.id);
-
+            int noReadCount = categoryBloc.state.categoryList[index].noReadCount;
             categoryBloc.add(CategoryReadCountChanged(
               categoryID: widget.chatEntity.chatCategory?.id,
-              newReadCount: categoryBloc.state.categoryList[index].noReadCount - 1
+              newReadCount: noReadCount > 0 ? noReadCount - 1 : 0
             ));
           }
         }

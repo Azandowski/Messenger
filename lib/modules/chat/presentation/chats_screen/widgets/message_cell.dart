@@ -11,16 +11,20 @@ import 'package:swipeable/swipeable.dart';
 import 'package:vibrate/vibrate.dart';
 
 class MessageCell extends StatefulWidget {
+  
   final MessageViewModel messageViewModel;
   final int nextMessageUserID;
   final int prevMessageUserID;
   final Function(MessageViewModel) onReply;
   final Function(MessageCellActions) onAction;
   final Function onTap; 
+  final bool isSwipeEnabled;
+
   const MessageCell({
     @required this.messageViewModel,
     @required this.onAction,
     @required this.onReply,
+    this.isSwipeEnabled = true,
     this.onTap,
     this.nextMessageUserID,
     this.prevMessageUserID,
@@ -64,12 +68,16 @@ class _MessageCellState extends State<MessageCell> {
         ),
         threshold: 64.0,
         onSwipeLeft: () {
-          vibrate();
-          widget.onReply(widget.messageViewModel);
+          if (widget.isSwipeEnabled) {
+            vibrate();
+            widget.onReply(widget.messageViewModel);
+          }
         },
         onSwipeRight: () {
-          vibrate();
-          widget.onReply(widget.messageViewModel);
+          if (widget.isSwipeEnabled) {
+            vibrate();
+            widget.onReply(widget.messageViewModel);
+          }
         },
         child: Row(
           mainAxisSize: MainAxisSize.max,

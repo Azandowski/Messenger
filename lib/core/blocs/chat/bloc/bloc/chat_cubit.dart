@@ -183,6 +183,7 @@ class ChatGlobalCubit extends Cubit<ChatState> {
     if (index != -1) {
       var newChatModel = this.state.chats[index].clone(unreadCount: 0);
       var newChats = this.state.chats.map((e) => e.chatId == chatId ? newChatModel : e.clone()).toList();
+      chatsRepository.saveNewChatLocally(newChatModel);
 
       emit(ChatsLoaded(
         hasReachedMax: this.state.hasReachedMax ?? false,

@@ -71,7 +71,7 @@ class ChatEntity extends Equatable {
       'id': chatId,
       'name': title,
       'avatar': imageUrl,
-      'chatCategory': chatCategory == null ? null : {
+      'category_chat': chatCategory == null ? null : {
         'id': chatCategory.id,
         'name': chatCategory.name,
         'avatar': chatCategory.avatar,
@@ -79,7 +79,10 @@ class ChatEntity extends Equatable {
         'total_chats': chatCategory.totalChats,
       },
       'created_at': date == null ? null : date.toIso8601String(),
-      'settings': (permissions as ChatPermissionModel).toJson(),
+      'settings': {
+        'sound': permissions.isSoundOn ? 1 : 0,
+        'admin_media_send': permissions.isSoundOn ? 1 : 0
+      },
       'last_message': lastMessage?.toJson(),
       'no_read_message': unreadCount,
       'description': description,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger_mobile/app/application.dart';
+import 'package:messenger_mobile/core/utils/paginated_scroll_controller.dart';
 
 import '../../../../../core/widgets/independent/buttons/bottom_action_button.dart';
 import '../../../../../core/widgets/independent/pickers/photo_picker.dart';
@@ -48,15 +49,22 @@ class CreateCategoryScreen extends StatefulWidget {
 class _CreateCategoryScreenState extends State<CreateCategoryScreen> implements ChatChooseDelegate {
   NavigatorState get _navigator => sl<Application>().navKey.currentState;
   final CreateCategoryCubit cubit = sl<CreateCategoryCubit>();
+  
   List<ChatViewModel> chats = [];
 
-  _CreateCategoryScreenState();
+  PaginatedScrollController scrollController = PaginatedScrollController();
 
   @override
   void initState() {
     super.initState();
     if (widget.mode == CreateCategoryScreenMode.edit) {
       cubit.prepareEditing(widget.entity);
+
+      scrollController.addListener(() {
+        if (scrollController.isPaginated && !(cubit.state is CreateCategoryChatsLoading) && !cubit.state.hasReachMax) {
+          cubit.loadChatsNextPage(widget.entity.id);
+        }
+      });
     }
   }
 
@@ -89,6 +97,7 @@ class _CreateCategoryScreenState extends State<CreateCategoryScreen> implements 
                 Container(
                   padding: const EdgeInsets.only(bottom: 80),
                   child: SingleChildScrollView(
+                    controller: scrollController,
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -114,7 +123,7 @@ class _CreateCategoryScreenState extends State<CreateCategoryScreen> implements 
                           title: 'Чаты: ${state is CreateCategoryChatsLoading ? "Загрузка ,,," : (chats ?? []).length }'
                         ),
                         ChatsList(
-                          showSpinner: state is CreateCategoryChatsLoading,
+                          itemsCount: (state is CreateCategoryChatsLoading ? 4 : 0) + (chats ?? []).length,
                           isScrollable: false,
                           items: chats ?? [],
                           loadingItemsIDS: state is CreateCategoryTransferLoading ? 
@@ -122,7 +131,8 @@ class _CreateCategoryScreenState extends State<CreateCategoryScreen> implements 
                           cellType: ChatCellType.optionsWithChat,
                           onSelectedOption: (ChatCellActionType action, ChatEntity entity) async {
                             if (action == ChatCellActionType.delete) {
-                              cubit.deleteChat(entity);
+                              cubit.movingChats = [entity.chatId];
+                              cubit.doTransferChats(0);
                             } else {
                               var response = await _navigator.push(CategoryList.route(isMoveChat: true));
 
@@ -141,8 +151,6 @@ class _CreateCategoryScreenState extends State<CreateCategoryScreen> implements 
                   title: 'Сохранить',
                   isLoading: state is CreateCategoryLoading,
                   onTap: () {
-
-                    // TODO: Put here Validation
                     cubit.sendData(widget.mode, widget.entity?.id ?? null);
                   },
                 )

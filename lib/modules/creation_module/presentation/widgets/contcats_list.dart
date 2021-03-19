@@ -8,14 +8,18 @@ import '../../domain/entities/contact.dart';
 import '../bloc/contact_bloc/contact_bloc.dart';
 import 'contact_cell.dart';
 
+enum ContactsMode { showPeople, showMyContacts }
+
 class ContactsList extends StatefulWidget {
   
+  final ContactsMode mode;
   final bool isScrollable;
   final Function(ContactEntity) didSelectContactToChat; 
 
   ContactsList({ 
     this.isScrollable = true,
-    this.didSelectContactToChat
+    this.didSelectContactToChat,
+    this.mode = ContactsMode.showMyContacts
   });
 
   @override
@@ -56,7 +60,9 @@ class _ContactsListState extends State<ContactsList> {
             itemBuilder: (context, int index) {
               if (index == 0) {
                 return CellHeaderView(
-                  title: 'Ваши контакты: ${state.contacts.length}'
+                  title: widget.mode == ContactsMode.showMyContacts?
+                    'Ваши контакты: ${state.contacts.length}' : 
+                      'Контакты: ${state.contacts.length}'
                 );
               } else {
                 return index >= state.contacts.length + 1 ? 

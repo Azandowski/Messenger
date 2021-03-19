@@ -173,17 +173,18 @@ class ChatDataSourceImpl implements ChatDataSource {
   @override
   Future<Message> sendMessage(SendMessageParams params) async {
     var forward = params.forwardIds.map((e) => e.toString()).join(',');
-    var body =  {
-        'text': params.text ?? '',
-        'forward': forward,
-        if (params.timeLeft != null)
-          ...{'time_deleted': params.timeLeft}
-      };
+    var body = {
+      'text': params.text ?? '',
+      'forward': forward,
+      if (params.timeLeft != null)
+        ...{'time_deleted': params.timeLeft}
+    };
+
     http.Response response = await client.post(
       Endpoints.sendMessages.buildURL(urlParams: [
-        params.chatID.toString(),
-      ],
-    ),
+          params.chatID.toString(),
+        ],
+      ),
       body: json.encode(body),
       headers: Endpoints.getCurrentUser.getHeaders(token: sl<AuthConfig>().token),
     );

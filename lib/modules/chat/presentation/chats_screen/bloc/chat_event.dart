@@ -101,3 +101,17 @@ class ToggleBottomPin extends ChatEvent {
     show, newUnreadCount
   ];
 }
+
+
+class PermissionsUpdated extends ChatEvent {
+  final ChatPermissions newPermissions;
+
+  PermissionsUpdated ({
+    @required this.newPermissions
+  });
+
+  @override
+  List<Object> get props => [
+    newPermissions
+  ];
+}

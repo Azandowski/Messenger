@@ -55,13 +55,15 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     @required this.getMessages,
     @required this.setTimeDeleted,
     @required this.getMessagesContext,
-    bool isSecretModeOn
+    bool isSecretModeOn,
+    ChatEntity chatEntity
   }) : super(
     ChatLoading(
       messages: [],
       hasReachedMax: false,
       isPagination: false,
-      isSecretModeOn: isSecretModeOn
+      isSecretModeOn: isSecretModeOn,
+      chatEntity: chatEntity
     )
   ) {
     this.add(ChatScreenStarted());
@@ -115,7 +117,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
           direction: event.resetAll ? null : event.direction,
           unreadCount: event.resetAll ? null : state.unreadCount,
           showBottomPin: state.showBottomPin,
-          isSecretModeOn: state.isSecretModeOn
+          isSecretModeOn: state.isSecretModeOn,
+          chatEntity: state.chatEntity
         );
 
         Either<Failure, ChatMessageResponse> response;
@@ -152,7 +155,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         hasReachBottomMax: this.state.hasReachBottomMax,
         unreadCount: state.unreadCount,
         showBottomPin: state.showBottomPin,
-        isSecretModeOn: state.isSecretModeOn
+        isSecretModeOn: state.isSecretModeOn,
+        chatEntity: state.chatEntity
       );
 
       final response = await setTimeDeleted(SetTimeDeletedParams(
@@ -173,31 +177,43 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         unreadCount: event.newUnreadCount ?? state.unreadCount,
         messages: state.messages,
         showBottomPin: event.show,
-        isSecretModeOn: state.isSecretModeOn
+        isSecretModeOn: state.isSecretModeOn,
+        chatEntity: state.chatEntity
       );
+    } else if (event is PermissionsUpdated) {
+      yield state.copyWith(chatEntity: state.chatEntity.clone(permissions: event.newPermissions));
     }
   }
 
   Stream<ChatState> _eitherSentOrErrorState(
     Either<Failure, Message> failureOrMessage,
+    int identificator
   ) async* {
     var list = getCopyMessages();    
     yield failureOrMessage.fold(
-      (failure) => ChatInitial(
-        messages: list,
-        hasReachedMax: this.state.hasReachedMax,
-        wallpaperPath: this.state.wallpaperPath,
-        hasReachBottomMax: this.state.hasReachBottomMax,
-        unreadCount: state.unreadCount,
-        showBottomPin: state.showBottomPin,
-        isSecretModeOn: state.isSecretModeOn
-      ),
+      (failure) {
+        var i = list.indexWhere((element) => element.identificator == identificator);
+        list.removeAt(i);
+        return ChatError(
+          messages: list,
+          hasReachedMax: this.state.hasReachedMax,
+          wallpaperPath: this.state.wallpaperPath,
+          hasReachBottomMax: this.state.hasReachBottomMax,
+          unreadCount: state.unreadCount,
+          showBottomPin: state.showBottomPin,
+          isSecretModeOn: state.isSecretModeOn,
+          message: failure.message,
+          chatEntity: state.chatEntity
+        );
+      },
       (message) {
         var i = list.indexWhere((element) => element.identificator == message.identificator);
+        
         list[i]= message.copyWith(
           identificator: message.id,
           status: list[i].messageStatus,
         );
+
         return ChatInitial(
           topMessage: this.state.topMessage,
           messages: list,
@@ -206,7 +222,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
           hasReachBottomMax: this.state.hasReachBottomMax,
           unreadCount: state.unreadCount,
           showBottomPin: state.showBottomPin,
-          isSecretModeOn: state.isSecretModeOn
+          isSecretModeOn: state.isSecretModeOn,
+          chatEntity: state.chatEntity
         );
       }
     );
@@ -228,7 +245,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         wallpaperPath: this.state.wallpaperPath,
         unreadCount: state.unreadCount,
         showBottomPin: state.showBottomPin,
-        isSecretModeOn: state.isSecretModeOn
+        isSecretModeOn: state.isSecretModeOn,
+        chatEntity: state.chatEntity
       ),
       (result) {
         List<Message> newMessages = isPagination ? direction == RequestDirection.top ? 
@@ -254,7 +272,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
           focusMessageID: focusMessageID,
           unreadCount: hasReachBottom ? null : state.unreadCount,
           showBottomPin: state.showBottomPin,
-          isSecretModeOn: state.isSecretModeOn
+          isSecretModeOn: state.isSecretModeOn,
+          chatEntity: state.chatEntity
         );
       }
     );
@@ -265,7 +284,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       case MessageHandleType.newMessage:
         if (state.hasReachBottomMax) {
           var list = getCopyMessages();
-          var i = list.indexWhere((element) => element.identificator == event.message.id);
+          var i = list.indexWhere((e) => e.identificator == event.message.id);
           
           if (i != -1) {
             list.removeAt(i);
@@ -283,7 +302,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
             hasReachBottomMax: this.state.hasReachBottomMax,
             unreadCount: didNotRead ? (state.unreadCount ?? 0) + 1 : state.unreadCount,
             showBottomPin: state.showBottomPin,
-            isSecretModeOn: state.isSecretModeOn
+            isSecretModeOn: state.isSecretModeOn,
+            chatEntity: state.chatEntity
           );
         } else {
           yield ChatInitial (
@@ -293,7 +313,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
             hasReachBottomMax: this.state.hasReachBottomMax,
             unreadCount: (state.unreadCount ?? 0) + 1,
             showBottomPin: state.showBottomPin,
-            isSecretModeOn: state.isSecretModeOn
+            isSecretModeOn: state.isSecretModeOn,
+            chatEntity: state.chatEntity
           );
         }
         break;
@@ -314,7 +335,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
           hasReachedMax: this.state.hasReachedMax,
           wallpaperPath: this.state.wallpaperPath,
           hasReachBottomMax: this.state.hasReachBottomMax,
-          isSecretModeOn: state.isSecretModeOn
+          isSecretModeOn: state.isSecretModeOn,
+          chatEntity: state.chatEntity
         );
         break;
     }
@@ -330,7 +352,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         wallpaperPath: wallpaperFile.path,
         hasReachBottomMax: this.state.hasReachBottomMax,
         unreadCount: state.unreadCount,
-        isSecretModeOn: state.isSecretModeOn
+        isSecretModeOn: state.isSecretModeOn,
+        chatEntity: state.chatEntity
       );
     }
   }
@@ -360,11 +383,12 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       hasReachBottomMax: this.state.hasReachBottomMax,
       unreadCount: state.unreadCount,
       showBottomPin: state.showBottomPin,
-      isSecretModeOn: state.isSecretModeOn
+      isSecretModeOn: state.isSecretModeOn,
+      chatEntity: state.chatEntity
     );
     
     List<int> forwardArray = [];
-    if(event.forwardMessage != null){
+    if (event.forwardMessage != null){
       forwardArray.add(event.forwardMessage.id);
     }
 
@@ -376,7 +400,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       timeLeft: event.timeDeleted
     ));
 
-    yield* _eitherSentOrErrorState(response);
+    yield* _eitherSentOrErrorState(response, randomID);
   }
 
   Stream<ChatState> _messageDeleteToState(MessageDelete event) async* {
@@ -393,7 +417,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       wallpaperPath: this.state.wallpaperPath,
       unreadCount: state.unreadCount,
       showBottomPin: state.showBottomPin,
-      isSecretModeOn: state.isSecretModeOn
+      isSecretModeOn: state.isSecretModeOn,
+      chatEntity: state.chatEntity
     );
   }
 
@@ -413,7 +438,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         unreadCount: state.unreadCount,
         showBottomPin: state.showBottomPin,
         isSecretModeOn: state.isSecretModeOn,
-        message: failure.message
+        message: failure.message,
+        chatEntity: state.chatEntity
       ),
       (response) {
         // _handleTimerNewValue(event);
@@ -425,29 +451,13 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
           hasReachBottomMax: this.state.hasReachBottomMax,
           unreadCount: state.unreadCount,
           showBottomPin: state.showBottomPin,
-          isSecretModeOn: response.isSecret
+          isSecretModeOn: response.isSecret,
+          chatEntity: state.chatEntity
         );
       }
     );
   }
 
-
-  void _handleTimerNewValue (SetInitialTime event) {
-    // currentLeftTime = event.option.seconds;
-  
-    if (currentLeftTime == null || currentLeftTime == 0) {
-      _timerDeletion.cancel();
-    } else {
-      _timerDeletion = new Timer.periodic(
-      Duration(seconds: 1), 
-      (Timer t) { 
-        currentLeftTime -= 1;
-        if (currentLeftTime == 0) {
-          _timerDeletion.cancel();
-        }
-      });
-    }
-  }
 
   List<Message> getCopyMessages() => state.messages.map((e) => e.copyWith()).toList();
 }
