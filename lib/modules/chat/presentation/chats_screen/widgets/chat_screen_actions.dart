@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:messenger_mobile/app/application.dart';
 import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chat_details/page/chat_detail_screen.dart';
 import 'package:messenger_mobile/modules/chats/presentation/pages/chats_search_screen.dart';
 import '../../../../../app/appTheme.dart';
 import '../../../../../core/widgets/independent/dialogs/dialog_action_button.dart';
@@ -65,7 +66,10 @@ class ChatScreenActions extends StatelessWidget {
                     iconData: Icons.person,
                     buttonStyle: DialogActionButtonStyle.black,
                     onPress: () {
-                      _navigator.push(ChatDetailPage.route(chatEntity));
+                      _navigator.push(ChatDetailPage.route(
+                        chatEntity.chatId,
+                        ProfileMode.chat
+                      ));
                     }
                   ),
                   DialogActionButton(

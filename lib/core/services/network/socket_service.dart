@@ -25,10 +25,7 @@ class SocketService {
 
     socket.connect();
 
-    socket.onConnect((data) {
-      print(headers);
-      print('connected');
-    });
+    socket.onConnect((data) {});
 
     echo = new Echo({
       'broadcaster': 'socket.io',
@@ -37,7 +34,14 @@ class SocketService {
         'headers': headers
       }
     });
+    
     echo.connect();
+
+    echo.join('.online.2').here((d) {
+      print(d);
+    }).joining((d) {
+      print(d);
+    });
   }
 }
 

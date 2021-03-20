@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chat_details/page/chat_detail_screen.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen_import.dart';
 import '../../../../../category/data/models/chat_view_model.dart';
 import '../../../chat_details/page/chat_detail_page.dart';
@@ -37,7 +38,7 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget{
         description: chatViewModel.description ?? '',
         avatarURL: chatViewModel.imageURL,
         onTap: () async {
-          var newPermissions = await _navigator.push(ChatDetailPage.route(widget.chatEntity));
+          var newPermissions = await _navigator.push(ChatDetailPage.route(widget.chatEntity.chatId, ProfileMode.chat));
           context.read<ChatBloc>().add(PermissionsUpdated(
             newPermissions: newPermissions
           ));

@@ -18,7 +18,7 @@ class OpenChatCubit extends Cubit<OpenChatState> {
     @required this.createChatGruopUseCase
   }) : super(OpenChatInitial()); 
 
-    Future<void> createChatWithUser (int userID) async {
+  Future<void> createChatWithUser (int userID) async {
     emit(OpenChatLoading());
 
     var response = await createChatGruopUseCase(CreateChatGroupParams(

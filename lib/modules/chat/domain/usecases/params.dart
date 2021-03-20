@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:messenger_mobile/modules/chat/data/datasources/chat_datasource.dart';
+import 'package:messenger_mobile/modules/chat/domain/usecases/get_chat_details.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chat_details/page/chat_detail_screen.dart';
 
 import '../../../../core/utils/pagination.dart';
 import '../../../category/data/models/chat_permission_model.dart';
@@ -121,5 +123,25 @@ class ReplyMoreParams {
   ReplyMoreParams({
     @required this.chatIds,
     @required this.messageIds
+  });
+}
+
+class GetChatDetailsParams {
+  final ProfileMode mode;
+  final int id;
+
+  GetChatDetailsParams ({
+    @required this.mode,
+    @required this.id
+  });
+}
+
+class BlockUserParams {
+  final bool isBloc;
+  final int userID;
+
+  BlockUserParams({
+    @required this.isBloc,
+    @required this.userID
   });
 }

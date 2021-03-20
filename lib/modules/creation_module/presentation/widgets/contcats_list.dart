@@ -16,11 +16,13 @@ class ContactsList extends StatefulWidget {
   final ContactsMode mode;
   final bool isScrollable;
   final Function(ContactEntity) didSelectContactToChat; 
+  final Function(ContactEntity) onTapContact;
 
   ContactsList({ 
     this.isScrollable = true,
     this.didSelectContactToChat,
-    this.mode = ContactsMode.showMyContacts
+    this.mode = ContactsMode.showMyContacts,
+    this.onTapContact
   });
 
   @override
@@ -74,7 +76,12 @@ class _ContactsListState extends State<ContactsList> {
                         if (widget.didSelectContactToChat != null) {
                           widget.didSelectContactToChat(state.contacts[index - 1]);
                         }
-                      }
+                      },
+                      onTap: () {
+                        if (widget.onTapContact != null) {
+                          widget.onTapContact(state.contacts[index - 1]);
+                        }
+                      },
                     );
               }
             }, 

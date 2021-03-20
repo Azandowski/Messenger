@@ -3,10 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger_mobile/app/application.dart';
 import 'package:messenger_mobile/core/blocs/chat/bloc/bloc/chat_cubit.dart';
 import 'package:messenger_mobile/core/utils/snackbar_util.dart';
-import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
+import 'package:messenger_mobile/modules/chat/domain/usecases/block_user.dart';
 import 'package:messenger_mobile/modules/chat/domain/usecases/kick_member.dart';
 import '../../../../../locator.dart';
-import '../../../../../main.dart';
 import '../../../data/datasources/chat_datasource.dart';
 import '../../../data/repositories/chat_repository.dart';
 import '../../../domain/usecases/add_members.dart';
@@ -18,14 +17,19 @@ import 'chat_detail_screen.dart';
 
 class ChatDetailPage extends StatefulWidget {
 
-  static Route route(ChatEntity chatEntity) {
-    return MaterialPageRoute<void>(builder: (_) => ChatDetailPage(chatEntity: chatEntity));
+  static Route route(int id, ProfileMode mode) {
+    return MaterialPageRoute<void>(builder: (_) => ChatDetailPage(
+      id: id,
+      mode: mode ?? ProfileMode.chat
+    ));
   }
 
-  final ChatEntity chatEntity;
+  final int id;
+  final ProfileMode mode;
 
   const ChatDetailPage({
-    @required this.chatEntity,
+    @required this.id,
+    this.mode = ProfileMode.chat,
     Key key, 
   }) : super(key: key);
 
@@ -42,6 +46,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   LeaveChat leaveChat;
   UpdateChatSettings updateChatSettings;
   KickMembers kickMembers;
+  BlockUser blockUser;
 
   ChatDetailsCubit _chatDetailsCubit;
 
@@ -50,7 +55,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
     ChatRepositoryImpl chatRepositoryImpl = ChatRepositoryImpl(
       networkInfo: sl(),
       chatDataSource: ChatDataSourceImpl(
-        id: widget.chatEntity.chatId, 
+        id: widget.id, 
         client: sl(), 
         socketService: sl()
       )
@@ -68,12 +73,15 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
 
     kickMembers = KickMembers(repository: chatRepositoryImpl);
 
+    blockUser = BlockUser(repository: chatRepositoryImpl);
+
     _chatDetailsCubit = ChatDetailsCubit(
       getChatDetails: getChatDetails,
       addMembers: addMembers,
       leaveChat: leaveChat,
       updateChatSettings: updateChatSettings,
-      kickMembers: kickMembers
+      kickMembers: kickMembers,
+      blockUser: blockUser
     );
     super.initState();
   }
@@ -96,8 +104,9 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
         builder: (context, state) {
           return Scaffold(
             body: ChatDetailScreen(
-              chatEntity: widget.chatEntity, 
-              getChatDetails: getChatDetails
+              id: widget.id, 
+              getChatDetails: getChatDetails,
+              mode: widget.mode,
             ),
           );
         },
@@ -112,7 +121,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
       SnackUtil.showLoading(context: context);
     } else {
       if (state is ChatDetailsLeave) {
-        context.read<ChatGlobalCubit>().leaveFromChat(id: widget.chatEntity.chatId);
+        context.read<ChatGlobalCubit>().leaveFromChat(id: widget.id);
         Navigator.of(context).popUntil((route) => route.isFirst);
       }
 

@@ -7,8 +7,20 @@ abstract class NetworkInfo {
 class NetworkInfoImpl implements NetworkInfo {
   final DataConnectionChecker connectionChecker;
 
-  NetworkInfoImpl(this.connectionChecker);
+  DataConnectionStatus _connectionStatus;
+
+  NetworkInfoImpl(this.connectionChecker) {
+    connectionChecker.onStatusChange.listen((event) {
+      _connectionStatus = event;
+    });
+  }
 
   @override
-  Future<bool> get isConnected => connectionChecker.hasConnection;
+  Future<bool> get isConnected {
+    if (_connectionStatus == null) {
+      return connectionChecker.hasConnection;
+    } else {
+      return Future<bool>.value(_connectionStatus == DataConnectionStatus.connected);
+    }
+  }
 }

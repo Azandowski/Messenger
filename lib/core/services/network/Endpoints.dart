@@ -39,7 +39,10 @@ enum Endpoints {
   leaveChat,
   getChatMessages,
   setTimeDeleted,
-  searchChats
+  searchChats,
+  getUserProfile,
+  blockUser,
+  unblockUser
 }
 
 extension EndpointsExtension on Endpoints {
@@ -131,6 +134,12 @@ extension EndpointsExtension on Endpoints {
         return '${Config.baseAPIpath.value}/messenger/chat/${params[0]}/unset-top_message';
       case Endpoints.replyMore:
         return '${Config.baseAPIpath.value}/messenger/chat/forward';
+      case Endpoints.getUserProfile:
+        return '${Config.baseAPIpath.value}/messenger/user/profile';
+      case Endpoints.blockUser:
+        return '${Config.baseAPIpath.value}/messenger/block-user';
+      case Endpoints.unblockUser:
+        return '${Config.baseAPIpath.value}/messenger/unblock-user';
     }
   }
 

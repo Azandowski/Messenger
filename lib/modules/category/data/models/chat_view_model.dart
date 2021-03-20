@@ -32,7 +32,7 @@ class ChatViewModel {
   String get description {
     if (isInLive) {
       return 'Сейчас в прямом эфире'.toUpperCase();
-    } else if (entity.lastMessage != null) {
+    } else if (entity?.lastMessage != null) {
       if (entity.lastMessage.chatActions != null) {
         var userViewModel = MessageUserViewModel(entity.lastMessage.toUser);
         
@@ -41,10 +41,10 @@ class ChatViewModel {
         );
       }
       return entity.lastMessage.text ?? '';
-    } else if (entity.chatCategory != null){
+    } else if (entity?.chatCategory != null){
       return entity.chatCategory.name ?? '';
     } else {
-      return entity.description ?? '';
+      return entity?.description ?? '';
     }
   }
 

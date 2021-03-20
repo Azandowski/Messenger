@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_share/flutter_share.dart';
 import 'package:messenger_mobile/app/application.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chat_details/page/chat_detail_page.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chat_details/page/chat_detail_screen.dart';
 import 'package:messenger_mobile/modules/creation_module/presentation/bloc/open_chat_cubit/open_chat_cubit.dart';
 import 'package:messenger_mobile/modules/creation_module/presentation/bloc/open_chat_cubit/open_chat_listener.dart';
 import 'package:messenger_mobile/modules/creation_module/presentation/pages/search_contact/search_contact_page.dart';
@@ -98,6 +100,11 @@ class _CreationModuleScreenState extends State<CreationModuleScreen> {
                       isScrollable: false,
                       didSelectContactToChat: (contact) {
                         context.read<OpenChatCubit>().createChatWithUser(contact.id);
+                      },
+                      onTapContact: (contact) {
+                        _navigator.push(ChatDetailPage.route(
+                          contact.id, ProfileMode.user
+                        ));
                       },
                     )
                   ],
