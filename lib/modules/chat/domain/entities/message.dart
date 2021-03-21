@@ -24,6 +24,7 @@ class Message extends Equatable {
   final DateTime willBeDeletedAt;
   final MessageChat chat;
   final MessageHandleType messageHandleType;
+  final int timeDeleted;
   
   Message({
     this.text,
@@ -41,6 +42,7 @@ class Message extends Equatable {
     this.toUser,
     this.chat,
     this.messageHandleType = MessageHandleType.newMessage,
+    this.timeDeleted
   });
 
   @override
@@ -59,7 +61,8 @@ class Message extends Equatable {
     transfer,
     toUser,
     chat,
-    messageHandleType
+    messageHandleType,
+    timeDeleted
   ];
 
    Message copyWith({

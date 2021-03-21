@@ -17,6 +17,7 @@ class ChatEntity extends Equatable {
   final int unreadCount;
   final String description;
   final bool isPrivate;
+  final bool isRead;
   CategoryEntity chatCategory;
 
   ChatEntity({
@@ -29,7 +30,8 @@ class ChatEntity extends Equatable {
     this.unreadCount,
     this.description,
     this.lastMessage,
-    this.isPrivate = false
+    this.isPrivate = false,
+    this.isRead
   });
 
   @override
@@ -43,7 +45,8 @@ class ChatEntity extends Equatable {
     date,
     unreadCount,
     description,
-    isPrivate
+    isPrivate,
+    isRead
   ];
 
   ChatEntity clone({

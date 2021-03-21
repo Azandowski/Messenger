@@ -42,10 +42,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   
   AutoScrollController scrollController = AutoScrollController();
 
-  // Timer left for the messages
-  int currentLeftTime = 0;
-  Timer _timerDeletion;
-
 
   ChatBloc({
     @required this.chatRepository,
@@ -167,8 +163,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       ));
 
       yield* _eitherSentWithTimerOrFailure(response, event);
-      // TODO: Update it
-      currentLeftTime = 10;
     } else if (event is DisposeChat) {
       await chatRepository.disposeChat();
     } else if (event is ToggleBottomPin) {
@@ -453,7 +447,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         chatEntity: state.chatEntity
       ),
       (response) {
-        // _handleTimerNewValue(event);
         return ChatInitial(
           topMessage: this.state.topMessage,
           messages: this.state.messages,

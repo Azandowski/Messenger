@@ -10,10 +10,14 @@ import '../../presentation/chats_screen/helpers/messageCellAction.dart';
 class MessageViewModel {
   final Message message;
   final bool isSelected;
+  final int timeLeftToBeDeleted;
 
   MessageViewModel (
-    this.message, {this.isSelected = false
-  }); 
+    this.message, {
+      this.isSelected = false,
+      this.timeLeftToBeDeleted = null
+    }
+  ); 
 
   // MARK: - For UI
 
@@ -26,7 +30,9 @@ class MessageViewModel {
   }
 
   String get time {
-    if (message.dateTime != null) {
+    if (timeLeftToBeDeleted != null) {
+      return '$timeLeftToBeDeleted';
+    } else if (message.dateTime != null) {
       return new DateFormat("Hm").format(message.dateTime); 
     } else {
       return '';
@@ -41,8 +47,6 @@ class MessageViewModel {
     @required int previousMessageUserID, 
     @required int nextMessageUserID
   }) {
-    int myID = sl<AuthConfig>().user.id;
-
     return BoxDecoration(
       color: !isMine ? Colors.white : (isMine && messageStatus == MessageStatus.sending) ?
         AppColors.greyColor : AppColors.messageBlueBackground,
@@ -103,5 +107,4 @@ class MessageViewModel {
   MessageStatus get messageStatus {
     return message.messageStatus;
   }
-
 }

@@ -20,6 +20,7 @@ class MessageModel extends Message {
   final MessageStatus messageStatus;
   final MessageChat chat;
   MessageHandleType messageHandleType;
+  final int timeDeleted;
 
   MessageModel({
     this.id,
@@ -36,6 +37,7 @@ class MessageModel extends Message {
     this.toUser,
     this.chat,
     this.messageHandleType = MessageHandleType.newMessage,
+    this.timeDeleted
   }) : super(
     id: id,
     isRead: isRead,
@@ -51,6 +53,7 @@ class MessageModel extends Message {
     toUser: toUser,
     chat: chat,
     messageHandleType: messageHandleType,
+    timeDeleted: timeDeleted
   );
 
   factory MessageModel.fromJson(Map json) {
@@ -72,7 +75,8 @@ class MessageModel extends Message {
       transfer: json['transfer'] != null ? 
         (json['transfer'] as List).map((v) => Transfer.fromJson(v)).toList() : [],
       chat: json['chat'] == null ? null :
-       MessageChatModel.fromJson(json['chat'])
+        MessageChatModel.fromJson(json['chat']),
+      timeDeleted: json['time_deleted']
     );
   }
 
