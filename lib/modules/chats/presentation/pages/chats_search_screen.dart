@@ -139,7 +139,7 @@ class _ChatsSearchScreenState extends State<ChatsSearchScreen> implements Search
                   )) {
                     return CellShimmerItem();
                 } else if (index + 1 <= state.data.chats.length) {
-                  return GestureDetector(
+                  return InkWell(
                     onTap: () {
                       widget.delegate?.didSelectChatItem(state.data.chats[index]);
                     },
@@ -160,7 +160,7 @@ class _ChatsSearchScreenState extends State<ChatsSearchScreen> implements Search
                   int newIndex = index - state.data.chats.length - 1;
                   var currentItem = state.data.messages.data[newIndex];
   
-                  return GestureDetector(
+                  return InkWell(
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => ChatScreen(

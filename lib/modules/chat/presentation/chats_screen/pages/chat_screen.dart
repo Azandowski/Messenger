@@ -155,7 +155,7 @@ class ChatScreenState extends State<ChatScreen> implements ChatChooseDelegate{
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         if (state.topMessage != null) 
-                          GestureDetector(
+                          InkWell(
                             onTap: () {
                               _chatBloc.add(LoadMessages(
                                 messageID: state.topMessage.id,

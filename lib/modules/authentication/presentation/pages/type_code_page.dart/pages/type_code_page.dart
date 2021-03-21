@@ -98,7 +98,7 @@ class _TypeCodePageState extends State<TypeCodePage> {
                     child: timer > 0
                         ? Text('Получить код повторно через: $timer сек',
                             style: AppFontStyles.placeholderStyle)
-                        : GestureDetector(
+                        : InkWell(
                             onTap: () {
                               phoneCubit.sendPhone(widget.codeEntity.phone);
                               setState(() {

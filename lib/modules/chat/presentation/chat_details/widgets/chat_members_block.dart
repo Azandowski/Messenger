@@ -64,7 +64,7 @@ class ChatMembersBlock extends StatelessWidget {
   }
 
   Widget _buildSubmitButton () {
-    return GestureDetector (
+    return InkWell (
       onTap: onShowMoreClick,
       child: Container(
         padding: const EdgeInsets.symmetric(

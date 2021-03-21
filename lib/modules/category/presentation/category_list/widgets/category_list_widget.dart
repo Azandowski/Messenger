@@ -40,7 +40,7 @@ class CategoriesList extends StatelessWidget {
         },
         children: [
           for (final item in items)
-            GestureDetector(
+            InkWell(
               key: ValueKey(item.id),
               onTap: () {
                 if (onSelect != null) {

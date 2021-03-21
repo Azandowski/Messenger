@@ -87,8 +87,8 @@ class _ChatsScreenState extends State<ChatsScreen> {
                         );
                       } else if (index <= (chatsCount == 0 && !(chatState is ChatLoading) ? 1 : chatsCount)) {
                         if (chatsCount != 0) {
-                          return GestureDetector(
-                            onLongPressStart: (d) {
+                          return InkWell(
+                            onLongPress: () {
                               cubit.didSelectChat(index - 1);
                             },
                             onTap: () {

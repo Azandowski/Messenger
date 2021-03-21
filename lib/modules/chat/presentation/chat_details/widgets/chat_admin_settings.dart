@@ -76,7 +76,7 @@ class _ChatAdminSettingsState extends State<ChatAdminSettings> {
     @required String value,
     @required Function onPress
   }) {
-    return GestureDetector(
+    return InkWell(
       onTap: onPress,
       child: Container(
         padding: const EdgeInsets.only(
