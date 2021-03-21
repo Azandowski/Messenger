@@ -4,6 +4,7 @@ import 'package:dartz/dartz.dart';
 import 'package:messenger_mobile/modules/chat/data/datasources/chat_datasource.dart';
 import 'package:messenger_mobile/modules/chat/data/models/chat_message_response.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chat_details/page/chat_detail_screen.dart';
+import 'package:messenger_mobile/modules/social_media/domain/entities/social_media.dart';
 
 import '../../../../core/error/failures.dart';
 import '../../../../core/services/network/paginatedResult.dart';
@@ -37,6 +38,10 @@ abstract class ChatRepository {
     int id, bool isOn
   });
   
+  Future<Either<Failure, ChatPermissions>> setSocialMedia ({
+    int id, SocialMedia socialMedia
+  });
+
   Future<Either<Failure, bool>> blockUser (int id);
   Future<Either<Failure, bool>> unblockUser (int id);
 

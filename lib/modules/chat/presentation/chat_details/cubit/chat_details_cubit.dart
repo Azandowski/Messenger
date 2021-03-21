@@ -4,7 +4,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:messenger_mobile/modules/chat/domain/usecases/block_user.dart';
 import 'package:messenger_mobile/modules/chat/domain/usecases/kick_member.dart';
+import 'package:messenger_mobile/modules/chat/domain/usecases/set_social_media.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chat_details/page/chat_detail_screen.dart';
+import 'package:messenger_mobile/modules/social_media/domain/entities/social_media.dart';
 
 import '../../../../category/data/models/chat_permission_model.dart';
 import '../../../../category/domain/entities/chat_permissions.dart';
@@ -27,6 +29,7 @@ class ChatDetailsCubit extends Cubit<ChatDetailsState> {
   final UpdateChatSettings updateChatSettings;
   final KickMembers kickMembers;
   final BlockUser blockUser;
+  final SetSocialMedia setSocialMedia;
 
   ChatPermissions initialPermissions;
 
@@ -36,7 +39,8 @@ class ChatDetailsCubit extends Cubit<ChatDetailsState> {
     @required this.leaveChat,
     @required this.updateChatSettings,
     @required this.kickMembers,
-    @required this.blockUser
+    @required this.blockUser,
+    @required this.setSocialMedia
   }) : super(ChatDetailsLoading());
 
   Future<void> loadDetails (int id, ProfileMode mode) async {
@@ -196,6 +200,34 @@ class ChatDetailsCubit extends Cubit<ChatDetailsState> {
         chatDetailed: chatDetails
       ));
     });
+  }
+
+  Future<void> setNewSocialMedia ({
+    @required int id,
+    @required SocialMedia newSocialMedia,
+  }) async {
+    emit(ChatDetailsProccessing(chatDetailed: this.state.chatDetailed));
+
+    var response = await setSocialMedia(SetSocialMediaParams(
+      id: id, 
+      socialMedia: newSocialMedia
+    ));
+
+    response.fold((failure) => emit(ChatDetailsError(
+      message: failure.message,
+      chatDetailed: this.state.chatDetailed
+    )), (response) {
+      emit(ChatDetailsLoaded(
+        chatDetailed: state.chatDetailed.copyWith(socialMedia: newSocialMedia)
+      ));
+    });
+  }
+
+  void showError (String message) {
+    emit(ChatDetailsError(
+      chatDetailed: this.state.chatDetailed,
+      message: message
+    ));
   }
 
 

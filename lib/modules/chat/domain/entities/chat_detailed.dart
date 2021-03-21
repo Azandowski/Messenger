@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:messenger_mobile/modules/profile/domain/entities/user.dart';
+import 'package:messenger_mobile/modules/social_media/domain/entities/social_media.dart';
 
 import '../../../category/domain/entities/chat_entity.dart';
 import '../../../category/domain/entities/chat_permissions.dart';
@@ -15,6 +16,7 @@ class ChatDetailed extends Equatable {
   final int membersCount;
   final ChatMember chatMemberRole;
   final List<ChatEntity> groups;
+  final SocialMedia socialMedia;
 
   ChatDetailed({
     @required this.chat, 
@@ -25,6 +27,7 @@ class ChatDetailed extends Equatable {
     @required this.user,
     this.groups,
     this.settings, 
+    this.socialMedia
   });  
 
   ChatDetailed copyWith ({
@@ -35,7 +38,8 @@ class ChatDetailed extends Equatable {
     ChatPermissions settings,
     ChatMember chatMemberRole,
     User user,
-    List<ChatEntity> groups
+    List<ChatEntity> groups,
+    SocialMedia socialMedia
   }) {
     return ChatDetailed(
       chat: chat ?? this.chat,
@@ -45,7 +49,8 @@ class ChatDetailed extends Equatable {
       settings: settings ?? this.settings,
       chatMemberRole: chatMemberRole ?? this.chatMemberRole,
       user: user ?? this.user,
-      groups: groups ?? this.groups
+      groups: groups ?? this.groups,
+      socialMedia: socialMedia ?? this.socialMedia
     );
   }
 
@@ -58,7 +63,8 @@ class ChatDetailed extends Equatable {
     settings, 
     chatMemberRole,
     user,
-    groups
+    groups,
+    socialMedia
   ];
 }
 

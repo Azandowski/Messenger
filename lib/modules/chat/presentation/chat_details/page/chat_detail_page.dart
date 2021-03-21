@@ -5,6 +5,7 @@ import 'package:messenger_mobile/core/blocs/chat/bloc/bloc/chat_cubit.dart';
 import 'package:messenger_mobile/core/utils/snackbar_util.dart';
 import 'package:messenger_mobile/modules/chat/domain/usecases/block_user.dart';
 import 'package:messenger_mobile/modules/chat/domain/usecases/kick_member.dart';
+import 'package:messenger_mobile/modules/chat/domain/usecases/set_social_media.dart';
 import '../../../../../locator.dart';
 import '../../../data/datasources/chat_datasource.dart';
 import '../../../data/repositories/chat_repository.dart';
@@ -47,6 +48,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   UpdateChatSettings updateChatSettings;
   KickMembers kickMembers;
   BlockUser blockUser;
+  SetSocialMedia setSocialMedia;
 
   ChatDetailsCubit _chatDetailsCubit;
 
@@ -75,13 +77,16 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
 
     blockUser = BlockUser(repository: chatRepositoryImpl);
 
+    setSocialMedia = SetSocialMedia(repository: chatRepositoryImpl);
+
     _chatDetailsCubit = ChatDetailsCubit(
       getChatDetails: getChatDetails,
       addMembers: addMembers,
       leaveChat: leaveChat,
       updateChatSettings: updateChatSettings,
       kickMembers: kickMembers,
-      blockUser: blockUser
+      blockUser: blockUser,
+      setSocialMedia: setSocialMedia
     );
     super.initState();
   }

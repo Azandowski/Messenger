@@ -2,6 +2,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:messenger_mobile/modules/profile/data/models/user_model.dart';
 import 'package:messenger_mobile/modules/profile/domain/entities/user.dart';
+import 'package:messenger_mobile/modules/social_media/data/models/social_media_model.dart';
+import 'package:messenger_mobile/modules/social_media/domain/entities/social_media.dart';
 import '../../../category/data/models/chat_entity_model.dart';
 import '../../../category/data/models/chat_permission_model.dart';
 import '../../../category/domain/entities/chat_entity.dart';
@@ -18,6 +20,7 @@ class ChatDetailedModel extends ChatDetailed {
   final int membersCount;
   final ChatMember chatMemberRole;
   final List<ChatEntity> groups;
+  final SocialMedia socialMedia;
 
   ChatDetailedModel({
     @required this.chat, 
@@ -27,7 +30,8 @@ class ChatDetailedModel extends ChatDetailed {
     @required this.chatMemberRole,
     @required this.user,
     this.settings, 
-    this.groups
+    this.groups,
+    this.socialMedia
   }) : super(
     chat: chat,
     media: media,
@@ -35,10 +39,17 @@ class ChatDetailedModel extends ChatDetailed {
     membersCount: membersCount,
     chatMemberRole: chatMemberRole,
     user: user,
-    groups: groups
+    groups: groups,
+    socialMedia: socialMedia
   );
 
   factory ChatDetailedModel.fromJson (Map<String, dynamic> json) {
+    var profileModel = json['user'] ?? json['chat'];
+    bool hasSocialMedia = profileModel['youtube'] != null || 
+      profileModel['instagram'] != null || 
+        profileModel['facebook'] != null ||
+          profileModel['site'] != null || profileModel['whatsapp'] != null;
+    
     return ChatDetailedModel(
       chat: json['chat'] != null ?
         ChatEntityModel.fromJson(json['chat']) : null,
@@ -52,7 +63,8 @@ class ChatDetailedModel extends ChatDetailed {
       chatMemberRole: json['role'] == 'member' ? ChatMember.member : ChatMember.admin,
       user: json['user'] != null ? UserModel.fromJson(json['user']) : null,
       groups: ((json['equal_group'] ?? []) as List)
-        .map((e) => ChatEntityModel.fromJson(e)).toList()
+        .map((e) => ChatEntityModel.fromJson(e)).toList(),
+      socialMedia: hasSocialMedia ? SocialMediaModel.fromJson(profileModel) : null
     );
   }
 }

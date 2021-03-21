@@ -4,6 +4,7 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
 import 'package:messenger_mobile/modules/chat/data/models/chat_message_response.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chat_details/page/chat_detail_screen.dart';
+import 'package:messenger_mobile/modules/social_media/domain/entities/social_media.dart';
 
 import '../../../../core/error/failures.dart';
 import '../../../../core/services/network/network_info.dart';
@@ -300,7 +301,7 @@ class ChatRepositoryImpl extends ChatRepository {
         await chatDataSource.blockUser(id);
         return Right(true);
       } catch (e) {
-          if (e is Failure) {
+        if (e is Failure) {
           return Left(e);
         } else {
           return Left(ServerFailure(message: e.toString()));
@@ -319,6 +320,28 @@ class ChatRepositoryImpl extends ChatRepository {
         return Right(true);
       } catch (e) {
           if (e is Failure) {
+          return Left(e);
+        } else {
+          return Left(ServerFailure(message: e.toString()));
+        } 
+      }
+    } else {
+      return Left(ConnectionFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, ChatPermissions>> setSocialMedia({int id, SocialMedia socialMedia}) async {
+    if (await networkInfo.isConnected) {
+      try {
+        var response = await chatDataSource.updateChatSettings(
+          id: id,
+          chatUpdates: socialMedia.toJson()
+        );
+
+        return Right(response);
+      } catch (e) {
+        if (e is Failure) {
           return Left(e);
         } else {
           return Left(ServerFailure(message: e.toString()));

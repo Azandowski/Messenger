@@ -13,6 +13,7 @@ import 'core/blocs/chat/bloc/bloc/chat_cubit.dart';
 import 'core/config/routes.dart';
 import 'locator.dart' as serviceLocator;
 import 'modules/creation_module/presentation/bloc/contact_bloc/contact_bloc.dart';
+import 'modules/social_media/presentation/pages/social_media_page.dart';
 
 
 void main() async {

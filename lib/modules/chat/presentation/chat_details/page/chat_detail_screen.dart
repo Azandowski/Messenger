@@ -9,12 +9,16 @@ import 'package:messenger_mobile/core/widgets/independent/dialogs/dialogs.dart';
 import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chat_details/widgets/chat_detail_appbar.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chat_details/widgets/chat_groups_block.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chat_details/widgets/social_media_block.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen.dart';
 import 'package:messenger_mobile/modules/creation_module/presentation/bloc/open_chat_cubit/open_chat_cubit.dart';
 import 'package:messenger_mobile/modules/creation_module/presentation/bloc/open_chat_cubit/open_chat_listener.dart';
 import 'package:messenger_mobile/modules/groupChat/domain/usecases/create_chat_group.dart';
 import 'package:messenger_mobile/modules/groupChat/presentation/create_group/create_group_page.dart';
 import 'package:messenger_mobile/modules/groupChat/presentation/create_group/create_group_screen.dart';
+import 'package:messenger_mobile/modules/social_media/domain/entities/social_media.dart';
+import 'package:messenger_mobile/modules/social_media/presentation/pages/social_media_page.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../../../core/blocs/chat/bloc/bloc/chat_cubit.dart';
 import '../../../../../core/widgets/independent/buttons/icon_text_button.dart';
 import '../../../../../locator.dart';
@@ -51,7 +55,10 @@ class ChatDetailScreen extends StatefulWidget {
   _ChatDetailScreenState createState() => _ChatDetailScreenState();
 }
 
-class _ChatDetailScreenState extends State<ChatDetailScreen> implements ContactChooseDelegate {
+
+
+class _ChatDetailScreenState extends State<ChatDetailScreen> 
+  implements ContactChooseDelegate, SocialMediaPickerDelegate {
   
   ChatDetailsCubit _chatDetailsCubit;
   OpenChatCubit _openChatCubit;
@@ -89,9 +96,22 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> implements ContactC
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     _buildHeaders(state),
+                    if (isAdmin || state.chatDetailed.socialMedia != null)
+                      SocialMediaBlock(
+                        canEdit: state.chatDetailed?.chatMemberRole == ChatMember.admin && 
+                          state.chatDetailed.chat != null,
+                        socialMedia: state.chatDetailed.socialMedia,
+                        onAddPressed: () {
+                          _navigator.push(SocialMediaScreen.route(
+                            delegate: this, 
+                            socialMedia: state.chatDetailed.socialMedia
+                          ));
+                        },
+                        onTapSocialMedia: (socialMediaType) => _handleSocialMediaClick(socialMediaType)
+                      ),
+                     _buildSeparator(),
                     if (
-                      state.chatDetailed?.chatMemberRole == ChatMember.admin && 
-                      state.chatDetailed.chat != null &&
+                      isAdmin &&
                       !(state.chatDetailed.chat.isPrivate ?? false))
                       ...[
                         ChatAdminSettings(
@@ -251,7 +271,15 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> implements ContactC
           return ChatDetailHeader(
             chatDetailed: state.chatDetailed,
             onCommunicationHandle: (CommunicationType type) {
-              context.read<OpenChatCubit>().createChatWithUser(state.chatDetailed?.user?.id);
+              if (widget.mode == ProfileMode.user) {
+                context.read<OpenChatCubit>().createChatWithUser(state.chatDetailed?.user?.id);
+              } else {
+                Navigator.push(
+                  context, 
+                  MaterialPageRoute(builder: (context) => 
+                    ChatScreen(chatEntity: _chatDetailsCubit.state.chatDetailed.chat)),
+                );
+              }
             },
           );
         },
@@ -259,6 +287,15 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> implements ContactC
     );
   }
 
+
+  void _handleSocialMediaClick (SocialMediaType socialMediaType) async {
+    var _url = _getSocialMediaURL(socialMediaType, socialMediaType.getValue(_chatDetailsCubit.state.chatDetailed.socialMedia));
+    if (await canLaunch(_url)) {
+      await launch(_url);
+    } else {
+      _chatDetailsCubit.showError('Не удалось открыть');
+    }
+  }
 
   void _handleListener (ChatDetailsState state) {
     if (state is ChatDetailsError) {
@@ -313,8 +350,31 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> implements ContactC
       _chatDetailsCubit.state.chatDetailed?.user?.id == sl<AuthConfig>().user.id;
   }
 
+  bool get isAdmin {
+    return _chatDetailsCubit.state.chatDetailed?.chatMemberRole == ChatMember.admin && 
+      _chatDetailsCubit.state.chatDetailed.chat != null;
+  }
+
+  String _getSocialMediaURL (SocialMediaType type, String value) {
+    if (type == SocialMediaType.whatsapp) {
+      return 'wa.me/$value';
+    } else {
+      return value;
+    }
+  }
+
+  // MARK: - Delegates
+
   @override
   void didSaveChats(List<ContactEntity> contacts) {
     _chatDetailsCubit.addMembersToChat(widget.id, contacts);
+  }
+
+  @override
+  void didFillSocialMedia(SocialMedia socialMedia) {
+    _chatDetailsCubit.setNewSocialMedia(
+      id: widget.id, 
+      newSocialMedia: socialMedia
+    );
   }
 }
