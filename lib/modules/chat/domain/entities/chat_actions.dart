@@ -34,7 +34,7 @@ extension ChatActionsExtension on ChatActions {
       case ChatActions.setSecret:
         return 'SetSecretChat';
       case ChatActions.unsetSecret:
-        return 'UnsetTimeSecret';
+        return 'UnsetSecretChat';
       default: 
         return null;
     }

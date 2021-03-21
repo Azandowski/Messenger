@@ -21,6 +21,7 @@ class ChatTodoCubit extends Cubit<ChatTodoState> {
   final AttachMessage attachMessageUseCase;
   final DisAttachMessage disAttachMessageUseCase;
   final ReplyMore replyMoreUseCase;
+  
   ChatTodoCubit({
     @required this.deleteMessageUseCase,
     @required this.disAttachMessageUseCase,
