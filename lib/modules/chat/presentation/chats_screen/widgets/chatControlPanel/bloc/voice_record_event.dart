@@ -13,4 +13,25 @@ class VoiceHoldRecoriding extends VoiceRecordEvent {}
 
 class VoiceSentImmideately extends VoiceRecordEvent {}
 
-class VoiceDismissedRecording extends VoiceRecordEvent {}
+class VoiceStopRecording extends VoiceRecordEvent {}
+
+class VoiceStopHolding extends VoiceRecordEvent {}
+
+class VoicePauseResume extends VoiceRecordEvent {}
+
+class VoicePlayerFinished extends VoiceRecordEvent {}
+
+
+class VoiceStartResumeStop extends VoiceRecordEvent{
+  final VoicePlayerState playerState;
+
+  VoiceStartResumeStop({
+    @required this.playerState
+  });
+
+  @override
+  List<Object> get props => [playerState];
+}
+
+class VoiceBlocDispose extends VoiceRecordEvent {}
+

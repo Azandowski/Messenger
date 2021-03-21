@@ -20,4 +20,21 @@ class VoiceRecording extends VoiceRecordState {
   List<Object> get props => [isHold];
 }
 
+enum VoicePlayerState {
+  empty,
+  playing,
+  paused,
+}
+
+class VoiceRecordingEndWillSend extends VoiceRecordState {
+  final VoicePlayerState playerState;
+
+  VoiceRecordingEndWillSend({
+    @required this.playerState
+  });
+
+  @override
+  List<Object> get props => [playerState];
+}
+
 

@@ -1,5 +1,4 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -52,7 +51,6 @@ class _ChatControlPanelState extends State<ChatControlPanel> with TickerProvider
   GlobalKey panelKey = GlobalKey();
 
   GlobalKey recordPanelKey = GlobalKey();
-
 
   PanelBlocCubit _panelBloc;
   ChatBloc _chatBloc;
@@ -116,6 +114,7 @@ class _ChatControlPanelState extends State<ChatControlPanel> with TickerProvider
     if(maxY > position){
       _buttonMicroCubit.holdRecording();
       hideIndicator(details);
+      FeedbackEngine.showFeedback(FeedbackType.selection);
       return maxY;
     }else if (minY < position){
       return minY;
@@ -174,6 +173,10 @@ class _ChatControlPanelState extends State<ChatControlPanel> with TickerProvider
             link: layerLink,
             offset: pauseButtonOffset,
             microCubit: _buttonMicroCubit,
+            onStop: (){
+              _recordBloc.add(VoiceStopHolding());
+              deleteEveryEntry(isSwipe: false);
+            }
           ),
         );
       },
@@ -209,6 +212,7 @@ class _ChatControlPanelState extends State<ChatControlPanel> with TickerProvider
   void hideIndicator(Offset offset) {
     if(_buttonMicroCubit.state is ButtonMicroMove){
       _buttonMicroCubit.makeDecreasingSend();
+      _recordBloc.add(VoiceStopRecording());
     }
     var size = MediaQuery.of(context).size;
 
@@ -277,10 +281,10 @@ class _ChatControlPanelState extends State<ChatControlPanel> with TickerProvider
     _microController.animateWith(simulation).then((value) {
       if(state is ButtonMicroDecreasing){
         if(state.isDelete){
-          _recordBloc.add(VoiceDismissedRecording());
+          _recordBloc.add(VoiceStopRecording());
           print("ON Delete");
         }else{
-          _recordBloc.add(VoiceDismissedRecording());
+          _recordBloc.add(VoiceStopRecording());
           //TODO SEND VOICE _recordBloc.add(SendRecord)
           print("ON SEND");
         }
@@ -375,18 +379,16 @@ class _ChatControlPanelState extends State<ChatControlPanel> with TickerProvider
       }else{
         deleteEveryEntry();
       }
-     
     }
     _microController.dispose();
     _pauseController.dispose();
     _buttonMicroCubit.close();
-    _recordBloc.close();
+    _recordBloc.add(VoiceBlocDispose());
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
     final panelDecoration = BoxDecoration(
       color: AppColors.pinkBackgroundColor,
       boxShadow: [
@@ -439,7 +441,7 @@ class _ChatControlPanelState extends State<ChatControlPanel> with TickerProvider
                               VoiceRecordingRow(
                                 voiceRecordBloc: _recordBloc,
                                 onCancel: (){
-                                  _recordBloc.add(VoiceDismissedRecording());
+                                  _recordBloc.add(VoiceStopRecording());
                                   _buttonMicroCubit.resetToStable();
                                   deleteEveryEntry(isSwipe: false);
                                 },
@@ -473,9 +475,9 @@ class _ChatControlPanelState extends State<ChatControlPanel> with TickerProvider
                                     hideIndicator(details.localPosition);
                                   }
                                 },
-                                child: voiceState is VoiceRecordEmpty ? IconButton(
+                                child: (voiceState is VoiceRecordEmpty || voiceState is VoiceRecordingEndWillSend ) ? IconButton(
                                   icon: Icon(
-                                    !canWrite ? Icons.mic : Icons.send,
+                                    !canWrite && !(voiceState is VoiceRecordingEndWillSend) ? Icons.mic : Icons.send,
                                     color: Colors.white
                                   ),
                                   onPressed: () {
@@ -510,11 +512,12 @@ class _ChatControlPanelState extends State<ChatControlPanel> with TickerProvider
                   ),
                 ],
               );
-        }),)
-        ),
-            );
+              }),)
+            ),
+          );
         },
       ),
-    );}
+    );
+  }  
 }
 

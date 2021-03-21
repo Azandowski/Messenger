@@ -1,4 +1,5 @@
 import 'package:flutter/rendering.dart';
+import 'package:messenger_mobile/core/services/network/Endpoints.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 import '../../../../../app/application.dart';
@@ -11,6 +12,7 @@ import '../../../domain/usecases/reply_more.dart';
 import '../widgets/bottom_pin.dart';
 import 'chat_screen_helper.dart';
 import 'chat_screen_import.dart';
+import 'package:http/http.dart' as http;
 
 class ChatScreen extends StatefulWidget {
   final ChatEntity chatEntity;
@@ -49,7 +51,10 @@ class ChatScreenState extends State<ChatScreen> implements ChatChooseDelegate{
       chatDataSource: ChatDataSourceImpl(
         id: widget.chatEntity.chatId,
         socketService: sl(),
-        client: sl()
+        client: sl(),
+        multipartRequest: http.MultipartRequest(
+          'POST', Endpoints.sendMessages.buildURL(urlParams:  [widget.chatEntity.chatId.toString()])
+        ),
       )
     );
 

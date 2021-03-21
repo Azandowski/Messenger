@@ -1,13 +1,11 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:math';
-
 import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
-
 import '../../../../../core/config/auth_config.dart';
 import '../../../../../core/error/failures.dart';
 import '../../../../../core/usecases/usecase.dart';
