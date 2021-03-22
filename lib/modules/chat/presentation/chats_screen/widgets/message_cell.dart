@@ -92,9 +92,18 @@ class _MessageCellState extends State<MessageCell> {
                 blurBackgroundColor: Colors.black54,
                 menuOffset: 10.0, 
                 menuBoxDecoration: BoxDecoration(color: Colors.grey,borderRadius: BorderRadius.all(Radius.circular(15.0))),
-                menuItems: widget.messageViewModel.actionsList.map((e) => FocusedMenuItem(title: Text(e.title),trailingIcon: e.icon, onPressed: (){
-                  widget.onAction(e);
-                })).toList(),
+                menuItems: widget.messageViewModel.getActionsList(
+                  isReplyEnabled: widget.isSwipeEnabled
+                )
+                  .map((e) => FocusedMenuItem(
+                    title: Text(
+                      e.title
+                    ),
+                    trailingIcon: e.icon, 
+                    onPressed: () {
+                      widget.onAction(e);
+                    })
+                  ).toList(),
                 onPressed: () {
                   widget.onTap();
                   vibrate();

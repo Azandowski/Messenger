@@ -67,11 +67,24 @@ class MessageViewModel {
   bool get canBeCopied {
     return message.text != null && message.text != '';
   }
-  List<MessageCellActions> get actionsList {
-    if(message.text != null && message.text != ''){
-      return MessageCellActions.values.toList(); 
-    }else{
-      return [MessageCellActions.attachMessage, MessageCellActions.replyMessage, MessageCellActions.replyMore, MessageCellActions.deleteMessage];
+
+  List<MessageCellActions> getActionsList ({
+    @required bool isReplyEnabled
+  }) {
+    if (message.text != null && message.text != ''){
+      return MessageCellActions.values.where(
+        (e) => isReplyEnabled ? true : e != MessageCellActions.replyMessage && e != MessageCellActions.replyMore
+      ).toList(); 
+    } else {
+      return [
+        MessageCellActions.attachMessage, 
+        if (isReplyEnabled)
+          ...[
+            MessageCellActions.replyMessage, 
+            MessageCellActions.replyMore
+          ],
+        MessageCellActions.deleteMessage
+      ];
     } 
   }
 
