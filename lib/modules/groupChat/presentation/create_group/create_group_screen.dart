@@ -67,7 +67,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> implements Contac
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<CreateGroupCubit, CreateGroupState>(
-      cubit: _groupCubit,
+      bloc: _groupCubit,
       listener: (context, state) {
         if (state is CreateCategoryError) {
           SnackUtil.showError(context: context, message: state.message);

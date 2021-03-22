@@ -78,7 +78,7 @@ class _CreateCategoryScreenState extends State<CreateCategoryScreen> implements 
         title: Text('Создать категорию'),
       ),
       body: BlocConsumer<CreateCategoryCubit, CreateCategoryState>(
-        cubit: cubit,
+        bloc: cubit,
         listener: (context, state) {
           if (state is CreateCategoryError) {
             SnackUtil.showError(context: context, message: state.message);

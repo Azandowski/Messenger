@@ -286,7 +286,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   }
 
   Stream<ChatState> _messageAddedToState(MessageAdded event) async* {
-    switch(event.message.messageHandleType) {
+    switch (event.message.messageHandleType) {
       case MessageHandleType.newMessage:
         if (state.hasReachBottomMax) {
           var list = getCopyMessages();

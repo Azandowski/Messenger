@@ -70,7 +70,7 @@ class _ChatsScreenState extends State<ChatsScreen> {
         return BlocProvider<ChatsCubit>.value(
           value: cubit,
           child: BlocConsumer<ChatsCubit, ChatsCubitState>(
-            cubit: cubit,
+            bloc: cubit,
             listener: (context, state) {},
             builder: (context, state) {
               int chatsCount = chatState.chats?.length ?? 0;

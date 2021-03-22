@@ -95,9 +95,11 @@ class ChatDataSourceImpl implements ChatDataSource {
           MessageModel messageModel = MessageModel.fromJson(updates['message']);
           messageModel.messageHandleType = handleTypeMessage(updates['type']);
           var transfers;
-          if(updates['transfer'] != null){
+          
+          if (updates['transfer'] != null) {
             transfers = ((updates['transfer'] ?? []) as List).map((e) => Transfer.fromJson(e)).toList();
           }
+
           messageModel.transfer = transfers;
           _controller.add(messageModel);
         }
@@ -120,6 +122,7 @@ class ChatDataSourceImpl implements ChatDataSource {
         return MessageHandleType.setTopMessage;
       case 'unSetTopMessage':
         return MessageHandleType.unSetTopMessage;
+      case ''
     }
   }
    

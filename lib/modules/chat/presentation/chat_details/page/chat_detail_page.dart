@@ -61,7 +61,9 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
       chatDataSource: ChatDataSourceImpl(
         id: widget.id, 
         multipartRequest: http.MultipartRequest(
-          'POST', Endpoints.sendMessages.buildURL()
+          'POST', Endpoints.sendMessages.buildURL(
+            urlParams: ['${widget.id}']
+          )
         ),
         client: sl(), 
         socketService: sl()
