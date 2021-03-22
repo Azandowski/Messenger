@@ -1,11 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:messenger_mobile/modules/chat/data/datasources/chat_datasource.dart';
-import 'package:messenger_mobile/modules/chat/domain/usecases/get_chat_details.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chat_details/page/chat_detail_screen.dart';
 import 'package:messenger_mobile/modules/social_media/domain/entities/social_media.dart';
 
 import '../../../../core/utils/pagination.dart';
 import '../../../category/data/models/chat_permission_model.dart';
+import '../../data/datasources/chat_datasource.dart';
 
 class GetChatMembersParams {
   final int id;
@@ -23,14 +25,38 @@ class SendMessageParams {
   final chatID; 
   final int identificator;
   final int timeLeft;
+  final FieldFiles fieldFiles;
+
 
   SendMessageParams({
     @required this.identificator,
     @required this.chatID,
     this.forwardIds,
+    this.fieldFiles,
     this.text,
     this.timeLeft
   });
+}
+enum FileKey {audio,}
+
+extension FileKeysExtension on FileKey {
+  String get filedKey {
+    switch (this) {
+      case FileKey.audio:
+      return 'audio';
+    }
+  }
+}
+
+class FieldFiles {
+  final FileKey fieldKey;
+  final List<File> files;
+
+  FieldFiles({
+    @required this.fieldKey,
+    @required this.files
+  });
+
 }
 
 class AddMembersToChatParams {

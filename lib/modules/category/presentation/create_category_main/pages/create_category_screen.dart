@@ -6,11 +6,11 @@ import 'package:messenger_mobile/core/blocs/chat/bloc/bloc/chat_cubit.dart';
 import 'package:messenger_mobile/core/utils/paginated_scroll_controller.dart';
 import 'package:messenger_mobile/core/utils/snackbar_util.dart';
 
+import '../../../../../app/application.dart';
 import '../../../../../core/widgets/independent/buttons/bottom_action_button.dart';
 import '../../../../../core/widgets/independent/pickers/photo_picker.dart';
 import '../../../../../core/widgets/independent/small_widgets/chat_count_view.dart';
 import '../../../../../locator.dart';
-import '../../../../../main.dart';
 import '../../../../chats/domain/entities/category.dart';
 import '../../../data/models/chat_view_model.dart';
 import '../../../domain/entities/chat_entity.dart';

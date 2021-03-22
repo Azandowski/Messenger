@@ -1,5 +1,6 @@
 import 'package:achievement_view/achievement_view.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen_import.dart';
+
+import '../../../../modules/chat/presentation/chats_screen/pages/chat_screen_import.dart';
 
 class AchievementService {
   static final AchievementService _shared = AchievementService._internal();

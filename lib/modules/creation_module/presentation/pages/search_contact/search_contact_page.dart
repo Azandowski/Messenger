@@ -7,7 +7,6 @@ import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/ch
 import 'package:messenger_mobile/modules/creation_module/data/datasources/creation_module_datasource.dart';
 import 'package:messenger_mobile/modules/creation_module/data/repositories/creation_module_repository.dart';
 import 'package:messenger_mobile/modules/creation_module/domain/entities/contact.dart';
-import 'package:messenger_mobile/modules/creation_module/domain/repositories/creation_module_repository.dart';
 import 'package:messenger_mobile/modules/creation_module/domain/usecases/search_contacts.dart';
 import 'package:messenger_mobile/modules/creation_module/presentation/bloc/search_contact_cubit/search_contact_cubit.dart';
 import 'package:messenger_mobile/modules/creation_module/presentation/widgets/contact_cell.dart';

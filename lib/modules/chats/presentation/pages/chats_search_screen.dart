@@ -9,7 +9,6 @@ import 'package:messenger_mobile/core/widgets/independent/small_widgets/cell_ske
 import 'package:messenger_mobile/core/widgets/independent/small_widgets/chat_count_view.dart';
 import 'package:messenger_mobile/modules/category/data/models/chat_view_model.dart';
 import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
-import 'package:messenger_mobile/modules/category/presentation/chooseChats/presentation/chat_choose_page.dart';
 import 'package:messenger_mobile/modules/chat/domain/entities/message.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen.dart';
 import 'package:messenger_mobile/modules/chats/domain/repositories/chats_repository.dart';
@@ -17,7 +16,19 @@ import 'package:messenger_mobile/modules/chats/presentation/bloc/search_chats/se
 import 'package:messenger_mobile/modules/chats/presentation/widgets/chat_item/chat_preview_item.dart';
 import 'package:messenger_mobile/modules/chats/presentation/widgets/chat_item/chat_search_result_item.dart';
 
+import '../../../../core/utils/paginated_scroll_controller.dart';
+import '../../../../core/utils/search_engine.dart';
+import '../../../../core/widgets/independent/small_widgets/cell_skeleton_item.dart';
+import '../../../../core/widgets/independent/small_widgets/chat_count_view.dart';
 import '../../../../locator.dart';
+import '../../../category/data/models/chat_view_model.dart';
+import '../../../category/domain/entities/chat_entity.dart';
+import '../../../chat/domain/entities/message.dart';
+import '../../../chat/presentation/chats_screen/pages/chat_screen.dart';
+import '../../domain/repositories/chats_repository.dart';
+import '../bloc/search_chats/search_chats_cubit.dart';
+import '../widgets/chat_item/chat_preview_item.dart';
+import '../widgets/chat_item/chat_search_result_item.dart';
 
 enum ChatDesignStyle { onlyChats, chatsMessages }
 

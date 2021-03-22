@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
-import '../choose_contacts/cubit/choosecontact_cubit.dart';
+
 import '../../../../locator.dart';
+import '../../../category/domain/entities/chat_entity.dart';
+import '../choose_contacts/cubit/choosecontact_cubit.dart';
 import 'create_group_screen.dart';
 import 'cubit/creategroup_cubit.dart';
 

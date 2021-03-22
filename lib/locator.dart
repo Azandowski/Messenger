@@ -1,10 +1,9 @@
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
-import 'package:messenger_mobile/app/application.dart';
-import 'package:messenger_mobile/core/widgets/independent/dialogs/achievment_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'app/application.dart';
 import 'core/blocs/authorization/bloc/auth_bloc.dart';
 import 'core/config/auth_config.dart';
 import 'core/services/network/Endpoints.dart';
@@ -116,8 +115,7 @@ Future<void> init() async {
   sl.registerLazySingleton<AuthenticationRemoteDataSource>(
     () => AuthenticationRemoteDataSourceImpl(
         client: sl(),
-        request:
-            http.MultipartRequest('POST', Endpoints.sendContacts.buildURL())),
+        request: http.MultipartRequest('POST', Endpoints.sendContacts.buildURL())),
   );
 
   sl.registerLazySingleton<ProfileDataSource>(

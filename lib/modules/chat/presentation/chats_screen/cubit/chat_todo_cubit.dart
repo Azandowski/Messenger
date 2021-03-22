@@ -4,16 +4,16 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/core/usecases/usecase.dart';
-import 'package:messenger_mobile/core/widgets/independent/dialogs/achievment_view.dart';
-import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
-import 'package:messenger_mobile/modules/chat/domain/usecases/attachMessage.dart';
-import 'package:messenger_mobile/modules/chat/domain/usecases/disattachMessage.dart';
-import 'package:messenger_mobile/modules/chat/domain/usecases/reply_more.dart';
-import '../../../domain/usecases/delete_message.dart';
-import '../../../domain/usecases/params.dart';
 
+import '../../../../../core/usecases/usecase.dart';
+import '../../../../../core/widgets/independent/dialogs/achievment_view.dart';
+import '../../../../category/domain/entities/chat_entity.dart';
 import '../../../domain/entities/message.dart';
+import '../../../domain/usecases/attachMessage.dart';
+import '../../../domain/usecases/delete_message.dart';
+import '../../../domain/usecases/disattachMessage.dart';
+import '../../../domain/usecases/params.dart';
+import '../../../domain/usecases/reply_more.dart';
 
 part 'chat_todo_state.dart';
 

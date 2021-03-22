@@ -4,11 +4,11 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:messenger_mobile/modules/category/data/models/chat_view_model.dart';
-import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
 
 import '../../../../../core/config/auth_config.dart';
 import '../../../../../locator.dart';
+import '../../../../category/data/models/chat_view_model.dart';
+import '../../../../category/domain/entities/chat_entity.dart';
 import '../../../../creation_module/domain/entities/contact.dart';
 import '../../../../media/domain/usecases/get_image.dart';
 import '../../../domain/usecases/create_chat_group.dart';

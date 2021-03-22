@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:messenger_mobile/app/appTheme.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chats_screen/helpers/message_user_viewmodel.dart';
 
+import '../../../../app/appTheme.dart';
 import '../../../../core/services/network/config.dart';
 import '../../../chat/domain/entities/chat_actions.dart';
+import '../../../chat/presentation/chats_screen/helpers/message_user_viewmodel.dart';
 import '../../domain/entities/chat_entity.dart';
 
 class ChatViewModel {

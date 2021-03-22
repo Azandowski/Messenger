@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
+import 'package:swipeable/swipeable.dart';
+import 'package:vibrate/vibrate.dart';
+
 import '../../../../../app/appTheme.dart';
 import '../../../data/models/message_view_model.dart';
 import '../../../domain/entities/message.dart';
 import '../helpers/messageCellAction.dart';
-import 'chatControlPanel/forward_container.dart';
+import 'components/forward_container.dart';
 import 'name_time_read_container.dart';
-import 'package:swipeable/swipeable.dart';
-import 'package:vibrate/vibrate.dart';
 
 class MessageCell extends StatefulWidget {
   

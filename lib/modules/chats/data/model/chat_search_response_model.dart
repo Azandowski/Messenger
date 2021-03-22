@@ -1,13 +1,12 @@
 import 'package:flutter/foundation.dart';
-import 'package:messenger_mobile/core/services/network/paginatedResult.dart';
-import 'package:messenger_mobile/core/utils/chat_search_util.dart';
-import 'package:messenger_mobile/modules/category/data/models/chat_entity_model.dart';
-import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
-import 'package:messenger_mobile/modules/chat/data/models/message_model.dart';
-import 'package:messenger_mobile/modules/chat/data/models/message_view_model.dart';
-import 'package:messenger_mobile/modules/chat/domain/entities/message.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen_import.dart';
-import 'package:messenger_mobile/modules/chats/domain/entities/chat_search_response.dart';
+
+import '../../../../core/services/network/paginatedResult.dart';
+import '../../../category/data/models/chat_entity_model.dart';
+import '../../../category/domain/entities/chat_entity.dart';
+import '../../../chat/data/models/message_model.dart';
+import '../../../chat/domain/entities/message.dart';
+import '../../../chat/presentation/chats_screen/pages/chat_screen_import.dart';
+import '../../domain/entities/chat_search_response.dart';
 
 class ChatSearchResponseModel extends ChatMessageResponse {
   final List<ChatEntity> chats;

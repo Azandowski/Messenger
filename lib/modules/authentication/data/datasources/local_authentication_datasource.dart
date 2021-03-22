@@ -1,6 +1,7 @@
 
 import 'package:contacts_service/contacts_service.dart';
 import 'package:sembast/sembast.dart';
+
 import '../../../../core/config/storage.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/services/localdb/app_database.dart';

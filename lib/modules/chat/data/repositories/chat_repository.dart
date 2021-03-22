@@ -19,6 +19,7 @@ import '../../domain/entities/message.dart';
 import '../../domain/repositories/chat_repository.dart';
 import '../../domain/usecases/params.dart';
 import '../datasources/chat_datasource.dart';
+import '../models/chat_message_response.dart';
 
 class ChatRepositoryImpl extends ChatRepository {
   final ChatDataSource chatDataSource;

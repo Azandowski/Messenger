@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+
 import '../../../../../data/models/message_view_model.dart';
 
 part 'panel_bloc_state.dart';
@@ -11,6 +12,9 @@ class PanelBlocCubit extends Cubit<PanelBlocState> {
 
   PanelBlocCubit() : super(PanelBlocInitial()){
     _textController.sink.addError("Invalid value entered!");
+    _textController.stream.listen((event) { 
+      print('shit happened');
+    });
   }
 
   addMessage(MessageViewModel message){

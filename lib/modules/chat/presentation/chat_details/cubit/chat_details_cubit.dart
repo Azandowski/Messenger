@@ -14,6 +14,7 @@ import '../../../../creation_module/domain/entities/contact.dart';
 import '../../../domain/entities/chat_detailed.dart';
 import '../../../domain/usecases/add_members.dart';
 import '../../../domain/usecases/get_chat_details.dart';
+import '../../../domain/usecases/kick_member.dart';
 import '../../../domain/usecases/leave_chat.dart';
 import '../../../domain/usecases/params.dart';
 import '../../../domain/usecases/update_chat_settings.dart';

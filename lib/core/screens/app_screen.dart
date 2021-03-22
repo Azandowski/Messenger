@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:messenger_mobile/app/application.dart';
 import 'package:permission_handler/permission_handler.dart';
+
+import '../../app/application.dart';
 import '../../locator.dart';
 import '../../modules/authentication/domain/repositories/authentication_repository.dart';
 import '../../modules/chats/presentation/pages/chats_screen.dart';
@@ -37,7 +38,7 @@ class _AppScreenState extends State<AppScreen> {
         permission != PermissionStatus.denied) {
       Map<Permission, PermissionStatus> statuses =
           await [Permission.contacts].request();
-      return statuses[Permission.contacts] ?? PermissionStatus.undetermined;
+      return statuses[Permission.contacts] ?? PermissionStatus.restricted;
     } else {
       return permission;
     }

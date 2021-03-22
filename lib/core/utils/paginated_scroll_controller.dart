@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:scroll_to_index/scroll_to_index.dart';
 
 class PaginatedScrollController extends ScrollController {
   

@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:messenger_mobile/core/usecases/usecase.dart';
+import 'package:messenger_mobile/core/utils/multipart_request_helper.dart';
 import 'package:messenger_mobile/modules/chat/data/models/chat_message_response.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chat_details/page/chat_detail_screen.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen_import.dart';
@@ -13,6 +14,7 @@ import '../../../../core/error/failures.dart';
 import '../../../../core/services/network/Endpoints.dart';
 import '../../../../core/services/network/paginatedResult.dart';
 import '../../../../core/services/network/socket_service.dart';
+import '../../../../core/usecases/usecase.dart';
 import '../../../../core/utils/error_handler.dart';
 import '../../../../core/utils/http_response_extension.dart';
 import '../../../../core/utils/pagination.dart';
@@ -24,7 +26,9 @@ import '../../../creation_module/domain/entities/contact.dart';
 import '../../domain/entities/chat_detailed.dart';
 import '../../domain/entities/message.dart';
 import '../../domain/usecases/params.dart';
+import '../../presentation/chats_screen/pages/chat_screen_import.dart';
 import '../models/chat_detailed_model.dart';
+import '../models/chat_message_response.dart';
 import '../models/message_model.dart';
 
 
@@ -74,6 +78,7 @@ abstract class ChatDataSource {
 class ChatDataSourceImpl implements ChatDataSource {
   
   final http.Client client;
+  final http.MultipartRequest multipartRequest;
   final SocketService socketService;
   final int id;
   
@@ -81,6 +86,7 @@ class ChatDataSourceImpl implements ChatDataSource {
     @required this.id,
     @required this.client,
     @required this.socketService,
+    @required this.multipartRequest,
   }) {
     socketService.echo.channel(SocketChannels.getChatByID(id))
       .listen(
@@ -180,21 +186,22 @@ class ChatDataSourceImpl implements ChatDataSource {
   @override
   Future<Message> sendMessage(SendMessageParams params) async {
     var forward = params.forwardIds.map((e) => e.toString()).join(',');
-    var body = {
+    var body =  {
       'text': params.text ?? '',
       'forward': forward,
       if (params.timeLeft != null)
         ...{'time_deleted': params.timeLeft}
     };
 
-    http.Response response = await client.post(
-      Endpoints.sendMessages.buildURL(urlParams: [
-          params.chatID.toString(),
-        ],
-      ),
-      body: json.encode(body),
-      headers: Endpoints.getCurrentUser.getHeaders(token: sl<AuthConfig>().token),
+    http.StreamedResponse streamedResponse = await MultipartRequestHelper.postData(
+      token: sl<AuthConfig>().token,
+      request: multipartRequest,
+      data: body,
+      files: params.fieldFiles?.files != null ? params.fieldFiles?.files : [],
+      keyName: params.fieldFiles?.fieldKey?.filedKey ?? null
     );
+
+    final response = await http.Response.fromStream(streamedResponse);
 
     if (response.isSuccess) {
       Message message = MessageModel.fromJson(json.decode(response.body));
