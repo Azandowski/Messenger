@@ -2,43 +2,37 @@ part of 'chats_cubit_cubit.dart';
 
 abstract class ChatsCubitState extends Equatable {
   final int currentTabIndex;
-  final File wallpaperFile;
 
   const ChatsCubitState({
-    @required this.currentTabIndex,
-    this.wallpaperFile
+    @required this.currentTabIndex
   });
 
   @override
-  List<Object> get props => [currentTabIndex, wallpaperFile];
+  List<Object> get props => [currentTabIndex];
 }
 
 class ChatsCubitStateNormal extends ChatsCubitState {
   final int currentTabIndex;
-  final File wallpaperFile;
   
   const ChatsCubitStateNormal({
-    @required this.currentTabIndex,
-    this.wallpaperFile
-  }) : super(currentTabIndex: currentTabIndex, wallpaperFile: wallpaperFile);
+    @required this.currentTabIndex
+  }) : super(currentTabIndex: currentTabIndex);
 
   @override
-  List<Object> get props => [currentTabIndex, wallpaperFile];
+  List<Object> get props => [currentTabIndex];
 }
 
 class ChatsCubitSelectedOne extends ChatsCubitState {
   final int currentTabIndex;
   final int selectedChatIndex;
-  final File wallpaperFile;
 
   ChatsCubitSelectedOne({ 
     @required this.currentTabIndex,
     @required this.selectedChatIndex,
-    this.wallpaperFile
   }) : super(
-    currentTabIndex: currentTabIndex, wallpaperFile: wallpaperFile
+    currentTabIndex: currentTabIndex
   );
 
   @override
-  List<Object> get props => [selectedChatIndex, currentTabIndex, wallpaperFile];  
+  List<Object> get props => [selectedChatIndex, currentTabIndex];  
 }

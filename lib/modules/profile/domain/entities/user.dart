@@ -7,17 +7,20 @@ class User extends Equatable {
   final String phoneNumber;
   final String profileImage;
   final int id;
+  final bool isBlocked;
+
   User(
       {this.name,
       this.surname,
       this.patronym,
       this.id,
       this.phoneNumber,
-      this.profileImage});
+      this.profileImage,
+      this.isBlocked});
 
   @override
   List<Object> get props =>
-      [name, surname, patronym, phoneNumber, profileImage, id];
+      [name, surname, patronym, phoneNumber, profileImage, id, isBlocked];
 
   static const empty = null;
 
@@ -25,5 +28,23 @@ class User extends Equatable {
     return [surname, name, patronym]
         .where((e) => e != null && e != "")
         .join(" ");
+  }
+
+  User copyWith(
+      {String name,
+      String surname,
+      String patronym,
+      String phoneNumber,
+      String profileImage,
+      int id,
+      bool isBlocked}) {
+    return User(
+        name: name ?? this.name,
+        surname: surname ?? this.surname,
+        patronym: patronym ?? this.patronym,
+        phoneNumber: phoneNumber ?? this.phoneNumber,
+        id: id ?? this.id,
+        profileImage: profileImage ?? this.profileImage,
+        isBlocked: isBlocked ?? this.isBlocked);
   }
 }

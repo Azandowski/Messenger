@@ -5,12 +5,14 @@ abstract class AppColors {
   static get secondary => Colors.grey[200];
   static get iconSelected => Color.fromRGBO(66, 115, 175, 1);
   static get indicatorColor => Color(0xff9357CD);
+  static get paleIndicatorColor => Color(0xff9357CD).withOpacity(0.4);
   static get accentBlueColor => Color(0xff396FB4);
   static get greyColor => Color(0xff898989);
   static get successGreenColor => Color(0xff3BE388);
   static get lightPinkColor => Color(0xff9357CD).withAlpha(15);
   static get pinkBackgroundColor => Color(0xffECE9F8);
   static get messageBlueBackground => Color(0xff4C4FB4);
+  static get redDeleteColor => Color(0xffEB5757);
 }
 
 abstract class AppFontStyles {
@@ -35,6 +37,12 @@ abstract class AppFontStyles {
     color: Colors.black,
     fontWeight: FontWeight.w500,
     fontSize: 15,
+  );
+
+  static get black16 => TextStyle(
+    color: Colors.black,
+    fontWeight: FontWeight.w500,
+    fontSize: 16,
   );
 
   // For Medium Texts
@@ -78,7 +86,6 @@ abstract class AppFontStyles {
    static get black14w400 => TextStyle(
     color: Colors.black,
     fontWeight: FontWeight.w400,
-    height: 1.4,
     fontSize: 14,
   );
 
@@ -95,11 +102,16 @@ abstract class AppFontStyles {
     fontSize: 14,
   );
 
-   static get grey12w400 => TextStyle(
+  static get grey12w400 => TextStyle(
     color: Color(0xff828282),
     fontWeight: FontWeight.w400,
-    height: 0.75,
     fontSize: 12,
+  );
+
+  static get grey14w400 => TextStyle(
+    color: Color(0xff828282),
+    fontWeight: FontWeight.w400,
+    fontSize: 14,
   );
 
   static get white12w400 => TextStyle(
@@ -108,6 +120,14 @@ abstract class AppFontStyles {
     height: 0.75,
     fontSize: 12,
   );
+
+  static get purple15 => TextStyle(
+    color: AppColors.indicatorColor,
+    fontWeight: FontWeight.w400,
+    height: 0.75,
+    fontSize: 15,
+  );
+
 }
 
 abstract class AppTheme {
@@ -116,7 +136,7 @@ abstract class AppTheme {
     accentColor: Colors.black,
     backgroundColor: Colors.white,
     scaffoldBackgroundColor: Colors.white,
-    highlightColor: Color(0xff292969),
+    highlightColor: Colors.white24,
     indicatorColor: Color(0xff9357CD),
     bottomAppBarTheme: BottomAppBarTheme(
       color: Colors.white,

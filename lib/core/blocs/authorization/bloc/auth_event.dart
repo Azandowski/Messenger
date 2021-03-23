@@ -20,9 +20,11 @@ class AuthenticationLogoutRequested extends AuthEvent {
 
   final CategoryBloc categoryBloc;
   final ChatGlobalCubit chatBloc;
+  final ContactBloc contactBloc;
 
   AuthenticationLogoutRequested({
     @required this.categoryBloc,
-    @required this.chatBloc
+    @required this.chatBloc,
+    @required this.contactBloc
   });
 }

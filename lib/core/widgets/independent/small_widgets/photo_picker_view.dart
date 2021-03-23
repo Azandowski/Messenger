@@ -14,7 +14,7 @@ class PhotoPickerView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var w = MediaQuery.of(context).size.width;
-    return GestureDetector(
+    return InkWell(
       onTap: onSelectPhoto,
       child: Stack(
         children: [

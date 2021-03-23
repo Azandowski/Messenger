@@ -26,31 +26,37 @@ dependencies:
   # Service locator
   get_it: ^5.0.6
   # Bloc for state management
-  flutter_bloc: ^6.1.2
+  flutter_bloc: ^7.0.0-nullsafety.5
+  # Dependency injection
+  provider: ^5.0.0
   # Value equality
   equatable: ^1.2.5
   # Functional programming thingies
   dartz: ^0.8.9
   # Remote API
   data_connection_checker: ^0.3.4
-  http: ^0.12.0+3
+  http: ^0.13.0
   # Local cache
   shared_preferences: ^2.0.3
-  contacts_service: ^0.4.6
+  contacts_service: ^0.5.0-nullsafety.0
   # Setup Language
   easy_localization: ^3.0.0
   # Storage secure
   flutter_secure_storage: ^3.3.1+1
   path_provider: ^2.0.1
+  swipeable: ^1.1.0
 
-  image_picker: ^0.6.7+22
+
+  image_picker: ^0.7.3
   shimmer: ^1.1.2
   pin_input_text_field: ^3.3.1
   sembast: ^2.4.10+4
   # Permissions
-  permission_handler: ^5.1.0+2
+  permission_handler: ^6.1.0
+  focused_menu: ^1.0.4
   firebase_dynamic_links:
   flutter_share: ^1.0.5
+  vibrate: ^0.0.4  
 
   #Soccet
   socket_io_client: ^0.9.12
@@ -60,11 +66,21 @@ dependencies:
   marquee: ^1.7.0
   
   # For testing blocs and cubits
-  bloc_test: ^7.1.0
+  bloc_test: ^8.0.0
+  
+  url_launcher: ^6.0.2
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.0
+
+  flutter_search_bar: ^2.1.0
+  scroll_to_index: ^1.0.6
+  achievement_view: ^0.2.1
+
+  agora_rtc_engine: ^3.3.1
+  # Media Dependencies
+  flutter_sound: ^8.0.0+6
 
 dev_dependencies:
   flutter_test:
@@ -85,6 +101,7 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
+    - assets/icons/social_media/
     - assets/translations/
 
   # An image asset can refer to one or more resolution-specific "variants", see

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:messenger_mobile/core/utils/snackbar_util.dart';
 
 import '../../../../core/blocs/authorization/bloc/auth_bloc.dart';
 import '../../../../core/blocs/category/bloc/category_bloc.dart';
 import '../../../../core/blocs/chat/bloc/bloc/chat_cubit.dart';
 import '../../../../locator.dart';
+import '../../../creation_module/presentation/bloc/contact_bloc/contact_bloc.dart';
 import '../../../edit_profile/presentation/pages/edit_profile_page.dart';
 import '../bloc/index.dart';
 import '../bloc/profile_cubit.dart';
@@ -37,15 +39,12 @@ class _ProfilePageState extends State<ProfilePage> {
         backgroundColor: Color.fromRGBO(250, 249, 255, 1)),
       backgroundColor: Colors.grey[200],
       body: BlocListener(
-          cubit: cubit,
+          bloc: cubit,
           listener: (context, state) {
             if (state is ProfileError) {
-              Scaffold.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(state.message,
-                      style: TextStyle(color: Colors.red)),
-                ), // SnackBar
-              );
+              SnackUtil.showError(context: context, message: state.message);
+            } else {
+              ScaffoldMessenger.of(context).hideCurrentSnackBar();
             }
           },
           child: BlocProvider<ProfileCubit>(
@@ -83,7 +82,8 @@ class _ProfilePageState extends State<ProfilePage> {
                           context.read<AuthBloc>().add(
                             AuthenticationLogoutRequested(
                               categoryBloc: context.read<CategoryBloc>(), 
-                              chatBloc: context.read<ChatGlobalCubit>()
+                              chatBloc: context.read<ChatGlobalCubit>(),
+                              contactBloc: context.read<ContactBloc>()
                             )
                           );
                         },

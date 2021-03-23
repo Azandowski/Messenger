@@ -46,7 +46,7 @@ void main() {
 
         editProfileCubit.updateProfile(event);
       },
-      expect: [
+      expect: () => [
         isA<EditProfileLoading>(),
         isA<EditProfileSuccess>(),
       ],
@@ -61,7 +61,7 @@ void main() {
 
         editProfileCubit.updateProfile(event);
       },
-      expect: [
+      expect: () => [
         isA<EditProfileLoading>(),
         isA<EditProfileError>(),
       ],
@@ -80,7 +80,7 @@ void main() {
 
         editProfileCubit.pickProfileImage(event);
       },
-      expect: [
+      expect: () => [
         isA<EditProfileNormal>(),
       ],
     );
@@ -94,7 +94,7 @@ void main() {
 
         editProfileCubit.pickProfileImage(event);
       },
-      expect: [
+      expect: () => [
         isA<EditProfileError>(),
       ],
     );

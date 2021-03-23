@@ -57,11 +57,9 @@ class ChatPreviewItem extends StatelessWidget {
                     Expanded(
                       child: Text(
                         viewModel.description,
-                        style: viewModel.isInLive ? TextStyle(
-                          color: AppColors.indicatorColor, fontSize: 12, fontWeight: FontWeight.w500
-                        ) : AppFontStyles.mediumStyle,
+                        style: viewModel.descriptionStyle,
                         overflow: TextOverflow.ellipsis,
-                        maxLines: viewModel.isGroup ? 1 : 2,
+                        maxLines: 2,
                       ),
                     ),
                     _bottomPinBuilder()
@@ -83,7 +81,7 @@ class ChatPreviewItem extends StatelessWidget {
       case ChatBottomPin.badge:
         return _buildNotificationBadge();
       case ChatBottomPin.unread: case ChatBottomPin.read:
-        return _buildReadUnreaIcon();
+        return _buildReadUnreadIcon();
       case ChatBottomPin.none:
         return Container();
     }
@@ -97,7 +95,7 @@ class ChatPreviewItem extends StatelessWidget {
   }
 
   // show Read or Unread
-  Widget _buildReadUnreaIcon () {
+  Widget _buildReadUnreadIcon () {
     return Image(
       width: 22,
       height: 8,

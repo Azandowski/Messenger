@@ -5,12 +5,9 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 import '../../../../core/config/auth_config.dart';
-import 'package:messenger_mobile/core/config/auth_config.dart';
-import 'package:messenger_mobile/core/services/network/Endpoints.dart';
-import 'package:messenger_mobile/core/utils/error_handler.dart';
-import 'package:messenger_mobile/locator.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/services/network/Endpoints.dart';
+import '../../../../core/utils/error_handler.dart';
 import '../../../../core/utils/http_response_extension.dart';
 import '../../../../core/utils/multipart_request_helper.dart';
 import '../../../../locator.dart';
@@ -73,7 +70,10 @@ class CategoryDataSourceImpl implements CategoryDataSource {
             request: multipartRequest,
             files: file != null ? [file] : file,
             keyName: 'file',
-            data: {'transfer': chatIds.join(','), 'name': name});
+            data: {
+          'transfer': chatIds.join(','),
+          'name': name,
+        });
 
     final httpResponse = await http.Response.fromStream(streamResponse);
 
@@ -95,9 +95,9 @@ class CategoryDataSourceImpl implements CategoryDataSource {
         headers: Endpoints.getCurrentUser.getHeaders(token: token));
 
     if (response.statusCode >= 200 && response.statusCode <= 299) {
-      final categories = (json.decode(response.body) as List)
-          .map((e) => CategoryModel.fromJson(e))
-          .toList();
+      List decodedCategories = (json.decode(response.body) as List);
+      final categories =
+          decodedCategories.map((e) => CategoryModel.fromJson(e)).toList();
 
       return categories;
     } else {
@@ -129,9 +129,11 @@ class CategoryDataSourceImpl implements CategoryDataSource {
     Endpoints endpoint = Endpoints.transferChats;
 
     http.Response response = await client.post(endpoint.buildURL(),
-        headers: endpoint.getHeaders(token: authConfig.token),
-        body: json.encode(
-            {'new_category': '$categoryID', 'chats': chatsIDs.join(',')}));
+        headers: endpoint.getHeaders(token: sl<AuthConfig>().token),
+        body: json.encode({
+          'new_category': categoryID == null ? null : '$categoryID',
+          'chats': chatsIDs.join(',')
+        }));
 
     if (!response.isSuccess) {
       throw ServerFailure(

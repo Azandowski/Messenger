@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:vibrate/vibrate.dart';
 
 import '../../../../app/appTheme.dart';
+import '../../../utils/feedbac_taptic_helper.dart';
 import 'dialog_action_button.dart';
 import 'dialog_params.dart';
 
 /// * Reusable dialogs for the whole application
 
-class DialogsView extends StatelessWidget {
+class DialogsView extends StatefulWidget {
 
   /// Default constuctor  
   DialogsView({
@@ -20,6 +22,7 @@ class DialogsView extends StatelessWidget {
     this.buttonsLayout = DialogViewButtonsLayout.horizontal, 
     this.actionButton,
     this.backgroundColor,
+    this.optionsContainer,
     Key key, 
   }) : super(key: key);
 
@@ -54,8 +57,26 @@ class DialogsView extends StatelessWidget {
   /// List of parameters of the buttons of the alert view
   final List<DialogActionButton> actionButton;
 
+  /// List of option's titles only for [DialogViewType.optionSelector]
+  final DialogOptionsContainer optionsContainer;
+
   /// Background color of the whole alert view, by default it's [Colors.white]
   final Color backgroundColor;
+
+  @override
+  _DialogsViewState createState() => _DialogsViewState(
+    optionsContainer: optionsContainer
+  );
+}
+
+class _DialogsViewState extends State<DialogsView> {
+  
+    /// List of option's titles only for [DialogViewType.optionSelector]
+  DialogOptionsContainer optionsContainer;
+
+  _DialogsViewState({
+    this.optionsContainer
+  });
 
   /// Rendering 
   @override
@@ -65,20 +86,19 @@ class DialogsView extends StatelessWidget {
         borderRadius: BorderRadius.circular(16)
       ),
       elevation: 0,
-      backgroundColor: backgroundColor ?? Colors.white,
+      backgroundColor: widget.backgroundColor ?? Colors.white,
       child: Container(
         decoration: BoxDecoration(
-          color: backgroundColor ?? Colors.white,
+          color: widget.backgroundColor ?? Colors.white,
           shape: BoxShape.rectangle,
           borderRadius: BorderRadius.all(Radius.circular(12))
         ),
-        padding: dialogViewType == DialogViewType.alert ? 
+        padding: widget.dialogViewType != DialogViewType.actionSheet ? 
           EdgeInsets.symmetric(vertical: 30, horizontal: 16) : null,
         child: _buildDialogView(),
       )
     );
   }
-
 
   /// Creates inner content of the Dialog View
   Widget _buildDialogView () {
@@ -86,18 +106,28 @@ class DialogsView extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        if (imageProvider != null)
+        if (widget.imageProvider != null)
           ...[
             _buildTopImageView(),
             SizedBox(height: 20,)
           ],
-        if (title != null || description != null || customDescription != null)
+        if (widget.title != null || widget.description != null || widget.customDescription != null)
           _buildDialogBody(),
-        if (actionButton != null) 
+        if (widget.optionsContainer != null)
+          ...[
+            SizedBox(height: 10,),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Column(
+                children: _buildOptionSelector(),
+              ),
+            )
+          ],
+        if (widget.actionButton != null) 
           ...[
             SizedBox(height: 10,),
             _buildActionButtons()
-          ]
+          ],
       ],
     );
   }
@@ -105,7 +135,7 @@ class DialogsView extends StatelessWidget {
   /// Builds top Image View
   Widget _buildTopImageView () {
     return Image(
-      image: imageProvider,
+      image: widget.imageProvider,
       width: 135,
       height: 135,
     );
@@ -116,22 +146,22 @@ class DialogsView extends StatelessWidget {
   Widget _buildDialogBody () {
     return Column(
       children: [
-        if (title != null)
+        if (widget.title != null)
           ...[
             Text(
-              title ?? '',
-              style: titleStyle ?? AppFontStyles.headerMediumStyle,
+              widget.title ?? '',
+              style: widget.titleStyle ?? AppFontStyles.headerMediumStyle,
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 10,)
           ],
-        if (description != null || customDescription != null)
+        if (widget.description != null || widget.customDescription != null)
           ...[
-            customDescription ?? 
+            widget.customDescription ?? 
             Text(
-              description,
+              widget.description,
               textAlign: TextAlign.center,
-              style: descriptionStyle ?? TextStyle(
+              style: widget.descriptionStyle ?? TextStyle(
                 fontSize: 13, color: Colors.grey[700]
               ),
             ),
@@ -141,11 +171,9 @@ class DialogsView extends StatelessWidget {
     );
   }
 
-  // * * Rendering Action Buttons for the alert view
-
   /// Returns action buttons as the one widget
   Widget _buildActionButtons () {
-    if (buttonsLayout == DialogViewButtonsLayout.horizontal && dialogViewType == DialogViewType.alert) {
+    if (widget.buttonsLayout == DialogViewButtonsLayout.horizontal && widget.dialogViewType != DialogViewType.actionSheet) {
       return Row(
         children: _buildContentOfActionButtons(),
       );
@@ -163,7 +191,7 @@ class DialogsView extends StatelessWidget {
   }) {
     List<Widget> buttons = [];
 
-    actionButton.forEach((button) { 
+    widget.actionButton.forEach((button) { 
       buttons.add(_buildActionButton(button));
 
       if (needsSpacing) {
@@ -183,10 +211,10 @@ class DialogsView extends StatelessWidget {
   Widget _buildActionButton (DialogActionButton buttonDetails) {
     if (buttonDetails.buttonStyle == DialogActionButtonStyle.custom) {
       return buttonDetails.customButton;
-    } else if (dialogViewType == DialogViewType.alert) {
+    } else if (widget.dialogViewType != DialogViewType.actionSheet) {
       // Building simple button for the alert view
       return Flexible(
-        child: GestureDetector(
+        child: InkWell(
           onTap: buttonDetails.onPress,
           child: Container(
             child: Center(
@@ -212,25 +240,74 @@ class DialogsView extends StatelessWidget {
             )
           )
         ),
-        child: GestureDetector(
-          onTap: buttonDetails.onPress,
-          child: ListTile(
-            leading: buttonDetails.iconData != null ? 
-              Icon(
-                buttonDetails.iconData,
-                color: buttonDetails.buttonStyle.textColor,
-              ) : null,
-            title: Text(
-              buttonDetails.title,
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-                color: buttonDetails.buttonStyle.textColor
-              )
+        child: InkWell(
+          onTap: () {
+            FeedbackEngine.showFeedback(FeedbackType.selection);
+            buttonDetails.onPress();
+          },
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+            child: Row(
+              children: [
+                if (buttonDetails.iconData != null)
+                  ...[
+                    Icon(
+                      buttonDetails.iconData,
+                      color: buttonDetails.buttonStyle.textColor,
+                    ),
+                    SizedBox(width: 12),
+                  ],
+                Text(
+                  buttonDetails.title,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: buttonDetails.buttonStyle.textColor
+                  ),
+                ),
+              ],
             ),
-          ),
+          )
         ),
       );
     }
+  }
+
+  List<Widget> _buildOptionSelector () {
+    List<Widget> widgets = [];
+
+    for (int i = 0; i < optionsContainer.options.length; i++) {
+      widgets.add(InkWell(
+        onTap: () {
+          setState(() {
+            optionsContainer = DialogOptionsContainer(
+              options: optionsContainer.options, 
+              currentOptionIndex: i, 
+              onPress: optionsContainer.onPress
+            );
+          });
+          optionsContainer.onPress(i);
+        },
+        child: _buildOption(optionsContainer.options[i], optionsContainer.currentOptionIndex == i)
+      ));
+    }
+
+    return widgets;
+  }
+
+  Widget _buildOption (String title, bool isSelected) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+      child: Row(
+        children: [
+          Icon(
+            isSelected ? Icons.check_circle : Icons.lens_outlined,
+            color: isSelected ? Colors.green : Colors.black
+          ),
+          SizedBox(width: 12),
+          Text(title)
+        ],
+      ),
+    );
   }
 }

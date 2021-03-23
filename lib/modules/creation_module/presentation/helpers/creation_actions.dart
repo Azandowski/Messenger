@@ -1,6 +1,5 @@
 enum CreationActions {
   createGroup, 
-  createSecretChat, 
   startVideo,
   startLive,
   inviteFriends
@@ -11,8 +10,6 @@ extension CreationActionsUIExtension on CreationActions {
     switch (this) {
       case CreationActions.createGroup:
         return 'Создать группу';
-      case CreationActions.createSecretChat:
-        return 'Создать секретный чат';
       case CreationActions.startVideo:
         return 'Начать видеоконференцию';
       case CreationActions.startLive:
@@ -28,8 +25,6 @@ extension CreationActionsUIExtension on CreationActions {
     switch (this) {
       case CreationActions.createGroup:
         return 'assets/icons/groups.png';
-      case CreationActions.createSecretChat:
-        return 'assets/icons/private.png';
       case CreationActions.startVideo:
         return 'assets/icons/video.png';
       case CreationActions.startLive:

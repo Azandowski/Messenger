@@ -1,11 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 
-/**
- * * Holds response with pagination
- * ! T should have fromJson method
- */
-
 class PaginatedResult<T> extends Equatable {
   final List<T> data;
   final PaginationData paginationData;
@@ -65,7 +60,13 @@ class PaginationData extends Equatable {
 
 class PaginatedResultViaLastItem<T> {
   final List<T> data;
+  // first side pagination
   final bool hasReachMax;
+  // second side pagination
+  final bool hasReachMaxSecondSide;
 
-  PaginatedResultViaLastItem({@required this.data, @required this.hasReachMax});
+  PaginatedResultViaLastItem(
+      {@required this.data,
+      @required this.hasReachMax,
+      this.hasReachMaxSecondSide = true});
 }

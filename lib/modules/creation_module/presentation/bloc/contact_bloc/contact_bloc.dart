@@ -1,17 +1,13 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:contacts_service/contacts_service.dart';
-import 'package:equatable/equatable.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:http/http.dart' as http;
-import 'package:messenger_mobile/core/services/network/paginatedResult.dart';
-import 'package:messenger_mobile/modules/chat/domain/usecases/get_chat_members.dart';
-import 'package:messenger_mobile/modules/chat/domain/usecases/params.dart';
-import 'package:meta/meta.dart';
 
+import 'package:equatable/equatable.dart';
+
+import '../../../../../core/services/network/paginatedResult.dart';
 import '../../../../../core/utils/pagination.dart';
-import '../../../data/models/contact_response.dart';
+import '../../../../chat/domain/usecases/get_chat_members.dart';
+import '../../../../chat/domain/usecases/params.dart';
 import '../../../domain/entities/contact.dart';
 import '../../../domain/usecases/fetch_contacts.dart';
 
@@ -58,6 +54,12 @@ class ContactBloc extends Bloc<ContactEvent, ContactState> {
           status: ContactStatus.loading, contacts: [], hasReachedMax: false);
 
       yield await _mapPostFetchedToState(state, status);
+    } else if (event is ContactReset) {
+      yield state.copyWith(
+        status: ContactStatus.initial,
+        hasReachedMax: false,
+        contacts: []
+      );
     }
   }
 

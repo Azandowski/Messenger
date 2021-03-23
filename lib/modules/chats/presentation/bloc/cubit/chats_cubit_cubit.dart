@@ -1,12 +1,16 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:messenger_mobile/modules/chats/domain/repositories/chats_repository.dart';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:vibrate/vibrate.dart';
 
+import '../../../../../core/utils/feedbac_taptic_helper.dart';
 import '../../../../category/domain/entities/chat_entity.dart';
+import '../../../data/repositories/chats_repository_impl.dart';
+import '../../../domain/repositories/chats_repository.dart';
 
 part 'chats_cubit_state.dart';
 
@@ -21,26 +25,25 @@ class ChatsCubit extends Cubit<ChatsCubitState> {
     _handleInit();
   }
 
-
   // * * Methods
 
   void _handleInit () async {
     File wallpaperFile = await repository.getLocalWallpaper();
+    (repository as ChatsRepositoryImpl).init();
+
     if (wallpaperFile != null) {
       emit(
         ChatsCubitStateNormal(
           currentTabIndex: this.state.currentTabIndex,
-          wallpaperFile: wallpaperFile
         )
       );
-    }
+    } 
   }
 
   Future<void> setWallpaper (File file) async {
     emit(
       ChatsCubitStateNormal(
         currentTabIndex: this.state.currentTabIndex,
-        wallpaperFile: file
       )
     );
     
@@ -48,9 +51,10 @@ class ChatsCubit extends Cubit<ChatsCubitState> {
   }
 
   void tabUpdate(int index) {
+    FeedbackEngine.showFeedback(FeedbackType.selection);
+
     emit(ChatsCubitStateNormal(
       currentTabIndex: index,
-      wallpaperFile: this.state.wallpaperFile
     ));
   }
 
@@ -59,7 +63,6 @@ class ChatsCubit extends Cubit<ChatsCubitState> {
       ChatsCubitSelectedOne(
         currentTabIndex: this.state.currentTabIndex, 
         selectedChatIndex: index,
-        wallpaperFile: this.state.wallpaperFile
       )
     );
   }
@@ -68,7 +71,6 @@ class ChatsCubit extends Cubit<ChatsCubitState> {
     emit(
       ChatsCubitStateNormal(
         currentTabIndex: this.state.currentTabIndex,
-        wallpaperFile: this.state.wallpaperFile
       )
     );
   }

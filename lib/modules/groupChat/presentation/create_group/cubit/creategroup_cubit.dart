@@ -7,6 +7,8 @@ import 'package:image_picker/image_picker.dart';
 
 import '../../../../../core/config/auth_config.dart';
 import '../../../../../locator.dart';
+import '../../../../category/data/models/chat_view_model.dart';
+import '../../../../category/domain/entities/chat_entity.dart';
 import '../../../../creation_module/domain/entities/contact.dart';
 import '../../../../media/domain/usecases/get_image.dart';
 import '../../../domain/usecases/create_chat_group.dart';
@@ -15,8 +17,11 @@ import '../../../domain/usecases/params.dart';
 part 'creategroup_state.dart';
 
 class CreateGroupCubit extends Cubit<CreateGroupState> {
+  
   final GetImage getImageUseCase;
   final CreateChatGruopUseCase createChatGruopUseCase;
+  
+  
   CreateGroupCubit({
     @required this.getImageUseCase,
     @required this.createChatGruopUseCase,
@@ -28,7 +33,11 @@ class CreateGroupCubit extends Cubit<CreateGroupState> {
   Future<void> selectPhoto (ImageSource imageSource) async {
     var pickedFile = await getImageUseCase(imageSource);
     pickedFile.fold(
-      (failure) => emit(CreateCategoryError(message: 'Unable to get image')), 
+      (failure) => emit(CreateCategoryError(
+        message: 'Unable to get image',
+        contacts: this.state.contacts,
+        imageFile: this.state.imageFile
+      )), 
       (image) {
         emit(CreateGroupNormal(imageFile: image, contacts: this.state.contacts));
     });
@@ -52,22 +61,36 @@ class CreateGroupCubit extends Cubit<CreateGroupState> {
     );
   }
 
-  Future createChat(String name, String desc,) async {
-     emit(CreateGroupLoading(
+  Future createChat(
+    String name, 
+    String desc,
+    {
+      bool isCreate = true,
+      int chatID
+    }
+  ) async {
+    emit(CreateGroupLoading(
       imageFile: this.state.imageFile,
       contacts: this.state.contacts
     ));
+    
     var response = await createChatGruopUseCase(CreateChatGroupParams(
       token: sl<AuthConfig>().token, 
       avatarFile: this.state.imageFile,
       name: name, 
       description: desc,
-      contactIds: this.state.contacts.map((e) => e.id).toList(),
-      isCreate: true,
+      contactIds: isCreate ? 
+        (this.state.contacts ?? []).map((e) => e.id).toList() : [],
+      isCreate: isCreate,
+      chatGroupId: chatID
     ));
 
     response.fold(
-      (failure) => emit(CreateCategoryError(message: failure.message)), 
+      (failure) => emit(CreateCategoryError(
+        message: failure.message,
+        contacts: this.state.contacts,
+        imageFile: this.state.imageFile
+      )), 
       (categories) => emit(CreateGroupSuccess(
         contacts: this.state.contacts,
         imageFile: this.state.imageFile
@@ -75,5 +98,18 @@ class CreateGroupCubit extends Cubit<CreateGroupState> {
     );
   }
 
-    String defaultImageUrl;
+  void initReadyEntity (ChatEntity entity) {
+
+    defaultImageUrl = ChatViewModel(entity).imageURL;
+
+    emit(CreateGroupNormal(
+      imageFile: null, 
+      contacts: []
+    ));
+  }
+
+  /// Initial image URL
+  /// Will not be null if editing the group chat only
+
+  String defaultImageUrl;
 }

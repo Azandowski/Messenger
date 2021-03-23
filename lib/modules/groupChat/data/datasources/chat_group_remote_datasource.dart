@@ -1,4 +1,6 @@
 
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
@@ -6,9 +8,13 @@ import '../../../../core/error/failures.dart';
 import '../../../../core/services/network/Endpoints.dart';
 import '../../../../core/utils/http_response_extension.dart';
 import '../../../../core/utils/multipart_request_helper.dart';
+import '../../../category/data/models/chat_entity_model.dart';
+import '../../../category/domain/entities/chat_entity.dart';
 import '../../domain/usecases/params.dart';
+
+
 abstract class ChatGroupRemoteDataSource {
-  Future<bool> createChatGroup({
+  Future<ChatEntity> createChatGroup({
     CreateChatGroupParams groupParams
   });
 }
@@ -26,8 +32,13 @@ class ChatGroupRemoteDataSourceImpl implements ChatGroupRemoteDataSource {
   });
 
   @override
-  Future<bool> createChatGroup({CreateChatGroupParams groupParams}) async {
-    var url = groupParams.isCreate ? Endpoints.createGroupChat.buildURL() : Endpoints.updateCategory.buildURL(urlParams: ['1']);
+  Future<ChatEntity> createChatGroup({
+    CreateChatGroupParams groupParams
+  }) async {
+    var url = groupParams.isCreate ? 
+      Endpoints.createGroupChat.buildURL() : 
+        Endpoints.updateCategory.buildURL(urlParams: ['${groupParams.chatGroupId}']);
+    
     multipartRequest = http.MultipartRequest('POST', url);
 
     http.StreamedResponse streamResponse = await MultipartRequestHelper.postData(
@@ -36,16 +47,20 @@ class ChatGroupRemoteDataSourceImpl implements ChatGroupRemoteDataSource {
       files: groupParams.avatarFile != null ? [groupParams.avatarFile] : [],
       keyName: 'file',
       data: {
-        'contact': groupParams.contactIds.join(','),
+        if (groupParams.contactIds.length != 0)
+          'contact': groupParams.contactIds.join(','),
+        if (groupParams.isPrivate)
+          'is_private': groupParams.isPrivate ? 1 : 0,
         'name': groupParams.name,
         'description': groupParams.description,
+        // 'is_private': '0'
       }
     );
 
     final httpResponse = await http.Response.fromStream(streamResponse);
 
     if (httpResponse.isSuccess) {
-      return true;
+      return ChatEntityModel.fromJson(json.decode(httpResponse.body.toString()));
     } else {
       throw ServerFailure(message: httpResponse.body.toString());
     }

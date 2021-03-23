@@ -27,7 +27,7 @@ class AppDatabase {
   Future _openDatabase() async {
     final appDocumentDir = await getApplicationDocumentsDirectory();
 
-    final dbPath = join(appDocumentDir.path, 'StudentsDB.db');
+    final dbPath = join(appDocumentDir.path, 'database.db');
 
     final database = await databaseFactoryIo.openDatabase(dbPath);
 

@@ -26,7 +26,7 @@ class PhotoPicker {
               content: SingleChildScrollView(
                 child: ListBody(
                   children: <Widget>[
-                    GestureDetector(
+                    InkWell(
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 4.0),
                         child: Text(
@@ -41,7 +41,7 @@ class PhotoPicker {
                       },
                     ),
                     Padding(padding: EdgeInsets.all(8.0)),
-                    GestureDetector(
+                    InkWell(
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 4.0),
                         child: Text("camera",

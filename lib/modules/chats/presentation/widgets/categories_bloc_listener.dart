@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:messenger_mobile/modules/chats/domain/entities/category.dart';
 
 import '../../../../core/blocs/category/bloc/category_bloc.dart';
+import '../../../../core/blocs/chat/bloc/bloc/chat_cubit.dart';
 import '../../../category/presentation/category_list/category_list.dart';
 import '../bloc/cubit/chats_cubit_cubit.dart';
 import 'category_items.dart';
@@ -19,9 +19,7 @@ class ChatScreenCategoriesView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<CategoryBloc, CategoryState>(
-      listener: (context, state) {
-        // TODO: implement listener
-      },
+      listener: (context, state) {},
       builder: (context, categoryState) {
         return CategoriesSection(
           isLoading: categoryState is CategoryEmpty,
@@ -32,6 +30,9 @@ class ChatScreenCategoriesView extends StatelessWidget {
           },
           onItemSelect: (int id) {
             context.read<ChatsCubit>().tabUpdate(id);
+            context.read<ChatGlobalCubit>().loadChats(
+              isPagination: false, categoryID: id == 0 ? null : id
+            );
           },
         );
       },

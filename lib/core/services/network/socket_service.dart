@@ -1,7 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:laravel_echo/laravel_echo.dart';
-import 'package:messenger_mobile/core/config/auth_config.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
+
+import '../../config/auth_config.dart';
 
 
 class SocketService {
@@ -13,10 +14,9 @@ class SocketService {
 
   SocketService({
     @required this.authConfig
-  }) {
-    
-    // MARK: - Init
+  });
 
+  void init () {
     Map headers = { 'Authorization': 'Bearer ${authConfig.token}' };
 
     socket = IO.io('https://aio-test-vps.kulenkov-group.kz:6002',
@@ -25,9 +25,7 @@ class SocketService {
 
     socket.connect();
 
-    socket.onConnect((data) {
-      print('connect');
-    });
+    socket.onConnect((data) {});
 
     echo = new Echo({
       'broadcaster': 'socket.io',
@@ -36,17 +34,30 @@ class SocketService {
         'headers': headers
       }
     });
-
+    
     echo.connect();
+
+    echo.join('online.2').here((d) {
+      print(d);
+    }).joining((d) {
+      print(d);
+    });
   }
 }
 
 
 abstract class SocketChannels {
-
   /// New changes in chat room 
   /// [id] - id of the chat
   static String getChatByID (int id) {
-    return 'laravel_database_messages.$id';
+    return 'messages.$id';
+  } 
+
+  static String getChatsUpdates (int id) {
+    return 'get.index.$id';
+  }
+
+  static String getChatDeleteById (int id) {
+    return 'deleted.message.$id';
   } 
 }

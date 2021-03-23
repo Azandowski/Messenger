@@ -12,18 +12,17 @@ enum ContactCellType{
   write,
 }
 
-extension ContactCellModel on ContactCellType{
-
-IconData get trailingIcon{
-  switch (this){
-    case ContactCellType.delete:
-      return Icons.delete;
-    case ContactCellType.write:
-      return Icons.message;
-    default: 
-      return null;
+extension ContactCellModel on ContactCellType {
+  IconData get trailingIcon {
+    switch (this ){
+      case ContactCellType.delete:
+        return Icons.delete;
+      case ContactCellType.write:
+        return Icons.message;
+      default: 
+        return null;
+    }
   }
-}
 }
 
 class ContactCell extends StatelessWidget {

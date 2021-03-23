@@ -13,7 +13,7 @@ class ProfileItem extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return InkWell(
       onTap: () {
         if (onTap != null) { onTap(); }
       },

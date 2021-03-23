@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/app/appTheme.dart';
+
+import '../../../../app/appTheme.dart';
 
 class IconTextButton extends StatelessWidget {
   final String imageAssetPath;
@@ -14,7 +15,7 @@ class IconTextButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return InkWell(
       onTap: onPress,
       child: Container(
         padding: const EdgeInsets.all(16),

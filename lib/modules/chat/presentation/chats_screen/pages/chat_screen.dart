@@ -1,45 +1,49 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:messenger_mobile/app/appTheme.dart';
-import 'package:messenger_mobile/core/widgets/independent/placeholders/load_widget.dart';
-import 'package:messenger_mobile/locator.dart';
-import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
-import 'package:messenger_mobile/modules/chat/data/datasources/chat_datasource.dart';
-import 'package:messenger_mobile/modules/chat/data/models/message_view_model.dart';
-import 'package:messenger_mobile/modules/chat/data/repositories/chat_repository.dart';
-import 'package:messenger_mobile/modules/chat/domain/entities/message.dart';
-import 'package:messenger_mobile/modules/chat/domain/repositories/chat_repository.dart';
-import 'package:messenger_mobile/modules/chat/domain/usecases/get_messages.dart';
-import 'package:messenger_mobile/modules/chat/domain/usecases/send_message.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chat_details/page/chat_detail_page.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chats_screen/bloc/chat_bloc.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/chatControlPanel/chatControlPanel.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/chatHeading.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/chat_date_item.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/chat_screen_actions.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/message_cell.dart';
-import 'package:messenger_mobile/core/utils/list_helper.dart';
-import '../../../../../main.dart';
-import 'package:intl/intl.dart';
+import 'package:flutter/rendering.dart';
+import 'package:messenger_mobile/core/services/network/Endpoints.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 
+import '../../../../../app/application.dart';
+import '../../../../category/presentation/chooseChats/presentation/chat_choose_page.dart';
+import '../../../domain/entities/chat_actions.dart';
+import '../../../domain/usecases/attachMessage.dart';
+import '../../../domain/usecases/disattachMessage.dart';
+import '../../../domain/usecases/get_messages_context.dart';
+import '../../../domain/usecases/reply_more.dart';
+import '../widgets/bottom_pin.dart';
+import 'chat_screen_helper.dart';
+import 'chat_screen_import.dart';
+import 'package:http/http.dart' as http;
 
 class ChatScreen extends StatefulWidget {
   final ChatEntity chatEntity;
+  
+  // Non-Null if have to show region of the message 
+  final int messageID;
 
-  const ChatScreen({Key key,@required this.chatEntity}) : super(key: key);
+  const ChatScreen({
+    @required this.chatEntity,
+    this.messageID,
+    Key key, 
+  }) : super(key: key);
 
   @override
-  _ChatScreenState createState() => _ChatScreenState();
+  ChatScreenState createState() => ChatScreenState();
 }
 
-class _ChatScreenState extends State<ChatScreen> {
+class ChatScreenState extends State<ChatScreen> implements ChatChooseDelegate{
 
-  NavigatorState get _navigator => navigatorKey.currentState;
+  NavigatorState get _navigator => sl<Application>().navKey.currentState;
   
-  TextEditingController messageTextController = TextEditingController();
-     
-  ChatBloc _chatBloc;
+  // MARK: - Props
 
+  TextEditingController messageTextController = TextEditingController();
+  CategoryBloc categoryBloc;
+  ChatBloc _chatBloc;
+  PanelBlocCubit _panelBlocCubit;
+  ChatTodoCubit _chatTodoCubit;
+  
+  // MARK: - Life-Cycle
+  
   @override
   void initState() {
     final ChatRepository chatRepository = ChatRepositoryImpl(
@@ -47,101 +51,164 @@ class _ChatScreenState extends State<ChatScreen> {
       chatDataSource: ChatDataSourceImpl(
         id: widget.chatEntity.chatId,
         socketService: sl(),
-        client: sl()
+        client: sl(),
+        multipartRequest: http.MultipartRequest(
+          'POST', Endpoints.sendMessages.buildURL(urlParams:  [widget.chatEntity.chatId.toString()])
+        ),
       )
     );
 
+    _chatTodoCubit = ChatTodoCubit(
+      context: context,
+      deleteMessageUseCase: DeleteMessage(repository: chatRepository),
+      attachMessageUseCase: AttachMessage(repository: chatRepository),
+      disAttachMessageUseCase: DisAttachMessage(repository: chatRepository),
+      replyMoreUseCase: ReplyMore(repository: chatRepository)
+    );
+    
+    categoryBloc = context.read<CategoryBloc>();
+    _panelBlocCubit = PanelBlocCubit();
     _chatBloc = ChatBloc(
       chatId: widget.chatEntity.chatId,
       chatRepository: chatRepository,
       sendMessage: SendMessage(repository: chatRepository),
-      getMessages: GetMessages(repository: chatRepository)
-    )..add(LoadMessages(isPagination: true));
+      getMessages: GetMessages(repository: chatRepository),
+      getMessagesContext: GetMessagesContext(repository: chatRepository),
+      chatsRepository: sl(),
+      setTimeDeleted: SetTimeDeleted(repository: chatRepository),
+      isSecretModeOn: widget.chatEntity.permissions?.isSecret ?? false,
+      chatEntity: widget.chatEntity
+    )..add(LoadMessages(
+      isPagination: false,
+      messageID: widget.messageID,
+    ));
+
+    _chatBloc.scrollController = AutoScrollController(
+      viewportBoundaryGetter: () =>
+        Rect.fromLTRB(0, 0, 0, MediaQuery.of(context).padding.bottom),
+      axis: Axis.vertical
+    );
+
+    _chatBloc.scrollController.addListener(() {
+      this.handleScrollControllerChanges(_chatBloc);
+    });
+
     super.initState();
   }
 
   @override
   void dispose() {
+    _chatBloc.add(DisposeChat());
     _chatBloc.close();
     super.dispose();
   }
+
+
+  // MARK: - UI
 
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.width;
-    
+    ChatViewModel chatViewModel = ChatViewModel(widget.chatEntity);
+
     return BlocProvider(
       lazy: false,
-      create: (context) => _chatBloc,
-      child: BlocConsumer<ChatBloc, ChatState>(
-        listener: (context, state) {},
-        
-        builder: (context, state) {
-          return Scaffold(
-            appBar: AppBar(
-              centerTitle: false,
-              titleSpacing: 0.0,
-              title: ChatHeading(
-                onTap: () {
-                  _navigator.push(ChatDetailPage.route(widget.chatEntity.chatId));
-                }
-              ),
-              actions: [
-                ChatScreenActions()
-              ],
-            ),
-            backgroundColor: AppColors.pinkBackgroundColor,
-            body: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Expanded(
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 16),
-                    decoration: BoxDecoration(
-                    image: DecorationImage(image: AssetImage('assets/images/bg-home.png'),
-                      fit: BoxFit.cover),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: 20.0),
-                      child: ListView.separated(
-                        controller: _chatBloc.scrollController,
-                        itemBuilder: (context, int index) {
-                          if (state is ChatLoading && getItemsCount(state) - 1 == index) {
-                            return LoadWidget(size: 20);
-                          } else {
-                            int nextMessageUserID = state.messages.getItemAt(index - 1)?.user?.id;
-                            int prevMessageUserID = state.messages.getItemAt(index + 1)?.user?.id;
-                            Message currentMessage = state.messages[index];
-                            
-                            return currentMessage.chatActions == null ? 
-                              MessageCell(
-                                messageViewModel: MessageViewModel(currentMessage),
-                                nextMessageUserID: nextMessageUserID,
-                                prevMessageUserID: prevMessageUserID,
-                              ) : Text('action');
-                          }
-                        },
-                        scrollDirection: Axis.vertical,
-                        itemCount: getItemsCount(state),
-                        reverse: true,
-                        separatorBuilder: (_, int index) {
-                          return _buildSeparator(index, state);
+      create: (context) => _chatTodoCubit,
+      child: BlocBuilder<ChatTodoCubit, ChatTodoState>(
+        builder: (context, cubit) {
+          return BlocProvider(
+            create: (context) => _chatBloc,
+            child: BlocConsumer<ChatBloc, ChatState>(
+              listener: (context, state) {
+                handleListener(
+                  state, 
+                  scrollController: _chatBloc.scrollController, 
+                  todoCubit: _chatTodoCubit
+                );
+              },
+              builder: (context, state) {
+                return Scaffold(
+                  appBar: this.buildAppBar(
+                    _chatTodoCubit, 
+                    cubit, state, chatViewModel, _navigator,
+                    (ChatAppBarActions action) {
+                      if (action == ChatAppBarActions.onOffSecretMode) {
+                        _chatBloc.add(SetInitialTime(isOn: !(state.isSecretModeOn ?? false)));
+                      }
+                    }
+                  ),
+                  floatingActionButton: shouldShowBottomPin(state) ?
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 60.0),
+                      child: BottomPin(
+                        state: state,
+                        onPress: () {
+                          _chatBloc.add(LoadMessages(
+                            isPagination: false,
+                            resetAll: true,
+                            direction: RequestDirection.bottom
+                          ));
                         }
                       ),
+                    ) : null,
+                  backgroundColor: AppColors.pinkBackgroundColor,
+                  body: BlocProvider(
+                    lazy: false,
+                    create: (context) => _panelBlocCubit,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        if (state.topMessage != null) 
+                          InkWell(
+                            onTap: () {
+                              _chatBloc.add(LoadMessages(
+                                messageID: state.topMessage.id,
+                                isPagination: false
+                              ));
+                            },
+                            child: this.buildTopMessage(state,
+                              width, height, _chatTodoCubit,
+                            ),
+                          ),
+                        Expanded(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              image: this.getBackground(state)
+                            ),
+                            child: ListView.separated(
+                              key: PageStorageKey('feed'),
+                              controller: _chatBloc.scrollController,
+                              itemBuilder: (context, int index) => this.buildMessageCell(
+                                index: index, 
+                                state: state, 
+                                cubit: cubit, 
+                                panelBlocCubit: _panelBlocCubit, 
+                                chatTodoCubit: _chatTodoCubit, 
+                                chatBloc: _chatBloc
+                              ),
+                              scrollDirection: Axis.vertical,
+                              itemCount: getItemsCount(state),
+                              reverse: true,
+                              separatorBuilder: (_, int index) {
+                                return buildSeparator(index, state);
+                              }
+                            ),
+                          ),
+                        ),
+                        this.buildChatBottom(
+                          cubit, _chatTodoCubit, 
+                          width, height
+                        )
+                      ],
                     ),
                   ),
-                ),
-                ChatControlPanel(
-                  messageTextController: messageTextController, 
-                  width: width,
-                  height: height
-                ),
-              ],
-            ),
+                );
+              }
+            )
           );
-        }
+        },
       )
     );
   }
@@ -150,25 +217,38 @@ class _ChatScreenState extends State<ChatScreen> {
   // * * Helpers
 
   int getItemsCount (ChatState state) {
-    return state is ChatLoading ? 
-      // Нужен +1 индекс чтобы показать загрузку
-      state.messages.length + 1 : 
-        state.messages.length;
+    return state.messages.length + 1;
+  }
+
+  bool shouldShowBottomPin (ChatState state) {
+    return (state.unreadCount != null && state.unreadCount != 0) ||
+      (state.showBottomPin != null && state.showBottomPin) || 
+        !state.hasReachBottomMax;
+  }
+
+  // Get Chat Action model from the message 
+  ChatAction buildChatAction (Message message) {
+    if (message.chatActions.actionType == ChatActionTypes.group) {
+      return GroupAction(
+        firstUser: message.user,
+        action: message.chatActions,
+        secondUser: message.toUser
+      );
+    } else {
+      return null;
+    }
   }
 
 
-  Widget _buildSeparator (int index, ChatState state) {
-    print(index);
-    if (index == getItemsCount(state) - 1 ) {
-      return ChatDateItem(dateTime: state.messages[index].dateTime);
-    } else if (!(state is ChatLoading && getItemsCount(state) - 1 == index)) {
-      Message nextMessage = state.messages.getItemAt(index + 1);
+  @override
+  void didSelectTimeOption(TimeOptions option) {
+    Navigator.of(context).pop();
+    // _chatBloc.add(SetInitialTime(option: option));
+  }
 
-      if (nextMessage != null && nextMessage.dateTime?.day != state.messages[index].dateTime?.day) {
-        return ChatDateItem(dateTime: state.messages[index].dateTime,);
-      } 
-    } 
- 
-    return Container();
+  @override
+  void didSaveChats(List<ChatEntity> chats) {
+   _chatTodoCubit.replyMessageToMore(chatIds: chats);
   }
 }
+

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:messenger_mobile/modules/authentication/domain/repositories/authentication_repository.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:messenger_mobile/modules/creation_module/presentation/pages/creation_module_screen.dart';
+
+import '../../app/application.dart';
 import '../../locator.dart';
-import '../../main.dart';
+import '../../modules/authentication/domain/repositories/authentication_repository.dart';
 import '../../modules/chats/presentation/pages/chats_screen.dart';
 import '../../modules/creation_module/presentation/pages/creation_module_screen.dart';
 import '../../modules/profile/presentation/pages/profile_page.dart';
@@ -38,7 +38,7 @@ class _AppScreenState extends State<AppScreen> {
         permission != PermissionStatus.denied) {
       Map<Permission, PermissionStatus> statuses =
           await [Permission.contacts].request();
-      return statuses[Permission.contacts] ?? PermissionStatus.undetermined;
+      return statuses[Permission.contacts] ?? PermissionStatus.restricted;
     } else {
       return permission;
     }
@@ -60,7 +60,7 @@ class _AppScreenState extends State<AppScreen> {
 
   final bucket = PageStorageBucket();
 
-  NavigatorState get _navigator => navigatorKey.currentState;
+  NavigatorState get _navigator => sl<Application>().navKey.currentState;
 
   final pages = [
     ChatsScreen(),

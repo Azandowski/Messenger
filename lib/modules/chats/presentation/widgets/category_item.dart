@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../app/appTheme.dart';
 import '../../../../core/widgets/independent/images/ImageWithCorner.dart';
 import '../../domain/entities/category.dart';
+import 'chat_item/chat_notification_view.dart';
 
 class CategoryItem extends StatelessWidget {
   final CategoryEntity entity;
@@ -20,19 +21,31 @@ class CategoryItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return InkWell(
       onTap: onSelect,
       child: Container(
         width: 80,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            AvatarImage(
-              borderRadius: BorderRadius.circular(15),
-              path: entity.avatar,
-              isFromAsset: isAvatarFromAssets,
-              width: 80,
-              height: 80,
+            Stack(
+              children: [
+                AvatarImage(
+                  borderRadius: BorderRadius.circular(15),
+                  path: entity.avatar,
+                  isFromAsset: isAvatarFromAssets,
+                  width: 80,
+                  height: 80,
+                ),
+                if (entity.noReadCount != 0) 
+                  Positioned(
+                    top: 8,
+                    right: 8,
+                    child: ChatNotificationView(
+                      badgeCount: entity.noReadCount
+                    ),
+                  ),
+              ],
             ),
             SizedBox(
               height: 10,

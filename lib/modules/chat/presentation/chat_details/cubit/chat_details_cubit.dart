@@ -2,16 +2,23 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/modules/category/data/models/chat_permission_model.dart';
-import 'package:messenger_mobile/modules/category/domain/entities/chat_permissions.dart';
-import 'package:messenger_mobile/modules/chat/domain/entities/chat_detailed.dart';
-import 'package:messenger_mobile/modules/chat/domain/usecases/add_members.dart';
-import 'package:messenger_mobile/modules/chat/domain/usecases/get_chat_details.dart';
-import 'package:messenger_mobile/modules/chat/domain/usecases/leave_chat.dart';
-import 'package:messenger_mobile/modules/chat/domain/usecases/params.dart';
-import 'package:messenger_mobile/modules/chat/domain/usecases/update_chat_settings.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chat_details/widgets/chat_setting_item.dart';
-import 'package:messenger_mobile/modules/creation_module/domain/entities/contact.dart';
+import 'package:messenger_mobile/modules/chat/domain/usecases/block_user.dart';
+import 'package:messenger_mobile/modules/chat/domain/usecases/kick_member.dart';
+import 'package:messenger_mobile/modules/chat/domain/usecases/set_social_media.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chat_details/page/chat_detail_screen.dart';
+import 'package:messenger_mobile/modules/social_media/domain/entities/social_media.dart';
+
+import '../../../../category/data/models/chat_permission_model.dart';
+import '../../../../category/domain/entities/chat_permissions.dart';
+import '../../../../creation_module/domain/entities/contact.dart';
+import '../../../domain/entities/chat_detailed.dart';
+import '../../../domain/usecases/add_members.dart';
+import '../../../domain/usecases/get_chat_details.dart';
+import '../../../domain/usecases/kick_member.dart';
+import '../../../domain/usecases/leave_chat.dart';
+import '../../../domain/usecases/params.dart';
+import '../../../domain/usecases/update_chat_settings.dart';
+import '../widgets/chat_setting_item.dart';
 
 part 'chat_details_state.dart';
 
@@ -21,6 +28,9 @@ class ChatDetailsCubit extends Cubit<ChatDetailsState> {
   final AddMembers addMembers;
   final LeaveChat leaveChat;
   final UpdateChatSettings updateChatSettings;
+  final KickMembers kickMembers;
+  final BlockUser blockUser;
+  final SetSocialMedia setSocialMedia;
 
   ChatPermissions initialPermissions;
 
@@ -28,11 +38,16 @@ class ChatDetailsCubit extends Cubit<ChatDetailsState> {
     @required this.getChatDetails,
     @required this.addMembers,
     @required this.leaveChat,
-    @required this.updateChatSettings
+    @required this.updateChatSettings,
+    @required this.kickMembers,
+    @required this.blockUser,
+    @required this.setSocialMedia
   }) : super(ChatDetailsLoading());
 
-  Future<void> loadDetails (int id) async {
-    var response =  await getChatDetails.call(id);
+  Future<void> loadDetails (int id, ProfileMode mode) async {
+    var response =  await getChatDetails.call(GetChatDetailsParams(
+      mode: mode, id: id
+    ));
 
     response.fold(
       (failure) => emit(ChatDetailsError(
@@ -62,6 +77,24 @@ class ChatDetailsCubit extends Cubit<ChatDetailsState> {
         chatDetailed: this.state.chatDetailed
       ));
     });
+  }
+
+  Future<void> kickMember (int id, int userID) async {
+    emit(ChatDetailsProccessing(chatDetailed: this.state.chatDetailed));
+
+    var response = await kickMembers(KickMemberParams(
+      id: id, 
+      userID: userID
+    ));
+
+    response.fold(
+      (failure) => emit(ChatDetailsError(
+        message: failure.message,
+        chatDetailed: this.state.chatDetailed
+      )), (newChatDetailed) => emit(ChatDetailsLoaded(
+        chatDetailed: newChatDetailed
+      ))
+    );
   }
 
   Future<void> addMembersToChat (int id, List<ContactEntity> contacts) async {
@@ -101,6 +134,16 @@ class ChatDetailsCubit extends Cubit<ChatDetailsState> {
           isMediaSendOn: !newValue
         ) ?? ChatPermissions(isSoundOn: false, isMediaSendOn: !newValue);
         break;
+      case ChatSettings.adminSendMessage:
+        newPermissions = this.state.chatDetailed.settings?.copyWith(
+          adminMessageSend: newValue
+        );
+        break;
+      case ChatSettings.forwardMessages:
+        newPermissions = this.state.chatDetailed.settings?.copyWith(
+          isForwardOn: newValue
+        );
+        break;
     }
 
     var newState = this.state.copyWith(chatDetailed: this.state.chatDetailed.copyWith(
@@ -122,7 +165,9 @@ class ChatDetailsCubit extends Cubit<ChatDetailsState> {
         id: id,
         permissionModel: ChatPermissionModel(
           isSoundOn: newPermissions.isSoundOn,
-          isMediaSendOn: newPermissions.isMediaSendOn
+          isMediaSendOn: newPermissions.isMediaSendOn,
+          adminMessageSend: newPermissions.adminMessageSend,
+          isForwardOn: newPermissions.isForwardOn
         )
       ));
 
@@ -135,9 +180,63 @@ class ChatDetailsCubit extends Cubit<ChatDetailsState> {
     }
   }
 
+  Future<void> blockUnblockUser ({
+    @required int userID, 
+    @required bool isBlock
+  }) async {
+    emit(ChatDetailsProccessing(chatDetailed: this.state.chatDetailed));
+
+    var response = await blockUser(BlockUserParams(
+      isBloc: isBlock, 
+      userID: userID
+    ));
+
+    response.fold((failure) => emit(ChatDetailsError(
+      message: failure.message,
+      chatDetailed: this.state.chatDetailed
+    )), (_) {
+      var newUser = state.chatDetailed.user.copyWith(isBlocked: isBlock);
+      var chatDetails = state.chatDetailed.copyWith(user: newUser);
+      emit(ChatDetailsLoaded(
+        chatDetailed: chatDetails
+      ));
+    });
+  }
+
+  Future<void> setNewSocialMedia ({
+    @required int id,
+    @required SocialMedia newSocialMedia,
+  }) async {
+    emit(ChatDetailsProccessing(chatDetailed: this.state.chatDetailed));
+
+    var response = await setSocialMedia(SetSocialMediaParams(
+      id: id, 
+      socialMedia: newSocialMedia
+    ));
+
+    response.fold((failure) => emit(ChatDetailsError(
+      message: failure.message,
+      chatDetailed: this.state.chatDetailed
+    )), (response) {
+      emit(ChatDetailsLoaded(
+        chatDetailed: state.chatDetailed.copyWith(socialMedia: newSocialMedia)
+      ));
+    });
+  }
+
+  void showError (String message) {
+    emit(ChatDetailsError(
+      chatDetailed: this.state.chatDetailed,
+      message: message
+    ));
+  }
+
+
   bool get _needsPermissionsUpdate {
     return 
       initialPermissions?.isSoundOn != this.state.chatDetailed?.settings?.isSoundOn || 
-        initialPermissions?.isMediaSendOn != this.state.chatDetailed?.settings?.isMediaSendOn;
+        initialPermissions?.isMediaSendOn != this.state.chatDetailed?.settings?.isMediaSendOn ||
+          initialPermissions.adminMessageSend != this.state.chatDetailed?.settings?.adminMessageSend || 
+            initialPermissions.isForwardOn != this.state.chatDetailed?.settings?.isForwardOn; 
   }
 }

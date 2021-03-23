@@ -1,5 +1,7 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:messenger_mobile/core/utils/snackbar_util.dart';
 
 import '../../../../../../app/appTheme.dart';
 import '../../../../../../core/widgets/independent/buttons/gradient_main_button.dart';
@@ -8,7 +10,6 @@ import '../../../bloc/authentication_bloc.dart';
 import '../../../bloc/index.dart';
 import '../../../widgets/offertText.dart';
 import '../cubit/typephone_cubit.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 class TypePhonePage extends StatefulWidget {
   @override
@@ -39,15 +40,11 @@ class _TypePhonePageState extends State<TypePhonePage> {
       listener: (context, state) {
         if (state is InvalidPhone) {
           _phoneCtrl.clear();
-          Scaffold.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(
-              SnackBar(content: Text(state.message)),
-            );
+          SnackUtil.showError(context: context, message: state.message);
         } else if (state is Success) {
           context
-              .read<AuthenticationBloc>()
-              .add(GoToCodePage(codeEntity: state.codeEntity));
+            .read<AuthenticationBloc>()
+            .add(GoToCodePage(codeEntity: state.codeEntity));
         }
       },
       builder: (context, state) {

@@ -1,11 +1,13 @@
-import 'package:flutter/foundation.dart';
-import 'package:messenger_mobile/core/error/failures.dart';
 import 'package:dartz/dartz.dart';
-import 'package:messenger_mobile/core/usecases/usecase.dart';
-import 'package:messenger_mobile/modules/chat/domain/entities/chat_detailed.dart';
-import 'package:messenger_mobile/modules/chat/domain/repositories/chat_repository.dart';
+import 'package:flutter/foundation.dart';
+import 'package:messenger_mobile/modules/chat/domain/usecases/params.dart';
 
-class GetChatDetails implements UseCase<ChatDetailed, int> {
+import '../../../../core/error/failures.dart';
+import '../../../../core/usecases/usecase.dart';
+import '../entities/chat_detailed.dart';
+import '../repositories/chat_repository.dart';
+
+class GetChatDetails implements UseCase<ChatDetailed, GetChatDetailsParams> {
   final ChatRepository repository;
 
   GetChatDetails({
@@ -13,7 +15,7 @@ class GetChatDetails implements UseCase<ChatDetailed, int> {
   });
 
   @override
-  Future<Either<Failure, ChatDetailed>> call(int params) async {
-    return repository.getChatDetails(params);
+  Future<Either<Failure, ChatDetailed>> call(GetChatDetailsParams params) async {
+    return repository.getChatDetails(params.id, params.mode);
   } 
 }

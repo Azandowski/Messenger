@@ -1,11 +1,12 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
-import 'package:messenger_mobile/core/error/failures.dart';
-import 'package:messenger_mobile/core/services/network/paginatedResult.dart';
-import 'package:messenger_mobile/core/usecases/usecase.dart';
-import 'package:messenger_mobile/modules/chat/domain/repositories/chat_repository.dart';
-import 'package:messenger_mobile/modules/chat/domain/usecases/params.dart';
-import 'package:messenger_mobile/modules/creation_module/domain/entities/contact.dart';
+
+import '../../../../core/error/failures.dart';
+import '../../../../core/services/network/paginatedResult.dart';
+import '../../../../core/usecases/usecase.dart';
+import '../../../creation_module/domain/entities/contact.dart';
+import '../repositories/chat_repository.dart';
+import 'params.dart';
 
 class GetChatMembers implements UseCase<PaginatedResult<ContactEntity>, GetChatMembersParams> {
   final ChatRepository repository;

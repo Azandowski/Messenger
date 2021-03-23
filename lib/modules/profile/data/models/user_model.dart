@@ -8,21 +8,24 @@ class UserModel extends User {
   final String phoneNumber;
   final String profileImage;
   final int id;
+  final bool isBlocked;
 
-  UserModel({
-    this.name,
-    this.surname,
-    this.patronym,
-    this.phoneNumber,
-    this.id,
-    this.profileImage,
-  }) : super(
+  UserModel(
+      {this.name,
+      this.surname,
+      this.patronym,
+      this.phoneNumber,
+      this.id,
+      this.profileImage,
+      this.isBlocked})
+      : super(
             name: name,
             surname: surname,
             patronym: patronym,
             phoneNumber: phoneNumber,
             id: id,
-            profileImage: profileImage);
+            profileImage: profileImage,
+            isBlocked: isBlocked);
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
@@ -32,8 +35,11 @@ class UserModel extends User {
         phoneNumber: json['phone'],
         id: json['id'],
         profileImage: json['avatar'] != null
-            ? ConfigExtension.buildURLHead() + json['avatar']
-            : null);
+            ? (json['avatar'] as String).contains('://')
+                ? json['avatar']
+                : ConfigExtension.buildURLHead() + json['avatar']
+            : null,
+        isBlocked: json['isBlocked'] == 1);
   }
 
   Map<String, dynamic> toJson() {
@@ -43,7 +49,8 @@ class UserModel extends User {
       'surname': surname,
       'patronym': patronym,
       'phone': phoneNumber,
-      'avatar': profileImage
+      'avatar': profileImage,
+      'isBlocked': isBlocked ? 1 : 0
     };
   }
 }

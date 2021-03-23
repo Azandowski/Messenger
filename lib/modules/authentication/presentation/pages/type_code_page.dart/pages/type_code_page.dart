@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:messenger_mobile/core/utils/snackbar_util.dart';
 
 import '../../../../../../app/appTheme.dart';
 import '../../../../../../core/widgets/independent/buttons/gradient_main_button.dart';
@@ -63,17 +64,9 @@ class _TypeCodePageState extends State<TypeCodePage> {
         listener: (context, state) {
           if (state is InvalidCode) {
             _pinPutController.clear();
-            Scaffold.of(context)
-              ..hideCurrentSnackBar()
-              ..showSnackBar(
-                SnackBar(content: Text(state.message)),
-              );
+            SnackUtil.showError(context: context, message: state.message);
           } else if (state is SuccessCode) {
-            Scaffold.of(context)
-              ..hideCurrentSnackBar()
-              ..showSnackBar(
-                SnackBar(content: Text('TOOOOOOOP')),
-              );
+            SnackUtil.showInfo(context: context, message: 'Success');
           }
         },
         builder: (context, state) {
@@ -105,7 +98,7 @@ class _TypeCodePageState extends State<TypeCodePage> {
                     child: timer > 0
                         ? Text('Получить код повторно через: $timer сек',
                             style: AppFontStyles.placeholderStyle)
-                        : GestureDetector(
+                        : InkWell(
                             onTap: () {
                               phoneCubit.sendPhone(widget.codeEntity.phone);
                               setState(() {
@@ -132,11 +125,7 @@ class _TypeCodePageState extends State<TypeCodePage> {
                             _pinPutController.text,
                           );
                     } else {
-                      Scaffold.of(context)
-                        ..hideCurrentSnackBar()
-                        ..showSnackBar(
-                          SnackBar(content: Text('Type Valid Code')),
-                        );
+                      SnackUtil.showError(context: context, message: 'Type Valid Code');
                     }
                   },
                 ),

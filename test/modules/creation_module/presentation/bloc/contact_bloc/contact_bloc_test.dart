@@ -48,7 +48,7 @@ void main() {
               .thenAnswer((_) async => Right(tPaginatedResult));
           bloc.add(ContactFetched());
         },
-        expect: [
+        expect: () => [
           ContactState(status: ContactStatus.loading),
           ContactState(status: ContactStatus.success),
         ],
@@ -62,7 +62,7 @@ void main() {
               .thenAnswer((_) async => Left(ServerFailure(message: "message")));
           bloc.add(ContactFetched());
         },
-        expect: [
+        expect: () => [
           ContactState(status: ContactStatus.loading),
           ContactState(status: ContactStatus.failure),
         ],
@@ -78,7 +78,7 @@ void main() {
               .thenAnswer((_) async => Right(tPaginatedResult));
           bloc.add(RefreshContacts());
         },
-        expect: [
+        expect: () => [
           ContactState(status: ContactStatus.loading),
           ContactState(status: ContactStatus.success),
         ],
@@ -92,7 +92,7 @@ void main() {
               .thenAnswer((_) async => Left(ServerFailure(message: "message")));
           bloc.add(RefreshContacts());
         },
-        expect: [
+        expect: () => [
           ContactState(status: ContactStatus.loading),
           ContactState(status: ContactStatus.failure),
         ],
@@ -118,7 +118,7 @@ void main() {
               .thenAnswer((_) async => Right(tPaginatedResult));
           bloc.add(ContactFetched());
         },
-        expect: [
+        expect: () => [
           ContactState(status: ContactStatus.loading),
           ContactState(status: ContactStatus.success),
         ],
@@ -132,7 +132,7 @@ void main() {
               .thenAnswer((_) async => Left(ServerFailure(message: "message")));
           bloc.add(ContactFetched());
         },
-        expect: [
+        expect: () => [
           ContactState(status: ContactStatus.loading),
           ContactState(status: ContactStatus.failure),
         ],
@@ -148,7 +148,7 @@ void main() {
               .thenAnswer((_) async => Right(tPaginatedResult));
           bloc.add(RefreshContacts());
         },
-        expect: [
+        expect: () => [
           ContactState(status: ContactStatus.loading),
           ContactState(status: ContactStatus.success),
         ],
@@ -162,7 +162,7 @@ void main() {
               .thenAnswer((_) async => Left(ServerFailure(message: "message")));
           bloc.add(RefreshContacts());
         },
-        expect: [
+        expect: () => [
           ContactState(status: ContactStatus.loading),
           ContactState(status: ContactStatus.failure),
         ],

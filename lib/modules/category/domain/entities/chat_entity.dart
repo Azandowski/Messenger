@@ -3,11 +3,12 @@ import 'package:flutter/material.dart';
 
 import '../../../chat/data/models/message_model.dart';
 import '../../../chats/domain/entities/category.dart';
+import '../../data/models/chat_permission_model.dart';
 import 'chat_permissions.dart';
 
+// ignore: must_be_immutable
 class ChatEntity extends Equatable {
   final int chatId;
-  final CategoryEntity chatCategory;
   final String title;
   final String imageUrl;
   final DateTime date;
@@ -15,17 +16,22 @@ class ChatEntity extends Equatable {
   final MessageModel lastMessage;
   final int unreadCount;
   final String description;
+  final bool isPrivate;
+  final bool isRead;
+  CategoryEntity chatCategory;
 
   ChatEntity({
-    @required this.chatCategory,
+    this.chatCategory,
     @required this.title,
-    @required this.imageUrl,
+    this.imageUrl,
     @required this.chatId,
     @required this.date,
-    @required this.permissions,
-    @required this.unreadCount,
-    @required this.description,
-    this.lastMessage
+    this.permissions,
+    this.unreadCount,
+    this.description,
+    this.lastMessage,
+    this.isPrivate = false,
+    this.isRead
   });
 
   @override
@@ -38,11 +44,14 @@ class ChatEntity extends Equatable {
     permissions, 
     date,
     unreadCount,
-    description
+    description,
+    isPrivate,
+    isRead
   ];
 
   ChatEntity clone({
-    ChatPermissions permissions
+    ChatPermissions permissions,
+    int unreadCount
   }) {
     return ChatEntity(
       chatId: this.chatId,
@@ -52,11 +61,37 @@ class ChatEntity extends Equatable {
       date: this.date,
       permissions: permissions ?? ChatPermissions(
         isSoundOn: this.permissions.isSoundOn,
-        isMediaSendOn: this.permissions.isMediaSendOn
+        isMediaSendOn: this.permissions.isMediaSendOn,
+        isForwardOn: this.permissions.isForwardOn
       ),
       lastMessage: this.lastMessage,
-      unreadCount: this.unreadCount,
+      unreadCount: unreadCount ?? this.unreadCount,
       description: description
     );
   }
+
+  Map toJson () {
+    return {
+      'id': chatId,
+      'name': title,
+      'avatar': imageUrl,
+      'category_chat': chatCategory == null ? null : {
+        'id': chatCategory.id,
+        'name': chatCategory.name,
+        'avatar': chatCategory.avatar,
+        'full_link': chatCategory.avatar,
+        'total_chats': chatCategory.totalChats,
+      },
+      'created_at': date == null ? null : date.toIso8601String(),
+      'settings': {
+        'sound': permissions.isSoundOn ? 1 : 0,
+        'admin_media_send': permissions.isSoundOn ? 1 : 0
+      },
+      'last_message': lastMessage?.toJson(),
+      'no_read_message': unreadCount,
+      'description': description,
+      'is_private': isPrivate ? 1 : 0
+    };
+  }
 }
+

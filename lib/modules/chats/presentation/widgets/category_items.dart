@@ -33,7 +33,7 @@ class CategoriesSection extends StatelessWidget {
             Text(
               'Категории чатов', 
               style: AppFontStyles.headerMediumStyle),
-            GestureDetector(
+            InkWell(
               child: Icon(Icons.chevron_right),
               onTap: onNextClick,
             )
@@ -79,7 +79,8 @@ class CategoryItemsScroll extends StatelessWidget {
               entity: CategoryEntity(
                 id: 0, totalChats: 0,
                 avatar: 'assets/images/logo.png',
-                name: 'Все'
+                name: 'Все',
+                noReadCount: 0
               ),
               onSelect: () {
                 onItemSelect(0);

@@ -43,3 +43,18 @@ class CategoriesReordered extends CategoryEvent {
     categoryUpdated
   ];
 }
+
+class CategoryReadCountChanged extends CategoryEvent {
+  final int categoryID;
+  final int newReadCount;
+
+  CategoryReadCountChanged({
+    @required this.categoryID,
+    @required this.newReadCount
+  });
+
+  @override
+  List<Object> get props => [
+    categoryID, newReadCount
+  ];
+}

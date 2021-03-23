@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/app/appTheme.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chat_details/widgets/divider_wrapper.dart';
 import 'package:shimmer/shimmer.dart';
+
+import '../widgets/divider_wrapper.dart';
 
 class ChatSkeletonPage extends StatelessWidget {
   @override

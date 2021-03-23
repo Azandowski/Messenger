@@ -6,12 +6,14 @@ class CategoryEntity extends Equatable {
   final String name;
   final String avatar;
   final int totalChats;
+  final int noReadCount;
 
   CategoryEntity({
     @required this.id, 
     @required this.name, 
     @required this.avatar, 
-    @required this.totalChats
+    @required this.totalChats,
+    @required this.noReadCount
   });
 
   CategoryEntity clone() {
@@ -19,12 +21,13 @@ class CategoryEntity extends Equatable {
       id: this.id,
       name: this.name,
       avatar: this.avatar,
-      totalChats: this.totalChats
+      totalChats: this.totalChats,
+      noReadCount: this.noReadCount
     );
   }
 
   @override
   List<Object> get props => [
-    id, name, avatar, totalChats
+    id, name, avatar, totalChats, noReadCount
   ];
 } 

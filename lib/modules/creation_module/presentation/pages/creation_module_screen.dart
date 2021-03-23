@@ -1,14 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_share/flutter_share.dart';
-import 'package:messenger_mobile/core/utils/paginated_scroll_controller.dart';
-import 'package:messenger_mobile/modules/creation_module/presentation/bloc/contact_bloc/contact_bloc.dart';
-import 'package:messenger_mobile/modules/creation_module/presentation/helpers/creation_actions.dart';
-import 'package:messenger_mobile/modules/creation_module/presentation/widgets/actions_builder.dart';
-import 'package:messenger_mobile/modules/groupChat/presentation/create_group/create_group_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_share/flutter_share.dart';
+import 'package:messenger_mobile/app/application.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chat_details/page/chat_detail_page.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chat_details/page/chat_detail_screen.dart';
+import 'package:messenger_mobile/modules/creation_module/presentation/bloc/open_chat_cubit/open_chat_cubit.dart';
+import 'package:messenger_mobile/modules/creation_module/presentation/bloc/open_chat_cubit/open_chat_listener.dart';
+import 'package:messenger_mobile/modules/creation_module/presentation/pages/search_contact/search_contact_page.dart';
 
 import '../../../../app/appTheme.dart';
+import '../../../../app/application.dart';
+import '../../../../core/utils/paginated_scroll_controller.dart';
+import '../../../../locator.dart';
+import '../../../groupChat/domain/usecases/create_chat_group.dart';
+import '../../../groupChat/presentation/create_group/create_group_page.dart';
+import '../bloc/contact_bloc/contact_bloc.dart';
+import '../helpers/creation_actions.dart';
+import '../widgets/actions_builder.dart';
 import '../widgets/contcats_list.dart';
+import 'search_contact/search_contact_page.dart';
 
 
 class CreationModuleScreen extends StatefulWidget {
@@ -25,13 +35,22 @@ class CreationModuleScreen extends StatefulWidget {
 
 class _CreationModuleScreenState extends State<CreationModuleScreen> {
   
+  // MARK: - Props
+
+  NavigatorState get _navigator => sl<Application>().navKey.currentState;
   PaginatedScrollController _scrollController = PaginatedScrollController();
+  OpenChatListener _openChatListener = OpenChatListener();
+
+  // MARK: - Life-Cycle
 
   @override
   void initState() {
     _scrollController.addListener(_onScroll);
+    context.read<ContactBloc>().add(ContactFetched());
     super.initState();
   }
+
+  // MARK: - UI
 
   @override
   Widget build(BuildContext context) {
@@ -41,24 +60,58 @@ class _CreationModuleScreenState extends State<CreationModuleScreen> {
           'Создать',
           style: AppFontStyles.headingTextSyle,
         ),
-      ),
-      body: Container(
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
-        child: SingleChildScrollView(
-          controller: _scrollController,
-          scrollDirection: Axis.vertical,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ActionsContainer(
-                onTap: (CreationActions action) {
-                  actionProcess(action, context);
-                },
-              ),
-              ContactsList(isScrollable: false)
-            ],
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.search
+            ), 
+            onPressed: () {
+              _navigator.push(SearchContactPage.route(
+                initialContacts: context.read<ContactBloc>().state.contacts
+              ));
+            }
           )
+        ],
+      ),
+      body: BlocProvider(
+        create: (context) => OpenChatCubit(
+          createChatGruopUseCase: sl<CreateChatGruopUseCase>()
+        ),
+        child: BlocConsumer<OpenChatCubit, OpenChatState>(
+          listener: (context, state) {
+            _openChatListener.handleStateUpdate(context, state);
+          },
+          builder: (context, state) {
+            return Container(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              child: SingleChildScrollView(
+                controller: _scrollController,
+                scrollDirection: Axis.vertical,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ActionsContainer(
+                      onTap: (CreationActions action) {
+                        actionProcess(action, context);
+                      },
+                    ),
+                    ContactsList(
+                      isScrollable: false,
+                      didSelectContactToChat: (contact) {
+                        context.read<OpenChatCubit>().createChatWithUser(contact.id);
+                      },
+                      onTapContact: (contact) {
+                        _navigator.push(ChatDetailPage.route(
+                          contact.id, ProfileMode.user
+                        ));
+                      },
+                    )
+                  ],
+                )
+              ),
+            );
+          },
         ),
       ),
     );
@@ -72,10 +125,7 @@ class _CreationModuleScreenState extends State<CreationModuleScreen> {
   ) async {
     switch (action){
       case CreationActions.createGroup:
-        Navigator.pushNamed(context, CreateGroupPage.id);
-        break;
-      case CreationActions.createSecretChat:
-        // TODO: Handle this case.
+        _navigator.push(CreateGroupPage.route());
         break;
       case CreationActions.startVideo:
         // TODO: Handle this case.

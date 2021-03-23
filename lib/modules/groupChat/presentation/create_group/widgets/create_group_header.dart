@@ -1,7 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/core/widgets/independent/buttons/icon_text_button.dart';
+
+import '../../../../../core/widgets/independent/buttons/icon_text_button.dart';
 import '../../../../../core/widgets/independent/small_widgets/photo_picker_view.dart';
 import '../../../../../core/widgets/independent/textfields/customTextField.dart';
 

@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:messenger_mobile/modules/chat/data/datasources/chat_datasource.dart';
-import 'package:messenger_mobile/modules/chat/data/repositories/chat_repository.dart';
-import 'package:messenger_mobile/modules/chat/domain/usecases/get_chat_details.dart';
-import 'package:messenger_mobile/modules/chat/domain/usecases/get_chat_members.dart';
-import 'package:messenger_mobile/modules/creation_module/presentation/bloc/contact_bloc/contact_bloc.dart';
-import 'package:messenger_mobile/modules/creation_module/presentation/widgets/contcats_list.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen.dart';
+import 'package:messenger_mobile/modules/creation_module/presentation/bloc/creation_module_cubit/creation_module_cubit.dart';
+import 'package:messenger_mobile/modules/creation_module/presentation/bloc/open_chat_cubit/open_chat_cubit.dart';
+import 'package:messenger_mobile/modules/creation_module/presentation/bloc/open_chat_cubit/open_chat_listener.dart';
+import 'package:messenger_mobile/modules/groupChat/domain/usecases/create_chat_group.dart';
 
 import '../../../../locator.dart';
+import '../../../creation_module/presentation/bloc/contact_bloc/contact_bloc.dart';
+import '../../../creation_module/presentation/widgets/contcats_list.dart';
+import '../../domain/usecases/get_chat_details.dart';
+import '../../domain/usecases/get_chat_members.dart';
 
 class ChatMembersScreen extends StatelessWidget {
   
@@ -17,6 +20,7 @@ class ChatMembersScreen extends StatelessWidget {
 
   final int id;
   final GetChatDetails getChatDetails;
+  final OpenChatListener _openChatListener = OpenChatListener();
 
   ChatMembersScreen({
     @required this.id,
@@ -36,7 +40,24 @@ class ChatMembersScreen extends StatelessWidget {
             repository: getChatDetails.repository
           )
         )..add(ContactFetched()),
-        child: ContactsList()
+        child: BlocProvider(
+          create: (context) => OpenChatCubit(
+            createChatGruopUseCase: sl<CreateChatGruopUseCase>()
+          ),
+          child: BlocConsumer<OpenChatCubit, OpenChatState>(
+            listener: (context, state) {
+              _openChatListener.handleStateUpdate(context, state);
+            },
+            builder: (context, state) {
+              return ContactsList(
+                mode: ContactsMode.showPeople,
+                didSelectContactToChat: (person) {
+                  context.read<OpenChatCubit>().createChatWithUser(person.id);
+                },
+              );
+            },
+          ),
+        )
       ),
     );
   }

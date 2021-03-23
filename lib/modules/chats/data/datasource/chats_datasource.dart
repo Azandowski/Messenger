@@ -1,24 +1,23 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
-import 'package:messenger_mobile/core/services/network/socket_service.dart';
+import 'package:path_provider/path_provider.dart';
+
+import '../../../../core/config/auth_config.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/services/network/Endpoints.dart';
 import '../../../../core/services/network/paginatedResult.dart';
+import '../../../../core/services/network/socket_service.dart';
+import '../../../../core/utils/error_handler.dart';
 import '../../../../core/utils/http_response_extension.dart';
+import '../../../../locator.dart';
 import '../../../category/data/models/chat_entity_model.dart';
 import '../../../category/domain/entities/chat_entity.dart';
-import 'dart:io';
-import 'package:messenger_mobile/core/error/failures.dart';
-import 'package:messenger_mobile/core/services/network/Endpoints.dart';
-import 'package:messenger_mobile/core/services/network/paginatedResult.dart';
-import 'package:messenger_mobile/core/utils/error_handler.dart';
-import 'package:messenger_mobile/modules/category/data/models/chat_entity_model.dart';
-import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
-import 'package:messenger_mobile/core/utils/http_response_extension.dart';
-import 'package:path_provider/path_provider.dart';
+import '../../domain/entities/chat_search_response.dart';
+import '../model/chat_search_response_model.dart';
 
 abstract class ChatsDataSource {
   Future<PaginatedResultViaLastItem<ChatEntity>> getUserChats ({
@@ -26,20 +25,23 @@ abstract class ChatsDataSource {
     int lastChatId
   });
 
-  Future<List<ChatEntity>> getCategoryChat ({
+  Future<PaginatedResultViaLastItem<ChatEntity>> getCategoryChat ({
     @required String token,
-    @required int categoryID
+    @required int categoryID,
+    int lastChatId
   });
+
+  Stream<ChatEntity> get chats;
 
   Future<File> getLocalWallpaper ();
 
   Future<void> setLocalWallpaper(File file); 
 
-  void handleMessages (Function(ChatEntity) onReceiveMessage, int id);
-
-  void leaveChannel (int id);
-
-  Stream<ChatEntity>  messages(id);
+  Future<ChatMessageResponse> searchChats ({
+    Uri nextPageURL,
+    String queryText,
+    int chatID
+  });
 }
 
 
@@ -52,6 +54,23 @@ class ChatsDataSourceImpl implements ChatsDataSource {
     @required this.socketService
   });
 
+  void init () {
+    int userID = sl<AuthConfig>().user.id;
+
+    socketService.echo.channel(SocketChannels.getChatsUpdates(userID)).listen(
+      '.get.index.$userID', 
+      (updates) {
+        Map chatJSON = updates['chat'];
+        chatJSON['last_message'] = updates['last_message'];
+        chatJSON['category_chat'] = updates['category_chat'];
+        chatJSON['settings'] = updates['settings'];
+        chatJSON['no_read_message'] = updates['no_read_message'];
+
+        ChatEntityModel model = ChatEntityModel.fromJson(chatJSON);
+        _controller.add(model);
+      });
+  }
+
   /**
   * * Loading List of user's all chats via token
   */
@@ -63,7 +82,7 @@ class ChatsDataSourceImpl implements ChatsDataSource {
     http.Response response = await client.get(
       Endpoints.getAllUserChats.buildURL(queryParameters: {
         if (lastChatId != null)
-          'last_message_id': '$lastChatId'
+          'last_chat_id': '$lastChatId'
       }),
       headers: Endpoints.getAllUserChats.getHeaders(token: token),
     );
@@ -74,7 +93,7 @@ class ChatsDataSourceImpl implements ChatsDataSource {
       return PaginatedResultViaLastItem<ChatEntity>(
         data: ((responseJSON['chats'] ?? []) as List).map(
           (e) => ChatEntityModel.fromJson(e)).toList(),
-        hasReachMax: responseJSON['has_more_results']
+        hasReachMax: !responseJSON['has_more_results']
       );
     } else {
       throw ServerFailure(message: ErrorHandler.getErrorMessage(response.body.toString()));
@@ -82,18 +101,55 @@ class ChatsDataSourceImpl implements ChatsDataSource {
   }
 
   @override
-  Future<List<ChatEntity>> getCategoryChat({
+  Future<ChatMessageResponse> searchChats({
+    Uri nextPageURL,
+    String queryText,
+    int chatID
+  }) async {
+    http.Response response = await client.get(
+      nextPageURL ?? Endpoints.searchChats.buildURL(
+        queryParameters: {
+          'search': queryText,
+          if (chatID != null) 
+            ...{'chat_id': '$chatID'}
+        }
+      ),
+      headers: Endpoints.searchChats.getHeaders(token: sl<AuthConfig>().token)
+    );
+
+    if (response.isSuccess) {
+      var responseJSON = json.decode(response.body);
+      return ChatSearchResponseModel.fromJson(responseJSON);
+    } else {
+      throw ServerFailure(message: ErrorHandler.getErrorMessage(response.body.toString()));   
+    }
+  }
+
+  @override
+  Future<PaginatedResultViaLastItem<ChatEntity>> getCategoryChat({
     @required String token, 
-    @required int categoryID
+    @required int categoryID,
+    int lastChatId
   }) async {
       http.Response response = await client.get(
-        Endpoints.categoryChats.buildURL(urlParams: ['$categoryID']),
-        headers: Endpoints.getAllUserChats.getHeaders(token: token),
+        Endpoints.categoryChats.buildURL(
+          urlParams: ['$categoryID'],
+          queryParameters: {
+            if (lastChatId != null)
+              'last_chat_id': '$lastChatId'
+          }
+        ),
+        headers: Endpoints.categoryChats.getHeaders(token: token),
       );
 
     if (response.isSuccess) { 
-      List chats = (json.decode(response.body)['chats'] as List);
-      return chats.map((e) => ChatEntityModel.fromJson(e)).toList();
+      var responseJSON = json.decode(response.body);
+
+      return PaginatedResultViaLastItem<ChatEntity>(
+        data: ((responseJSON['chats'] ?? []) as List).map(
+          (e) => ChatEntityModel.fromJson(e)).toList(),
+        hasReachMax: !responseJSON['hasMoreResults']
+      );
     } else {
       throw ServerFailure(message: ErrorHandler.getErrorMessage(response.body.toString()));
     }
@@ -119,33 +175,13 @@ class ChatsDataSourceImpl implements ChatsDataSource {
     String appDocumentsPath = appDocumentsDirectory.path; 
     String filePath = '$appDocumentsPath/wallpaper.png';
     file.copy(filePath);
-  } 
-
-  /// MARK: - Handling messages from the Socket
-  /// [onReceiveMessage] - callback to retrieve new messages
-
-  void handleMessages (Function(ChatEntity) onReceiveMessage, int id) {
-    socketService.echo.channel(SocketChannels.getChatByID(id)).listen('.messages.$id', (updates) {
-      // TODO: decode json and call onReceiveMessage
-      print(updates);
-    });
   }
-
-  void leaveChannel (int id) {
-    socketService.echo.leave(SocketChannels.getChatByID(id));
-  }  
-  
-  final _controller = StreamController<ChatEntity>();
 
   @override
-  Stream<ChatEntity> messages(id) async* {
-     socketService.echo.channel(SocketChannels.getChatByID(id)).listen('.messages.$id', (updates) async* {
-        yield updates;
-        yield* _controller.stream;
-    });
+  Stream<ChatEntity> get chats async* {
+    yield* _controller.stream;
   }
- 
 
- 
- 
+  @override 
+  final StreamController _controller = StreamController<ChatEntity>.broadcast();
 }

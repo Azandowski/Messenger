@@ -1,10 +1,14 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/modules/chat/domain/entities/chat_actions.dart';
-import 'package:messenger_mobile/modules/profile/domain/entities/user.dart';
+
+import 'chat_actions.dart';
 
 enum MessageStatus {sending, sent,}
+
+enum MessageHandleType {
+  newMessage, setTopMessage, unSetTopMessage, userReadSecretMessage
+}
 
 class Message extends Equatable {
   final int id;
@@ -12,10 +16,17 @@ class Message extends Equatable {
   final DateTime dateTime;
   final String text;
   final MessageUser user;
+  final MessageUser toUser;
   final ChatActions chatActions;
   MessageStatus messageStatus;
+  List<Message> transfer;
   int identificator;
   final int colorId;
+  final int deletionSeconds;
+  final DateTime willBeDeletedAt;
+  final MessageChat chat;
+  final MessageHandleType messageHandleType;
+  final int timeDeleted;
   
   Message({
     this.text,
@@ -26,7 +37,14 @@ class Message extends Equatable {
     this.id,
     this.isRead,
     this.chatActions,
-    this.messageStatus,
+    this.willBeDeletedAt,
+    this.deletionSeconds,
+    this.messageStatus = MessageStatus.sent,
+    this.transfer,
+    this.toUser,
+    this.chat,
+    this.messageHandleType = MessageHandleType.newMessage,
+    this.timeDeleted
   });
 
   @override
@@ -40,6 +58,13 @@ class Message extends Equatable {
     messageStatus,
     identificator,
     colorId,
+    willBeDeletedAt,
+    deletionSeconds,
+    transfer,
+    toUser,
+    chat,
+    messageHandleType,
+    timeDeleted
   ];
 
    Message copyWith({
@@ -50,8 +75,13 @@ class Message extends Equatable {
      MessageUser user,
      ChatActions chatActions,
      MessageStatus status,
+     List<Message> transfer,
      int colorId,
      int identificator,
+     int deletionSeconds,
+     DateTime willBeDeletedAt,
+     MessageUser toUser,
+     MessageChat chat
   }) {
     return Message(
       id: id ?? this.id,
@@ -60,10 +90,27 @@ class Message extends Equatable {
       text: text ?? this.text,
       dateTime: dateTime ?? this.dateTime,
       user: user ?? this.user,
-      chatActions: chatActions ?? null,
-      messageStatus: messageStatus ?? this.messageStatus,
+      chatActions: chatActions ?? this.chatActions,
+      messageStatus: status ?? this.messageStatus,
       identificator: identificator ?? this.identificator,
+      transfer: transfer ?? this.transfer,
+      toUser: toUser ?? this.toUser,
+      chat: chat ?? this.chat
     );
+  }
+
+  Map toJson () {
+    return {
+      'id': id,
+      'color': colorId,
+      'from_contact': user?.toJson(),
+      'text': text,
+      'is_read': isRead ? 1 : 0,
+      'created_at': dateTime.toIso8601String(),
+      'action': chatActions?.key,
+      'to_contact': toUser?.toJson(),
+      'chat': chat?.toJson()
+    };
   }
 }
 
@@ -84,4 +131,34 @@ class MessageUser extends Equatable{
 
   @override
   List<Object> get props => [id, name, surname, phone, avatarURL];
+
+  Map toJson () {
+    return {
+      'id': id,
+      'name': name,
+      'surname': surname,
+      'avatarURL': avatarURL
+    };
+  }
+}
+
+
+class MessageChat extends Equatable {
+  final int id;
+  final String name;
+
+  MessageChat({
+    @required this.id,
+    @required this.name
+  });
+
+  Map toJson () { 
+    return {
+      'id': id,
+      'name': name,
+    };
+  }
+
+  @override
+  List<Object> get props => [id, name];
 }

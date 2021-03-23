@@ -1,12 +1,13 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
-import 'package:messenger_mobile/core/error/failures.dart';
-import 'package:messenger_mobile/core/services/network/paginatedResult.dart';
-import 'package:messenger_mobile/core/usecases/usecase.dart';
-import 'package:messenger_mobile/modules/chat/domain/entities/message.dart';
-import 'package:messenger_mobile/modules/chat/domain/repositories/chat_repository.dart';
 
-class GetMessages implements UseCase<PaginatedResultViaLastItem<Message>, int> {
+import '../../../../core/error/failures.dart';
+import '../../../../core/usecases/usecase.dart';
+import '../../data/models/chat_message_response.dart';
+import '../repositories/chat_repository.dart';
+import 'params.dart';
+
+class GetMessages implements UseCase<ChatMessageResponse, GetMessagesParams> {
   final ChatRepository repository;
 
   GetMessages({
@@ -14,7 +15,7 @@ class GetMessages implements UseCase<PaginatedResultViaLastItem<Message>, int> {
   });
 
   @override
-  Future<Either<Failure, PaginatedResultViaLastItem<Message>>> call(int lastMessageId) async {
-    return repository.getChatMessages(lastMessageId);
+  Future<Either<Failure, ChatMessageResponse>> call(GetMessagesParams params) async {
+    return repository.getChatMessages(params.lastMessageId, params.direction);
   } 
 }

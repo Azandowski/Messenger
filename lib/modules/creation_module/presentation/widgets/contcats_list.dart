@@ -1,21 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:messenger_mobile/core/utils/paginated_scroll_controller.dart';
+import 'package:messenger_mobile/core/utils/snackbar_util.dart';
 
+import '../../../../core/utils/paginated_scroll_controller.dart';
 import '../../../../core/widgets/independent/small_widgets/cell_skeleton_item.dart';
 import '../../../../core/widgets/independent/small_widgets/chat_count_view.dart';
+import '../../domain/entities/contact.dart';
 import '../bloc/contact_bloc/contact_bloc.dart';
 import 'contact_cell.dart';
-import 'package:messenger_mobile/core/widgets/independent/small_widgets/cell_skeleton_item.dart';
-import 'package:messenger_mobile/core/widgets/independent/small_widgets/chat_count_view.dart';
-import 'package:messenger_mobile/modules/creation_module/presentation/bloc/contact_bloc/contact_bloc.dart';
-import 'package:messenger_mobile/modules/creation_module/presentation/widgets/contact_cell.dart';
+
+enum ContactsMode { showPeople, showMyContacts }
 
 class ContactsList extends StatefulWidget {
   
+  final ContactsMode mode;
   final bool isScrollable;
+  final Function(ContactEntity) didSelectContactToChat; 
+  final Function(ContactEntity) onTapContact;
 
-  ContactsList({ this.isScrollable = true });
+  ContactsList({ 
+    this.isScrollable = true,
+    this.didSelectContactToChat,
+    this.mode = ContactsMode.showMyContacts,
+    this.onTapContact
+  });
 
   @override
   _ContactsListState createState() => _ContactsListState();
@@ -38,8 +46,8 @@ class _ContactsListState extends State<ContactsList> {
   Widget build(BuildContext context) {
     return BlocConsumer<ContactBloc, ContactState>(
       listener: (context, state) {
-        if(state.status == ContactStatus.failure){
-          Scaffold.of(context).showSnackBar(SnackBar(content: Text('Could not handle contacts')));
+        if (state.status == ContactStatus.failure){
+          SnackUtil.showError(context: context, message: 'Не удалось обработать ваши контакты');
         }
       },
       builder: (_, state) {
@@ -55,12 +63,26 @@ class _ContactsListState extends State<ContactsList> {
             itemBuilder: (context, int index) {
               if (index == 0) {
                 return CellHeaderView(
-                  title: 'Ваши контакты: ${state.contacts.length}'
+                  title: widget.mode == ContactsMode.showMyContacts?
+                    'Ваши контакты: ${state.contacts.length}' : 
+                      'Контакты: ${state.contacts.length}'
                 );
               } else {
                 return index >= state.contacts.length + 1 ? 
                   CellShimmerItem(circleSize: 35,) : 
-                    ContactCell(contactItem: state.contacts[index - 1]);
+                    ContactCell(
+                      contactItem: state.contacts[index - 1],
+                      onTrilinIconTapped: () async {
+                        if (widget.didSelectContactToChat != null) {
+                          widget.didSelectContactToChat(state.contacts[index - 1]);
+                        }
+                      },
+                      onTap: () {
+                        if (widget.onTapContact != null) {
+                          widget.onTapContact(state.contacts[index - 1]);
+                        }
+                      },
+                    );
               }
             }, 
             separatorBuilder: (context, int index) => Divider(), 

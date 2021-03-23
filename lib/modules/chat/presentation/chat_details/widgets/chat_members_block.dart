@@ -1,24 +1,34 @@
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/app/appTheme.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chat_details/widgets/divider_wrapper.dart';
-import 'package:messenger_mobile/modules/creation_module/domain/entities/contact.dart';
-import 'package:messenger_mobile/modules/creation_module/presentation/widgets/contact_cell.dart';
+
+import '../../../../../app/appTheme.dart';
+import '../../../../../core/config/auth_config.dart';
+import '../../../../../locator.dart';
+import '../../../../creation_module/domain/entities/contact.dart';
+import '../../../../creation_module/presentation/widgets/contact_cell.dart';
+import '../../../domain/entities/chat_detailed.dart';
+import 'divider_wrapper.dart';
 
 class ChatMembersBlock extends StatelessWidget {
   final List<ContactEntity> members;
   final int membersCount;
   final Function onShowMoreClick;
+  final Function(ContactEntity) onTapItem;
+  final ChatMember memberRole;
 
   const ChatMembersBlock({
     @required this.members,
     @required this.membersCount,
     @required this.onShowMoreClick,
+    @required this.onTapItem,
+    @required this.memberRole,
     Key key, 
   }) : super(key: key);
 
   
   @override
   Widget build(BuildContext context) {  
+    var currentUserID = sl<AuthConfig>().user.id;
+
     return DividerWrapper(
       children: [
         Container(
@@ -40,7 +50,12 @@ class ChatMembersBlock extends StatelessWidget {
           ),
         ),
         ...members.map((e) => ContactCell(
-          contactItem: e
+          contactItem: e,
+          cellType: currentUserID == e.id || memberRole != ChatMember.admin ? ContactCellType.write :
+            ContactCellType.delete,
+          onTrilinIconTapped: () {
+            onTapItem(e);
+          },
         )).toList(),
         _buildSubmitButton()
       ]
@@ -48,7 +63,7 @@ class ChatMembersBlock extends StatelessWidget {
   }
 
   Widget _buildSubmitButton () {
-    return GestureDetector (
+    return InkWell (
       onTap: onShowMoreClick,
       child: Container(
         padding: const EdgeInsets.symmetric(

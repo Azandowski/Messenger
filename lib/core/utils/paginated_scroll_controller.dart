@@ -4,9 +4,18 @@ class PaginatedScrollController extends ScrollController {
   
   bool isReversed = false;
 
-  PaginatedScrollController({ this.isReversed });
+  PaginatedScrollController({ this.isReversed = false });
   
   bool get isPaginated {
+    if (isReversed) {
+      return offset < 100;
+    } else {
+      var triggerFetchMoreSize = 0.7 * position.maxScrollExtent;
+      return offset > triggerFetchMoreSize;
+    }
+  }
+
+  bool get isReverslyPaginated {
     if (!isReversed) {
       return offset < 100;
     } else {

@@ -1,28 +1,38 @@
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/app/appTheme.dart';
-import 'package:messenger_mobile/core/config/auth_config.dart';
-import 'package:messenger_mobile/modules/chat/domain/entities/message.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../app/appTheme.dart';
+import '../../../../core/config/auth_config.dart';
 import '../../../../locator.dart';
+import '../../domain/entities/message.dart';
+import '../../presentation/chats_screen/helpers/messageCellAction.dart';
 
 class MessageViewModel {
   final Message message;
+  final bool isSelected;
+  final int timeLeftToBeDeleted;
 
-  MessageViewModel (this.message); 
+  MessageViewModel (
+    this.message, {
+      this.isSelected = false,
+      this.timeLeftToBeDeleted = null
+    }
+  ); 
 
   // MARK: - For UI
 
   String get userNameText {
-    return message.user.name;
+    return message.user.name ?? '';
   }
 
   String get messageText {
-    return message.text;
+    return message.text ?? '';
   }
 
   String get time {
-    if (message.dateTime != null) {
+    if (timeLeftToBeDeleted != null) {
+      return '$timeLeftToBeDeleted';
+    } else if (message.dateTime != null) {
       return new DateFormat("Hm").format(message.dateTime); 
     } else {
       return '';
@@ -37,8 +47,6 @@ class MessageViewModel {
     @required int previousMessageUserID, 
     @required int nextMessageUserID
   }) {
-    int myID = sl<AuthConfig>().user.id;
-
     return BoxDecoration(
       color: !isMine ? Colors.white : (isMine && messageStatus == MessageStatus.sending) ?
         AppColors.greyColor : AppColors.messageBlueBackground,
@@ -55,7 +63,30 @@ class MessageViewModel {
   Color get readColor {
     return message.isRead ? AppColors.successGreenColor : AppColors.greyColor;
   }
+  
+  bool get canBeCopied {
+    return message.text != null && message.text != '';
+  }
 
+  List<MessageCellActions> getActionsList ({
+    @required bool isReplyEnabled
+  }) {
+    if (message.text != null && message.text != ''){
+      return MessageCellActions.values.where(
+        (e) => isReplyEnabled ? true : e != MessageCellActions.replyMessage && e != MessageCellActions.replyMore
+      ).toList(); 
+    } else {
+      return [
+        MessageCellActions.attachMessage, 
+        if (isReplyEnabled)
+          ...[
+            MessageCellActions.replyMessage, 
+            MessageCellActions.replyMore
+          ],
+        MessageCellActions.deleteMessage
+      ];
+    } 
+  }
 
   // MARK: - Logic
 
