@@ -77,7 +77,7 @@ extension ChatActionsExtension on ChatActions {
 
   String get imagePath {
     switch (this) {
-      case ChatActions.setSecret:
+      case ChatActions.setSecret: case ChatActions.unsetSecret:
         return 'assets/icons/hot.png';
       default:
         return null;

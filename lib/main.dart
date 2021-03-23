@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:messenger_mobile/core/screens/splash_screen.dart';
 import 'app/application.dart';
 import 'modules/creation_module/presentation/bloc/contact_bloc/contact_bloc.dart';
-import 'core/screens/splash_screen.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'app/appTheme.dart';
 import 'bloc_observer.dart';
@@ -12,6 +12,7 @@ import 'core/blocs/category/bloc/category_bloc.dart';
 import 'core/blocs/chat/bloc/bloc/chat_cubit.dart';
 import 'core/config/routes.dart';
 import 'locator.dart' as serviceLocator;
+import 'modules/maps/presentation/pages/map_screen.dart';
 
 
 void main() async {

@@ -105,7 +105,9 @@ class _ChatsScreenState extends State<ChatsScreen> {
                             ),
                           );
                         } else {
-                          return Center(child: EmptyView());
+                          return Center(child: EmptyView(
+                            text: 'В этой категории еще нет чатов.\nСоздайте новую.',
+                          ));
                         }
                       } else {
                         return CellShimmerItem();

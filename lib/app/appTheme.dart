@@ -92,7 +92,6 @@ abstract class AppFontStyles {
   static get white14w400 => TextStyle(
     color: Colors.white,
     fontWeight: FontWeight.w400,
-    height: 1.4,
     fontSize: 14,
   );
 
@@ -117,7 +116,6 @@ abstract class AppFontStyles {
   static get white12w400 => TextStyle(
     color: Colors.white,
     fontWeight: FontWeight.w400,
-    height: 0.75,
     fontSize: 12,
   );
 
