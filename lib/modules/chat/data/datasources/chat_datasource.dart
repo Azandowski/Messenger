@@ -122,7 +122,6 @@ class ChatDataSourceImpl implements ChatDataSource {
         return MessageHandleType.setTopMessage;
       case 'unSetTopMessage':
         return MessageHandleType.unSetTopMessage;
-      case ''
     }
   }
    
