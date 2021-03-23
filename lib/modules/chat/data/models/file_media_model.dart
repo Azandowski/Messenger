@@ -23,7 +23,7 @@ class FileMediaModel extends FileMedia{
   factory FileMediaModel.fromJson(Map<String, dynamic> json) {
    return FileMediaModel(
     id: json['id'],
-    url: json['file'],
+    url: json['full_link'],
     type: (json['type'] as String).getMediaType,
     userId: json['user_id'],
    );

@@ -62,11 +62,9 @@ class MultipartRequestHelper {
 
     copyRequest.fields.addAll(request.fields);
   
-    request.files.addAll(await getFilesList(
+    copyRequest.files.addAll(await getFilesList(
       files ?? [], keyName
     ));
-
-    copyRequest.files.addAll(request.files);
 
     return copyRequest.send();
   }

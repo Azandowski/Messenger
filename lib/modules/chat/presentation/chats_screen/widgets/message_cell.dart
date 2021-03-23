@@ -1,6 +1,9 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_sound/flutter_sound.dart';
 import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
+import 'package:messenger_mobile/modules/chat/domain/entities/file_media.dart';
 import 'package:swipeable/swipeable.dart';
 import 'package:vibrate/vibrate.dart';
 
@@ -95,8 +98,7 @@ class _MessageCellState extends State<MessageCell> {
                 menuBoxDecoration: BoxDecoration(color: Colors.grey,borderRadius: BorderRadius.all(Radius.circular(15.0))),
                 menuItems: widget.messageViewModel.getActionsList(
                   isReplyEnabled: widget.isSwipeEnabled
-                )
-                  .map((e) => FocusedMenuItem(
+                ).map((e) => FocusedMenuItem(
                     title: Text(
                       e.title
                     ),
@@ -149,6 +151,8 @@ class MessageContainer extends StatelessWidget {
           AppFontStyles.black14w400 : AppFontStyles.white14w400,
           textAlign: TextAlign.left,
         ),
+        if(widget.messageViewModel.hasMedia) 
+        ...returnAuidoWidgets(widget.messageViewModel.message.files),
       ],
     ),
           );
@@ -161,3 +165,48 @@ List<Widget> returnForwardColumn(List<Message> transfers) {
   )).toList();
 }
 
+List<Widget> returnAuidoWidgets(List<FileMedia> files) {
+  return files.map((e) => AudioPlayerElement(
+    audioUrl: e.url,
+  )).toList();
+}
+
+class AudioPlayerElement extends StatefulWidget {
+  final String audioUrl;
+
+  const AudioPlayerElement({Key key, @required this.audioUrl}) : super(key: key);
+
+  @override
+  _AudioPlayerElementState createState() => _AudioPlayerElementState();
+}
+
+class _AudioPlayerElementState extends State<AudioPlayerElement> {
+  
+  String maxDuration;
+
+  @override
+  void initState() {
+    super.initState();
+    print(widget.audioUrl);
+    // getDuration();
+  }
+
+  Future getDuration() async {
+    Duration duration = await flutterSoundHelper.duration(widget.audioUrl);
+    if(duration != null){
+    var date = DateTime.fromMillisecondsSinceEpoch(duration.inMilliseconds,isUtc: true);
+      setState(() {
+        maxDuration =  DateFormat.ms().format(date);
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Row(
+        
+      ),
+    );
+  }
+}

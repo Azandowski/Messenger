@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
+import 'package:messenger_mobile/core/blocs/audioplayer/bloc/audio_player_bloc.dart';
 
 import '../../../../../../app/appTheme.dart';
 import '../../pages/chat_screen_import.dart';
@@ -11,8 +12,9 @@ import '../chatControlPanel/bloc/voice_record_bloc.dart';
 class VoiceRecordingRow extends StatefulWidget {
   final VoiceRecordBloc voiceRecordBloc;
   final Function onCancel;
+  final AudioPlayerBloc audioPlayerBloc;
 
-  const VoiceRecordingRow({Key key,@required this.voiceRecordBloc, @required this.onCancel}) : super(key: key);
+  const VoiceRecordingRow({Key key,@required this.voiceRecordBloc, @required this.onCancel, @required this.audioPlayerBloc}) : super(key: key);
   @override
   _VoiceRecordingRowState createState() => _VoiceRecordingRowState();
 }
@@ -42,6 +44,7 @@ class _VoiceRecordingRowState extends State<VoiceRecordingRow> with TickerProvid
   @override
   Widget build(BuildContext context) {
     var state = widget.voiceRecordBloc.state;
+    var audioState = widget.audioPlayerBloc.state;
     final List<Widget> playRow = [
       GestureDetector(
         onTap: widget.onCancel,
@@ -51,7 +54,7 @@ class _VoiceRecordingRowState extends State<VoiceRecordingRow> with TickerProvid
       ),
       SizedBox(width: 4,),
       StreamBuilder<PlaybackDisposition>(
-        stream: widget.voiceRecordBloc.playerStream,
+        stream: widget.audioPlayerBloc.playerStream,
         initialData: PlaybackDisposition(duration: Duration(seconds: 1), position: Duration(seconds: 0)),
         builder: (context, snapshot) {
           var maxDuration = snapshot.data.duration.inSeconds.toDouble();
@@ -72,10 +75,10 @@ class _VoiceRecordingRowState extends State<VoiceRecordingRow> with TickerProvid
                 children: [
                   GestureDetector(
                     onTap: (){
-                      widget.voiceRecordBloc.add(VoiceStartResumeStop(playerState: (state as VoiceRecordingEndWillSend).playerState));
+                      widget.audioPlayerBloc.add(StartResumeStop(path: state.path));
                     },
                     child: Icon(
-                      ((state as VoiceRecordingEndWillSend).playerState == VoicePlayerState.playing) ? Icons.pause : Icons.play_arrow,
+                    (audioState.playerState == VoicePlayerState.playing) ? Icons.pause : Icons.play_arrow,
                       color: Colors.black,
                     ),
                   ),

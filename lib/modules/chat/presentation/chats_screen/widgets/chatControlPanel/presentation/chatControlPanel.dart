@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:messenger_mobile/core/blocs/audioplayer/bloc/audio_player_bloc.dart';
 import 'package:provider/provider.dart';
 import '../../../../../../../app/appTheme.dart';
 import '../../../../../../../app/application.dart';
@@ -56,6 +57,7 @@ class ChatControlPanelState extends State<ChatControlPanel>
   ChatBloc chatBloc;
   VoiceRecordBloc recordBloc;
   ButtonMicroCubit buttonMicroCubit;
+  AudioPlayerBloc _audioPlayerBloc;
 
   final LayerLink layerLink = LayerLink();
 
@@ -79,7 +81,11 @@ class ChatControlPanelState extends State<ChatControlPanel>
     chatBloc = context.read<ChatBloc>();
     _panelBloc = context.read<PanelBlocCubit>();
     buttonMicroCubit = ButtonMicroCubit();
-    recordBloc = VoiceRecordBloc(chatBloc: chatBloc);
+    _audioPlayerBloc = BlocProvider.of<AudioPlayerBloc>(context);
+    recordBloc = VoiceRecordBloc(
+      chatBloc: chatBloc,
+      audioPlayerBloc: _audioPlayerBloc,
+    );
 
     microController = AnimationController(vsync: this, duration: Duration(microseconds: 200));
     pauseController = AnimationController(vsync: this, duration: Duration(milliseconds: 200));
@@ -171,6 +177,7 @@ class ChatControlPanelState extends State<ChatControlPanel>
                               SendMessageRow(widget: widget, panelBloc: _panelBloc) :
                               VoiceRecordingRow(
                                 voiceRecordBloc: recordBloc,
+                                audioPlayerBloc: _audioPlayerBloc,
                                 onCancel: (){
                                   recordBloc.add(VoiceStopRecording());
                                   buttonMicroCubit.resetToStable();
@@ -213,13 +220,16 @@ class ChatControlPanelState extends State<ChatControlPanel>
                                         color: Colors.white
                                       ),
                                       onPressed: () {
-                                        if (canWrite) {
+                                        if (canWrite && !(voiceState is VoiceRecordingEndWillSend)) {
                                           if (chatBloc.state.isSecretModeOn) {
                                             _lastTextStream = textStream;
                                             _navigator.push(TimePickerScreen.route(this));
                                           } else {
                                             _sendMessage(textStream, state);
                                           }
+                                        }else if(!canWrite && (voiceState is VoiceRecordingEndWillSend)){
+                                          recordBloc.add(VoiceStopRecording());
+                                          recordBloc.add(VoiceSendAudio());
                                         }
                                       },
                                       splashRadius: 5,

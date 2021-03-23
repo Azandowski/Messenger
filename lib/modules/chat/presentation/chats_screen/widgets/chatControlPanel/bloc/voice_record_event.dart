@@ -17,9 +17,13 @@ class VoiceStopRecording extends VoiceRecordEvent {}
 
 class VoiceStopHolding extends VoiceRecordEvent {}
 
-class VoicePauseResume extends VoiceRecordEvent {}
-
 class VoicePlayerFinished extends VoiceRecordEvent {}
+
+class VoiceChangePath extends VoiceRecordEvent {
+  final String path;
+
+  VoiceChangePath(this.path);
+}
 
 class VoiceStartResumeStop extends VoiceRecordEvent{
   final VoicePlayerState playerState;

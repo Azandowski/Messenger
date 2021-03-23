@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:messenger_mobile/modules/chat/domain/entities/file_media.dart';
 
 import 'chat_actions.dart';
 
@@ -27,6 +28,7 @@ class Message extends Equatable {
   final MessageChat chat;
   final MessageHandleType messageHandleType;
   final int timeDeleted;
+  final List<FileMedia> files;
   
   Message({
     this.text,
@@ -44,7 +46,8 @@ class Message extends Equatable {
     this.toUser,
     this.chat,
     this.messageHandleType = MessageHandleType.newMessage,
-    this.timeDeleted
+    this.timeDeleted,
+    this.files,
   });
 
   @override
@@ -64,7 +67,8 @@ class Message extends Equatable {
     toUser,
     chat,
     messageHandleType,
-    timeDeleted
+    timeDeleted,
+    files,
   ];
 
    Message copyWith({
@@ -81,7 +85,8 @@ class Message extends Equatable {
      int deletionSeconds,
      DateTime willBeDeletedAt,
      MessageUser toUser,
-     MessageChat chat
+     MessageChat chat,
+     List<FileMedia> files
   }) {
     return Message(
       id: id ?? this.id,
@@ -95,7 +100,8 @@ class Message extends Equatable {
       identificator: identificator ?? this.identificator,
       transfer: transfer ?? this.transfer,
       toUser: toUser ?? this.toUser,
-      chat: chat ?? this.chat
+      chat: chat ?? this.chat,
+      files: files ?? this.files,
     );
   }
 

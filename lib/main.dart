@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:messenger_mobile/core/blocs/audioplayer/bloc/audio_player_bloc.dart';
 
 import 'app/appTheme.dart';
 import 'app/application.dart';
@@ -48,43 +49,46 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => ChatGlobalCubit(
-        serviceLocator.sl(),
-        serviceLocator.sl(),
-        serviceLocator.sl(),
-      ),
+      create: (context) => AudioPlayerBloc(),
       child: BlocProvider(
-          create: (context) => CategoryBloc(
-            reorderCategories: serviceLocator.sl(),
-            repository: serviceLocator.sl(),
-            deleteCategory: serviceLocator.sl(),
-            chatGlobalCubit: context.read<ChatGlobalCubit>(),
+          create: (context) => ChatGlobalCubit(
+            serviceLocator.sl(),
+            serviceLocator.sl(),
+            serviceLocator.sl(),
           ),
-          child: MultiBlocProvider(
-            providers: [
-              BlocProvider(
-                create: (_) =>
-                    serviceLocator.sl<ContactBloc>()..add(ContactFetched()),
+          child: BlocProvider(
+              create: (context) => CategoryBloc(
+                reorderCategories: serviceLocator.sl(),
+                repository: serviceLocator.sl(),
+                deleteCategory: serviceLocator.sl(),
+                chatGlobalCubit: context.read<ChatGlobalCubit>(),
               ),
-              BlocProvider.value(
-                value: serviceLocator.sl<AuthBloc>(),
+              child: MultiBlocProvider(
+                providers: [
+                  BlocProvider(
+                    create: (_) =>
+                        serviceLocator.sl<ContactBloc>()..add(ContactFetched()),
+                  ),
+                  BlocProvider.value(
+                    value: serviceLocator.sl<AuthBloc>(),
+                  ),
+                ],
+                child: Builder(
+                  builder: (BuildContext context) {
+                    return MaterialApp(
+                      debugShowCheckedModeBanner: false,
+                      home: SplashScreen(),
+                      theme: AppTheme.light,
+                      navigatorKey: serviceLocator.sl<Application>().navKey,
+                      localizationsDelegates: context.localizationDelegates,
+                      supportedLocales: context.supportedLocales,
+                      locale: context.deviceLocale,
+                      routes: routes,
+                    );
+                  },
+                ),
               ),
-            ],
-            child: Builder(
-              builder: (BuildContext context) {
-                return MaterialApp(
-                  debugShowCheckedModeBanner: false,
-                  home: SplashScreen(),
-                  theme: AppTheme.light,
-                  navigatorKey: serviceLocator.sl<Application>().navKey,
-                  localizationsDelegates: context.localizationDelegates,
-                  supportedLocales: context.supportedLocales,
-                  locale: context.deviceLocale,
-                  routes: routes,
-                );
-              },
             ),
-          ),
         ),
     );
   }

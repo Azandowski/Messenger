@@ -120,4 +120,12 @@ class MessageViewModel {
   MessageStatus get messageStatus {
     return message.messageStatus;
   }
+  
+  bool get hasMedia {
+    if(message.files != null){
+      return message.files.length > 0;
+    }else{
+      return false;
+    }
+  }
 }

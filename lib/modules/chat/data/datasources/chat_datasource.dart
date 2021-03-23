@@ -197,7 +197,7 @@ class ChatDataSourceImpl implements ChatDataSource {
         request: multipartRequest,
         data: body,
         files: params.fieldFiles?.files != null ? params.fieldFiles?.files : [],
-        keyName: List.generate(params.fieldFiles?.files?.length, (index) => 'file[$index]') ?? [] );
+        keyName: params.fieldFiles?.files != null ?  List.generate(params.fieldFiles?.files?.length, (index) => 'file[$index]') : [] );
 
     final response = await http.Response.fromStream(streamedResponse);
 
