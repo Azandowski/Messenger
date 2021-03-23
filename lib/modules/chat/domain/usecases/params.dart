@@ -1,13 +1,13 @@
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
-import 'package:messenger_mobile/modules/chat/data/datasources/chat_datasource.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chat_details/page/chat_detail_screen.dart';
-import 'package:messenger_mobile/modules/social_media/domain/entities/social_media.dart';
 
 import '../../../../core/utils/pagination.dart';
 import '../../../category/data/models/chat_permission_model.dart';
+import '../../../social_media/domain/entities/social_media.dart';
 import '../../data/datasources/chat_datasource.dart';
+import '../../presentation/chat_details/page/chat_detail_screen.dart';
+import '../../presentation/chat_details/widgets/chat_media_block.dart';
 
 class GetChatMembersParams {
   final int id;
@@ -37,12 +37,11 @@ class SendMessageParams {
     this.timeLeft
   });
 }
-enum FileKey {audio,}
 
-extension FileKeysExtension on FileKey {
+extension FileKeysExtension on MediaType {
   String get filedKey {
     switch (this) {
-      case FileKey.audio:
+      case MediaType.audio:
       return 'audio';
       default:
       return 'photo';
@@ -51,7 +50,7 @@ extension FileKeysExtension on FileKey {
 }
 
 class FieldFiles {
-  final FileKey fieldKey;
+  final MediaType fieldKey;
   final List<File> files;
 
   FieldFiles({

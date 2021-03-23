@@ -1,7 +1,6 @@
 import '../../../../../core/config/auth_config.dart';
-import '../../../domain/entities/message.dart';
-
 import '../../../../../locator.dart';
+import '../../../domain/entities/message.dart';
 
 class MessageUserViewModel {
   final MessageUser user;

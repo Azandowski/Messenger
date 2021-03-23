@@ -2,8 +2,9 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_sound/flutter_sound.dart';
-import 'package:messenger_mobile/core/utils/feedbac_taptic_helper.dart';
-import 'package:messenger_mobile/modules/chat/domain/usecases/params.dart';
+import '../../../../../../../core/utils/feedbac_taptic_helper.dart';
+import '../../../../../domain/usecases/params.dart';
+import '../../../../chat_details/widgets/chat_media_block.dart';
 
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -78,7 +79,7 @@ class VoiceRecordBloc extends Bloc<VoiceRecordEvent, VoiceRecordState> {
     }else if(event is VoiceSendAudio){
       chatBloc.add(MessageSend(
         fieldFiles: FieldFiles(
-          fieldKey: FileKey.audio,
+          fieldKey: MediaType.audio,
           files: [File(_path)]
         ),
       ));

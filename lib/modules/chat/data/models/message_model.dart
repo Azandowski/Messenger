@@ -1,7 +1,9 @@
 import 'package:flutter/foundation.dart';
 
 import '../../domain/entities/chat_actions.dart';
+import '../../domain/entities/file_media.dart';
 import '../../domain/entities/message.dart';
+import 'file_media_model.dart';
 import 'message_user_model.dart';
 
 class MessageModel extends Message {
@@ -20,6 +22,7 @@ class MessageModel extends Message {
   final MessageChat chat;
   MessageHandleType messageHandleType;
   final int timeDeleted;
+  final List<FileMedia> files;
 
   MessageModel({
     this.id,
@@ -34,6 +37,7 @@ class MessageModel extends Message {
     this.willBeDeletedAt,
     this.messageStatus = MessageStatus.sent,
     this.toUser,
+    this.files,
     this.chat,
     this.messageHandleType = MessageHandleType.newMessage,
     this.timeDeleted
@@ -75,7 +79,8 @@ class MessageModel extends Message {
         (json['transfer'] as List).map((v) => Transfer.fromJson(v)).toList() : [],
       chat: json['chat'] == null ? null :
         MessageChatModel.fromJson(json['chat']),
-      timeDeleted: json['time_deleted']
+      timeDeleted: json['time_deleted'],
+      files: json['file'] != null ? (json['file'] as List).map((v) => FileMediaModel.fromJson(v)).toList() : [],
     );
   }
 

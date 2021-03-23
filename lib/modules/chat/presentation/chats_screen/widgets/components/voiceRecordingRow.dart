@@ -3,11 +3,10 @@ import 'dart:math';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen_import.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/chatControlPanel/bloc/voice_record_bloc.dart';
-
 
 import '../../../../../../app/appTheme.dart';
+import '../../pages/chat_screen_import.dart';
+import '../chatControlPanel/bloc/voice_record_bloc.dart';
 
 class VoiceRecordingRow extends StatefulWidget {
   final VoiceRecordBloc voiceRecordBloc;

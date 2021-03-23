@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 import '../../../chat/data/models/message_model.dart';
 import '../../../chats/domain/entities/category.dart';
-import '../../data/models/chat_permission_model.dart';
 import 'chat_permissions.dart';
 
 // ignore: must_be_immutable

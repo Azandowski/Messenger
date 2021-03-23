@@ -1,8 +1,9 @@
 import 'package:flutter/rendering.dart';
-import 'package:messenger_mobile/core/services/network/Endpoints.dart';
+import 'package:http/http.dart' as http;
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 import '../../../../../app/application.dart';
+import '../../../../../core/services/network/Endpoints.dart';
 import '../../../../category/presentation/chooseChats/presentation/chat_choose_page.dart';
 import '../../../domain/entities/chat_actions.dart';
 import '../../../domain/usecases/attachMessage.dart';
@@ -12,7 +13,6 @@ import '../../../domain/usecases/reply_more.dart';
 import '../widgets/bottom_pin.dart';
 import 'chat_screen_helper.dart';
 import 'chat_screen_import.dart';
-import 'package:http/http.dart' as http;
 
 class ChatScreen extends StatefulWidget {
   final ChatEntity chatEntity;

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/core/widgets/independent/dialogs/dialog_action_button.dart';
-import 'package:messenger_mobile/core/widgets/independent/dialogs/dialog_params.dart';
-import 'package:messenger_mobile/core/widgets/independent/dialogs/dialogs.dart';
 
 import '../../../../../app/appTheme.dart';
+import '../../../../../core/widgets/independent/dialogs/dialog_action_button.dart';
+import '../../../../../core/widgets/independent/dialogs/dialog_params.dart';
+import '../../../../../core/widgets/independent/dialogs/dialogs.dart';
 import '../../../../../core/widgets/independent/images/ImageWithCorner.dart';
 import '../../../../chats/domain/entities/category.dart';
 

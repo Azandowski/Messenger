@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:messenger_mobile/app/application.dart';
-import 'package:messenger_mobile/core/widgets/independent/buttons/bottom_action_button.dart';
-import 'package:messenger_mobile/modules/category/presentation/chooseChats/presentation/cubit/chat_select_cubit.dart';
-import 'package:messenger_mobile/modules/chats/presentation/pages/chats_search_screen.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen_helper.dart';
+
 import '../../../../../app/appTheme.dart';
+import '../../../../../app/application.dart';
 import '../../../../../core/blocs/chat/bloc/bloc/chat_cubit.dart';
+import '../../../../../core/widgets/independent/buttons/bottom_action_button.dart';
 import '../../../../../locator.dart';
+import '../../../../chat/presentation/chats_screen/pages/chat_screen_helper.dart';
+import '../../../../chats/presentation/pages/chats_search_screen.dart';
 import '../../../data/models/chat_view_model.dart';
 import '../../../domain/entities/chat_entity.dart';
 import '../../create_category_main/widgets/chat_list.dart';

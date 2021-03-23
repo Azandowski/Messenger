@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/modules/category/data/models/chat_view_model.dart';
+
 import '../../../../../app/appTheme.dart';
 import '../../../../category/data/models/chat_view_model.dart';
 import '../../../domain/entities/chat_detailed.dart';

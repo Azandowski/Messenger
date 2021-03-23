@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:messenger_mobile/core/services/network/config.dart';
 
 import '../../../chat/data/models/message_model.dart';
 import '../../../chats/data/model/category_model.dart';

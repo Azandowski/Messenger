@@ -1,9 +1,10 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/chatControlPanel/data/constants.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/components/button_micro/cubit/button_micro_cubit.dart';
+
 import '../../../../../../../app/appTheme.dart';
+import '../../chatControlPanel/data/constants.dart';
+import 'cubit/button_micro_cubit.dart';
 
 class ButtonMicro extends StatelessWidget {
   final LayerLink link;

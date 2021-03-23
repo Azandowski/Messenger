@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chat_details/page/chat_detail_screen.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen_import.dart';
+
 import '../../../../../category/data/models/chat_view_model.dart';
 import '../../../chat_details/page/chat_detail_page.dart';
+import '../../../chat_details/page/chat_detail_screen.dart';
 import '../../pages/chat_screen.dart';
+import '../../pages/chat_screen_import.dart';
 import '../chatHeading.dart';
 import '../chat_screen_actions.dart';
 

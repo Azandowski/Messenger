@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/core/widgets/independent/buttons/gradient_main_button.dart';
-import 'package:messenger_mobile/modules/social_media/domain/entities/social_media.dart';
-import 'package:messenger_mobile/modules/social_media/presentation/widgets/social_media_item.dart';
+
+import '../../../../core/widgets/independent/buttons/gradient_main_button.dart';
+import '../../domain/entities/social_media.dart';
+import '../widgets/social_media_item.dart';
 
 abstract class SocialMediaPickerDelegate {
   void didFillSocialMedia (SocialMedia socialMedia);

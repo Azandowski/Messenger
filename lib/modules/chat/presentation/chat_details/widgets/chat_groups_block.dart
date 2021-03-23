@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/app/appTheme.dart';
-import 'package:messenger_mobile/core/widgets/independent/images/ImageWithCorner.dart';
-import 'package:messenger_mobile/modules/category/data/models/chat_view_model.dart';
-import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chat_details/widgets/divider_wrapper.dart';
+
+import '../../../../../app/appTheme.dart';
+import '../../../../../core/widgets/independent/images/ImageWithCorner.dart';
+import '../../../../category/data/models/chat_view_model.dart';
+import '../../../../category/domain/entities/chat_entity.dart';
+import 'divider_wrapper.dart';
 
 class ChatGroups extends StatelessWidget {
 

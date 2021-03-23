@@ -1,24 +1,22 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:math';
+
 import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/modules/category/domain/entities/chat_permissions.dart';
-import 'package:messenger_mobile/modules/chat/data/datasources/chat_datasource.dart';
-import 'package:messenger_mobile/modules/chat/data/models/chat_message_response.dart';
-import 'package:messenger_mobile/modules/chat/domain/entities/chat_actions.dart';
-import 'package:messenger_mobile/modules/chat/domain/usecases/get_messages_context.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen_import.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
+
 import '../../../../../core/config/auth_config.dart';
 import '../../../../../core/error/failures.dart';
 import '../../../../../core/utils/list_helper.dart';
 import '../../../../../locator.dart';
+import '../../../../category/domain/entities/chat_permissions.dart';
 import '../../../../chats/domain/repositories/chats_repository.dart';
 import '../../../data/datasources/chat_datasource.dart';
 import '../../../data/models/chat_message_response.dart';
+import '../../../domain/entities/chat_actions.dart';
 import '../../../domain/entities/message.dart';
 import '../../../domain/repositories/chat_repository.dart';
 import '../../../domain/usecases/get_messages.dart';

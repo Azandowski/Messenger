@@ -39,7 +39,7 @@ class ChatMediaBlock extends StatelessWidget {
   }
 }
 
-enum MediaType { media, documents, audio }
+enum MediaType { media, documents, audio, undefined }
 
 extension MediaTypeUIExtension on MediaType {
   String get title {
@@ -50,6 +50,17 @@ extension MediaTypeUIExtension on MediaType {
         return 'Документы';
       case MediaType.audio:
         return 'Аудио';
+      default:
+        return '';
+    }
+  }
+
+  String get string {
+    switch (this) {
+      case MediaType.audio:
+        return 'audio';
+      case MediaType.documents:
+        return 'documents';
       default:
         return '';
     }
