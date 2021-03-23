@@ -21,11 +21,15 @@ void main() {
       name: "name",
       avatar: "avatar",
       totalChats: 1,
+      noReadCount: 1,
     );
 
     final permissions = ChatPermissionModel(
       isMediaSendOn: true,
       isSoundOn: true,
+      adminMessageSend: true,
+      isForwardOn: true,
+      isSecret: false,
     );
 
     final messageUser = MessageUserModel(
@@ -33,7 +37,6 @@ void main() {
       name: "name",
       surname: "surname",
       avatarURL: ConfigExtension.buildURLHead() + "imageUrl",
-      // phone: "+77777777777",
     );
 
     final messageModel = MessageModel(
@@ -56,6 +59,8 @@ void main() {
       chatCategory: category,
       permissions: permissions,
       lastMessage: messageModel,
+      isPrivate: false,
+      isRead: false,
     );
   });
 

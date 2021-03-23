@@ -5,29 +5,24 @@ import 'package:messenger_mobile/modules/edit_profile/data/datasources/edit_prof
 import 'package:messenger_mobile/modules/edit_profile/data/repositories/edit_profile_repositories.dart';
 import 'package:messenger_mobile/modules/profile/data/models/user_model.dart';
 import 'package:messenger_mobile/modules/profile/domain/entities/user.dart';
-import 'package:messenger_mobile/modules/profile/domain/usecases/edit_user.dart';
 import 'package:messenger_mobile/modules/profile/domain/usecases/profile_params.dart';
 import 'package:mockito/mockito.dart';
 import 'package:flutter_test/flutter_test.dart';
-
 
 class MockEditProfileDataSource extends Mock implements EditProfileDataSource {}
 
 class MockNetworkInfo extends Mock implements NetworkInfo {}
 
-
-void main() { 
+void main() {
   EditUserRepositoryImpl repository;
   MockEditProfileDataSource dataSource;
   MockNetworkInfo mockNetworkInfo;
 
-  setUp(() { 
+  setUp(() {
     dataSource = MockEditProfileDataSource();
     mockNetworkInfo = MockNetworkInfo();
-    repository = EditUserRepositoryImpl(  
-      editProfileDataSource: dataSource,
-      networkInfo: mockNetworkInfo
-    );
+    repository = EditUserRepositoryImpl(
+        editProfileDataSource: dataSource, networkInfo: mockNetworkInfo);
   });
 
   void runTestsOnline(Function body) {
@@ -50,30 +45,24 @@ void main() {
     });
   }
 
-
-  group('Update Current User', () { 
+  group('Update Current User', () {
     final userModel = UserModel(
-      name: 'Yerkebulan',
-      phoneNumber: '+77470726323',
-      profileImage: 'image'
-    );
-    
-    final User user  = userModel;
+        name: 'Yerkebulan', phoneNumber: '+77470726323', profileImage: 'image');
 
-    final EditUserParams editUserParams = EditUserParams(
-      token: '',
-      name: userModel.name
-    );
-    
+    final User user = userModel;
+
+    final EditUserParams editUserParams =
+        EditUserParams(token: '', name: userModel.name);
+
     test(
       'should check if the device is online',
       () async {
         // arrange
         when(mockNetworkInfo.isConnected).thenAnswer((_) async => true);
-        
+
         // act
         repository.updateUser(editUserParams);
-        
+
         // assert
         verify(mockNetworkInfo.isConnected);
       },
@@ -85,19 +74,18 @@ void main() {
         () async {
           // arrange
           when(dataSource.updateUser(
-            file: anyNamed('file'), 
-            data: anyNamed('data'), 
-            token: anyNamed('token')
-          )).thenAnswer((_) async => true);
+                  file: anyNamed('file'),
+                  data: anyNamed('data'),
+                  token: anyNamed('token')))
+              .thenAnswer((_) async => true);
           // act
           final result = await repository.updateUser(editUserParams);
-          
+
           // assert
           verify(dataSource.updateUser(
-            file: editUserParams.image, 
-            data: editUserParams.jsonBody, 
-            token: editUserParams.token
-          ));
+              file: editUserParams.image,
+              data: editUserParams.jsonBody,
+              token: editUserParams.token));
 
           expect(result, equals(Right(true)));
         },
@@ -108,23 +96,22 @@ void main() {
         () async {
           // arrange
           when(dataSource.updateUser(
-            file: anyNamed('file'), 
-            data: anyNamed('data'), 
-            token: anyNamed('token')
-          )).thenThrow(ServerFailure(message: ''));
-          
+                  file: anyNamed('file'),
+                  data: anyNamed('data'),
+                  token: anyNamed('token')))
+              .thenThrow(ServerFailure(message: ''));
+
           // act
           final result = await repository.updateUser(editUserParams);
-          
+
           // assert
           verify(dataSource.updateUser(
-            file: editUserParams.image, 
-            data: editUserParams.jsonBody, 
-            token: editUserParams.token
-          ));
+              file: editUserParams.image,
+              data: editUserParams.jsonBody,
+              token: editUserParams.token));
           expect(result, isA<Left>());
         },
-      );      
+      );
     });
   });
 }

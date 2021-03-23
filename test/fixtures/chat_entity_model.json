@@ -7,12 +7,16 @@
         "name":"name",
         "avatar":"avatar",
         "full_link":"avatar",
-        "total_chats": 1
+        "total_chats": 1,
+        "no_read_message":1
     },
     "created_at": "2021-03-15 17:08:04.860545",
     "settings":{
         "sound":1,
-        "admin_media_send": 1
+        "admin_media_send":1,
+        "admin_message_send":1,
+        "transfer_chat_message":1,
+        "is_secret":0
     },
     "description":"description",
     "no_read_message":1,
@@ -24,12 +28,20 @@
             "name":"name",
             "surname":"surname",
             "avatar":"imageUrl"
-
+        },
+        "to_contact":{
+            "id":2,
+            "name":"name2",
+            "surname":"surname2",
+            "avatar":"imageUrl2"
         },
         "text":"text",
         "is_read":1,
         "created_at": "2021-03-15 17:08:04.860545",
-        "action":"addUser"
+        "deleted_at": "2021-03-16 17:08:04.860545",
+        "action":"addUser",
+        "time_deleted": 777,
+        "transfer":[]
     }
 
 }

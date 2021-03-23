@@ -129,7 +129,7 @@ class CategoryDataSourceImpl implements CategoryDataSource {
     Endpoints endpoint = Endpoints.transferChats;
 
     http.Response response = await client.post(endpoint.buildURL(),
-        headers: endpoint.getHeaders(token: sl<AuthConfig>().token),
+        headers: endpoint.getHeaders(token: authConfig.token),
         body: json.encode({
           'new_category': categoryID == null ? null : '$categoryID',
           'chats': chatsIDs.join(',')

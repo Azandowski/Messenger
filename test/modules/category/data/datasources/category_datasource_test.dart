@@ -39,6 +39,7 @@ void main() {
       name: "name",
       avatar: "avatar",
       totalChats: 1,
+      noReadCount: 1,
     )
   ];
 

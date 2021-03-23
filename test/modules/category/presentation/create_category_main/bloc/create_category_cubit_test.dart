@@ -51,8 +51,13 @@ void main() {
       authConfig: mockAuthConfig,
     );
 
-    tCategoryEntity =
-        CategoryEntity(id: 1, name: "name", avatar: "avatar", totalChats: 1);
+    tCategoryEntity = CategoryEntity(
+      id: 1,
+      name: "name",
+      avatar: "avatar",
+      totalChats: 1,
+      noReadCount: 1,
+    );
   });
 
   test('state should be CreateCategoryNormal after init', () {

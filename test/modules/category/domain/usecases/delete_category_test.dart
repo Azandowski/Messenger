@@ -18,7 +18,13 @@ void main() {
 
   final tId = 1;
   final tCategories = [
-    CategoryEntity(id: 1, name: "name", avatar: "avatar", totalChats: 1)
+    CategoryEntity(
+      id: 1,
+      name: "name",
+      avatar: "avatar",
+      totalChats: 1,
+      noReadCount: 1,
+    )
   ];
 
   test('shoud call repository one time and return List<CategoryEntity>',

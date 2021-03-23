@@ -17,7 +17,13 @@ void main() {
     usecase = TransferChats(repository: mockCategoryRepository);
   });
   final tCategories = [
-    CategoryEntity(id: 1, name: "name", avatar: "avatar", totalChats: 1)
+    CategoryEntity(
+      id: 1,
+      name: "name",
+      avatar: "avatar",
+      totalChats: 1,
+      noReadCount: 1,
+    )
   ];
   final tParams = TransferChatsParams(newCategoryId: 1, chatsIDs: [1, 2, 3]);
 

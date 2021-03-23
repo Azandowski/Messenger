@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app/application.dart';
 import 'core/blocs/authorization/bloc/auth_bloc.dart';
+import 'core/blocs/chat/bloc/bloc/chat_cubit.dart';
 import 'core/config/auth_config.dart';
 import 'core/services/network/Endpoints.dart';
 import 'core/services/network/network_info.dart';
@@ -58,7 +59,6 @@ import 'modules/profile/presentation/bloc/profile_cubit.dart';
 final sl = GetIt.instance;
 
 Future<void> init() async {
-
   //UI
   sl.registerLazySingleton(() => Application());
 
@@ -72,13 +72,9 @@ Future<void> init() async {
     ),
   );
 
-<<<<<<< HEAD
-  sl.registerFactory(() => ChatGlobalCubit(sl(), sl()));
+  sl.registerFactory(() => ChatGlobalCubit(sl(), sl(), sl()));
 
   sl.registerFactory(() => ProfileCubit(getUser: sl(), authConfig: sl()));
-=======
-  sl.registerFactory(() => ProfileCubit(getUser: sl()));
->>>>>>> origin/feature-chatimpl
   sl.registerFactory(() => ChatsCubit(sl()));
 
   // Use cases
@@ -105,13 +101,8 @@ Future<void> init() async {
   sl.registerLazySingleton<ProfileRepository>(
       () => ProfileRepositoryImpl(profileDataSource: sl(), networkInfo: sl()));
 
-  sl.registerLazySingleton<ChatsRepository>(
-    () => ChatsRepositoryImpl(
-      chatsDataSource: sl(), 
-      networkInfo: sl(),
-      localChatsDataSource: sl()
-    )
-  );
+  sl.registerLazySingleton<ChatsRepository>(() => ChatsRepositoryImpl(
+      chatsDataSource: sl(), networkInfo: sl(), localChatsDataSource: sl()));
 
   // Data sources
   sl.registerLazySingleton<AuthenticationLocalDataSource>(
@@ -121,7 +112,8 @@ Future<void> init() async {
   sl.registerLazySingleton<AuthenticationRemoteDataSource>(
     () => AuthenticationRemoteDataSourceImpl(
         client: sl(),
-        request: http.MultipartRequest('POST', Endpoints.sendContacts.buildURL())),
+        request:
+            http.MultipartRequest('POST', Endpoints.sendContacts.buildURL())),
   );
 
   sl.registerLazySingleton<ProfileDataSource>(
@@ -131,23 +123,16 @@ Future<void> init() async {
       () => ChatsDataSourceImpl(client: sl(), socketService: sl()));
 
   sl.registerLazySingleton<LocalChatsDataSource>(
-    () => LocalChatsDataSourceImpl()
-  );
+      () => LocalChatsDataSourceImpl());
 
   sl.registerLazySingleton<SocketService>(
       () => SocketService(authConfig: sl()));
 
   //USECASE
   sl.registerLazySingleton(() => FetchContacts(CreationModuleRepositoryImpl(
-<<<<<<< HEAD
       networkInfo: sl(),
       dataSource:
           CreationModuleDataSourceImpl(authConfig: sl(), client: sl()))));
-=======
-    networkInfo: sl(),
-    dataSource: CreationModuleDataSourceImpl(client: sl())
-  )));
->>>>>>> origin/feature-chatimpl
   sl.registerLazySingleton(() => CreateChatGruopUseCase(repository: sl()));
 
   // Bloc

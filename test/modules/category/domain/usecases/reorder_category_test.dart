@@ -17,7 +17,13 @@ void main() {
   });
 
   final tCategories = [
-    CategoryEntity(id: 1, name: "name", avatar: "avatar", totalChats: 1)
+    CategoryEntity(
+      id: 1,
+      name: "name",
+      avatar: "avatar",
+      totalChats: 1,
+      noReadCount: 1,
+    )
   ];
   final Map<String, int> tParams = {"test": 1};
 

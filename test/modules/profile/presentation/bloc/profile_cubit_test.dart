@@ -41,15 +41,13 @@ void main() {
   blocTest('shoud emit [ProfileLoading, ProfileLoaded] if everything is OK',
       build: () => cubit,
       act: (ProfileCubit profilecubit) {
-        // when(mockAuthConfig.token).thenReturn('test');
-        print(tUser.fullName);
         when(mockGetCurrentUser(any)).thenAnswer((_) async => Right(tUser));
         profilecubit.updateProfile();
       },
-      expect: [
-        isA<ProfileLoading>(),
-        isA<ProfileLoaded>(),
-      ]);
+      expect: () => [
+            isA<ProfileLoading>(),
+            isA<ProfileLoaded>(),
+          ]);
 
   blocTest('shoud emit [ProfileLoading, ProfileError] if there is an error',
       build: () => cubit,
@@ -59,8 +57,8 @@ void main() {
             Left(ServerFailure(message: FailureMessages.noConnection)));
         profilecubit.updateProfile();
       },
-      expect: [
-        isA<ProfileLoading>(),
-        isA<ProfileError>(),
-      ]);
+      expect: () => [
+            isA<ProfileLoading>(),
+            isA<ProfileError>(),
+          ]);
 }

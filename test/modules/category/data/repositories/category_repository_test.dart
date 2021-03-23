@@ -30,7 +30,13 @@ void main() {
   });
 
   final tCategoryEntityList = [
-    CategoryEntity(id: 1, name: "name", avatar: "avatar", totalChats: 1),
+    CategoryEntity(
+      id: 1,
+      name: "name",
+      avatar: "avatar",
+      totalChats: 1,
+      noReadCount: 1,
+    ),
   ];
 
   group('createCategory', () {

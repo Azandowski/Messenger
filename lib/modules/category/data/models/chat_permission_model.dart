@@ -42,4 +42,9 @@ class ChatPermissionModel extends ChatPermissions {
       'is_secret': isSecret ? 1 : 0
     };
   }
+
+  @override
+  String toString() {
+    return "ChatPermissionModel [isSoundOn:$isSoundOn isMediaSendOn:$isMediaSendOn adminMessageSend:$adminMessageSend isForwardOn:$isForwardOn isSecret:$isSecret]";
+  }
 }

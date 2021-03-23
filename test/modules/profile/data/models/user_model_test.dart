@@ -19,6 +19,7 @@ void main() {
       patronym: "Patronym",
       phoneNumber: "+77777777777",
       profileImage: ConfigExtension.buildURLHead() + "avatar",
+      isBlocked: false,
     );
   });
 

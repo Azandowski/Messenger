@@ -12,27 +12,21 @@ import 'package:messenger_mobile/modules/creation_module/presentation/bloc/searc
 import 'package:messenger_mobile/modules/creation_module/presentation/widgets/contact_cell.dart';
 
 class SearchContactPage extends StatefulWidget {
-
   final List<ContactEntity> initialContacts;
 
-  SearchContactPage({
-    @required this.initialContacts
-  });
+  SearchContactPage({@required this.initialContacts});
 
-  static Route route({
-    List<ContactEntity> initialContacts
-  }) {
-    return MaterialPageRoute<void>(builder: (_) => SearchContactPage(
-      initialContacts: initialContacts
-    ));
+  static Route route({List<ContactEntity> initialContacts}) {
+    return MaterialPageRoute<void>(
+        builder: (_) => SearchContactPage(initialContacts: initialContacts));
   }
-  
+
   @override
   _SearchContactPageState createState() => _SearchContactPageState();
 }
 
-class _SearchContactPageState extends State<SearchContactPage> implements SearchEngingeDelegate {
-  
+class _SearchContactPageState extends State<SearchContactPage>
+    implements SearchEngingeDelegate {
   // MARK: - Props
 
   SearchBar searchBar;
@@ -46,41 +40,38 @@ class _SearchContactPageState extends State<SearchContactPage> implements Search
   void initState() {
     searchEngine = SearchEngine(delegate: this);
     searchBar = new SearchBar(
-      inBar: true,
-      closeOnSubmit: false,
-      clearOnSubmit: false,
-      setState: print,
-      onSubmitted: (String text) {
-        _searchContactCubit.showLoading(isPagination: false);
-        searchEngine.onTextChanged(text);
-      },
-      buildDefaultAppBar: buildAppBar,
-      onChanged: (String newStr) {
-        _searchContactCubit.showLoading(isPagination: false);
-        searchEngine.onTextChanged(newStr);
-      }
-    );
+        inBar: true,
+        closeOnSubmit: false,
+        clearOnSubmit: false,
+        setState: print,
+        onSubmitted: (String text) {
+          _searchContactCubit.showLoading(isPagination: false);
+          searchEngine.onTextChanged(text);
+        },
+        buildDefaultAppBar: buildAppBar,
+        onChanged: (String newStr) {
+          _searchContactCubit.showLoading(isPagination: false);
+          searchEngine.onTextChanged(newStr);
+        });
 
     searchBar.isSearching.value = true;
 
     scrollController.addListener(() {
-      _onScroll(); 
+      _onScroll();
     });
 
     _searchContactCubit = SearchContactCubit(
-      searchContacts: SearchContacts(CreationModuleRepositoryImpl(
-        networkInfo: sl(),
-        dataSource: CreationModuleDataSourceImpl(
-          client: sl()
-        )
-       ))
-    );
+        searchContacts: SearchContacts(CreationModuleRepositoryImpl(
+            networkInfo: sl(),
+            dataSource: CreationModuleDataSourceImpl(
+              client: sl(),
+              authConfig: sl(),
+            ))));
 
     _searchContactCubit.initInitialContacts(widget.initialContacts ?? []);
 
     super.initState();
   }
-
 
   // MARK: - UI
 
@@ -89,36 +80,34 @@ class _SearchContactPageState extends State<SearchContactPage> implements Search
     return BlocProvider<SearchContactCubit>(
       create: (context) => _searchContactCubit,
       child: Scaffold(
-        appBar: searchBar.build(context),
-        body: BlocConsumer<SearchContactCubit, SearchContactState>(
-          listener: (context, SearchContactState state) {
-            if (state is SearchContactsError) {
-              SnackUtil.showError(context: context, message: state.message);
-            } else {
-              ScaffoldMessenger.of(context).hideCurrentSnackBar();
-            }
-          },
-          builder: (context, SearchContactState state) {
-            return ListView.separated(
-              controller: scrollController,
-              itemBuilder: (context, int index) {
-                if (index >= state.contacts.data.length) {
-                  return CellShimmerItem(circleSize: 35);
-                }
+          appBar: searchBar.build(context),
+          body: BlocConsumer<SearchContactCubit, SearchContactState>(
+            listener: (context, SearchContactState state) {
+              if (state is SearchContactsError) {
+                SnackUtil.showError(context: context, message: state.message);
+              } else {
+                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+              }
+            },
+            builder: (context, SearchContactState state) {
+              return ListView.separated(
+                  controller: scrollController,
+                  itemBuilder: (context, int index) {
+                    if (index >= state.contacts.data.length) {
+                      return CellShimmerItem(circleSize: 35);
+                    }
 
-                return ContactCell(
-                  contactItem: state.contacts.data[index],
-                  onTrilinIconTapped: () async {
-                    print("HERE START CHAT");
-                  }
-                );
-              }, 
-              separatorBuilder: (_, int index) => Divider(), 
-              itemCount: state.contacts.data.length + (state is SearchContactsLoading ? 3 : 0)
-            );
-          }, 
-        )
-      ),
+                    return ContactCell(
+                        contactItem: state.contacts.data[index],
+                        onTrilinIconTapped: () async {
+                          print("HERE START CHAT");
+                        });
+                  },
+                  separatorBuilder: (_, int index) => Divider(),
+                  itemCount: state.contacts.data.length +
+                      (state is SearchContactsLoading ? 3 : 0));
+            },
+          )),
     );
   }
 
@@ -126,16 +115,15 @@ class _SearchContactPageState extends State<SearchContactPage> implements Search
 
   AppBar buildAppBar(BuildContext context) {
     return new AppBar(
-      title: new Text('Пользователи'),
-      actions: [
-        searchBar.getSearchAction(context)
-      ]
-    );
+        title: new Text('Пользователи'),
+        actions: [searchBar.getSearchAction(context)]);
   }
 
-  void _onScroll () {
+  void _onScroll() {
     var state = _searchContactCubit.state;
-    if (scrollController.isPaginated && !(state is SearchContactsLoading) && state.contacts.paginationData.hasNextPage) {
+    if (scrollController.isPaginated &&
+        !(state is SearchContactsLoading) &&
+        state.contacts.paginationData.hasNextPage) {
       _searchContactCubit.search(
         phoneNumber: searchBar.controller.text.trim(),
         isPagination: true,
@@ -144,9 +132,7 @@ class _SearchContactPageState extends State<SearchContactPage> implements Search
   }
 
   @override
-  void startSearching({
-    String text
-  }) {
+  void startSearching({String text}) {
     _searchContactCubit.search(
       phoneNumber: text.trim(),
       isPagination: false,

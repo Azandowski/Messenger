@@ -5,7 +5,8 @@
             "name":"name",
             "avatar":"avatar",
             "full_link":"avatar",
-            "total_chats":1
+            "total_chats":1,
+            "no_read_message":1
         }
     ]
 }

@@ -20,7 +20,7 @@ void main() {
 
   final tGetCategoriesParams = GetCategoriesParams(token: "token");
   final tCategories = [
-    CategoryEntity(id: 1, name: "name", avatar: "avatar", totalChats: 1)
+    CategoryEntity(id: 1, name: "name", avatar: "avatar", totalChats: 1, noReadCount: 1,)
   ];
 
   test('should call repository once and return List<CategoryEntity>', () async {

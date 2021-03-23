@@ -21,65 +21,77 @@ class MessageModel extends Message {
   MessageHandleType messageHandleType;
   final int timeDeleted;
 
-  MessageModel({
-    this.id,
-    this.isRead,
-    this.transfer,
-    this.dateTime,
-    this.text,
-    this.user,
-    this.colorId,
-    this.chatActions,
-    this.deletionSeconds,
-    this.willBeDeletedAt,
-    this.messageStatus = MessageStatus.sent,
-    this.toUser,
-    this.chat,
-    this.messageHandleType = MessageHandleType.newMessage,
-    this.timeDeleted
-  }) : super(
-    id: id,
-    isRead: isRead,
-    colorId: colorId,
-    text: text,
-    dateTime: dateTime,
-    transfer: transfer,
-    user: user,
-    chatActions: chatActions,
-    willBeDeletedAt: willBeDeletedAt,
-    deletionSeconds: deletionSeconds,
-    messageStatus: messageStatus,
-    toUser: toUser,
-    chat: chat,
-    messageHandleType: messageHandleType,
-    timeDeleted: timeDeleted
-  );
+  @override
+  String toString() {
+    return "\nMessageModel [id:$id isRead:$isRead dateTime:$dateTime text:$text user=$user toUser=$toUser chatActions:$chatActions colorId:$colorId deletionSeconds:$deletionSeconds willBeDeletedAt:$willBeDeletedAt transfer:$transfer messageStatus:$messageStatus chat:$chat messageHandleType:$messageHandleType]";
+  }
+
+  MessageModel(
+      {this.id,
+      this.isRead,
+      this.transfer,
+      this.dateTime,
+      this.text,
+      this.user,
+      this.colorId,
+      this.chatActions,
+      this.deletionSeconds,
+      this.willBeDeletedAt,
+      this.messageStatus = MessageStatus.sent,
+      this.toUser,
+      this.chat,
+      this.messageHandleType = MessageHandleType.newMessage,
+      this.timeDeleted})
+      : super(
+            id: id,
+            isRead: isRead,
+            colorId: colorId,
+            text: text,
+            dateTime: dateTime,
+            transfer: transfer,
+            user: user,
+            chatActions: chatActions,
+            willBeDeletedAt: willBeDeletedAt,
+            deletionSeconds: deletionSeconds,
+            messageStatus: messageStatus,
+            toUser: toUser,
+            chat: chat,
+            messageHandleType: messageHandleType,
+            timeDeleted: timeDeleted);
 
   factory MessageModel.fromJson(Map json) {
     return MessageModel(
-      id: json['id'],
-      colorId: json['color'] is Map ? json['color']['color'] : json['color'],
-      user: json['from_contact'] != null ? 
-        MessageUserModel.fromJson(json['from_contact']) : null,
-      toUser: json['to_contact'] != null ?
-        MessageUserModel.fromJson(json['to_contact']) : null,
-      text: json['text'],
-      isRead: json['is_read'] == 1,
-      dateTime: DateTime.parse(json['created_at']).toLocal(),
-      chatActions: json['action'] == null ? null : 
-        ChatActions.values.firstWhere((e) => e.key == json['action'], orElse: () => null),
-      willBeDeletedAt: json['deleted_at']  != null ? 
-        DateTime.parse(json['deleted_at']).toLocal() : null,
-      deletionSeconds: json['time_deleted'],
-      transfer: json['transfer'] != null ? 
-        (json['transfer'] as List).map((v) => Transfer.fromJson(v)).toList() : [],
-      chat: json['chat'] == null ? null :
-        MessageChatModel.fromJson(json['chat']),
-      timeDeleted: json['time_deleted']
-    );
+        id: json['id'],
+        colorId: json['color'] is Map ? json['color']['color'] : json['color'],
+        user: json['from_contact'] != null
+            ? MessageUserModel.fromJson(json['from_contact'])
+            : null,
+        toUser: json['to_contact'] != null
+            ? MessageUserModel.fromJson(json['to_contact'])
+            : null,
+        text: json['text'],
+        isRead: json['is_read'] == 1,
+        dateTime: DateTime.parse(json['created_at']).toLocal(),
+        chatActions: json['action'] == null
+            ? null
+            : ChatActions.values
+                .firstWhere((e) => e.key == json['action'], orElse: () => null),
+        willBeDeletedAt: json['deleted_at'] != null
+            ? DateTime.parse(json['deleted_at']).toLocal()
+            : null,
+        deletionSeconds: json['time_deleted'],
+        transfer: json['transfer'] != null
+            ? (json['transfer'] as List)
+                .map((v) => Transfer.fromJson(v))
+                .toList()
+            : [],
+        chat: json['chat'] == null
+            ? null
+            : MessageChatModel.fromJson(json['chat']),
+        timeDeleted: json['time_deleted']);
   }
 
-  Map toJson () {
+  Map toJson() {
     return {
       'id': id,
       'color': colorId,
@@ -118,13 +130,12 @@ class Transfer extends Message {
     this.dateTime,
     this.updatedAt,
   }) : super(
-    id: id,
-    isRead: isRead,
-    dateTime: dateTime,
-    user: user,
-    text: text,
-    chatActions: action
-  );
+            id: id,
+            isRead: isRead,
+            dateTime: dateTime,
+            user: user,
+            text: text,
+            chatActions: action);
 
   factory Transfer.fromJson(Map<String, dynamic> json) {
     return Transfer(
@@ -132,13 +143,15 @@ class Transfer extends Message {
       fromId: json['from_id'],
       toId: json['to_id'],
       text: json['text'],
-      action: ChatActions.values.firstWhere((e) => e.key == json['action'], orElse: () => null),
+      action: ChatActions.values
+          .firstWhere((e) => e.key == json['action'], orElse: () => null),
       chatId: json['chat_id'],
       isRead: json['is_read'] == 1,
       dateTime: DateTime.parse(json['created_at']).toLocal(),
       updatedAt: json['updated_at'],
-      user: json['from_contact'] != null ? 
-        MessageUserModel.fromJson(json['from_contact']) : null,
+      user: json['from_contact'] != null
+          ? MessageUserModel.fromJson(json['from_contact'])
+          : null,
     );
   }
 
@@ -156,25 +169,18 @@ class Transfer extends Message {
   }
 }
 
-
 class MessageChatModel extends MessageChat {
   final int id;
   final String name;
 
-  MessageChatModel({
-    @required this.id,
-    @required this.name
-  }) : super(id: id, name: name);
-
+  MessageChatModel({@required this.id, @required this.name})
+      : super(id: id, name: name);
 
   factory MessageChatModel.fromJson(Map<String, dynamic> json) {
-    return MessageChatModel(
-      id: json['id'],
-      name: json['name']
-    );
+    return MessageChatModel(id: json['id'], name: json['name']);
   }
 
-  Map toJson () { 
+  Map toJson() {
     return {
       'id': id,
       'name': name,
