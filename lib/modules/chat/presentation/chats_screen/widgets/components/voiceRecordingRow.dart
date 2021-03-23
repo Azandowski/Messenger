@@ -41,71 +41,22 @@ class _VoiceRecordingRowState extends State<VoiceRecordingRow> with TickerProvid
     super.dispose();
   }
 
+    Widget getShit(status){
+      switch (status) {
+        case VoicePlayerState.empty:  
+          return Text('MAL');
+          break;
+        case VoicePlayerState.playing:  
+          return Text('SUKA');
+          break;
+        default:
+          return Text('QOTAQ');
+      }
+    }
+
   @override
   Widget build(BuildContext context) {
     var state = widget.voiceRecordBloc.state;
-    var audioState = widget.audioPlayerBloc.state;
-    final List<Widget> playRow = [
-      GestureDetector(
-        onTap: widget.onCancel,
-        child: Icon(
-          Icons.delete,
-        ),
-      ),
-      SizedBox(width: 4,),
-      StreamBuilder<PlaybackDisposition>(
-        stream: widget.audioPlayerBloc.playerStream,
-        initialData: PlaybackDisposition(duration: Duration(seconds: 1), position: Duration(seconds: 0)),
-        builder: (context, snapshot) {
-          var maxDuration = snapshot.data.duration.inSeconds.toDouble();
-          var sliderCurrentPosition = min(snapshot.data.position.inSeconds.toDouble(), maxDuration);
-          if (sliderCurrentPosition < 0.0) {
-            sliderCurrentPosition = 0.0;
-          }
-          var value = sliderCurrentPosition / maxDuration;
-          var date = DateTime.fromMillisecondsSinceEpoch(
-            snapshot.data.position.inMilliseconds,
-            isUtc: true);
-          var timeNow = DateFormat.ms().format(date);
-          return Expanded(
-            child: Container(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  GestureDetector(
-                    onTap: (){
-                      widget.audioPlayerBloc.add(StartResumeStop(path: state.path));
-                    },
-                    child: Icon(
-                    (audioState.playerState == VoicePlayerState.playing) ? Icons.pause : Icons.play_arrow,
-                      color: Colors.black,
-                    ),
-                  ),
-                  SizedBox(width: 4,),
-                  Flexible(
-                    fit: FlexFit.loose,
-                    child: Container(
-                      height: 5,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.all(Radius.circular(16)),
-                        child: LinearProgressIndicator(
-                          value: value,
-                          backgroundColor: Colors.black12,
-                          valueColor: AlwaysStoppedAnimation<Color>(AppColors.indicatorColor),
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 8,),
-                  Text(timeNow),
-                ],
-              ),
-            ),
-          );
-        }
-      ),
-    ];
 
     final List<Widget> recordRow = [
       Padding(
@@ -144,13 +95,78 @@ class _VoiceRecordingRowState extends State<VoiceRecordingRow> with TickerProvid
         ],
     ];
 
-    return Padding(
-      padding: state is VoiceRecording && state.isHold ? EdgeInsets.zero : EdgeInsets.symmetric(vertical: 9.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: state is VoiceRecordingEndWillSend ? playRow : recordRow,
-      ),
+
+    return BlocBuilder<AudioPlayerBloc, AudioPlayerState>(
+      builder: (context, otherState) {
+        return Padding(
+          padding: state is VoiceRecording && state.isHold ? EdgeInsets.zero : EdgeInsets.symmetric(vertical: 9.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: state is VoiceRecordingEndWillSend ? [
+              GestureDetector(
+                onTap: widget.onCancel,
+                child: Icon(
+                  Icons.delete,
+                ),
+              ),
+              SizedBox(width: 4,),
+              StreamBuilder<PlaybackDisposition>(
+                stream: widget.audioPlayerBloc.playerStream,
+                initialData: PlaybackDisposition(duration: Duration(seconds: 1), position: Duration(seconds: 0)),
+                builder: (context, snapshot) {
+                  var maxDuration = snapshot.data.duration.inSeconds.toDouble();
+                  var sliderCurrentPosition = min(snapshot.data.position.inSeconds.toDouble(), maxDuration);
+                  if (sliderCurrentPosition < 0.0) {
+                    sliderCurrentPosition = 0.0;
+                  }
+                  var value = sliderCurrentPosition / maxDuration;
+                  var date = DateTime.fromMillisecondsSinceEpoch(
+                    snapshot.data.position.inMilliseconds,
+                    isUtc: true);
+                  var timeNow = DateFormat.ms().format(date);
+                  return Expanded(
+                    child: Container(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          GestureDetector(
+                            onTap: (){
+                              widget.audioPlayerBloc.add(StartResumeStop(path: state.path));
+                            },
+                            child: Icon(
+                            (otherState.status == VoicePlayerState.playing) ? Icons.pause : Icons.play_arrow,
+                              color: Colors.black,
+                            ),
+                          ),
+                          SizedBox(width: 4,),
+                          Flexible(
+                            fit: FlexFit.loose,
+                            child: Container(
+                              height: 5,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.all(Radius.circular(16)),
+                                child: LinearProgressIndicator(
+                                  value: value,
+                                  backgroundColor: Colors.black12,
+                                  valueColor: AlwaysStoppedAnimation<Color>(AppColors.indicatorColor),
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 8,),
+                          Text(timeNow),
+                        ],
+                      ),
+                    ),
+                  );
+                }
+              ),
+            ] : recordRow,
+          ),
+        );
+      },
     );
   }
 }

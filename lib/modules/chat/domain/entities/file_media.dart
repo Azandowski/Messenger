@@ -7,6 +7,7 @@ class FileMedia extends Equatable {
   final String url;
   final MediaType type;
   final int userId;
+  final Duration maxDuration;
 
 
   FileMedia(
@@ -15,9 +16,10 @@ class FileMedia extends Equatable {
       this.url,
       this.type,
       this.userId,
+      this.maxDuration,
     }
   );
 
   @override
-  List<Object> get props => [id, url, type, userId,];
+  List<Object> get props => [id, url, type, userId, maxDuration];
 }

@@ -7,9 +7,11 @@ class FileMediaModel extends FileMedia{
   final String url;
   final MediaType type;
   final int userId;
+  final Duration maxDuration;
 
   FileMediaModel({
     this.id,
+    this.maxDuration,
     this.type,
     this.url,
     this.userId,
@@ -18,6 +20,7 @@ class FileMediaModel extends FileMedia{
     url: url,
     type: type,
     userId: userId,
+    maxDuration: maxDuration
   );
 
   factory FileMediaModel.fromJson(Map<String, dynamic> json) {
@@ -26,6 +29,7 @@ class FileMediaModel extends FileMedia{
     url: json['full_link'],
     type: (json['type'] as String).getMediaType,
     userId: json['user_id'],
+    maxDuration: json['duration'] != null ? Duration(seconds: json['duration']) : null,
    );
   }
 

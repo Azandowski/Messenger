@@ -6,56 +6,54 @@ enum VoicePlayerState {
   paused,
 }
 
-class AuthenticationState extends Equatable {
-  const AuthenticationState._({
+class AudioPlayerState extends Equatable {
+  const AudioPlayerState._({
     this.status = VoicePlayerState.empty,
-    this.player,
     this.id = '',
   });
 
-  const AuthenticationState.empty(player) : this._(player: player);
+  AudioPlayerState.empty() : this._();
 
-  const AuthenticationState.playing(String id)
-      : this._(status: VoicePlayerState.playing, id: id);
+  const AudioPlayerState.playing(String id,)
+      : this._(status: VoicePlayerState.playing, id: id,);
 
-  const AuthenticationState.paused()
-      : this._(status: VoicePlayerState.paused);
+  const AudioPlayerState.paused(String id)
+      : this._(status: VoicePlayerState.paused, id: id);
 
   final VoicePlayerState status;
-  final FlutterSoundPlayer player;
   final String id;
 
   @override
-  List<Object> get props => [status, player, id];
+  List<Object> get props => [status, id];
 }
 
 
-abstract class AudioPlayerState extends Equatable {
-  final FlutterSoundPlayer player;
-  final VoicePlayerState playerState;
-  final String uniqueId;
+// abstract class AudioPlayerState extends Equatable {
+//   final FlutterSoundPlayer player;
+//   final VoicePlayerState playerState;
+//   final String uniqueId;
 
-  AudioPlayerState({
-    @required this.player,
-    @required this.playerState,
-    @required this.uniqueId,
-  });
+//   AudioPlayerState({
+//     @required this.player,
+//     @required this.playerState,
+//     @required this.uniqueId,
+//   });
   
-  @override
-  List<Object> get props => [player,playerState,uniqueId];
-}
+//   @override
+//   List<Object> get props => [player,playerState,uniqueId];
+// }
 
-class AudioPlayerInitial extends AudioPlayerState {
-  final FlutterSoundPlayer player;
-  final VoicePlayerState playerState;
-  final String uniqueId;
+// class AudioPlayerInitial extends AudioPlayerState {
+//   final FlutterSoundPlayer player;
+//   final VoicePlayerState playerState;
+//   final String uniqueId;
 
-  AudioPlayerInitial({
-    @required this.player,
-    @required this.playerState,
-    @required this.uniqueId,
-  }) : super(player: player, playerState: playerState, uniqueId: uniqueId);
+//   AudioPlayerInitial({
+//     @required this.player,
+//     @required this.playerState,
+//     @required this.uniqueId,
+//   }) : super(player: player, playerState: playerState, uniqueId: uniqueId);
 
-  @override
-  List<Object> get props => [player,playerState,uniqueId];
-}
+//   @override
+//   List<Object> get props => [player,playerState,uniqueId];
+// }

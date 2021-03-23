@@ -29,7 +29,7 @@ class VoiceRecordBloc extends Bloc<VoiceRecordEvent, VoiceRecordState> {
     init();
   }
   
-  Codec _codec = Codec.aacMP4;
+  Codec _codec = Codec.aacADTS;
 
   FlutterSoundRecorder myRecorder;
 

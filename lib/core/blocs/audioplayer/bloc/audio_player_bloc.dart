@@ -10,46 +10,72 @@ part 'audio_player_event.dart';
 part 'audio_player_state.dart';
 
 class AudioPlayerBloc extends Bloc<AudioPlayerEvent, AudioPlayerState> {
-  AudioPlayerBloc() : super(AudioPlayerInitial(
-    player: FlutterSoundPlayer(),
-    playerState: VoicePlayerState.empty,
-    uniqueId: ''
-  )){
+  AudioPlayerBloc() : super(AudioPlayerState.empty()){
     _initializeExample(false);
   }
 
-  Codec _codec = Codec.aacMP4;
+  Codec _codec = Codec.aacADTS;
 
+  FlutterSoundPlayer player = FlutterSoundPlayer();
+
+  // @override
+  // Stream<AudioPlayerState> mapEventToState(
+  //   AudioPlayerEvent event,
+  // ) async* {
+    // if(event is StopPlayer){
+  //     stopPlayer();
+  //     yield (AudioPlayerInitial(playerState: VoicePlayerState.empty, player: player, uniqueId: this.state.uniqueId));
+  //   }else if(event is PlayLocalPlayer){
+  //     startPlayer(event.path);
+  //     yield AudioPlayerInitial(playerState: VoicePlayerState.playing, player: player, uniqueId: this.state.uniqueId);
+  //   }else if(event is StartResumeStop){
+    //    try {
+    //     if(this.state.playerState == VoicePlayerState.empty){
+    //         this.add(PlayLocalPlayer(path: event.path));
+    //     }else{
+    //       if (player.isPlaying) {
+    //         await player.pausePlayer();
+    //         yield (AudioPlayerInitial(playerState: VoicePlayerState.paused, player: player, uniqueId: event.path));
+    //       } else {
+    //         await player.resumePlayer();
+    //         yield (AudioPlayerInitial(playerState: VoicePlayerState.playing, player: player, uniqueId: event.path));
+    //       }
+    //      }
+    // } on Exception catch (err) {
+    //   print('error: $err');
+    // }
+  // }else if(event is ResetPlayer){
+  //   yield (AudioPlayerInitial(playerState: VoicePlayerState.empty, player: player, uniqueId: this.state.uniqueId));
+  // }
+  // }
 
   @override
-  Stream<AudioPlayerState> mapEventToState(
-    AudioPlayerEvent event,
-  ) async* {
+  Stream<AudioPlayerState> mapEventToState(AudioPlayerEvent event) async* {
     if(event is StopPlayer){
       stopPlayer();
-      yield (AudioPlayerInitial(playerState: VoicePlayerState.empty, player: this.state.player, uniqueId: this.state.uniqueId));
+      yield AudioPlayerState.empty();
     }else if(event is PlayLocalPlayer){
       startPlayer(event.path);
-      yield AudioPlayerInitial(playerState: VoicePlayerState.playing, player: this.state.player, uniqueId: this.state.uniqueId);
+      yield AudioPlayerState.playing(event.path);
     }else if(event is StartResumeStop){
-       try {
-        if(this.state.playerState == VoicePlayerState.empty){
+        try {
+        if(this.state.status == VoicePlayerState.empty){
             this.add(PlayLocalPlayer(path: event.path));
         }else{
-          if (this.state.player.isPlaying) {
-            await this.state.player.pausePlayer();
-            yield (AudioPlayerInitial(playerState: VoicePlayerState.paused, player: this.state.player, uniqueId: event.path));
+          if (player.isPlaying) {
+            await player.pausePlayer();
+            yield AudioPlayerState.paused(event.path);
           } else {
-            await this.state.player.resumePlayer();
-            yield (AudioPlayerInitial(playerState: VoicePlayerState.playing, player: this.state.player, uniqueId: event.path));
+            await player.resumePlayer();
+            yield AudioPlayerState.playing(event.path,);
           }
          }
-    } on Exception catch (err) {
-      print('error: $err');
+      } on Exception catch (err) {
+        print('error: $err');
+      }
+    }else if(event is ResetPlayer){
+      yield AudioPlayerState.empty();
     }
-  }else if(event is ResetPlayer){
-    yield (AudioPlayerInitial(playerState: VoicePlayerState.empty, player: this.state.player, uniqueId: this.state.uniqueId));
-  }
   }
 
    Future<void> startPlayer(String path) async {
@@ -58,7 +84,7 @@ class AudioPlayerBloc extends Bloc<AudioPlayerEvent, AudioPlayerState> {
       var codec = _codec;
       audioFilePath = path;
       if (audioFilePath != null) {
-        await this.state.player.startPlayer(
+        await player.startPlayer(
           fromURI: audioFilePath,
           codec: codec,
           sampleRate: 32000,
@@ -76,7 +102,7 @@ class AudioPlayerBloc extends Bloc<AudioPlayerEvent, AudioPlayerState> {
 
   Future<void> stopPlayer() async {
     try {
-      await this.state.player.stopPlayer();
+      await player.stopPlayer();
       if (_playerSubscription != null) {
         await _playerSubscription.cancel();
         _playerSubscription = null;
@@ -94,18 +120,18 @@ class AudioPlayerBloc extends Bloc<AudioPlayerEvent, AudioPlayerState> {
 
 
    Future<void> _initializeExample(bool withUI) async {
-    await this.state.player.openAudioSession(
+    await player.openAudioSession(
         withUI: withUI,
         focus: AudioFocus.requestFocusAndStopOthers,
         category: SessionCategory.playAndRecord,
         mode: SessionMode.modeDefault,
         device: AudioDevice.speaker);
-    await this.state.player.setSubscriptionDuration(Duration(milliseconds: 10));
+    await player.setSubscriptionDuration(Duration(milliseconds: 10));
   }
 
    void _addListeners() {
     cancelPlayerSubscriptions();
-    _playerSubscription = this.state.player.onProgress.listen((e) {
+    _playerSubscription = player.onProgress.listen((e) {
       _playerController.sink.add(e);
     });
   }

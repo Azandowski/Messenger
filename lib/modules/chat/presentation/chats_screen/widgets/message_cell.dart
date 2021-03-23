@@ -1,9 +1,13 @@
+import 'dart:math';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
+import 'package:messenger_mobile/core/blocs/audioplayer/bloc/audio_player_bloc.dart';
 import 'package:messenger_mobile/modules/chat/domain/entities/file_media.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen_import.dart';
 import 'package:swipeable/swipeable.dart';
 import 'package:vibrate/vibrate.dart';
 
@@ -41,11 +45,12 @@ class MessageCell extends StatefulWidget {
 
 class _MessageCellState extends State<MessageCell> {
   bool leftSelected;
-
+  AudioPlayerBloc _audioPlayerBloc;
   bool rightSelected;
   void initState() {
     leftSelected = false;
     rightSelected = false;
+    _audioPlayerBloc = BlocProvider.of<AudioPlayerBloc>(context);
     super.initState();
   }
 
@@ -111,7 +116,7 @@ class _MessageCellState extends State<MessageCell> {
                   widget.onTap();
                   vibrate();
                 },
-                child: MessageContainer(widget: widget,),
+                child: MessageContainer(widget: widget,audioPlayerBloc: _audioPlayerBloc,),
               ),
             ),
           ],
@@ -125,9 +130,11 @@ class MessageContainer extends StatelessWidget {
   const MessageContainer({
     Key key,
     @required this.widget,
+    @required this.audioPlayerBloc,
   }) : super(key: key);
 
   final MessageCell widget;
+  final AudioPlayerBloc audioPlayerBloc;
 
   @override
   Widget build(BuildContext context) {
@@ -152,7 +159,7 @@ class MessageContainer extends StatelessWidget {
           textAlign: TextAlign.left,
         ),
         if(widget.messageViewModel.hasMedia) 
-        ...returnAuidoWidgets(widget.messageViewModel.message.files),
+        ...returnAuidoWidgets(widget.messageViewModel.message.files,audioPlayerBloc, widget.messageViewModel.isMine),
       ],
     ),
           );
@@ -165,48 +172,107 @@ List<Widget> returnForwardColumn(List<Message> transfers) {
   )).toList();
 }
 
-List<Widget> returnAuidoWidgets(List<FileMedia> files) {
+List<Widget> returnAuidoWidgets(List<FileMedia> files, AudioPlayerBloc audioPlayerBloc, bool isMine) {
   return files.map((e) => AudioPlayerElement(
-    audioUrl: e.url,
+    file: e,
+    isMine: isMine,
+    audioPlayerBloc: audioPlayerBloc,
   )).toList();
 }
 
-class AudioPlayerElement extends StatefulWidget {
-  final String audioUrl;
+class AudioPlayerElement extends StatelessWidget {
 
-  const AudioPlayerElement({Key key, @required this.audioUrl}) : super(key: key);
-
-  @override
-  _AudioPlayerElementState createState() => _AudioPlayerElementState();
-}
-
-class _AudioPlayerElementState extends State<AudioPlayerElement> {
-  
-  String maxDuration;
-
-  @override
-  void initState() {
-    super.initState();
-    print(widget.audioUrl);
-    // getDuration();
-  }
-
-  Future getDuration() async {
-    Duration duration = await flutterSoundHelper.duration(widget.audioUrl);
-    if(duration != null){
-    var date = DateTime.fromMillisecondsSinceEpoch(duration.inMilliseconds,isUtc: true);
-      setState(() {
-        maxDuration =  DateFormat.ms().format(date);
-      });
-    }
-  }
+  const AudioPlayerElement({Key key, @required this.file, @required this.audioPlayerBloc, @required this.isMine,}) : super(key: key);
+  final bool isMine;
+  final FileMedia file;
+  final AudioPlayerBloc audioPlayerBloc;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Row(
-        
-      ),
+    return BlocBuilder<AudioPlayerBloc, AudioPlayerState>(
+      builder: (context, state) {
+        return Container(
+          child: Row(
+            children: [
+              StreamBuilder<PlaybackDisposition>(
+              stream: BlocProvider.of<AudioPlayerBloc>(context).playerStream,
+              initialData: PlaybackDisposition(duration: Duration(seconds: 1), position: Duration(seconds: 0)),
+              builder: (context, snapshot) {
+                var timeNow = '00:00';
+                var value = 0.0;
+                var maxDurationInDate = DateTime.fromMillisecondsSinceEpoch(
+                    file.maxDuration.inMilliseconds,
+                    isUtc: true);
+                var maxDuration = DateFormat.ms().format(maxDurationInDate);
+                if(state.id == file.url){
+                  var maxDuration = snapshot.data.duration.inSeconds.toDouble();
+                  var sliderCurrentPosition = min(snapshot.data.position.inSeconds.toDouble(), maxDuration);
+                  if (sliderCurrentPosition < 0.0) {
+                    sliderCurrentPosition = 0.0;
+                  }
+                  value = sliderCurrentPosition / maxDuration;
+                  var date = DateTime.fromMillisecondsSinceEpoch(
+                    snapshot.data.position.inMilliseconds,
+                    isUtc: true);
+                  timeNow = DateFormat.ms().format(date);
+                }
+                return Expanded(
+                  child: Container(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        ClipOval(
+                          child: Material(
+                            color: AppColors.successGreenColor,
+                            child: InkWell(
+                              child: Padding(
+                                padding: const EdgeInsets.all(4.0),
+                                child: Icon(
+                                  (state.status == VoicePlayerState.playing && state.id == file.url) ? Icons.pause : Icons.play_arrow,
+                                  color: Colors.white,
+                                ),
+                              ), 
+                              onTap: (){
+                                audioPlayerBloc.add(StartResumeStop(path: file.url));
+                              },
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 4,),
+                        Flexible(
+                          fit: FlexFit.loose,
+                          child: Container(
+                            height: 5,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.all(Radius.circular(16)),
+                              child: LinearProgressIndicator(
+                                value: value,
+                                backgroundColor: isMine ? Colors.white : Colors.black12,
+                                valueColor: AlwaysStoppedAnimation<Color>(AppColors.successGreenColor),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 8,),
+                        Text(timeNow + ' / ', style: TextStyle(
+                          color: isMine ? AppColors.greyColor : Colors.black26,
+                          fontSize: 10,
+                        ),),
+                        Text(maxDuration, style: TextStyle(
+                          color: isMine ? Colors.white : Colors.black87,
+                          fontSize: 10,
+                        )),
+                      ],
+                    ),
+                  ),
+                );
+              }
+            ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

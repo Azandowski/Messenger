@@ -49,48 +49,48 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => AudioPlayerBloc(),
-      child: BlocProvider(
-          create: (context) => ChatGlobalCubit(
-            serviceLocator.sl(),
-            serviceLocator.sl(),
-            serviceLocator.sl(),
-          ),
-          child: BlocProvider(
-              create: (context) => CategoryBloc(
-                reorderCategories: serviceLocator.sl(),
-                repository: serviceLocator.sl(),
-                deleteCategory: serviceLocator.sl(),
-                chatGlobalCubit: context.read<ChatGlobalCubit>(),
-              ),
-              child: MultiBlocProvider(
-                providers: [
-                  BlocProvider(
-                    create: (_) =>
-                        serviceLocator.sl<ContactBloc>()..add(ContactFetched()),
-                  ),
-                  BlocProvider.value(
-                    value: serviceLocator.sl<AuthBloc>(),
-                  ),
-                ],
-                child: Builder(
-                  builder: (BuildContext context) {
-                    return MaterialApp(
-                      debugShowCheckedModeBanner: false,
-                      home: SplashScreen(),
-                      theme: AppTheme.light,
-                      navigatorKey: serviceLocator.sl<Application>().navKey,
-                      localizationsDelegates: context.localizationDelegates,
-                      supportedLocales: context.supportedLocales,
-                      locale: context.deviceLocale,
-                      routes: routes,
-                    );
-                  },
+        create: (context) => ChatGlobalCubit(
+          serviceLocator.sl(),
+          serviceLocator.sl(),
+          serviceLocator.sl(),
+        ),
+        child: BlocProvider(
+            create: (context) => CategoryBloc(
+              reorderCategories: serviceLocator.sl(),
+              repository: serviceLocator.sl(),
+              deleteCategory: serviceLocator.sl(),
+              chatGlobalCubit: context.read<ChatGlobalCubit>(),
+            ),
+            child: MultiBlocProvider(
+              providers: [
+                BlocProvider(
+                  create: (_) =>
+                      serviceLocator.sl<ContactBloc>()..add(ContactFetched()),
                 ),
+                BlocProvider(
+                  create: (_) => AudioPlayerBloc(),
+                ),
+                BlocProvider.value(
+                  value: serviceLocator.sl<AuthBloc>(),
+                ),
+              ],
+              child: Builder(
+                builder: (BuildContext context) {
+                  return MaterialApp(
+                    debugShowCheckedModeBanner: false,
+                    home: SplashScreen(),
+                    theme: AppTheme.light,
+                    navigatorKey: serviceLocator.sl<Application>().navKey,
+                    localizationsDelegates: context.localizationDelegates,
+                    supportedLocales: context.supportedLocales,
+                    locale: context.deviceLocale,
+                    routes: routes,
+                  );
+                },
               ),
             ),
-        ),
-    );
+          ),
+      );
   }
 }
 
