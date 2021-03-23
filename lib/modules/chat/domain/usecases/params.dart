@@ -40,6 +40,8 @@ extension FileKeysExtension on FileKey {
     switch (this) {
       case FileKey.audio:
       return 'audio';
+      default:
+      return 'photo';
     }
   }
 }

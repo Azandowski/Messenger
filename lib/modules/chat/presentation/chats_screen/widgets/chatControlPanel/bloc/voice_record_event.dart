@@ -21,7 +21,6 @@ class VoicePauseResume extends VoiceRecordEvent {}
 
 class VoicePlayerFinished extends VoiceRecordEvent {}
 
-
 class VoiceStartResumeStop extends VoiceRecordEvent{
   final VoicePlayerState playerState;
 
@@ -34,4 +33,7 @@ class VoiceStartResumeStop extends VoiceRecordEvent{
 }
 
 class VoiceBlocDispose extends VoiceRecordEvent {}
+
+class VoiceSendAudio extends VoiceRecordEvent{}
+
 

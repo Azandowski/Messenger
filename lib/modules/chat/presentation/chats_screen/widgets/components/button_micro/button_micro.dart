@@ -10,7 +10,8 @@ class ButtonMicro extends StatelessWidget {
   final Offset offset;
   final Size microSize;
   final ButtonMicroState microState;
-  const ButtonMicro({Key key, this.link, this.offset, this.microSize, @required this.microState}) : super(key: key);
+  final Function onSendAudio;
+  const ButtonMicro({Key key, this.link, this.offset, this.microSize, @required this.microState, @required this.onSendAudio}) : super(key: key);
 
   double lerp(double min, double max, double width) {
     return lerpDouble(min, max, ((offset.dx/2)/width));
@@ -40,9 +41,7 @@ class ButtonMicro extends StatelessWidget {
           gradient: AppGradinets.mainButtonGradient,
         ),
           child: GestureDetector(
-            onTap: (){
-              print('you may sleep');
-            },
+            onTap: onSendAudio,
             child: Icon(
               microState is ButtonMicroHold ? Icons.send : Icons.mic,
               color: Colors.white,

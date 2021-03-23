@@ -173,14 +173,18 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   ) async* {
     var list = getCopyMessages();    
     yield failureOrMessage.fold(
-      (failure) => ChatInitial(
-        messages: list,
-        hasReachedMax: this.state.hasReachedMax,
-        wallpaperPath: this.state.wallpaperPath,
-        hasReachBottomMax: this.state.hasReachBottomMax,
-        unreadCount: state.unreadCount,
-        showBottomPin: state.showBottomPin
-      ),
+      (failure) { 
+        print('error');
+        print(failure.message);
+        return ChatInitial(
+          messages: list,
+          hasReachedMax: this.state.hasReachedMax,
+          wallpaperPath: this.state.wallpaperPath,
+          hasReachBottomMax: this.state.hasReachBottomMax,
+          unreadCount: state.unreadCount,
+          showBottomPin: state.showBottomPin
+        );
+      },
       (message) {
         var i = list.indexWhere((element) => element.identificator == message.identificator);
         list[i]= message.copyWith(
@@ -346,6 +350,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       text: event.message,
       identificator: randomID,
       forwardIds: forwardArray,
+      fieldFiles: event.fieldFiles,
     ));
 
     yield* _eitherSentOrErrorState(response);

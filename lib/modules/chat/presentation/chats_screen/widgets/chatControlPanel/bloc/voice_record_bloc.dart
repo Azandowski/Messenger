@@ -1,14 +1,13 @@
 import 'dart:async';
-import 'dart:math';
-
 import 'package:bloc/bloc.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:messenger_mobile/core/utils/feedbac_taptic_helper.dart';
+import 'package:messenger_mobile/modules/chat/domain/usecases/params.dart';
 
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:sembast/sembast.dart';
 import 'package:vibrate/vibrate.dart';
 import '../../../pages/chat_screen_import.dart';
 
@@ -16,7 +15,11 @@ part 'voice_record_event.dart';
 part 'voice_record_state.dart';
 
 class VoiceRecordBloc extends Bloc<VoiceRecordEvent, VoiceRecordState> {
-  VoiceRecordBloc() : super(VoiceRecordEmpty()){
+  final ChatBloc chatBloc;
+
+  VoiceRecordBloc({
+    @required this.chatBloc,
+  }) : super(VoiceRecordEmpty()){
     myRecorder = FlutterSoundRecorder();
     playerModule = FlutterSoundPlayer();
     askPermission();
@@ -40,7 +43,6 @@ class VoiceRecordBloc extends Bloc<VoiceRecordEvent, VoiceRecordState> {
   var _playerController = StreamController<PlaybackDisposition>.broadcast();
   Stream<PlaybackDisposition> get playerStream => _playerController.stream;
 
-
   clear(){
     _recoderController.add(null);
   }
@@ -60,7 +62,6 @@ class VoiceRecordBloc extends Bloc<VoiceRecordEvent, VoiceRecordState> {
     }else if(event is VoiceHoldRecoriding){
       yield VoiceRecording(isHold: true);
     }else if(event is VoiceStopRecording){
-      FeedbackEngine.showFeedback(FeedbackType.error);
       stopRecorder();
       stopPlayer();
       yield VoiceRecordEmpty();
@@ -74,6 +75,14 @@ class VoiceRecordBloc extends Bloc<VoiceRecordEvent, VoiceRecordState> {
       yield* _mapPlayerStateToPlayerAction(event);
     }else if(event is VoicePlayerFinished){
       yield VoiceRecordingEndWillSend(playerState: VoicePlayerState.empty);
+    }else if(event is VoiceSendAudio){
+      chatBloc.add(MessageSend(
+        fieldFiles: FieldFiles(
+          fieldKey: FileKey.audio,
+          files: [File(_path)]
+        ),
+      ));
+      FeedbackEngine.showFeedback(FeedbackType.success);
     }else if(event is VoiceBlocDispose){
       disposeBloc();
       this.close();
@@ -153,17 +162,16 @@ class VoiceRecordBloc extends Bloc<VoiceRecordEvent, VoiceRecordState> {
       audioFilePath = _path;
       //Duration toto  = await flutterSoundHelper.duration(audioFilePath);
       //print(toto.inMilliseconds);
-
-      // Check whether the user wants to use the audio player features
-        if (audioFilePath != null) {
-          await playerModule.startPlayer(
-              fromURI: audioFilePath,
-              codec: codec,
-              sampleRate: 32000,
-              whenFinished: () {
-                this.add(VoicePlayerFinished());
-              });
-        }
+      if (audioFilePath != null) {
+        await playerModule.startPlayer(
+          fromURI: audioFilePath,
+          codec: codec,
+          sampleRate: 32000,
+          whenFinished: () {
+            this.add(VoicePlayerFinished());
+          }
+        );
+      }
       _addListeners();
     } on Exception catch (err) {
       print('error: $err');

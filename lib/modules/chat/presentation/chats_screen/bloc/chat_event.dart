@@ -55,14 +55,15 @@ class MessageDelete extends ChatEvent {
 class MessageSend extends ChatEvent {
   final Message forwardMessage;
   final String message;
-
+  final FieldFiles fieldFiles;
   MessageSend({
     this.message,
+    this.fieldFiles,
     this.forwardMessage,
   });
 
   @override
-  List<Object> get props => [message, forwardMessage];
+  List<Object> get props => [message, forwardMessage, fieldFiles];
 }
 
 class SetInitialTime extends ChatEvent {

@@ -29,7 +29,7 @@ class EditProfileDataSourceImpl implements EditProfileDataSource {
       request: request, 
       data: data,
       files: file != null ? [file] : [],
-      keyName: 'avatar'
+      keyName: ['avatar'],
     );
   
     if (response.statusCode >= 200 && response.statusCode <= 299) {

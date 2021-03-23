@@ -45,7 +45,7 @@ class ChatGroupRemoteDataSourceImpl implements ChatGroupRemoteDataSource {
       token: groupParams.token, 
       request: multipartRequest, 
       files: groupParams.avatarFile != null ? [groupParams.avatarFile] : [],
-      keyName: 'file',
+      keyName: ['file'],
       data: {
         if (groupParams.contactIds.length != 0)
           'contact': groupParams.contactIds.join(','),

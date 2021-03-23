@@ -184,6 +184,7 @@ class ChatDataSourceImpl implements ChatDataSource {
     var body =  {
         'text': params.text ?? '',
         'forward': forward,
+        'type': params.fieldFiles?.fieldKey?.filedKey ?? null,
         if (params.timeLeft != null)
           ...{'time_deleted': params.timeLeft}
       };
@@ -192,7 +193,7 @@ class ChatDataSourceImpl implements ChatDataSource {
         request: multipartRequest,
         data: body,
         files: params.fieldFiles?.files != null ? params.fieldFiles?.files : [],
-        keyName: params.fieldFiles?.fieldKey?.filedKey ?? null);
+        keyName: List.generate(params.fieldFiles?.files?.length, (index) => 'file[$index]') ?? [] );
 
     final response = await http.Response.fromStream(streamedResponse);
 

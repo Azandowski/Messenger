@@ -160,6 +160,12 @@ class _ChatControlPanelState extends State<ChatControlPanel> with TickerProvider
             offset: recordButtonOffset,
             microSize: _microButtonSize,
             microState: _buttonMicroCubit.state,
+            onSendAudio: (){
+              if(_recordBloc.state is VoiceRecording){
+                 _recordBloc.add(VoiceStopRecording());
+                _recordBloc.add(VoiceSendAudio());              
+              }
+            },
           ),
         );
       },
@@ -285,8 +291,7 @@ class _ChatControlPanelState extends State<ChatControlPanel> with TickerProvider
           print("ON Delete");
         }else{
           _recordBloc.add(VoiceStopRecording());
-          //TODO SEND VOICE _recordBloc.add(SendRecord)
-          print("ON SEND");
+          _recordBloc.add(VoiceSendAudio());
         }
         deleteEveryEntry(isPause: false, isSwipe: false);
        _buttonMicroCubit.resetToStable();
@@ -331,10 +336,10 @@ class _ChatControlPanelState extends State<ChatControlPanel> with TickerProvider
   @override
   void initState() {
     super.initState();
-    _recordBloc = VoiceRecordBloc();
     _chatBloc = context.read<ChatBloc>();
     _panelBloc = context.read<PanelBlocCubit>();
     _buttonMicroCubit = ButtonMicroCubit();
+    _recordBloc = VoiceRecordBloc(chatBloc: _chatBloc);
 
     _microController = AnimationController(vsync: this, duration: Duration(microseconds: 200));
     _pauseController = AnimationController(vsync: this, duration: Duration(milliseconds: 200));

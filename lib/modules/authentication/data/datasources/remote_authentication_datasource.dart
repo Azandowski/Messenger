@@ -97,7 +97,7 @@ class AuthenticationRemoteDataSourceImpl
         request: request,
         data: {},
         files: contacts != null ? [contacts] : [],
-        keyName: 'contacts');
+        keyName: ['contacts']);
 
     if (response.statusCode >= 200 && response.statusCode <= 299) {
       return true;
