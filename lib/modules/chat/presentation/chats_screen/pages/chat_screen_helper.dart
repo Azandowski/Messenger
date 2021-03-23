@@ -1,4 +1,5 @@
 import 'package:flutter/rendering.dart';
+import 'package:messenger_mobile/core/config/auth_config.dart';
 import 'package:messenger_mobile/core/utils/snackbar_util.dart';
 import 'package:messenger_mobile/modules/category/presentation/chooseChats/presentation/chat_choose_page.dart';
 import 'package:messenger_mobile/modules/chat/domain/entities/chat_actions.dart';
@@ -369,11 +370,13 @@ extension ChatScreenStateHelper on ChatScreenState {
         isSelected = cubit.selectedMessages
           .where((element) => element.id == currentMessage.id)
           .toList().length > 0;
-      }
+      } 
 
-      bool isTimeDeletionEnabled = currentMessage.isRead && 
+      int myUserID = sl<AuthConfig>().user?.id;
+      bool isTimeDeletionEnabled = (currentMessage.isRead || currentMessage.user?.id != myUserID) && 
         currentMessage.timeDeleted != null && 
           currentMessage.chatActions == null;
+      print('isTimeDeletionEnabled: $isTimeDeletionEnabled');
 
       MessageCellParams messageCellParams ({int timeLeft}) => MessageCellParams(
         state: state, 
@@ -398,6 +401,10 @@ extension ChatScreenStateHelper on ChatScreenState {
               listener: (context, timerState) {
                 if (timerState.timeLeft == null || timerState.timeLeft == 0) {
                   chatBloc.add(MessageDelete(ids: [currentMessage.id]));
+                  context.read<main_chat_cubit.ChatGlobalCubit>().updateLastMessage(
+                    widget.chatEntity.chatId, 
+                    state.messages.getItemAt(currentIndex + 1)
+                  );
                 }
               },
               builder: (context, timerState) {

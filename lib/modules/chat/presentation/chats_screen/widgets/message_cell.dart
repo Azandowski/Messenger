@@ -130,28 +130,28 @@ class MessageContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-    padding: EdgeInsets.all(8),
-    decoration: widget.messageViewModel.getCellDecoration(
-      previousMessageUserID: widget.prevMessageUserID, 
-      nextMessageUserID: widget.nextMessageUserID
-    ),
-    child: Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: widget.messageViewModel.isMine ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-      children: [
-        NameTimeBloc(messageViewModel: widget.messageViewModel),
-        if(widget.messageViewModel.message.transfer.isNotEmpty)
-        ...returnForwardColumn(widget.messageViewModel.message.transfer),
-        if (widget.messageViewModel.messageText != null) 
-        Text(
-          widget.messageViewModel.messageText, 
-          style: !widget.messageViewModel.isMine ? 
-          AppFontStyles.black14w400 : AppFontStyles.white14w400,
-          textAlign: TextAlign.left,
-        ),
-      ],
-    ),
-          );
+      padding: EdgeInsets.all(8),
+      decoration: widget.messageViewModel.getCellDecoration(
+        previousMessageUserID: widget.prevMessageUserID, 
+        nextMessageUserID: widget.nextMessageUserID
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: widget.messageViewModel.isMine ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+        children: [
+          NameTimeBloc(messageViewModel: widget.messageViewModel),
+          if(widget.messageViewModel.message.transfer.isNotEmpty)
+          ...returnForwardColumn(widget.messageViewModel.message.transfer),
+          if (widget.messageViewModel.messageText != null) 
+          Text(
+            widget.messageViewModel.messageText, 
+            style: !widget.messageViewModel.isMine ? 
+            AppFontStyles.black14w400 : AppFontStyles.white14w400,
+            textAlign: TextAlign.left,
+          ),
+        ],
+      ),
+    );
   }
 }
 

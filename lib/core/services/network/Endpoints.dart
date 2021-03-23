@@ -42,7 +42,8 @@ enum Endpoints {
   searchChats,
   getUserProfile,
   blockUser,
-  unblockUser
+  unblockUser,
+  markAsRead
 }
 
 extension EndpointsExtension on Endpoints {
@@ -140,6 +141,8 @@ extension EndpointsExtension on Endpoints {
         return '${Config.baseAPIpath.value}/messenger/block-user';
       case Endpoints.unblockUser:
         return '${Config.baseAPIpath.value}/messenger/unblock-user';
+      case Endpoints.markAsRead:
+        return '${Config.baseAPIpath.value}/messenger/message/read';
     }
   }
 

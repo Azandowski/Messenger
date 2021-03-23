@@ -72,6 +72,7 @@ abstract class ChatDataSource {
   Future<bool> blockUser(int id);
   Future<bool> unblockUser(int id);
   Future<void> disposeChat();
+  Future<void> markAsRead (int id, int messageID);
 }
 
 
@@ -122,7 +123,8 @@ class ChatDataSourceImpl implements ChatDataSource {
         return MessageHandleType.setTopMessage;
       case 'unSetTopMessage':
         return MessageHandleType.unSetTopMessage;
-      case ''
+      case 'StartTimerSecretMessage':
+        return MessageHandleType.userReadSecretMessage;
     }
   }
    
@@ -462,5 +464,21 @@ class ChatDataSourceImpl implements ChatDataSource {
     } else {
       throw ServerFailure(message: ErrorHandler.getErrorMessage(response.body.toString()));
     }
+  }
+
+  @override
+  Future<void> markAsRead(int id, int messageID) async {
+    print(Endpoints.markAsRead.buildURL());
+    http.Response response = await client.post(
+      Endpoints.markAsRead.buildURL(),
+      body: json.encode({
+        'message_id': '$messageID'
+      }),
+      headers: Endpoints.markAsRead.getHeaders(token: sl<AuthConfig>().token),
+    );
+
+    if (!response.isSuccess) {
+      throw ServerFailure(message: ErrorHandler.getErrorMessage(response.body.toString()));
+    } 
   }
 }

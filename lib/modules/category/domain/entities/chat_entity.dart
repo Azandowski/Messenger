@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:messenger_mobile/modules/chat/domain/entities/message.dart';
 
 import '../../../chat/data/models/message_model.dart';
 import '../../../chats/domain/entities/category.dart';
@@ -8,12 +9,13 @@ import 'chat_permissions.dart';
 
 // ignore: must_be_immutable
 class ChatEntity extends Equatable {
+  
   final int chatId;
   final String title;
   final String imageUrl;
   final DateTime date;
   final ChatPermissions permissions;
-  final MessageModel lastMessage;
+  final Message lastMessage;
   final int unreadCount;
   final String description;
   final bool isPrivate;
@@ -51,7 +53,8 @@ class ChatEntity extends Equatable {
 
   ChatEntity clone({
     ChatPermissions permissions,
-    int unreadCount
+    int unreadCount,
+    Message lastMessage
   }) {
     return ChatEntity(
       chatId: this.chatId,
@@ -64,9 +67,11 @@ class ChatEntity extends Equatable {
         isMediaSendOn: this.permissions.isMediaSendOn,
         isForwardOn: this.permissions.isForwardOn
       ),
-      lastMessage: this.lastMessage,
+      lastMessage: lastMessage ?? this.lastMessage,
       unreadCount: unreadCount ?? this.unreadCount,
-      description: description
+      description: this.description,
+      isPrivate: this.isPrivate,
+      isRead: this.isRead,
     );
   }
 

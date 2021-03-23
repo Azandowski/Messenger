@@ -40,6 +40,11 @@ class ChatViewModel {
           userViewModel.name
         );
       }
+
+      if (entity.lastMessage.timeDeleted != null) {
+        return 'Секретное сообщение';
+      } 
+
       return entity.lastMessage.text ?? '';
     } else if (entity?.chatCategory != null){
       return entity.chatCategory.name ?? '';
@@ -56,6 +61,10 @@ class ChatViewModel {
     } else if (entity.lastMessage?.chatActions != null) {
       return AppFontStyles.placeholderStyle;
     } else {
+      if (entity.lastMessage?.timeDeleted != null) {
+        return AppFontStyles.mediumStyle.copyWith(color: Colors.red);
+      }
+      
       return AppFontStyles.mediumStyle;
     }
   }

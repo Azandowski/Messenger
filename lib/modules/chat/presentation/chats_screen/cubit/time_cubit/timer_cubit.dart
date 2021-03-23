@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
+import 'package:messenger_mobile/core/config/auth_config.dart';
 import 'package:messenger_mobile/modules/chat/domain/entities/message.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen_import.dart';
 
@@ -15,7 +16,8 @@ class TimerCubit extends Cubit<TimerState> {
 
 
   TimerCubit(Message message) : super(TimerNormal(timeLeft: null)) {
-    if (message.isRead && message.timeDeleted != null) {
+    int myUserID = sl<AuthConfig>().user?.id;
+    if ((message.isRead || message.user?.id != myUserID) && message.timeDeleted != null) {
       timeLeftInSeconds = message.timeDeleted - DateTime.now().difference(message.dateTime).inSeconds;
 
       _timer = Timer.periodic(Duration(seconds: 1), (timer) { 
@@ -25,10 +27,6 @@ class TimerCubit extends Cubit<TimerState> {
             timeLeft: timeLeftInSeconds
           ));
         } else {
-          print('delete message');
-          // chatBloc.add(MessageDelete(
-          //   ids: [message.id]
-          // ));
           _timer.cancel();
         }
       });

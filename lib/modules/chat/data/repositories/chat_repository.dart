@@ -352,4 +352,9 @@ class ChatRepositoryImpl extends ChatRepository {
       return Left(ConnectionFailure());
     }
   }
+
+  @override
+  Future<void> markMessageAsRead(MarkAsReadParams params) {
+    return chatDataSource.markAsRead(params.id, params.messageID);
+  }
 }

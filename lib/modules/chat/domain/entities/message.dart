@@ -95,7 +95,8 @@ class Message extends Equatable {
       identificator: identificator ?? this.identificator,
       transfer: transfer ?? this.transfer,
       toUser: toUser ?? this.toUser,
-      chat: chat ?? this.chat
+      chat: chat ?? this.chat,
+      timeDeleted: timeDeleted ?? this.timeDeleted
     );
   }
 

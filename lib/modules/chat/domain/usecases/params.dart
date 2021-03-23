@@ -182,3 +182,13 @@ class SetSocialMediaParams {
     @required this.socialMedia
   });
 }
+
+class MarkAsReadParams {
+  final int id;
+  final int messageID;
+
+  MarkAsReadParams({
+    @required this.id,
+    @required this.messageID
+  });
+}

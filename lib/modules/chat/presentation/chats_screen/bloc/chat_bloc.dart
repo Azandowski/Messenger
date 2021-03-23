@@ -325,6 +325,33 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
             topMessage: state.topMessage
           );
         }
+
+        if (event.message.user?.id != sl<AuthConfig>().user?.id) {
+          chatRepository.markMessageAsRead(MarkAsReadParams(id: chatId, messageID: event.message.id));
+        }
+
+        break;
+      case MessageHandleType.userReadSecretMessage:
+        if (state.hasReachBottomMax && event.message.user?.id != sl<AuthConfig>().user?.id) { 
+          var list = getCopyMessages();
+          var i = list.indexWhere((e) => e.id == event.message.id);
+          if (i != -1) {
+            list[i] = list[i].copyWith(isRead: true);
+          }
+
+          yield ChatInitial(
+            messages: list,
+            hasReachedMax: this.state.hasReachedMax,
+            wallpaperPath: this.state.wallpaperPath,
+            hasReachBottomMax: this.state.hasReachBottomMax,
+            unreadCount: this.state.unreadCount,
+            showBottomPin: state.showBottomPin,
+            isSecretModeOn: state.isSecretModeOn,
+            chatEntity: state.chatEntity,
+            topMessage: state.topMessage
+          );
+        }
+
         break;
       case MessageHandleType.setTopMessage:
         yield ChatInitial(
@@ -337,16 +364,16 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         );
         break;
       case MessageHandleType.unSetTopMessage:
-         yield ChatInitial(
-          topMessage: null,
-          messages: this.state.messages,
-          hasReachedMax: this.state.hasReachedMax,
-          wallpaperPath: this.state.wallpaperPath,
-          hasReachBottomMax: this.state.hasReachBottomMax,
-          isSecretModeOn: state.isSecretModeOn,
-          chatEntity: state.chatEntity,
-        );
-        break;
+      yield ChatInitial(
+        topMessage: null,
+        messages: this.state.messages,
+        hasReachedMax: this.state.hasReachedMax,
+        wallpaperPath: this.state.wallpaperPath,
+        hasReachBottomMax: this.state.hasReachBottomMax,
+        isSecretModeOn: state.isSecretModeOn,
+        chatEntity: state.chatEntity,
+      );
+      break;
     }
   }
 

@@ -77,7 +77,7 @@ class ChatScreenState extends State<ChatScreen> implements ChatChooseDelegate{
       chatsRepository: sl(),
       setTimeDeleted: SetTimeDeleted(repository: chatRepository),
       isSecretModeOn: widget.chatEntity.permissions?.isSecret ?? false,
-      chatEntity: widget.chatEntity
+      chatEntity: widget.chatEntity,
     )..add(LoadMessages(
       isPagination: false,
       messageID: widget.messageID,

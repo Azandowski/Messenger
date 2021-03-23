@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
+import 'package:messenger_mobile/modules/chat/domain/entities/message.dart';
 import 'package:messenger_mobile/modules/chats/domain/entities/category.dart';
 
 import '../../../../../locator.dart';
@@ -229,6 +230,21 @@ class ChatGlobalCubit extends Cubit<ChatState> {
         newChats.removeAt(index);
       } 
 
+      emit(ChatsLoaded(
+        hasReachedMax: this.state.hasReachedMax ?? false,
+        chats: newChats,
+        currentCategory: this.state.currentCategory
+      ));
+    }
+  }
+
+  void updateLastMessage (int chatId, Message newLastMessage) {
+    int index = this.state.chats.indexWhere((element) => element.chatId == chatId);
+    if (index != -1) {  
+      var newChatModel = this.state.chats[index].clone();
+      newChatModel.clone(lastMessage: newLastMessage);
+      chatsRepository.saveNewChatLocally(newChatModel);
+      var newChats = this.state.chats.map((e) => e.chatId == chatId ? newChatModel : e.clone()).toList();
       emit(ChatsLoaded(
         hasReachedMax: this.state.hasReachedMax ?? false,
         chats: newChats,
