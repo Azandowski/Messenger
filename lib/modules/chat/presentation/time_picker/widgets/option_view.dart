@@ -16,7 +16,7 @@ class OptionView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return InkWell(
       onTap: onPressed,
       child: Container(
         padding: const EdgeInsets.symmetric(

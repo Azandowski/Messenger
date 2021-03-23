@@ -56,21 +56,29 @@ class MessageSend extends ChatEvent {
   final Message forwardMessage;
   final String message;
   final FieldFiles fieldFiles;
+  final int timeDeleted;
+
   MessageSend({
     this.message,
     this.fieldFiles,
     this.forwardMessage,
+    this.timeDeleted
   });
 
   @override
-  List<Object> get props => [message, forwardMessage, fieldFiles];
+  List<Object> get props => [
+    message, 
+    forwardMessage,
+    timeDeleted,
+    fieldFiles
+  ];
 }
 
 class SetInitialTime extends ChatEvent {
-  final TimeOptions option;
+  final bool isOn;
 
   SetInitialTime({
-    this.option
+    this.isOn
   });
 
   @override
@@ -94,5 +102,19 @@ class ToggleBottomPin extends ChatEvent {
   @override
   List<Object> get props => [
     show, newUnreadCount
+  ];
+}
+
+
+class PermissionsUpdated extends ChatEvent {
+  final ChatPermissions newPermissions;
+
+  PermissionsUpdated ({
+    @required this.newPermissions
+  });
+
+  @override
+  List<Object> get props => [
+    newPermissions
   ];
 }

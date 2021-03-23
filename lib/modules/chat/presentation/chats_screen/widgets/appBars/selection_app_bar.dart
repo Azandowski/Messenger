@@ -25,7 +25,7 @@ class SelectionAppBar extends StatelessWidget implements PreferredSizeWidget{
       title:RichText(
         text: TextSpan(
           text: 'Выбрано: ',
-          style: AppFontStyles.black16,
+          style: AppFontStyles.black16.copyWith(height: 0.6),
           children: <TextSpan>[
             TextSpan(text: chatTodoCubit.state.selectedMessages.length.toString(), style: AppFontStyles.purple15),
           ],

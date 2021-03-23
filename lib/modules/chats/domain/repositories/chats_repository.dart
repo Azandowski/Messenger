@@ -26,7 +26,7 @@ abstract class ChatsRepository {
 
   Stream<ChatEntity> chats;
 
-  Future<void> saveNewChatLocally (ChatEntityModel model);
+  Future<void> saveNewChatLocally (ChatEntity model);
 
   Future<void> removeAllChats ();
 

@@ -33,7 +33,7 @@ class CategoriesSection extends StatelessWidget {
             Text(
               'Категории чатов', 
               style: AppFontStyles.headerMediumStyle),
-            GestureDetector(
+            InkWell(
               child: Icon(Icons.chevron_right),
               onTap: onNextClick,
             )

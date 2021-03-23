@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:messenger_mobile/core/services/network/config.dart';
 
 import '../../../chat/data/models/message_model.dart';
 import '../../../chats/data/model/category_model.dart';
@@ -18,6 +19,7 @@ class ChatEntityModel extends ChatEntity {
   final int unreadCount;
   final String description;
   final bool isPrivate;
+  final bool isRead;
 
   ChatEntityModel({
     @required this.chatId, 
@@ -29,7 +31,8 @@ class ChatEntityModel extends ChatEntity {
     @required this.description,
     this.lastMessage,
     this.unreadCount = 0,
-    this.isPrivate
+    this.isPrivate,
+    this.isRead
   }) : super(
     chatId: chatId,
     chatCategory: chatCategory,
@@ -40,7 +43,8 @@ class ChatEntityModel extends ChatEntity {
     lastMessage: lastMessage,
     unreadCount: unreadCount,
     description: description,
-    isPrivate: isPrivate
+    isPrivate: isPrivate,
+    isRead: isRead
   );
 
   factory ChatEntityModel.fromJson(
@@ -58,7 +62,8 @@ class ChatEntityModel extends ChatEntity {
       lastMessage: json['last_message'] != null ? MessageModel.fromJson(json['last_message']) : null,
       unreadCount: json['no_read_message'] ?? 0,
       description: json['description'],
-      isPrivate: json['is_private'] == 1 
+      isPrivate: json['is_private'] == 1 ,
+      isRead: json['is_read'] == 1
     );
   }
 
@@ -83,7 +88,8 @@ class ChatEntityModel extends ChatEntity {
       'last_message': lastMessage?.toJson(),
       'no_read_message': unreadCount,
       'description': description,
-      'is_private': isPrivate ? 1 : 0
+      'is_private': isPrivate ? 1 : 0,
+      'is_read': isRead ? 1 : 0 
     };
   }
 }

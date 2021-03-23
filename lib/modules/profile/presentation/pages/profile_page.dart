@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:messenger_mobile/core/utils/snackbar_util.dart';
 
 import '../../../../core/blocs/authorization/bloc/auth_bloc.dart';
 import '../../../../core/blocs/category/bloc/category_bloc.dart';
@@ -41,12 +42,9 @@ class _ProfilePageState extends State<ProfilePage> {
           bloc: cubit,
           listener: (context, state) {
             if (state is ProfileError) {
-              Scaffold.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(state.message,
-                      style: TextStyle(color: Colors.red)),
-                ), // SnackBar
-              );
+              SnackUtil.showError(context: context, message: state.message);
+            } else {
+              ScaffoldMessenger.of(context).hideCurrentSnackBar();
             }
           },
           child: BlocProvider<ProfileCubit>(

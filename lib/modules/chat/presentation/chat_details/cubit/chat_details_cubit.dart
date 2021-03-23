@@ -2,6 +2,11 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:messenger_mobile/modules/chat/domain/usecases/block_user.dart';
+import 'package:messenger_mobile/modules/chat/domain/usecases/kick_member.dart';
+import 'package:messenger_mobile/modules/chat/domain/usecases/set_social_media.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chat_details/page/chat_detail_screen.dart';
+import 'package:messenger_mobile/modules/social_media/domain/entities/social_media.dart';
 
 import '../../../../category/data/models/chat_permission_model.dart';
 import '../../../../category/domain/entities/chat_permissions.dart';
@@ -24,6 +29,8 @@ class ChatDetailsCubit extends Cubit<ChatDetailsState> {
   final LeaveChat leaveChat;
   final UpdateChatSettings updateChatSettings;
   final KickMembers kickMembers;
+  final BlockUser blockUser;
+  final SetSocialMedia setSocialMedia;
 
   ChatPermissions initialPermissions;
 
@@ -32,11 +39,15 @@ class ChatDetailsCubit extends Cubit<ChatDetailsState> {
     @required this.addMembers,
     @required this.leaveChat,
     @required this.updateChatSettings,
-    @required this.kickMembers
+    @required this.kickMembers,
+    @required this.blockUser,
+    @required this.setSocialMedia
   }) : super(ChatDetailsLoading());
 
-  Future<void> loadDetails (int id) async {
-    var response =  await getChatDetails.call(id);
+  Future<void> loadDetails (int id, ProfileMode mode) async {
+    var response =  await getChatDetails.call(GetChatDetailsParams(
+      mode: mode, id: id
+    ));
 
     response.fold(
       (failure) => emit(ChatDetailsError(
@@ -168,6 +179,58 @@ class ChatDetailsCubit extends Cubit<ChatDetailsState> {
       });
     }
   }
+
+  Future<void> blockUnblockUser ({
+    @required int userID, 
+    @required bool isBlock
+  }) async {
+    emit(ChatDetailsProccessing(chatDetailed: this.state.chatDetailed));
+
+    var response = await blockUser(BlockUserParams(
+      isBloc: isBlock, 
+      userID: userID
+    ));
+
+    response.fold((failure) => emit(ChatDetailsError(
+      message: failure.message,
+      chatDetailed: this.state.chatDetailed
+    )), (_) {
+      var newUser = state.chatDetailed.user.copyWith(isBlocked: isBlock);
+      var chatDetails = state.chatDetailed.copyWith(user: newUser);
+      emit(ChatDetailsLoaded(
+        chatDetailed: chatDetails
+      ));
+    });
+  }
+
+  Future<void> setNewSocialMedia ({
+    @required int id,
+    @required SocialMedia newSocialMedia,
+  }) async {
+    emit(ChatDetailsProccessing(chatDetailed: this.state.chatDetailed));
+
+    var response = await setSocialMedia(SetSocialMediaParams(
+      id: id, 
+      socialMedia: newSocialMedia
+    ));
+
+    response.fold((failure) => emit(ChatDetailsError(
+      message: failure.message,
+      chatDetailed: this.state.chatDetailed
+    )), (response) {
+      emit(ChatDetailsLoaded(
+        chatDetailed: state.chatDetailed.copyWith(socialMedia: newSocialMedia)
+      ));
+    });
+  }
+
+  void showError (String message) {
+    emit(ChatDetailsError(
+      chatDetailed: this.state.chatDetailed,
+      message: message
+    ));
+  }
+
 
   bool get _needsPermissionsUpdate {
     return 

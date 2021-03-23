@@ -75,7 +75,9 @@ class ChatScreenState extends State<ChatScreen> implements ChatChooseDelegate{
       getMessages: GetMessages(repository: chatRepository),
       getMessagesContext: GetMessagesContext(repository: chatRepository),
       chatsRepository: sl(),
-      setTimeDeleted: SetTimeDeleted(repository: chatRepository)
+      setTimeDeleted: SetTimeDeleted(repository: chatRepository),
+      isSecretModeOn: widget.chatEntity.permissions?.isSecret ?? false,
+      chatEntity: widget.chatEntity
     )..add(LoadMessages(
       isPagination: false,
       messageID: widget.messageID,
@@ -128,17 +130,27 @@ class ChatScreenState extends State<ChatScreen> implements ChatChooseDelegate{
               builder: (context, state) {
                 return Scaffold(
                   appBar: this.buildAppBar(
-                    _chatTodoCubit, cubit, chatViewModel, _navigator,
+                    _chatTodoCubit, 
+                    cubit, state, chatViewModel, _navigator,
+                    (ChatAppBarActions action) {
+                      if (action == ChatAppBarActions.onOffSecretMode) {
+                        _chatBloc.add(SetInitialTime(isOn: !(state.isSecretModeOn ?? false)));
+                      }
+                    }
                   ),
                   floatingActionButton: shouldShowBottomPin(state) ?
-                    BottomPin(
-                      state: state,
-                      onPress: () {
-                        _chatBloc.add(LoadMessages(
-                          isPagination: false,
-                          resetAll: true
-                        ));
-                      }
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 60.0),
+                      child: BottomPin(
+                        state: state,
+                        onPress: () {
+                          _chatBloc.add(LoadMessages(
+                            isPagination: false,
+                            resetAll: true,
+                            direction: RequestDirection.bottom
+                          ));
+                        }
+                      ),
                     ) : null,
                   backgroundColor: AppColors.pinkBackgroundColor,
                   body: BlocProvider(
@@ -148,9 +160,18 @@ class ChatScreenState extends State<ChatScreen> implements ChatChooseDelegate{
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        if(state.topMessage != null) this.buildTopMessage(state,
-                          width, height, _chatTodoCubit,
-                        ),
+                        if (state.topMessage != null) 
+                          InkWell(
+                            onTap: () {
+                              _chatBloc.add(LoadMessages(
+                                messageID: state.topMessage.id,
+                                isPagination: false
+                              ));
+                            },
+                            child: this.buildTopMessage(state,
+                              width, height, _chatTodoCubit,
+                            ),
+                          ),
                         Expanded(
                           child: Container(
                             decoration: BoxDecoration(
@@ -159,87 +180,14 @@ class ChatScreenState extends State<ChatScreen> implements ChatChooseDelegate{
                             child: ListView.separated(
                               key: PageStorageKey('feed'),
                               controller: _chatBloc.scrollController,
-                              itemBuilder: (context, int index) {
-                                var spinnerIndex;
-                                if (state is ChatLoading) {
-                                  spinnerIndex = state.direction == null || state.direction == RequestDirection.top ? 
-                                    getItemsCount(state) - 1 : 0;
-                                }
-
-                                if (state is ChatLoading && spinnerIndex == index) {
-                                  return Padding(
-                                    padding: const EdgeInsets.only(bottom: 20),
-                                    child: LoadWidget(size: 20)
-                                  );
-                                } else if (getItemsCount(state) - 1 == index) {
-                                  if (state.messages.getItemAt(index - 1) != null) {
-                                    return ChatActionView(
-                                      chatAction: TimeAction(
-                                        action: ChatActions.newDay,
-                                        dateTime: state.messages[index - 1].dateTime
-                                      )
-                                    );
-                                  }
-
-                                  return Container();
-                                } else {
-                                  var indexMinus = 0;
-                                  if (state is ChatLoading) {
-                                    if (!(state.direction == null || state.direction == RequestDirection.top)) {
-                                      indexMinus = 1;
-                                    }
-                                  }
-                                  int currentIndex = index - indexMinus;
-                                  int nextMessageUserID = state.messages.getItemAt(currentIndex - 1)?.user?.id;
-                                  int prevMessageUserID = state.messages.getItemAt(currentIndex + 1)?.user?.id;
-                                  Message currentMessage = state.messages[currentIndex];
-                                  bool isSelected = false;
-                                  
-                                  if (cubit is ChatTodoSelection) {
-                                    isSelected = cubit.selectedMessages
-                                      .where((element) => element.id == currentMessage.id)
-                                      .toList().length > 0;
-                                  }
-
-                                  final body = currentMessage.chatActions == null ? 
-                                    MessageCell(
-                                      nextMessageUserID: nextMessageUserID,
-                                      prevMessageUserID: prevMessageUserID,
-                                      onReply: (MessageViewModel message){
-                                        _panelBlocCubit.addMessage(message);
-                                      },
-                                      onAction: (MessageCellActions action){
-                                        messageActionProcess(
-                                          action, context, 
-                                          MessageViewModel(currentMessage), 
-                                          _panelBlocCubit, _chatTodoCubit
-                                        );
-                                      },
-                                      messageViewModel: MessageViewModel(
-                                        currentMessage,
-                                        isSelected: isSelected,
-                                      ),
-                                      onTap: () {
-                                        if (cubit is ChatTodoSelection) {
-                                          if (isSelected) {
-                                            _chatTodoCubit.removeMessage(currentMessage);
-                                          } else {
-                                            _chatTodoCubit.selectMessage(currentMessage);
-                                          }
-                                        }
-                                      },
-                                    ) : ChatActionView(
-                                      chatAction: _buildChatAction(currentMessage)
-                                    );
-
-                                  return AutoScrollTag(
-                                    key: ValueKey(index),
-                                    controller: _chatBloc.scrollController,
-                                    index: index,
-                                    child: body
-                                  );
-                                }
-                              },
+                              itemBuilder: (context, int index) => this.buildMessageCell(
+                                index: index, 
+                                state: state, 
+                                cubit: cubit, 
+                                panelBlocCubit: _panelBlocCubit, 
+                                chatTodoCubit: _chatTodoCubit, 
+                                chatBloc: _chatBloc
+                              ),
                               scrollDirection: Axis.vertical,
                               itemCount: getItemsCount(state),
                               reverse: true,
@@ -279,7 +227,7 @@ class ChatScreenState extends State<ChatScreen> implements ChatChooseDelegate{
   }
 
   // Get Chat Action model from the message 
-  ChatAction _buildChatAction (Message message) {
+  ChatAction buildChatAction (Message message) {
     if (message.chatActions.actionType == ChatActionTypes.group) {
       return GroupAction(
         firstUser: message.user,
@@ -295,7 +243,7 @@ class ChatScreenState extends State<ChatScreen> implements ChatChooseDelegate{
   @override
   void didSelectTimeOption(TimeOptions option) {
     Navigator.of(context).pop();
-    _chatBloc.add(SetInitialTime(option: option));
+    // _chatBloc.add(SetInitialTime(option: option));
   }
 
   @override

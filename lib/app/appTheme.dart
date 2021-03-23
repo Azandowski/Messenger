@@ -43,7 +43,6 @@ abstract class AppFontStyles {
     color: Colors.black,
     fontWeight: FontWeight.w500,
     fontSize: 16,
-    height: 0.6
   );
 
   // For Medium Texts
@@ -137,7 +136,7 @@ abstract class AppTheme {
     accentColor: Colors.black,
     backgroundColor: Colors.white,
     scaffoldBackgroundColor: Colors.white,
-    highlightColor: Color(0xff292969),
+    highlightColor: Colors.white24,
     indicatorColor: Color(0xff9357CD),
     bottomAppBarTheme: BottomAppBarTheme(
       color: Colors.white,

@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:messenger_mobile/app/application.dart';
+import 'package:messenger_mobile/core/utils/snackbar_util.dart';
+import 'package:messenger_mobile/core/widgets/independent/small_widgets/image_text_view.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen.dart';
+import 'package:messenger_mobile/modules/chats/presentation/pages/chats_search_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../app/application.dart';
@@ -39,7 +44,10 @@ class _ChatsScreenState extends State<ChatsScreen> {
 
       if (scrollController.isPaginated) {
         if (hasNextPage && !viewIsLoading) {
-          context.read<ChatGlobalCubit>().loadChats(isPagination: true);
+          context.read<ChatGlobalCubit>().loadChats(
+            isPagination: true,
+            categoryID: cubit.state.currentTabIndex == 0 ? null : cubit.state.currentTabIndex
+          );
         }
       }
     });
@@ -79,8 +87,8 @@ class _ChatsScreenState extends State<ChatsScreen> {
                         );
                       } else if (index <= (chatsCount == 0 && !(chatState is ChatLoading) ? 1 : chatsCount)) {
                         if (chatsCount != 0) {
-                          return GestureDetector(
-                            onLongPressStart: (d) {
+                          return InkWell(
+                            onLongPress: () {
                               cubit.didSelectChat(index - 1);
                             },
                             onTap: () {
@@ -122,12 +130,7 @@ class _ChatsScreenState extends State<ChatsScreen> {
 
   void _handleChatsUpdates(ChatState state) {
     if (state is ChatsError) {
-      Scaffold.of(context).showSnackBar(
-        SnackBar(
-          content:
-              Text(state.errorMessage, style: TextStyle(color: Colors.red)),
-        ), // SnackBar
-      );
+      SnackUtil.showError(context: context, message: state.errorMessage);
     }
   }
 

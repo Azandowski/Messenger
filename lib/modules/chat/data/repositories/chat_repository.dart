@@ -2,6 +2,9 @@ import 'dart:io';
 
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
+import 'package:messenger_mobile/modules/chat/data/models/chat_message_response.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chat_details/page/chat_detail_screen.dart';
+import 'package:messenger_mobile/modules/social_media/domain/entities/social_media.dart';
 
 import '../../../../core/error/failures.dart';
 import '../../../../core/services/network/network_info.dart';
@@ -28,10 +31,10 @@ class ChatRepositoryImpl extends ChatRepository {
   });
   
   @override
-  Future<Either<Failure, ChatDetailed>> getChatDetails(int id) async {
+  Future<Either<Failure, ChatDetailed>> getChatDetails(int id, ProfileMode mode) async {
     if (await networkInfo.isConnected) { 
       try {
-        final response = await chatDataSource.getChatDetails(id);
+        final response = await chatDataSource.getChatDetails(id, mode);
         return Right(response);
       } catch (e) {
         if (e is Failure) {
@@ -190,11 +193,17 @@ class ChatRepositoryImpl extends ChatRepository {
   }
 
   @override
-  Future<Either<Failure, NoParams>> setTimeDeleted({int id, int timeInSeconds}) async {
+  Future<Either<Failure, ChatPermissions>> setTimeDeleted({int id, bool isOn}) async {
     if (await networkInfo.isConnected) { 
       try {
-        final response = await chatDataSource.setTimeDeleted(id: id, timeInSeconds: timeInSeconds);
-        return Right(NoParams());
+        final response = await chatDataSource.updateChatSettings(
+          id: id,
+          chatUpdates: {
+            'is_secret': isOn ? '1' : '0'
+          }
+        );
+
+        return Right(response);
       } catch (e) {
         if (e is Failure) {
           return Left(e);
@@ -274,7 +283,7 @@ class ChatRepositoryImpl extends ChatRepository {
 
   @override
   Future<Either<Failure, bool>> replyMore(ReplyMoreParams params) async {
-     try {
+    try {
       await chatDataSource.replyMore(params);
       return Right(true);
     } catch (e) {
@@ -283,6 +292,64 @@ class ChatRepositoryImpl extends ChatRepository {
       } else {
         return Left(ServerFailure(message: e.toString()));
       } 
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> blockUser(int id) async {
+    if (await networkInfo.isConnected) { 
+      try {
+        await chatDataSource.blockUser(id);
+        return Right(true);
+      } catch (e) {
+        if (e is Failure) {
+          return Left(e);
+        } else {
+          return Left(ServerFailure(message: e.toString()));
+        } 
+      }
+    } else {
+      return Left(ConnectionFailure());
+    }
+  }
+  
+  @override
+  Future<Either<Failure, bool>> unblockUser(int id) async {
+    if (await networkInfo.isConnected) { 
+      try {
+        await chatDataSource.unblockUser(id);
+        return Right(true);
+      } catch (e) {
+          if (e is Failure) {
+          return Left(e);
+        } else {
+          return Left(ServerFailure(message: e.toString()));
+        } 
+      }
+    } else {
+      return Left(ConnectionFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, ChatPermissions>> setSocialMedia({int id, SocialMedia socialMedia}) async {
+    if (await networkInfo.isConnected) {
+      try {
+        var response = await chatDataSource.updateChatSettings(
+          id: id,
+          chatUpdates: socialMedia.toJson()
+        );
+
+        return Right(response);
+      } catch (e) {
+        if (e is Failure) {
+          return Left(e);
+        } else {
+          return Left(ServerFailure(message: e.toString()));
+        } 
+      }
+    } else {
+      return Left(ConnectionFailure());
     }
   }
 }

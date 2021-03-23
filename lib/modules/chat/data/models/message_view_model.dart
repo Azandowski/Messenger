@@ -10,10 +10,14 @@ import '../../presentation/chats_screen/helpers/messageCellAction.dart';
 class MessageViewModel {
   final Message message;
   final bool isSelected;
+  final int timeLeftToBeDeleted;
 
   MessageViewModel (
-    this.message, {this.isSelected = false
-  }); 
+    this.message, {
+      this.isSelected = false,
+      this.timeLeftToBeDeleted = null
+    }
+  ); 
 
   // MARK: - For UI
 
@@ -26,7 +30,9 @@ class MessageViewModel {
   }
 
   String get time {
-    if (message.dateTime != null) {
+    if (timeLeftToBeDeleted != null) {
+      return '$timeLeftToBeDeleted';
+    } else if (message.dateTime != null) {
       return new DateFormat("Hm").format(message.dateTime); 
     } else {
       return '';
@@ -41,8 +47,6 @@ class MessageViewModel {
     @required int previousMessageUserID, 
     @required int nextMessageUserID
   }) {
-    int myID = sl<AuthConfig>().user.id;
-
     return BoxDecoration(
       color: !isMine ? Colors.white : (isMine && messageStatus == MessageStatus.sending) ?
         AppColors.greyColor : AppColors.messageBlueBackground,
@@ -63,11 +67,24 @@ class MessageViewModel {
   bool get canBeCopied {
     return message.text != null && message.text != '';
   }
-  List<MessageCellActions> get actionsList {
-    if(message.text != null && message.text != ''){
-      return MessageCellActions.values.toList(); 
-    }else{
-      return [MessageCellActions.attachMessage, MessageCellActions.replyMessage, MessageCellActions.replyMore, MessageCellActions.deleteMessage];
+
+  List<MessageCellActions> getActionsList ({
+    @required bool isReplyEnabled
+  }) {
+    if (message.text != null && message.text != ''){
+      return MessageCellActions.values.where(
+        (e) => isReplyEnabled ? true : e != MessageCellActions.replyMessage && e != MessageCellActions.replyMore
+      ).toList(); 
+    } else {
+      return [
+        MessageCellActions.attachMessage, 
+        if (isReplyEnabled)
+          ...[
+            MessageCellActions.replyMessage, 
+            MessageCellActions.replyMore
+          ],
+        MessageCellActions.deleteMessage
+      ];
     } 
   }
 
@@ -103,5 +120,4 @@ class MessageViewModel {
   MessageStatus get messageStatus {
     return message.messageStatus;
   }
-
 }

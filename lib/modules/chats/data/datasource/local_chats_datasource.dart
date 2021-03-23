@@ -23,7 +23,7 @@ class LocalChatsDataSourceImpl implements LocalChatsDataSource {
     ]);
     
     if (categoryID != null) {
-      finder.filter = Filter.equals('chatCategory.id', categoryID);
+      finder.filter = Filter.equals('category_chat.id', categoryID);
     }
 
     

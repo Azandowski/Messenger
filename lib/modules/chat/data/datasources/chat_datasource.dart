@@ -3,7 +3,11 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:messenger_mobile/core/usecases/usecase.dart';
 import 'package:messenger_mobile/core/utils/multipart_request_helper.dart';
+import 'package:messenger_mobile/modules/chat/data/models/chat_message_response.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chat_details/page/chat_detail_screen.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen_import.dart';
 
 import '../../../../core/config/auth_config.dart';
 import '../../../../core/error/failures.dart';
@@ -45,7 +49,7 @@ extension RequestExension on RequestDirection {
 
 
 abstract class ChatDataSource {
-  Future<ChatDetailed> getChatDetails (int id);
+  Future<ChatDetailed> getChatDetails (int id, ProfileMode mode);
   Future<PaginatedResult<ContactEntity>> getChatMembers (int id, Pagination pagination);
   Future<ChatDetailed> addMembers (int id, List<int> userIDs);
   Future<ChatDetailed> kickMember (int id, int userID);
@@ -65,12 +69,8 @@ abstract class ChatDataSource {
     int lastMessageId, RequestDirection direction
   );
   Future<ChatMessageResponse> getChatMessageContext (int chatID, int messageID);
-
-  // TODO: Finish later
-  Future<void> setTimeDeleted ({
-    int id, int timeInSeconds
-  });
-
+  Future<bool> blockUser(int id);
+  Future<bool> unblockUser(int id);
   Future<void> disposeChat();
 }
 
@@ -95,9 +95,11 @@ class ChatDataSourceImpl implements ChatDataSource {
           MessageModel messageModel = MessageModel.fromJson(updates['message']);
           messageModel.messageHandleType = handleTypeMessage(updates['type']);
           var transfers;
-          if(updates['transfer'] != null){
+          
+          if (updates['transfer'] != null) {
             transfers = ((updates['transfer'] ?? []) as List).map((e) => Transfer.fromJson(e)).toList();
           }
+
           messageModel.transfer = transfers;
           _controller.add(messageModel);
         }
@@ -124,9 +126,14 @@ class ChatDataSourceImpl implements ChatDataSource {
   }
    
   @override
-  Future<ChatDetailed> getChatDetails(int id) async {
+  Future<ChatDetailed> getChatDetails(int id, ProfileMode mode) async {
     http.Response response = await client.get(
-      Endpoints.getChatDetails.buildURL(urlParams: ['$id']),
+      mode == ProfileMode.chat ? 
+        Endpoints.getChatDetails.buildURL(urlParams: ['$id']) : Endpoints.getUserProfile.buildURL(
+          queryParameters: {
+            'user_id': '$id'
+          }
+        ),
       headers: Endpoints.getChatDetails.getHeaders(token: sl<AuthConfig>().token)
     );
 
@@ -290,7 +297,7 @@ class ChatDataSourceImpl implements ChatDataSource {
           '$id'
         ],
         queryParameters: {
-          if (direction != null)
+          if (direction != null && lastMessageId != null)
           ...{'type': direction.key},
           if (lastMessageId != null)
             ...{'last_message_id': '$lastMessageId'}
@@ -348,28 +355,6 @@ class ChatDataSourceImpl implements ChatDataSource {
   Future<void> disposeChat() {
     socketService.echo.leave(SocketChannels.getChatByID(id));
     socketService.echo.leave(SocketChannels.getChatDeleteById(id));
-  }
-
-
-  // TODO: Works Partly, No need to touch
-
-  @override 
-  Future<void> setTimeDeleted ({
-    @required int timeInSeconds,
-    @required int id
-  }) async {
-    http.Response response = await client.post(
-      Endpoints.setTimeDeleted.buildURL(),
-      headers: Endpoints.changeChatSettings.getHeaders(token: sl<AuthConfig>().token),
-      body: json.encode({
-        'time_deleted': '$timeInSeconds',
-        'chat_id': '$id'
-      })
-    );
-
-    if (!response.isSuccess) { 
-      throw ServerFailure(message: ErrorHandler.getErrorMessage(response.body.toString()));
-    }
   }
 
   @override
@@ -435,6 +420,41 @@ class ChatDataSourceImpl implements ChatDataSource {
       }),
       headers: Endpoints.changeChatSettings.getHeaders(token: sl<AuthConfig>().token),
     );
+
+    if (response.isSuccess) {
+      return true;
+    } else {
+      throw ServerFailure(message: ErrorHandler.getErrorMessage(response.body.toString()));
+    }
+  }
+
+  @override
+  Future<bool> blockUser(int id) async { 
+    http.Response response = await client.post(
+      Endpoints.blockUser.buildURL(),
+      body: json.encode({
+        'contact': id
+      }),
+      headers: Endpoints.blockUser.getHeaders(token: sl<AuthConfig>().token),
+    );
+
+    if (response.isSuccess) {
+      return true;
+    } else {
+      throw ServerFailure(message: ErrorHandler.getErrorMessage(response.body.toString()));
+    }
+  }
+
+  @override
+  Future<bool> unblockUser(int id) async {
+    http.Response response = await client.post(
+      Endpoints.unblockUser.buildURL(),
+      body: json.encode({
+        'contact': id
+      }),
+      headers: Endpoints.unblockUser.getHeaders(token: sl<AuthConfig>().token),
+    );
+
     if (response.isSuccess) {
       return true;
     } else {

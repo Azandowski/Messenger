@@ -1,15 +1,15 @@
 import 'package:flutter_search_bar/flutter_search_bar.dart';
-
-import '../../../../../core/utils/paginated_scroll_controller.dart';
-import '../../../../../core/utils/search_engine.dart';
-import '../../../../../core/widgets/independent/small_widgets/cell_skeleton_item.dart';
-import '../../../../chat/presentation/chats_screen/pages/chat_screen_import.dart';
-import '../../../data/datasources/creation_module_datasource.dart';
-import '../../../data/repositories/creation_module_repository.dart';
-import '../../../domain/entities/contact.dart';
-import '../../../domain/usecases/search_contacts.dart';
-import '../../bloc/search_contact_cubit/search_contact_cubit.dart';
-import '../../widgets/contact_cell.dart';
+import 'package:messenger_mobile/core/utils/paginated_scroll_controller.dart';
+import 'package:messenger_mobile/core/utils/search_engine.dart';
+import 'package:messenger_mobile/core/utils/snackbar_util.dart';
+import 'package:messenger_mobile/core/widgets/independent/small_widgets/cell_skeleton_item.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen_import.dart';
+import 'package:messenger_mobile/modules/creation_module/data/datasources/creation_module_datasource.dart';
+import 'package:messenger_mobile/modules/creation_module/data/repositories/creation_module_repository.dart';
+import 'package:messenger_mobile/modules/creation_module/domain/entities/contact.dart';
+import 'package:messenger_mobile/modules/creation_module/domain/usecases/search_contacts.dart';
+import 'package:messenger_mobile/modules/creation_module/presentation/bloc/search_contact_cubit/search_contact_cubit.dart';
+import 'package:messenger_mobile/modules/creation_module/presentation/widgets/contact_cell.dart';
 
 class SearchContactPage extends StatefulWidget {
 
@@ -93,11 +93,7 @@ class _SearchContactPageState extends State<SearchContactPage> implements Search
         body: BlocConsumer<SearchContactCubit, SearchContactState>(
           listener: (context, SearchContactState state) {
             if (state is SearchContactsError) {
-              ScaffoldMessenger.of(context)
-              ..hideCurrentSnackBar()
-              ..showSnackBar(
-                SnackBar(content: Text(state.message))
-              );
+              SnackUtil.showError(context: context, message: state.message);
             } else {
               ScaffoldMessenger.of(context).hideCurrentSnackBar();
             }

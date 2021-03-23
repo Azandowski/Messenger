@@ -214,7 +214,7 @@ class _DialogsViewState extends State<DialogsView> {
     } else if (widget.dialogViewType != DialogViewType.actionSheet) {
       // Building simple button for the alert view
       return Flexible(
-        child: GestureDetector(
+        child: InkWell(
           onTap: buttonDetails.onPress,
           child: Container(
             child: Center(
@@ -240,7 +240,7 @@ class _DialogsViewState extends State<DialogsView> {
             )
           )
         ),
-        child: GestureDetector(
+        child: InkWell(
           onTap: () {
             FeedbackEngine.showFeedback(FeedbackType.selection);
             buttonDetails.onPress();
@@ -277,7 +277,7 @@ class _DialogsViewState extends State<DialogsView> {
     List<Widget> widgets = [];
 
     for (int i = 0; i < optionsContainer.options.length; i++) {
-      widgets.add(GestureDetector(
+      widgets.add(InkWell(
         onTap: () {
           setState(() {
             optionsContainer = DialogOptionsContainer(

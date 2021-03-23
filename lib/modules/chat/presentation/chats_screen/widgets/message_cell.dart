@@ -12,16 +12,20 @@ import 'components/forward_container.dart';
 import 'name_time_read_container.dart';
 
 class MessageCell extends StatefulWidget {
+  
   final MessageViewModel messageViewModel;
   final int nextMessageUserID;
   final int prevMessageUserID;
   final Function(MessageViewModel) onReply;
   final Function(MessageCellActions) onAction;
   final Function onTap; 
+  final bool isSwipeEnabled;
+
   const MessageCell({
     @required this.messageViewModel,
     @required this.onAction,
     @required this.onReply,
+    this.isSwipeEnabled = true,
     this.onTap,
     this.nextMessageUserID,
     this.prevMessageUserID,
@@ -65,12 +69,16 @@ class _MessageCellState extends State<MessageCell> {
         ),
         threshold: 64.0,
         onSwipeLeft: () {
-          vibrate();
-          widget.onReply(widget.messageViewModel);
+          if (widget.isSwipeEnabled) {
+            vibrate();
+            widget.onReply(widget.messageViewModel);
+          }
         },
         onSwipeRight: () {
-          vibrate();
-          widget.onReply(widget.messageViewModel);
+          if (widget.isSwipeEnabled) {
+            vibrate();
+            widget.onReply(widget.messageViewModel);
+          }
         },
         child: Row(
           mainAxisSize: MainAxisSize.max,
@@ -85,9 +93,18 @@ class _MessageCellState extends State<MessageCell> {
                 blurBackgroundColor: Colors.black54,
                 menuOffset: 10.0, 
                 menuBoxDecoration: BoxDecoration(color: Colors.grey,borderRadius: BorderRadius.all(Radius.circular(15.0))),
-                menuItems: widget.messageViewModel.actionsList.map((e) => FocusedMenuItem(title: Text(e.title),trailingIcon: e.icon, onPressed: (){
-                  widget.onAction(e);
-                })).toList(),
+                menuItems: widget.messageViewModel.getActionsList(
+                  isReplyEnabled: widget.isSwipeEnabled
+                )
+                  .map((e) => FocusedMenuItem(
+                    title: Text(
+                      e.title
+                    ),
+                    trailingIcon: e.icon, 
+                    onPressed: () {
+                      widget.onAction(e);
+                    })
+                  ).toList(),
                 onPressed: () {
                   widget.onTap();
                   vibrate();

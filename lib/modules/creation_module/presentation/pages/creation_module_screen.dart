@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_share/flutter_share.dart';
+import 'package:messenger_mobile/app/application.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chat_details/page/chat_detail_page.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chat_details/page/chat_detail_screen.dart';
+import 'package:messenger_mobile/modules/creation_module/presentation/bloc/open_chat_cubit/open_chat_cubit.dart';
+import 'package:messenger_mobile/modules/creation_module/presentation/bloc/open_chat_cubit/open_chat_listener.dart';
+import 'package:messenger_mobile/modules/creation_module/presentation/pages/search_contact/search_contact_page.dart';
 
 import '../../../../app/appTheme.dart';
 import '../../../../app/application.dart';
 import '../../../../core/utils/paginated_scroll_controller.dart';
 import '../../../../locator.dart';
-import '../../../chat/presentation/chats_screen/pages/chat_screen.dart';
 import '../../../groupChat/domain/usecases/create_chat_group.dart';
 import '../../../groupChat/presentation/create_group/create_group_page.dart';
 import '../bloc/contact_bloc/contact_bloc.dart';
-import '../bloc/creation_module_cubit/creation_module_cubit.dart';
 import '../helpers/creation_actions.dart';
 import '../widgets/actions_builder.dart';
 import '../widgets/contcats_list.dart';
@@ -31,10 +35,13 @@ class CreationModuleScreen extends StatefulWidget {
 
 class _CreationModuleScreenState extends State<CreationModuleScreen> {
   
-  PaginatedScrollController _scrollController = PaginatedScrollController();
+  // MARK: - Props
 
   NavigatorState get _navigator => sl<Application>().navKey.currentState;
+  PaginatedScrollController _scrollController = PaginatedScrollController();
+  OpenChatListener _openChatListener = OpenChatListener();
 
+  // MARK: - Life-Cycle
 
   @override
   void initState() {
@@ -42,6 +49,8 @@ class _CreationModuleScreenState extends State<CreationModuleScreen> {
     context.read<ContactBloc>().add(ContactFetched());
     super.initState();
   }
+
+  // MARK: - UI
 
   @override
   Widget build(BuildContext context) {
@@ -65,36 +74,12 @@ class _CreationModuleScreenState extends State<CreationModuleScreen> {
         ],
       ),
       body: BlocProvider(
-        create: (context) => CreationModuleCubit(
+        create: (context) => OpenChatCubit(
           createChatGruopUseCase: sl<CreateChatGruopUseCase>()
         ),
-        child: BlocConsumer<CreationModuleCubit, CreationModuleState>(
+        child: BlocConsumer<OpenChatCubit, OpenChatState>(
           listener: (context, state) {
-            if (state is CreationModuleLoading) {
-              ScaffoldMessenger.of(context)
-                ..hideCurrentSnackBar()
-                ..showSnackBar(
-                SnackBar(
-                  content: LinearProgressIndicator(), 
-                  duration: Duration(days: 2),
-                )
-              );
-            } else if (state is CreationModuleError){
-              ScaffoldMessenger.of(context)
-                ..hideCurrentSnackBar()
-                ..showSnackBar(SnackBar(content: Text(
-                  state.message
-                )));
-            } else if (state is OpenChatWithUser) {
-              ScaffoldMessenger.of(context).hideCurrentSnackBar();
-              Navigator.push(
-                context, MaterialPageRoute(builder: (context) => ChatScreen(
-                  chatEntity: state.newChat
-                )),
-              );
-            } else {
-              ScaffoldMessenger.of(context).hideCurrentSnackBar();
-            }
+            _openChatListener.handleStateUpdate(context, state);
           },
           builder: (context, state) {
             return Container(
@@ -114,7 +99,12 @@ class _CreationModuleScreenState extends State<CreationModuleScreen> {
                     ContactsList(
                       isScrollable: false,
                       didSelectContactToChat: (contact) {
-                        context.read<CreationModuleCubit>().createChatWithUser(contact.id);
+                        context.read<OpenChatCubit>().createChatWithUser(contact.id);
+                      },
+                      onTapContact: (contact) {
+                        _navigator.push(ChatDetailPage.route(
+                          contact.id, ProfileMode.user
+                        ));
                       },
                     )
                   ],
@@ -136,9 +126,6 @@ class _CreationModuleScreenState extends State<CreationModuleScreen> {
     switch (action){
       case CreationActions.createGroup:
         _navigator.push(CreateGroupPage.route());
-        break;
-      case CreationActions.createSecretChat:
-        // TODO: Handle this case.
         break;
       case CreationActions.startVideo:
         // TODO: Handle this case.

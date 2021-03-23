@@ -1,6 +1,10 @@
 import 'dart:async';
 
 import 'package:dartz/dartz.dart';
+import 'package:messenger_mobile/modules/chat/data/datasources/chat_datasource.dart';
+import 'package:messenger_mobile/modules/chat/data/models/chat_message_response.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chat_details/page/chat_detail_screen.dart';
+import 'package:messenger_mobile/modules/social_media/domain/entities/social_media.dart';
 
 import '../../../../core/error/failures.dart';
 import '../../../../core/services/network/paginatedResult.dart';
@@ -17,7 +21,7 @@ import '../usecases/params.dart';
 
 
 abstract class ChatRepository {
-  Future<Either<Failure, ChatDetailed>> getChatDetails (int id);
+  Future<Either<Failure, ChatDetailed>> getChatDetails (int id, ProfileMode mode);
   Future<Either<Failure, PaginatedResult<ContactEntity>>> getChatMembers (int id, Pagination pagination);
   Future<Either<Failure, Message>> sendMessage(SendMessageParams params);
   Future<Either<Failure, bool>> deleteMessage(DeleteMessageParams params);
@@ -32,10 +36,17 @@ abstract class ChatRepository {
     RequestDirection direction
   );
   
-  Future<Either<Failure, NoParams>> setTimeDeleted ({
-    int id, int timeInSeconds
+  Future<Either<Failure, ChatPermissions>> setTimeDeleted ({
+    int id, bool isOn
   });
   
+  Future<Either<Failure, ChatPermissions>> setSocialMedia ({
+    int id, SocialMedia socialMedia
+  });
+
+  Future<Either<Failure, bool>> blockUser (int id);
+  Future<Either<Failure, bool>> unblockUser (int id);
+
   Future<void> disposeChat();
   Future<Either<Failure, bool>> attachMessage(Message message);
   Future<Either<Failure, bool>> disAttachMessage(NoParams noParams);

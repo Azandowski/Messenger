@@ -18,9 +18,3 @@ class CreationModuleError extends CreationModuleState {
     @required this.message
   });
 }
-
-class OpenChatWithUser extends CreationModuleState {
-  final ChatEntity newChat;
-
-  OpenChatWithUser({@required this.newChat});
-}

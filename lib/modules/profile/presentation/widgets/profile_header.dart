@@ -29,7 +29,7 @@ class ProfileHeader extends StatelessWidget {
               AssetImage('default_user.jpg') : NetworkImage(imageURL),
           ),
           SizedBox(width: 10,),
-          GestureDetector(
+          InkWell(
             onTap: () {
               if (onPress != null) { onPress(); }   
             },

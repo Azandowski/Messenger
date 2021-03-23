@@ -20,7 +20,7 @@ class ActionsContainer extends StatelessWidget {
   }
 
   Widget _buildItem (CreationActions action) {
-    return GestureDetector(
+    return InkWell(
       onTap: () {
         onTap(action);
       },

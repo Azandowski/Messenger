@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
+import 'package:messenger_mobile/modules/chats/domain/entities/category.dart';
 
 import '../../../../../locator.dart';
 import '../../../../../modules/category/domain/entities/chat_entity.dart';
@@ -40,22 +41,8 @@ class ChatGlobalCubit extends Cubit<ChatState> {
 
     _chatsSubscription = chatsRepository.chats.listen((chat) {
       chatsRepository.saveNewChatLocally(chat);
+
       var chatIndex = this.state.chats.indexWhere((e) => e.chatId == chat.chatId);
-      
-      /// Если до этого количество непрочитанных был [0]
-      /// Значит нам нужно увеличить количество непрочитанных чатов в
-      /// [CategoryBloc]
-
-      if (this.state.chats[chatIndex].unreadCount == 0) {
-         emit(ChatCategoryReadCountChanged(
-          chats: this.state.chats,
-          currentCategory: this.state.currentCategory,
-          hasReachedMax: this.state.hasReachedMax,
-          categoryID: this.state.chats[chatIndex].chatCategory?.id, 
-          newReadCount: (this.state.chats[chatIndex].chatCategory?.noReadCount ?? 0) + 1)
-        );
-      }
-
       if (lastCategoryID == null || lastCategoryID == chat.chatCategory?.id)  {
         if (chatIndex == -1) {
           List<ChatEntity> newChats = [...this.state.chats, chat];
@@ -74,6 +61,24 @@ class ChatGlobalCubit extends Cubit<ChatState> {
             hasReachedMax: this.state.hasReachedMax,
             chats: newChats
           ));
+        }
+      }
+
+      var _chatIndex = this.state.chats.indexWhere((e) => e.chatId == chat.chatId);
+      
+      if (_chatIndex != -1) {
+        /// Если до этого количество непрочитанных был [0]
+        /// Значит нам нужно увеличить количество непрочитанных чатов в
+        /// [CategoryBloc]
+
+        if (this.state.chats[_chatIndex].unreadCount == 0) {
+          emit(ChatCategoryReadCountChanged(
+            chats: this.state.chats,
+            currentCategory: this.state.currentCategory,
+            hasReachedMax: this.state.hasReachedMax,
+            categoryID: this.state.chats[_chatIndex].chatCategory?.id, 
+            newReadCount: (this.state.chats[_chatIndex].chatCategory?.noReadCount ?? 0) + 1)
+          );
         }
       }
     });
@@ -179,6 +184,50 @@ class ChatGlobalCubit extends Cubit<ChatState> {
     if (index != -1) {
       var newChatModel = this.state.chats[index].clone(unreadCount: 0);
       var newChats = this.state.chats.map((e) => e.chatId == chatId ? newChatModel : e.clone()).toList();
+      chatsRepository.saveNewChatLocally(newChatModel);
+
+      emit(ChatsLoaded(
+        hasReachedMax: this.state.hasReachedMax ?? false,
+        chats: newChats,
+        currentCategory: this.state.currentCategory
+      ));
+    }
+  }
+
+  void setSecretMode ({
+    @required bool isOn,
+    @required int chatId
+  }) {  
+    int index = this.state.chats.indexWhere((element) => element.chatId == chatId);
+    if (index != -1) {
+      var newChatModel = this.state.chats[index].clone(
+        permissions: this.state.chats[index].permissions.copyWith(isSecret: isOn)
+      );
+      
+      var newChats = this.state.chats.map((e) => e.chatId == chatId ? newChatModel : e.clone()).toList();
+      
+      emit(ChatsLoaded(
+        hasReachedMax: this.state.hasReachedMax ?? false,
+        chats: newChats,
+        currentCategory: this.state.currentCategory
+      ));
+    } 
+  }
+
+  void updateCategoryForChat (int chatId, CategoryEntity newCategory) {
+    int index = this.state.chats.indexWhere((element) => element.chatId == chatId);
+    if (index != -1) { 
+      var newChatModel = this.state.chats[index].clone();
+      newChatModel.chatCategory = newCategory;
+      chatsRepository.saveNewChatLocally(newChatModel);
+      var newChats = this.state.chats.map((e) => e.chatId == chatId ? newChatModel : e.clone()).toList();
+      
+      bool isAllChats = (lastCategoryID == null || lastCategoryID == 0);
+      bool newCategoryIsEmpty = newCategory.id == 0 || newCategory.id == null;
+      
+      if (!((isAllChats && newCategoryIsEmpty) || lastCategoryID == newCategory.id)) {
+        newChats.removeAt(index);
+      } 
 
       emit(ChatsLoaded(
         hasReachedMax: this.state.hasReachedMax ?? false,

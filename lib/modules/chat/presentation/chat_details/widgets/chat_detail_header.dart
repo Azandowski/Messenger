@@ -1,16 +1,34 @@
 
 import 'package:flutter/material.dart';
-
+import 'package:messenger_mobile/modules/category/data/models/chat_view_model.dart';
 import '../../../../../app/appTheme.dart';
 import '../../../../category/data/models/chat_view_model.dart';
 import '../../../domain/entities/chat_detailed.dart';
 
+
+enum CommunicationType { chat, audio, video,  }
+
+extension CommunicationTypeUIExtension on CommunicationType {
+  IconData get icon {
+    switch (this) {
+      case CommunicationType.chat:
+        return Icons.chat;
+      case CommunicationType.audio:
+        return Icons.call;
+      default:
+        return Icons.video_call;
+    }
+  }
+}
+
 class ChatDetailHeader extends StatelessWidget {
   
   final ChatDetailed chatDetailed;
+  final Function(CommunicationType) onCommunicationHandle;
   
   ChatDetailHeader({
     @required this.chatDetailed,
+    @required this.onCommunicationHandle,
     Key key,
   }) : super(key: key);
 
@@ -18,6 +36,8 @@ class ChatDetailHeader extends StatelessWidget {
   Widget build(BuildContext context) {
 
     ChatViewModel chatViewModel = ChatViewModel(chatDetailed?.chat);
+    List<CommunicationType> communicationTypes = chatDetailed.user != null ? 
+      [CommunicationType.chat, CommunicationType.audio, CommunicationType.video] : CommunicationType.values;
 
     return Container(
       child: Stack(
@@ -26,9 +46,10 @@ class ChatDetailHeader extends StatelessWidget {
             children: [
               FadeInImage(
                 placeholder: AssetImage("assets/images/logo.png"),
-                image: chatDetailed?.chat?.imageUrl == null ? AssetImage(
-                  'assets/images/placeholder.png', 
-                ) : NetworkImage(chatViewModel.imageURL),
+                image: chatDetailed?.chat?.imageUrl == null || chatDetailed?.user?.profileImage == null ? 
+                  AssetImage(
+                    'assets/images/placeholder.png', 
+                  ) : NetworkImage(chatDetailed?.user?.profileImage ?? chatViewModel?.imageURL),
                 height: 286,
                 fit: BoxFit.cover,
               ),
@@ -51,12 +72,15 @@ class ChatDetailHeader extends StatelessWidget {
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Expanded(
                         child: Text(
-                          chatViewModel.title,
+                          chatDetailed?.user?.name ?? chatViewModel.title,
                           style: TextStyle(
                             color: Colors.black,
                             fontWeight: FontWeight.w500,
@@ -64,11 +88,10 @@ class ChatDetailHeader extends StatelessWidget {
                             height: 1.8
                           ),
                           overflow: TextOverflow.ellipsis,
-                          maxLines: 2,
+                          maxLines: 1,
                         ),
                       ),
                       SizedBox(
-                        width: 80,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
@@ -76,10 +99,14 @@ class ChatDetailHeader extends StatelessWidget {
                             SizedBox(height: 8),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Icon(Icons.video_call, color: AppColors.indicatorColor,),
-                                Icon(Icons.call, color: AppColors.indicatorColor)
-                              ],
+                              children: communicationTypes.map(
+                                (e) => IconButton(
+                                  onPressed: () {
+                                    onCommunicationHandle(e);
+                                  },
+                                  icon: Icon(e.icon, color: AppColors.indicatorColor)
+                                )
+                              ).toList(),
                             )
                           ],
                         ),

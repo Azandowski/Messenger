@@ -126,7 +126,7 @@ class CategoryDataSourceImpl implements CategoryDataSource {
       endpoint.buildURL(), 
       headers: endpoint.getHeaders(token: sl<AuthConfig>().token),
       body: json.encode({
-        'new_category': '$categoryID',
+        'new_category': categoryID == null ? null : '$categoryID',
         'chats': chatsIDs.join(',')
       })
     );

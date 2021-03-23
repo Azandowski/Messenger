@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:messenger_mobile/core/widgets/independent/dialogs/dialog_action_button.dart';
+import 'package:messenger_mobile/core/widgets/independent/dialogs/dialog_params.dart';
+import 'package:messenger_mobile/core/widgets/independent/dialogs/dialogs.dart';
 
 import '../../../../../app/appTheme.dart';
 import '../../../../../core/widgets/independent/images/ImageWithCorner.dart';
@@ -36,22 +39,36 @@ class CategoryCell extends StatelessWidget {
           style: AppFontStyles.headerMediumStyle,
         ),
       trailing: cellType == CategoryCellType.withOptions ? 
-        PopupMenuButton<CategoryCellActionType>(
-          itemBuilder: (context) => [
-            CategoryCellActionType.edit, CategoryCellActionType.delete
-          ].map((e) {
-            return PopupMenuItem(
-              value: e,
-              child: Text(e.title)
-            );
-          }).toList(),
-          onSelected: (CategoryCellActionType action) {
-            onSelectedOption(action, item);
-          },
-          offset: Offset(0, 100),
-        ) : SizedBox(),
+        menuIcon(context) : SizedBox(),
       ),
     );
+  }
+
+
+  Widget menuIcon (BuildContext context) {
+    return IconButton(
+      icon: Icon(Icons.more_horiz, color: Colors.black),
+      onPressed: () {
+        _showOptionsDialog(context);
+      },
+    );
+  }
+
+
+  void _showOptionsDialog (BuildContext context) {
+    showDialog(context: context, builder: (_) => DialogsView(
+      dialogViewType: DialogViewType.actionSheet,
+      actionButton: [
+        CategoryCellActionType.edit, CategoryCellActionType.delete
+      ].map((e) => DialogActionButton(
+        buttonStyle: e != CategoryCellActionType.delete ? 
+          DialogActionButtonStyle.black : DialogActionButtonStyle.dangerous,
+        title: e.title,
+        onPress: () {
+          onSelectedOption(e, item);
+        }
+      )).toList()
+    ));
   }
 }
 

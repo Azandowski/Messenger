@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:messenger_mobile/core/utils/snackbar_util.dart';
 
 import '../../../../core/utils/paginated_scroll_controller.dart';
 import '../../../../core/widgets/independent/buttons/gradient_main_button.dart';
@@ -51,7 +52,7 @@ class _ChooseContactsScreenState extends State<ChooseContactsScreen> {
         return BlocConsumer<ContactBloc, ContactState>(
           listener: (context, state) {
             if (state.status == ContactStatus.failure) {
-              Scaffold.of(context).showSnackBar(SnackBar(content: Text('Could not handle contacts')));
+              SnackUtil.showError(context: context, message: 'Не удалось обработать ваши контакты');
             }
           },
           builder: (_, state) { 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:messenger_mobile/core/utils/snackbar_util.dart';
 import '../../../../app/application.dart';
 
 import '../../../../app/appTheme.dart';
@@ -10,7 +11,6 @@ import '../../../../core/widgets/independent/dialogs/dialog_params.dart';
 import '../../../../core/widgets/independent/dialogs/dialogs.dart';
 import '../../../../core/widgets/independent/small_widgets/cell_skeleton_item.dart';
 import '../../../../locator.dart';
-import '../../../../main.dart';
 import '../../../chats/domain/entities/category.dart';
 import '../../domain/entities/create_category_screen_params.dart';
 import '../create_category_main/pages/create_category_screen.dart';
@@ -61,11 +61,9 @@ class _CategoryListState extends State<CategoryList> {
       body: BlocConsumer<CategoryBloc, CategoryState>(
         listener: (context, state) {
           if (state is CategoriesUpdating) {
-            ScaffoldMessenger.of(context).hideCurrentSnackBar();
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: LinearProgressIndicator(), duration: Duration(days: 2),));
+            SnackUtil.showLoading(context: context);
           } else if (state is CategoriesErrorHappened) {
-            ScaffoldMessenger.of(context).hideCurrentSnackBar();
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.message)));
+            SnackUtil.showError(context: context, message: state.message);
           } else if (state is CategoryLoaded){
             ScaffoldMessenger.of(context).hideCurrentSnackBar();
           }

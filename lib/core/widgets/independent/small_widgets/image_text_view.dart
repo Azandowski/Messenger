@@ -36,7 +36,7 @@ class ImageTextView extends StatelessWidget {
           ),
           SizedBox(height: 12),
           Text(
-            text,
+            text ?? '',
             textAlign: TextAlign.center,
             style: AppFontStyles.grey14w400,
           )

@@ -10,7 +10,7 @@ class OffertTextWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return InkWell(
       child: Padding(
         padding: const EdgeInsets.only(bottom: 40, top: 20),
         child: Container(

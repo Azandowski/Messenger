@@ -6,7 +6,9 @@ import 'chat_actions.dart';
 
 enum MessageStatus {sending, sent,}
 
-enum MessageHandleType {newMessage, setTopMessage, unSetTopMessage}
+enum MessageHandleType {
+  newMessage, setTopMessage, unSetTopMessage, userReadSecretMessage
+}
 
 class Message extends Equatable {
   final int id;
@@ -24,6 +26,7 @@ class Message extends Equatable {
   final DateTime willBeDeletedAt;
   final MessageChat chat;
   final MessageHandleType messageHandleType;
+  final int timeDeleted;
   
   Message({
     this.text,
@@ -41,6 +44,7 @@ class Message extends Equatable {
     this.toUser,
     this.chat,
     this.messageHandleType = MessageHandleType.newMessage,
+    this.timeDeleted
   });
 
   @override
@@ -59,7 +63,8 @@ class Message extends Equatable {
     transfer,
     toUser,
     chat,
-    messageHandleType
+    messageHandleType,
+    timeDeleted
   ];
 
    Message copyWith({
