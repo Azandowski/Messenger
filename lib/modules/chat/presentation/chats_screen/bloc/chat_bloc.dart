@@ -451,7 +451,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       forwardIds: forwardArray,
       timeLeft: event.timeDeleted,
       fieldFiles: event.fieldFiles,
-      location: event.location
+      location: event.location,
+      locationAddress: event.address
     ));
 
     yield* _eitherSentOrErrorState(response, randomID);

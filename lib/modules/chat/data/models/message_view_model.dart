@@ -127,7 +127,11 @@ class MessageViewModel {
   }
 
   LatLng get mapLocation {
-    return message.location;
+    return message.location.position;
+  }
+
+  String get mapLocationAddress {
+    return message.location.description;
   }
 
   String get forwardDescription {

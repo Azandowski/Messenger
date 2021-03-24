@@ -300,9 +300,10 @@ class ChatControlPanelState extends State<ChatControlPanel>
   // MARK: - Delegates
 
   @override
-  void didSelectCoordinates(LatLng position) {
+  void didSelectCoordinates(PositionAddress positionAddress) {
     _messageNeededToBeSent = MessageSend(
-      location: position
+      location: positionAddress.position,
+      address: positionAddress.description
     );
 
     if (chatBloc.state.isSecretModeOn) {

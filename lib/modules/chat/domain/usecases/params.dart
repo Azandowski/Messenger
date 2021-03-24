@@ -31,6 +31,7 @@ class SendMessageParams {
   final int timeLeft;
   final FieldFiles fieldFiles;
   final LatLng location;
+  final String locationAddress;
 
   SendMessageParams({
     @required this.identificator,
@@ -39,7 +40,8 @@ class SendMessageParams {
     this.fieldFiles,
     this.text,
     this.timeLeft,
-    this.location
+    this.location,
+    this.locationAddress
   });
 }
 

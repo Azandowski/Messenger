@@ -1,7 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:latlong/latlong.dart';
 
-
 class Place extends Equatable {
   final LatLng position;
   final String title;

@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong/latlong.dart';
 import 'package:messenger_mobile/modules/chat/domain/entities/file_media.dart';
+import 'package:messenger_mobile/modules/maps/presentation/pages/map_screen.dart';
 
 import 'chat_actions.dart';
 
@@ -30,7 +31,7 @@ class Message extends Equatable {
   final MessageChat chat;
   final MessageHandleType messageHandleType;
   final int timeDeleted;
-  final LatLng location;
+  final PositionAddress location;
   final List<FileMedia> files;
   
   Message({
@@ -51,7 +52,7 @@ class Message extends Equatable {
     this.messageHandleType = MessageHandleType.newMessage,
     this.timeDeleted,
     this.location,
-    this.files,
+    this.files
   });
 
   @override
@@ -73,7 +74,7 @@ class Message extends Equatable {
     messageHandleType,
     timeDeleted,
     location,
-    files,
+    files
   ];
 
    Message copyWith({
@@ -91,8 +92,8 @@ class Message extends Equatable {
      DateTime willBeDeletedAt,
      MessageUser toUser,
      MessageChat chat,
-     LatLng location,
-     List<FileMedia> files
+     PositionAddress location,
+     List<FileMedia> files,
   }) {
     return Message(
       id: id ?? this.id,
@@ -125,9 +126,10 @@ class Message extends Equatable {
       'to_contact': toUser?.toJson(),
       'chat': chat?.toJson(),
       'map': location != null ? {
-        'latitude': location.latitude,
-        'longitude': location.longitude
-      } : null
+        'latitude': location.position.latitude,
+        'longitude': location.position.longitude,
+        'address': location.description
+      } : null,
     };
   }
 }

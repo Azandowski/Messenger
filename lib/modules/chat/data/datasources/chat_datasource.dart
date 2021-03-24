@@ -195,7 +195,11 @@ class ChatDataSourceImpl implements ChatDataSource {
       if (params.timeLeft != null)
         ...{'time_deleted': params.timeLeft},
       if (params.location != null)
-        ...{'latitude': params.location.latitude, 'longitude': params.location.longitude}
+        ...{
+          'latitude': params.location.latitude, 
+          'longitude': params.location.longitude,
+          'address': params.locationAddress
+        }
     };
 
     http.StreamedResponse streamedResponse = await MultipartRequestHelper.postData(

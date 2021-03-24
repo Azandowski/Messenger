@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:latlong/latlong.dart';
+import 'package:messenger_mobile/modules/maps/presentation/pages/map_screen.dart';
 import '../../domain/entities/chat_actions.dart';
 import '../../domain/entities/file_media.dart';
 import '../../domain/entities/message.dart';
@@ -22,7 +23,7 @@ class MessageModel extends Message {
   final MessageChat chat;
   MessageHandleType messageHandleType;
   final int timeDeleted;
-  final LatLng location;
+  final PositionAddress location;
   final List<FileMedia> files;
 
   MessageModel({
@@ -84,8 +85,11 @@ class MessageModel extends Message {
       chat: json['chat'] == null ? null :
         MessageChatModel.fromJson(json['chat']),
       timeDeleted: json['time_deleted'],
-      location: json['map'] != null ? LatLng(
-        json['map']['latitude'].toDouble(), json['map']['longitude'].toDouble()
+      location: json['map'] != null ? PositionAddress(
+        position: LatLng(
+          json['map']['latitude'].toDouble(), json['map']['longitude'].toDouble()
+        ),
+        description: json['map']['address']
       ) : null,
       files: json['file'] != null ? 
         (json['file'] as List).map((v) => FileMediaModel.fromJson(v)).toList() : [],
@@ -103,8 +107,9 @@ class MessageModel extends Message {
       'action': chatActions?.key,
       'to_contact': toUser?.toJson(),
       'map': location != null ? {
-          'latitude': location.latitude,
-          'longitude': location.longitude
+          'latitude': location.position.latitude,
+          'longitude': location.position.longitude,
+          'address': location.description
         } : null
     };
   }

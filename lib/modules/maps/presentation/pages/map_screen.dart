@@ -10,8 +10,18 @@ import 'package:messenger_mobile/modules/maps/domain/entities/map_type.dart';
 import 'package:messenger_mobile/modules/maps/presentation/cubit/map_cubit.dart';
 import 'package:latlong/latlong.dart';
 
+class PositionAddress {
+  final String description;
+  final LatLng position;
+
+  PositionAddress({
+    this.description, 
+    this.position
+  });
+}
+
 abstract class MapScreenDelegate {
-  void didSelectCoordinates (LatLng position);
+  void didSelectCoordinates (PositionAddress position);
 }
 
 class MapScreen extends StatefulWidget {
@@ -112,16 +122,19 @@ class MapScreenState extends State<MapScreen> implements SearchEngingeDelegate {
                     didSelectPlace: (Place newSelectedPlace) {
                       mapCubit.didSelectPlace(newSelectedPlace);
                     },
-                    didComplete: () {
+                    didComplete: () async {
                       if (widget.delegate != null) {
-                        if (state.selectedPlace != null) {
-                          widget.delegate.didSelectCoordinates(state.selectedPlace.position);
-                        } else {
-                          widget.delegate.didSelectCoordinates(state.currentUserPosition.getLatLng);
+                        LatLng selectedPosition = state.selectedPlace != null ? 
+                            state.selectedPlace.position : state.currentUserPosition.getLatLng;
+                        
+                        var addressPosition = await mapCubit.getMapPosition(selectedPosition);
+                        if (addressPosition != null) {
+                          Navigator.of(context).pop();
+                          widget.delegate.didSelectCoordinates(addressPosition);
                         }
+                      } else {
+                        Navigator.of(context).pop();
                       }
-
-                      Navigator.of(context).pop();
                     },
                   )
                 ],

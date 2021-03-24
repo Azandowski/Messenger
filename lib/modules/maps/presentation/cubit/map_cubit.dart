@@ -12,6 +12,7 @@ import 'package:messenger_mobile/modules/maps/domain/usecases/get_near_places.da
 import 'package:latlong/latlong.dart';
 import 'package:messenger_mobile/modules/maps/domain/usecases/params.dart';
 import 'package:messenger_mobile/modules/maps/domain/usecases/search_places.dart';
+import 'package:messenger_mobile/modules/maps/presentation/pages/map_screen.dart';
 import '../pages/map_screen_helper.dart';
 
 part 'map_state.dart';
@@ -177,5 +178,49 @@ class MapCubit extends Cubit<MapState> {
         }
       });
     }
+  }
+
+
+  Future<PositionAddress> getMapPosition (LatLng position) async {
+    emit(MapLoading(
+      currentUserPosition: state.currentUserPosition,
+      selectedPlace: state.selectedPlace,
+      places: state.places,
+      isPlacesLoading: false,
+      isProcessing: true
+    ));
+
+    var response = await geocodeCoordinate(position);
+    emit(MapInitial(
+      currentUserPosition: state.currentUserPosition,
+      selectedPlace: state.selectedPlace,
+      places: state.places,
+    ));
+    
+    return response.fold((failure) {
+      emit(
+        MapError(
+          errorMessage: failure.message,
+          currentUserPosition: state.currentUserPosition,
+          places: state.places
+        )
+      );
+    }, (placemarks) {
+      if (placemarks.length != 0) {
+        var placemark = placemarks[0];
+
+        return PositionAddress(
+          position: position,
+          description: placemark.name
+        );
+      } else {
+        emit(MapError(
+          errorMessage: 'Не удалось найти',
+          places: state.places,
+          currentUserPosition: state.currentUserPosition,
+          selectedPlace: state.selectedPlace
+        ));
+      }
+    });
   }
 }
