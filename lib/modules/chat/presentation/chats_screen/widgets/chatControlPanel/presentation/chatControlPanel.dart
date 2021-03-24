@@ -1,7 +1,10 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:latlong/latlong.dart';
 import 'package:messenger_mobile/core/blocs/audioplayer/bloc/audio_player_bloc.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/chatControlPanel/data/chat_bottom_panel_types.dart';
+import 'package:messenger_mobile/modules/maps/presentation/pages/map_screen.dart';
 import 'package:provider/provider.dart';
 import '../../../../../../../app/appTheme.dart';
 import '../../../../../../../app/application.dart';
@@ -14,6 +17,7 @@ import '../../components/reply_container.dart';
 import '../../components/send_message_row.dart';
 import '../../components/voiceRecordingRow.dart';
 import '../bloc/voice_record_bloc.dart';
+import '../chat_bottom_panel.dart';
 import '../cubit/panel_bloc_cubit.dart';
 import 'chatControlPanelHelper.dart';
 
@@ -23,19 +27,21 @@ class ChatControlPanel extends StatefulWidget {
     Key key,
     @required this.messageTextController,
     @required this.width,
-    @required this.height,gi
+    @required this.height,
+    @required this.canSendMedia
   }) : super(key: key);
 
   final TextEditingController messageTextController;
   final double width;
   final double height;
+  final bool canSendMedia;
 
   @override
   ChatControlPanelState createState() => ChatControlPanelState();
 }
 
 class ChatControlPanelState extends State<ChatControlPanel> 
-  with TickerProviderStateMixin implements TimePickerDelegate {
+  with TickerProviderStateMixin implements TimePickerDelegate, MapScreenDelegate {
 
   NavigatorState get _navigator => sl<Application>().navKey.currentState;
 
@@ -63,7 +69,7 @@ class ChatControlPanelState extends State<ChatControlPanel>
 
   final LayerLink recordLink = LayerLink();
 
-  AsyncSnapshot<String> _lastTextStream;
+  MessageSend _messageNeededToBeSent;
 
   OverlayEntry pauseButton;
   OverlayEntry swipeLeftText;
@@ -139,129 +145,131 @@ class ChatControlPanelState extends State<ChatControlPanel>
     return BlocProvider(
       create: (context) => recordBloc,
       child: BlocConsumer<VoiceRecordBloc, VoiceRecordState>(
-        listener: (context, state) {
-          // TODO: implement listener
-        },
+        listener: (context, state) {},
         builder: (context, voiceState) {
           return CompositedTransformTarget(
-              link: layerLink,
-              child: Container(
+            link: layerLink,
+            child: Container(
               key: panelKey,
               decoration: panelDecoration,
               child: SafeArea(
                 child: BlocBuilder<PanelBlocCubit, PanelBlocState>(
-                builder: (context, state) {
-                  return Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      state is PanelBlocReplyMessage ?
-                      ReplyContainer(
-                        cubit: _panelBloc,
-                      ) : SizedBox(height: 4),
-                      Padding(
-                        padding: const EdgeInsets.only(right: 16, left: 16, bottom: 8),
-                        child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                        Expanded(
-                          child: CompositedTransformTarget(
-                            link: recordLink,
-                            child: Container(
-                              key: recordPanelKey,
-                              padding: EdgeInsets.symmetric(horizontal: 8),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(50)
-                              ),
-                              child: voiceState is VoiceRecordEmpty ? 
-                              SendMessageRow(widget: widget, panelBloc: _panelBloc) :
-                              VoiceRecordingRow(
-                                voiceRecordBloc: recordBloc,
-                                audioPlayerBloc: _audioPlayerBloc,
-                                onCancel: (){
-                                  recordBloc.add(VoiceStopRecording());
-                                  buttonMicroCubit.resetToStable();
-                                  deleteEveryEntry(isSwipe: false);
-                                },
-                              ),
-                            ),
-                          )
-                        ),
-                        SizedBox(width: 5,),
-                        StreamBuilder(
-                          stream: _panelBloc.textStream,
-                          builder: (context, AsyncSnapshot<String> textStream) {
-                            var canWrite = !textStream.hasError && widget.messageTextController.text != '' && widget.messageTextController.text != null;
-                            return ClipOval(
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  gradient: AppGradinets.mainButtonGradient,
-                                ),
-                                child: GestureDetector(
-                                  onLongPressStart: (details){
-                                    if(!canWrite && buttonMicroCubit.state is ButtonMicroInitialStable){
-                                      showIndicator(details);
-                                    }
-                                  },
-                                  onLongPressMoveUpdate: (details){
-                                    if(!canWrite && (buttonMicroCubit.state is ButtonMicroMove)){
-                                      updateIndicator(details);
-                                    }
-                                  },
-                                  onLongPressEnd: (details) {
-                                    if (!canWrite && buttonMicroCubit.state is ButtonMicroMove){
-                                      hideIndicator(details.localPosition);
-                                    }
-                                  },
-                                    child: (voiceState is VoiceRecordEmpty || voiceState is VoiceRecordingEndWillSend ) ? 
-                                    IconButton(
-                                      icon: Icon(
-                                        !canWrite && !(voiceState is VoiceRecordingEndWillSend) ? Icons.mic : Icons.send,
-                                        color: Colors.white
-                                      ),
-                                      onPressed: () {
-                                        if (canWrite && !(voiceState is VoiceRecordingEndWillSend)) {
-                                          if (chatBloc.state.isSecretModeOn) {
-                                            _lastTextStream = textStream;
-                                            _navigator.push(TimePickerScreen.route(this));
-                                          } else {
-                                            _sendMessage(textStream, state);
-                                          }
-                                        }else if(!canWrite && (voiceState is VoiceRecordingEndWillSend)){
-                                          recordBloc.add(VoiceStopRecording());
-                                          recordBloc.add(VoiceSendAudio());
-                                          buttonMicroCubit.resetToStable();
-                                        }
-                                      },
-                                      splashRadius: 5,
-                                      splashColor: Colors.white,
-                                    ) : SizedBox(),
+                  builder: (context, state) {
+                    return Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        state is PanelBlocReplyMessage ?
+                          ReplyContainer(cubit: _panelBloc) : SizedBox(height: 4),
+                        
+                        Padding(
+                          padding: const EdgeInsets.only(right: 16, left: 16, bottom: 8),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Expanded(
+                                child: CompositedTransformTarget(
+                                  link: recordLink,
+                                  child: Container(
+                                    key: recordPanelKey,
+                                    padding: EdgeInsets.symmetric(horizontal: 8),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(50)
+                                    ),
+                                    child: voiceState is VoiceRecordEmpty ? 
+                                      SendMessageRow(widget: widget, panelBloc: _panelBloc) 
+                                        : VoiceRecordingRow(
+                                          voiceRecordBloc: recordBloc,
+                                          audioPlayerBloc: _audioPlayerBloc,
+                                          onCancel: (){
+                                            recordBloc.add(VoiceStopRecording());
+                                            buttonMicroCubit.resetToStable();
+                                            deleteEveryEntry(isSwipe: false);
+                                          },
+                                        ),
+                                  ),
                                 )
                               ),
-                            );
-                          }
-                        )
-                      ],
-                    ),
-                  ),
-                ],);
-              }),
-            )
-          ),
-        );
-      },
-    ),
-  );
-} 
+                              SizedBox(width: 5,),
+                              StreamBuilder(
+                                stream: _panelBloc.textStream,
+                                builder: (context, AsyncSnapshot<String> textStream) {
+                                  var canWrite = !textStream.hasError && 
+                                    widget.messageTextController.text != '' && widget.messageTextController.text != null;
+                                  
+                                  return ClipOval(
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        gradient: AppGradinets.mainButtonGradient,
+                                      ),
+                                      child: GestureDetector(
+                                        onLongPressStart: (details){
+                                          if(!canWrite && buttonMicroCubit.state is ButtonMicroInitialStable){
+                                            showIndicator(details);
+                                          }
+                                        },
+                                        onLongPressMoveUpdate: (details){
+                                          if(!canWrite && (buttonMicroCubit.state is ButtonMicroMove)){
+                                            updateIndicator(details);
+                                          }
+                                        },
+                                        onLongPressEnd: (details) {
+                                          if (!canWrite && buttonMicroCubit.state is ButtonMicroMove){
+                                            hideIndicator(details.localPosition);
+                                          }
+                                        },
+                                        child: (voiceState is VoiceRecordEmpty || voiceState is VoiceRecordingEndWillSend ) ? 
+                                          IconButton(
+                                            icon: Icon(
+                                              !canWrite && !(voiceState is VoiceRecordingEndWillSend) ? Icons.mic : Icons.send,
+                                              color: Colors.white
+                                            ),
+                                            onPressed: () {
+                                              if (canWrite && !(voiceState is VoiceRecordingEndWillSend)) {
+                                                _messageNeededToBeSent = MessageSend(
+                                                  message: textStream.data
+                                                );
 
-
-  @override
-  void didSelectTimeOption(TimeOptions option) {
-    _sendMessage(_lastTextStream, _panelBloc.state, timeDeleted: option.seconds);
-  }
+                                                if (chatBloc.state.isSecretModeOn) {
+                                                  _navigator.push(TimePickerScreen.route(this));
+                                                } else {
+                                                  _sendMessage(state);
+                                                }
+                                              } else if(!canWrite && (voiceState is VoiceRecordingEndWillSend)) {
+                                                recordBloc.add(VoiceStopRecording());
+                                                recordBloc.add(VoiceSendAudio());
+                                                buttonMicroCubit.resetToStable();
+                                              }
+                                            },
+                                            splashRadius: 5,
+                                            splashColor: Colors.white,
+                                          ) : SizedBox(),
+                                      )
+                                    ),
+                                  );
+                                }
+                              )
+                            ],
+                          ),
+                        ),
+                        if (state.showBottomPanel)
+                          ChatBottomPanel(
+                            didPressOnItem: _didSelectMediaOption,
+                            canSendMedia: widget.canSendMedia
+                          )
+                      ]
+                    );
+                  }
+                ),
+              ) 
+            ),
+          );
+        },
+      ),
+    );
+  } 
 
   void _sendMessage (
-    AsyncSnapshot<String> textStream, 
     PanelBlocState state,
     {int timeDeleted}
   ) {
@@ -274,13 +282,42 @@ class ChatControlPanelState extends State<ChatControlPanel>
       forwardMessage = state.messageViewModel.message;
     }
 
-    chatBloc.add(
-      MessageSend(
-        message: textStream.data,
-        forwardMessage: forwardMessage,
-        timeDeleted: timeDeleted
-      )
+    var newMessageEvent = _messageNeededToBeSent.copyWith(
+      timeDeleted: timeDeleted,
+      forwardMessage: forwardMessage
     );
+
+    chatBloc.add(newMessageEvent);
+    _messageNeededToBeSent = null;
+  }
+
+  void _didSelectMediaOption (ChatBottomPanelTypes type) {
+    if (type == ChatBottomPanelTypes.map) {
+      _navigator.push(MapScreen.route(delegate: this));
+    }
+  }
+
+  // MARK: - Delegates
+
+  @override
+  void didSelectCoordinates(LatLng position) {
+    _messageNeededToBeSent = MessageSend(
+      location: position
+    );
+
+    if (chatBloc.state.isSecretModeOn) {
+      _navigator.push(TimePickerScreen.route(this));
+    } else {
+      _sendMessage(_panelBloc.state);
+    }
   } 
+
+  @override
+  void didSelectTimeOption(TimeOptions option) {
+    _sendMessage( 
+      _panelBloc.state, 
+      timeDeleted: option.seconds
+    );
+  }
 }
 
