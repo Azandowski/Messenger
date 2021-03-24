@@ -8,9 +8,7 @@ import '../repositories/chat_repository.dart';
 class DisAttachMessage implements UseCase<bool, NoParams> {
   final ChatRepository repository;
 
-  DisAttachMessage({
-    @required this.repository
-  });
+  DisAttachMessage({@required this.repository});
 
   @override
   Future<Either<Failure, bool>> call(NoParams noParams) {

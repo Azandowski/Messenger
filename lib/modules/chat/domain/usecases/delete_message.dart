@@ -9,9 +9,7 @@ import 'params.dart';
 class DeleteMessage implements UseCase<bool, DeleteMessageParams> {
   final ChatRepository repository;
 
-  DeleteMessage({
-    @required this.repository
-  });
+  DeleteMessage({@required this.repository});
 
   @override
   Future<Either<Failure, bool>> call(DeleteMessageParams ids) {

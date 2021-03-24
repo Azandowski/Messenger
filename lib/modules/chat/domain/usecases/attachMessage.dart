@@ -9,9 +9,7 @@ import '../repositories/chat_repository.dart';
 class AttachMessage implements UseCase<bool, Message> {
   final ChatRepository repository;
 
-  AttachMessage({
-    @required this.repository
-  });
+  AttachMessage({@required this.repository});
 
   @override
   Future<Either<Failure, bool>> call(Message message) {

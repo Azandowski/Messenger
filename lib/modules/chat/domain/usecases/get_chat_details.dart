@@ -10,12 +10,11 @@ import '../repositories/chat_repository.dart';
 class GetChatDetails implements UseCase<ChatDetailed, GetChatDetailsParams> {
   final ChatRepository repository;
 
-  GetChatDetails({
-    @required this.repository
-  });
+  GetChatDetails({@required this.repository});
 
   @override
-  Future<Either<Failure, ChatDetailed>> call(GetChatDetailsParams params) async {
+  Future<Either<Failure, ChatDetailed>> call(
+      GetChatDetailsParams params) async {
     return repository.getChatDetails(params.id, params.mode);
-  } 
+  }
 }

@@ -10,12 +10,11 @@ import 'params.dart';
 class AddMembers implements UseCase<ChatDetailed, AddMembersToChatParams> {
   final ChatRepository repository;
 
-  AddMembers({
-    @required this.repository
-  });
+  AddMembers({@required this.repository});
 
   @override
-  Future<Either<Failure, ChatDetailed>> call(AddMembersToChatParams params) async {
+  Future<Either<Failure, ChatDetailed>> call(
+      AddMembersToChatParams params) async {
     return repository.addMembers(params.id, params.members);
-  } 
+  }
 }
