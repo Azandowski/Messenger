@@ -5,6 +5,7 @@ import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:messenger_mobile/modules/chat/domain/entities/message.dart';
+import 'package:messenger_mobile/modules/chats/data/model/chat_update_type.dart';
 import 'package:messenger_mobile/modules/chats/domain/entities/category.dart';
 
 import '../../../../../locator.dart';
@@ -46,16 +47,23 @@ class ChatGlobalCubit extends Cubit<ChatState> {
       var chatIndex = this.state.chats.indexWhere((e) => e.chatId == chat.chatId);
       if (lastCategoryID == null || lastCategoryID == chat.chatCategory?.id)  {
         if (chatIndex == -1) {
-          List<ChatEntity> newChats = [...this.state.chats, chat];
-          emit(ChatsLoaded(
-            currentCategory: this.state.currentCategory,
-            hasReachedMax: this.state.hasReachedMax,
-            chats: newChats
-          ));
+          if (chat.chatUpdateType == ChatUpdateType.newLastMessage) {
+            List<ChatEntity> newChats = [...this.state.chats, chat];
+            emit(ChatsLoaded(
+              currentCategory: this.state.currentCategory,
+              hasReachedMax: this.state.hasReachedMax,
+              chats: newChats
+            ));
+          }
         } else {
           var newChats = this.state.chats.map((e) => e.clone()).toList();
-          newChats.removeAt(chatIndex);
-          newChats.insert(0, chat);
+          
+          if (chat.chatUpdateType == ChatUpdateType.newLastMessage) {
+            newChats.removeAt(chatIndex);
+            newChats.insert(0, chat);
+          } else {
+            newChats[chatIndex] = chat;
+          }
           
           emit(ChatsLoaded(
             currentCategory: this.state.currentCategory,

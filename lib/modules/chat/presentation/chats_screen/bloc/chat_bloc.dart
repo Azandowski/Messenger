@@ -27,6 +27,7 @@ import '../../../domain/usecases/params.dart';
 import '../../../domain/usecases/send_message.dart';
 import '../../../domain/usecases/set_time_deleted.dart';
 import '../pages/chat_screen_import.dart';
+import 'package:latlong/latlong.dart';
 
 part 'chat_event.dart';
 part 'chat_state.dart';
@@ -124,10 +125,26 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         Either<Failure, ChatMessageResponse> response;
         
         if (event.messageID != null) {
-          response = await getMessagesContext(GetMessagesContextParams(
-            chatID: chatId, 
-            messageID: event.messageID
-          ));
+          var index = state.messages.indexWhere((e) => e.id == event.messageID);
+          if (index == -1) {
+            response = await getMessagesContext(GetMessagesContextParams(
+              chatID: chatId, 
+              messageID: event.messageID
+            ));
+          } else {
+            yield ChatInitial(
+              wallpaperPath: state.wallpaperPath,
+              hasReachedMax: state.hasReachedMax,
+              hasReachBottomMax: state.hasReachBottomMax,
+              unreadCount: state.unreadCount,
+              messages: state.messages,
+              showBottomPin: state.showBottomPin,
+              isSecretModeOn: state.isSecretModeOn,
+              chatEntity: state.chatEntity,
+              topMessage: state.topMessage,
+              focusMessageID: event.messageID
+            ); 
+          }
         } else {
           response = await getMessages(GetMessagesParams(
             lastMessageId: event.isPagination ? 
@@ -139,13 +156,15 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
           ));
         }
 
-        yield* _eitherMessagesOrErrorState(
-          response, 
-          event.isPagination, 
-          event.resetAll,
-          event.direction,
-          event.messageID
-        );
+        if (response != null) {
+          yield* _eitherMessagesOrErrorState(
+            response, 
+            event.isPagination, 
+            event.resetAll,
+            event.direction,
+            event.messageID
+          );
+        }
       }
     } else if (event is SetInitialTime) {
       yield ChatLoadingSilently(
@@ -432,7 +451,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       text: event.message,
       identificator: randomID,
       forwardIds: forwardArray,
-      timeLeft: event.timeDeleted
+      timeLeft: event.timeDeleted,
+      location: event.location
     ));
 
     yield* _eitherSentOrErrorState(response, randomID);
@@ -490,6 +510,10 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         );
       }
     );
+  }
+
+  void directlyMoveToMessage (int id) {
+
   }
 
 

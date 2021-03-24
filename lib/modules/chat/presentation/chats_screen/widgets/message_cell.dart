@@ -6,10 +6,8 @@ import 'package:vibrate/vibrate.dart';
 
 import '../../../../../app/appTheme.dart';
 import '../../../data/models/message_view_model.dart';
-import '../../../domain/entities/message.dart';
 import '../helpers/messageCellAction.dart';
-import 'components/forward_container.dart';
-import 'name_time_read_container.dart';
+import 'message_container.dart';
 
 class MessageCell extends StatefulWidget {
   
@@ -18,6 +16,7 @@ class MessageCell extends StatefulWidget {
   final int prevMessageUserID;
   final Function(MessageViewModel) onReply;
   final Function(MessageCellActions) onAction;
+  final Function(int) onClickForwardMessage;
   final Function onTap; 
   final bool isSwipeEnabled;
 
@@ -25,6 +24,7 @@ class MessageCell extends StatefulWidget {
     @required this.messageViewModel,
     @required this.onAction,
     @required this.onReply,
+    @required this.onClickForwardMessage,
     this.isSwipeEnabled = true,
     this.onTap,
     this.nextMessageUserID,
@@ -109,7 +109,10 @@ class _MessageCellState extends State<MessageCell> {
                   widget.onTap();
                   vibrate();
                 },
-                child: MessageContainer(widget: widget,),
+                child: MessageContainer(
+                  widget: widget,
+                  onClickForwardMessage: widget.onClickForwardMessage,
+                ),
               ),
             ),
           ],
@@ -118,46 +121,3 @@ class _MessageCellState extends State<MessageCell> {
     );
   }
 }
-
-class MessageContainer extends StatelessWidget {
-  const MessageContainer({
-    Key key,
-    @required this.widget,
-  }) : super(key: key);
-
-  final MessageCell widget;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(8),
-      decoration: widget.messageViewModel.getCellDecoration(
-        previousMessageUserID: widget.prevMessageUserID, 
-        nextMessageUserID: widget.nextMessageUserID
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: widget.messageViewModel.isMine ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-        children: [
-          NameTimeBloc(messageViewModel: widget.messageViewModel),
-          if(widget.messageViewModel.message.transfer.isNotEmpty)
-          ...returnForwardColumn(widget.messageViewModel.message.transfer),
-          if (widget.messageViewModel.messageText != null) 
-          Text(
-            widget.messageViewModel.messageText, 
-            style: !widget.messageViewModel.isMine ? 
-            AppFontStyles.black14w400 : AppFontStyles.white14w400,
-            textAlign: TextAlign.left,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-List<Widget> returnForwardColumn(List<Message> transfers) {
-  return transfers.map((e) => ForwardContainer(
-    messageViewModel: MessageViewModel(e)
-  )).toList();
-}
-

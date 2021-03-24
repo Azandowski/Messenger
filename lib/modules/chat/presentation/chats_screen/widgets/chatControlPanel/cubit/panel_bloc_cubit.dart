@@ -10,7 +10,7 @@ part 'panel_bloc_state.dart';
 
 class PanelBlocCubit extends Cubit<PanelBlocState> {
 
-  PanelBlocCubit() : super(PanelBlocInitial()){
+  PanelBlocCubit() : super(PanelBlocInitial(showBottomPanel: false)) {
     _textController.sink.addError("Invalid value entered!");
     _textController.stream.listen((event) { 
       print('shit happened');
@@ -18,11 +18,22 @@ class PanelBlocCubit extends Cubit<PanelBlocState> {
   }
 
   addMessage(MessageViewModel message){
-    emit(PanelBlocReplyMessage(messageViewModel: message));
+    emit(PanelBlocReplyMessage(
+      messageViewModel: message,
+      showBottomPanel: state.showBottomPanel
+    ));
   }
   
   detachMessage(){
-    emit(PanelBlocInitial());
+    emit(PanelBlocInitial(
+      showBottomPanel: state.showBottomPanel
+    ));
+  }
+
+  toggleBottomPanel () {
+    emit(PanelBlocInitial(
+      showBottomPanel: !state.showBottomPanel
+    ));
   }
 
   var _textController = StreamController<String>.broadcast();

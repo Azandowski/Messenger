@@ -53,8 +53,11 @@ extension ChatScreenStateHelper on ChatScreenState {
   }
 
   Widget buildChatBottom (
-    ChatTodoState state, ChatTodoCubit chatTodoCubit,
-    double width, double height
+    ChatTodoState state, 
+    ChatTodoCubit chatTodoCubit,
+    double width, 
+    double height,
+    { bool canSendMedia }
   ) {
     if (state is ChatTodoSelection || state is ChatToDoLoading) {
       return Container(
@@ -83,7 +86,8 @@ extension ChatScreenStateHelper on ChatScreenState {
       return ChatControlPanel(
         messageTextController: messageTextController, 
         width: width,
-        height: height
+        height: height,
+        canSendMedia: canSendMedia
       );
     }
   }
@@ -408,23 +412,27 @@ extension ChatScreenStateHelper on ChatScreenState {
                 }
               },
               builder: (context, timerState) {
-                return this._buildCellOfMessage(params: messageCellParams(
-                  timeLeft: timerState.timeLeft
-                ));
+                return this._buildCellOfMessage(
+                  params: messageCellParams(
+                    timeLeft: timerState.timeLeft
+                  ),
+                  chatBloc: chatBloc
+                );
               }, 
             )
           ) : currentMessage.chatActions == null ? 
-            this._buildCellOfMessage(params: messageCellParams()) :
+            this._buildCellOfMessage(params: messageCellParams(), chatBloc: chatBloc) :
               ChatActionView(
-              chatAction: buildChatAction(currentMessage)
-            )
+                chatAction: buildChatAction(currentMessage)
+              )
       );
     }
   }
 
 
   Widget _buildCellOfMessage ({
-    @required MessageCellParams params
+    @required MessageCellParams params,
+    @required ChatBloc chatBloc
   }) {
     return MessageCell(
       isSwipeEnabled: params.state.chatEntity.permissions?.isForwardOn ?? true,
@@ -453,6 +461,13 @@ extension ChatScreenStateHelper on ChatScreenState {
             params.chatTodoCubit.selectMessage(params.currentMessage);
           }
         }
+      },
+      onClickForwardMessage: (int id) {
+        chatBloc.add(LoadMessages(
+          isPagination: false,
+          direction: RequestDirection.bottom,
+          messageID: id
+        ));
       },
     );
   }

@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:messenger_mobile/modules/chat/data/datasources/chat_datasource.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chat_details/page/chat_detail_screen.dart';
 import 'package:messenger_mobile/modules/social_media/domain/entities/social_media.dart';
+import 'package:latlong/latlong.dart';
 
 import '../../../../core/utils/pagination.dart';
 import '../../../category/data/models/chat_permission_model.dart';
@@ -26,7 +27,7 @@ class SendMessageParams {
   final int identificator;
   final int timeLeft;
   final FieldFiles fieldFiles;
-
+  final LatLng location;
 
   SendMessageParams({
     @required this.identificator,
@@ -34,7 +35,8 @@ class SendMessageParams {
     this.forwardIds,
     this.fieldFiles,
     this.text,
-    this.timeLeft
+    this.timeLeft,
+    this.location
   });
 }
 enum FileKey {audio,}

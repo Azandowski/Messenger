@@ -18,6 +18,7 @@ import '../../../category/data/models/chat_entity_model.dart';
 import '../../../category/domain/entities/chat_entity.dart';
 import '../../domain/entities/chat_search_response.dart';
 import '../model/chat_search_response_model.dart';
+import '../model/chat_update_type.dart';
 
 abstract class ChatsDataSource {
   Future<PaginatedResultViaLastItem<ChatEntity>> getUserChats ({
@@ -67,6 +68,7 @@ class ChatsDataSourceImpl implements ChatsDataSource {
         chatJSON['no_read_message'] = updates['no_read_message'];
 
         ChatEntityModel model = ChatEntityModel.fromJson(chatJSON);
+        model.chatUpdateType = (updates['type'] as String).getChatUpdateType;
         _controller.add(model);
       });
   }

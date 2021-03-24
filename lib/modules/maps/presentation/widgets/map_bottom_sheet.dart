@@ -15,6 +15,7 @@ class MapBottomSheet extends StatefulWidget {
   final bool isLoading;
   final Function(Place) didSelectPlace;
   final Function didComplete;
+  final bool hasDelegate;
 
   MapBottomSheet({
     @required this.currentUserLocation,
@@ -22,7 +23,8 @@ class MapBottomSheet extends StatefulWidget {
     @required this.selectedPlace,
     @required this.didSelectPlace,
     @required this.didComplete,
-    this.isLoading = false
+    @required this.hasDelegate,
+    this.isLoading = false,
   });
 
   @override
@@ -55,16 +57,19 @@ class _MapBottomSheetState extends State<MapBottomSheet> {
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     child: buildHorizontalPin(),
                   ),
-                  GestureDetector(
-                    onTap: () {
-                      widget.didComplete();
-                    },
-                    child: MapSelectedPlace(
-                      selectedPlace: widget.selectedPlace,
-                      userLocation: widget.currentUserLocation,
-                    ),
-                  ),
-                  buildSelectPlaceBanner(),
+                  if (widget.hasDelegate)
+                    ...[
+                      GestureDetector(
+                        onTap: () {
+                          widget.didComplete();
+                        },
+                        child: MapSelectedPlace(
+                          selectedPlace: widget.selectedPlace,
+                          userLocation: widget.currentUserLocation,
+                        ),
+                      ),
+                      buildSelectPlaceBanner(),
+                    ],
                   if (widget.places.length > 0 || widget.isLoading)
                     DividerWrapper(
                       children: widget.isLoading ? getLoadingSpinners() : 

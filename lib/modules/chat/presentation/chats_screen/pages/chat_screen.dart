@@ -1,4 +1,5 @@
 import 'package:flutter/rendering.dart';
+import 'package:messenger_mobile/core/config/auth_config.dart';
 import 'package:messenger_mobile/core/services/network/Endpoints.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
@@ -197,10 +198,14 @@ class ChatScreenState extends State<ChatScreen> implements ChatChooseDelegate{
                             ),
                           ),
                         ),
-                        this.buildChatBottom(
-                          cubit, _chatTodoCubit, 
-                          width, height
+                        if (
+                          canSendMessage(state)
                         )
+                          this.buildChatBottom(
+                            cubit, _chatTodoCubit, 
+                            width, height,
+                            canSendMedia: canSendMedia(state)
+                          )
                       ],
                     ),
                   ),
@@ -224,6 +229,18 @@ class ChatScreenState extends State<ChatScreen> implements ChatChooseDelegate{
     return (state.unreadCount != null && state.unreadCount != 0) ||
       (state.showBottomPin != null && state.showBottomPin) || 
         !state.hasReachBottomMax;
+  }
+
+  bool isAdmin (ChatState state) {
+    return sl<AuthConfig>().user.id == state.chatEntity?.adminID;
+  }
+
+  bool canSendMessage (ChatState state) {
+    return !(state.chatEntity.permissions?.adminMessageSend ?? false) || isAdmin(state);
+  }
+
+  bool canSendMedia (ChatState state) {
+    return (state.chatEntity.permissions?.isMediaSendOn ?? true) || isAdmin(state);
   }
 
   // Get Chat Action model from the message 

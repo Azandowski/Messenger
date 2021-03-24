@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-
+import 'package:latlong/latlong.dart';
 import '../../domain/entities/chat_actions.dart';
 import '../../domain/entities/message.dart';
 import 'message_user_model.dart';
@@ -20,6 +20,7 @@ class MessageModel extends Message {
   final MessageChat chat;
   MessageHandleType messageHandleType;
   final int timeDeleted;
+  final LatLng location;
 
   MessageModel({
     this.id,
@@ -36,7 +37,8 @@ class MessageModel extends Message {
     this.toUser,
     this.chat,
     this.messageHandleType = MessageHandleType.newMessage,
-    this.timeDeleted
+    this.timeDeleted,
+    this.location
   }) : super(
     id: id,
     isRead: isRead,
@@ -52,7 +54,8 @@ class MessageModel extends Message {
     toUser: toUser,
     chat: chat,
     messageHandleType: messageHandleType,
-    timeDeleted: timeDeleted
+    timeDeleted: timeDeleted,
+    location: location
   );
 
   factory MessageModel.fromJson(Map json) {
@@ -75,7 +78,10 @@ class MessageModel extends Message {
         (json['transfer'] as List).map((v) => Transfer.fromJson(v)).toList() : [],
       chat: json['chat'] == null ? null :
         MessageChatModel.fromJson(json['chat']),
-      timeDeleted: json['time_deleted']
+      timeDeleted: json['time_deleted'],
+      location: json['map'] != null ? LatLng(
+          json['map']['latitude'].toDouble(), json['map']['longitude'].toDouble()
+        ) : null
     );
   }
 
@@ -88,7 +94,11 @@ class MessageModel extends Message {
       'is_read': isRead ? 1 : 0,
       'created_at': dateTime.toIso8601String(),
       'action': chatActions?.key,
-      'to_contact': toUser?.toJson()
+      'to_contact': toUser?.toJson(),
+      'map': location != null ? {
+          'latitude': location.latitude,
+          'longitude': location.longitude
+        } : null
     };
   }
 }

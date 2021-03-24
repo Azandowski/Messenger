@@ -1,8 +1,4 @@
 PODS:
-  - agora_rtc_engine (3.3.1):
-    - AgoraRtcEngine_iOS (= 3.3.1)
-    - Flutter
-  - AgoraRtcEngine_iOS (3.3.1)
   - contacts_service (0.2.2):
     - Flutter
   - Firebase/CoreOnly (7.3.0):
@@ -10,8 +6,12 @@ PODS:
   - Firebase/DynamicLinks (7.3.0):
     - Firebase/CoreOnly
     - FirebaseDynamicLinks (~> 7.3.0)
-  - firebase_dynamic_links (0.1.0):
-    - Firebase/DynamicLinks
+  - firebase_core (1.0.2):
+    - Firebase/CoreOnly (= 7.3.0)
+    - Flutter
+  - firebase_dynamic_links (0.8.0):
+    - Firebase/DynamicLinks (= 7.3.0)
+    - firebase_core
     - Flutter
   - FirebaseCore (7.3.0):
     - FirebaseCoreDiagnostics (~> 7.0)
@@ -65,8 +65,8 @@ PODS:
     - Flutter
 
 DEPENDENCIES:
-  - agora_rtc_engine (from `.symlinks/plugins/agora_rtc_engine/ios`)
   - contacts_service (from `.symlinks/plugins/contacts_service/ios`)
+  - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - firebase_dynamic_links (from `.symlinks/plugins/firebase_dynamic_links/ios`)
   - Flutter (from `Flutter`)
   - flutter_secure_storage (from `.symlinks/plugins/flutter_secure_storage/ios`)
@@ -83,7 +83,6 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
-    - AgoraRtcEngine_iOS
     - Firebase
     - FirebaseCore
     - FirebaseCoreDiagnostics
@@ -96,10 +95,10 @@ SPEC REPOS:
     - tau_sound_core
 
 EXTERNAL SOURCES:
-  agora_rtc_engine:
-    :path: ".symlinks/plugins/agora_rtc_engine/ios"
   contacts_service:
     :path: ".symlinks/plugins/contacts_service/ios"
+  firebase_core:
+    :path: ".symlinks/plugins/firebase_core/ios"
   firebase_dynamic_links:
     :path: ".symlinks/plugins/firebase_dynamic_links/ios"
   Flutter:
@@ -128,11 +127,10 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/vibrate/ios"
 
 SPEC CHECKSUMS:
-  agora_rtc_engine: 72d3da83dd75e98aa9650ea64e1534f5e365e841
-  AgoraRtcEngine_iOS: 17e55feec1bde14adc30fd9d743332d1e7821b62
   contacts_service: 849e1f84281804c8bfbec1b4c3eedcb23c5d3eca
   Firebase: 26223c695fe322633274198cb19dca8cb7e54416
-  firebase_dynamic_links: 6aa278fc5e6e8cca17d5aa4c7aa46283f2b94749
+  firebase_core: e6cbb0d1f7091edfcae31559e58224bfc1e455dc
+  firebase_dynamic_links: e222260696317885f2f2592fddf8783158f4e7df
   FirebaseCore: 4d3c72622ce0e2106aaa07bb4b2935ba2c370972
   FirebaseCoreDiagnostics: 179bf3831213451c8addd036aca7fcf5492ec154
   FirebaseDynamicLinks: a6df95d6dbc746c2bbf7d511343cda1344e2cf70
@@ -140,15 +138,12 @@ SPEC CHECKSUMS:
   flutter_secure_storage: 7953c38a04c3fdbb00571bcd87d8e3b5ceb9daec
   flutter_share: 4be0208963c60b537e6255ed2ce1faae61cd9ac2
   flutter_sound: 9519b4dd640fde85d2d499db0413681138c315f4
-  GoogleDataTransport: 1024b1a4dfbd7a0e92cb20d7e0a6f1fb66b449a4
-  GoogleUtilities: 31c5b01f978a70c6cff2afc6272b3f1921614b43
-  image_picker: 50e7c7ff960e5f58faa4d1f4af84a771c671bc4a
-  mobile-ffmpeg-full: f17c82219b4ff9e4018b5e21f88b78c28a3475db
   geocoding: 32cfcdb16d38d907caaba65e2e42ad10d38bee58
   geolocator: f5e3de65e241caba7ce3e8a618803387bda73384
   GoogleDataTransport: 1024b1a4dfbd7a0e92cb20d7e0a6f1fb66b449a4
   GoogleUtilities: 31c5b01f978a70c6cff2afc6272b3f1921614b43
   image_picker: 50e7c7ff960e5f58faa4d1f4af84a771c671bc4a
+  mobile-ffmpeg-full: f17c82219b4ff9e4018b5e21f88b78c28a3475db
   nanopb: 59221d7f958fb711001e6a449489542d92ae113e
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
   permission_handler: ccb20a9fad0ee9b1314a52b70b76b473c5f8dab0

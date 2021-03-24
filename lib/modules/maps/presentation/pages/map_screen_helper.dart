@@ -42,7 +42,8 @@ extension MapScreenExtension on MapScreenState {
         repository: repository
       )
     );
-    mapCubit.getCurrentUserPosition();
+
+    mapCubit.getCurrentUserPosition(loadNearPlaces: widget.defaultPosition == null);
   }
 
 
@@ -128,7 +129,9 @@ extension MapScreenExtension on MapScreenState {
 
   handleStateUpdates (MapState oldState, MapState newState) {
     if (oldState.currentUserPosition != newState.currentUserPosition && newState.currentUserPosition != null) {
-      mapController.move(newState.currentUserPosition.getLatLng, mapController.zoom);
+      if (widget.defaultPosition == null) {
+        mapController.move(newState.currentUserPosition.getLatLng, mapController.zoom);
+      }
     }
 
     if (oldState.selectedPlace != newState.selectedPlace && newState.selectedPlace != null) {
@@ -144,9 +147,15 @@ extension MapScreenExtension on MapScreenState {
         content: LinearProgressIndicator()
       ));
     } else if (newState is MapError) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(newState.errorMessage)
-      ));
+      if (newState.locationFailure != null) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(newState.locationFailure.message)
+        ));
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(newState.errorMessage ?? 'Ошибка карты')
+        ));
+      }
     }
   }
 }

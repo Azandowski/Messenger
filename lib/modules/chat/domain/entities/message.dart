@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
+import 'package:latlong/latlong.dart';
 import 'chat_actions.dart';
 
 enum MessageStatus {sending, sent,}
@@ -10,6 +10,7 @@ enum MessageHandleType {
   newMessage, setTopMessage, unSetTopMessage, userReadSecretMessage
 }
 
+// ignore: must_be_immutable
 class Message extends Equatable {
   final int id;
   final bool isRead;
@@ -27,6 +28,7 @@ class Message extends Equatable {
   final MessageChat chat;
   final MessageHandleType messageHandleType;
   final int timeDeleted;
+  final LatLng location;
   
   Message({
     this.text,
@@ -44,7 +46,8 @@ class Message extends Equatable {
     this.toUser,
     this.chat,
     this.messageHandleType = MessageHandleType.newMessage,
-    this.timeDeleted
+    this.timeDeleted,
+    this.location
   });
 
   @override
@@ -64,7 +67,8 @@ class Message extends Equatable {
     toUser,
     chat,
     messageHandleType,
-    timeDeleted
+    timeDeleted,
+    location
   ];
 
    Message copyWith({
@@ -81,7 +85,8 @@ class Message extends Equatable {
      int deletionSeconds,
      DateTime willBeDeletedAt,
      MessageUser toUser,
-     MessageChat chat
+     MessageChat chat,
+     LatLng location
   }) {
     return Message(
       id: id ?? this.id,
@@ -96,7 +101,8 @@ class Message extends Equatable {
       transfer: transfer ?? this.transfer,
       toUser: toUser ?? this.toUser,
       chat: chat ?? this.chat,
-      timeDeleted: timeDeleted ?? this.timeDeleted
+      timeDeleted: timeDeleted ?? this.timeDeleted,
+      location: location ?? this.location
     );
   }
 
@@ -110,7 +116,11 @@ class Message extends Equatable {
       'created_at': dateTime.toIso8601String(),
       'action': chatActions?.key,
       'to_contact': toUser?.toJson(),
-      'chat': chat?.toJson()
+      'chat': chat?.toJson(),
+      'map': location != null ? {
+        'latitude': location.latitude,
+        'longitude': location.longitude
+      } : null
     };
   }
 }

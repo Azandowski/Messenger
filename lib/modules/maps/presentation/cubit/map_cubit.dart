@@ -32,7 +32,9 @@ class MapCubit extends Cubit<MapState> {
 
   // MARK: - Requests
 
-  Future<void> getCurrentUserPosition () async {
+  Future<void> getCurrentUserPosition ({
+    bool loadNearPlaces
+  }) async {
     var response = await getCurrentLocation(NoParams());
     response.fold((failure) => emit(
       MapError(
@@ -47,7 +49,9 @@ class MapCubit extends Cubit<MapState> {
         places: state.places
       ));
 
-      getPlacesNear();
+      if (loadNearPlaces) {
+        getPlacesNear();
+      }
     }); 
   }
 
@@ -128,7 +132,7 @@ class MapCubit extends Cubit<MapState> {
 
   Future<void> didSelectPosition (LatLng position) async {
     
-    if (position == state.currentUserPosition.getLatLng) {
+    if (position == state.currentUserPosition?.getLatLng) {
       emit(MapInitial(
         places: state.places,
         currentUserPosition: state.currentUserPosition,

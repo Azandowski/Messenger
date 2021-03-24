@@ -142,7 +142,7 @@ extension EndpointsExtension on Endpoints {
       case Endpoints.unblockUser:
         return '${Config.baseAPIpath.value}/messenger/unblock-user';
       case Endpoints.markAsRead:
-        return '${Config.baseAPIpath.value}/messenger/message/read';
+        return '${Config.baseAPIpath.value}/messenger/message-read';
     }
   }
 

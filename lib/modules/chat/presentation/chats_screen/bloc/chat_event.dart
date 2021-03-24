@@ -1,5 +1,6 @@
 part of 'chat_bloc.dart';
 
+
 abstract class ChatEvent extends Equatable {
   const ChatEvent();
 }
@@ -56,18 +57,31 @@ class MessageSend extends ChatEvent {
   final Message forwardMessage;
   final String message;
   final int timeDeleted;
+  final LatLng location;
 
   MessageSend({
     this.message,
     this.forwardMessage,
-    this.timeDeleted
+    this.timeDeleted,
+    this.location
   });
+
+  MessageSend copyWith ({
+    int timeDeleted,
+    Message forwardMessage
+  }) => MessageSend(
+    message: message,
+    location: location,
+    forwardMessage: forwardMessage ?? this.forwardMessage,
+    timeDeleted: timeDeleted ?? this.timeDeleted
+  );
 
   @override
   List<Object> get props => [
     message, 
     forwardMessage,
-    timeDeleted
+    timeDeleted,
+    location
   ];
 }
 

@@ -23,7 +23,15 @@ class SendMessageRow extends StatelessWidget {
           color: Colors.grey,
         ),
         SendMessageTextField(widget: widget, panelBloc: _panelBloc,),
-        Icon(Icons.attach_file,color: Colors.grey,),
+        InkWell(
+          onTap: () {
+            _panelBloc.toggleBottomPanel();
+          },
+          child: Icon(
+            Icons.attach_file,
+            color: Colors.grey,
+          ),
+        ),
       ],
     );
   }

@@ -28,11 +28,11 @@ class MapRepositoryImpl extends MapRepository {
   Future<Either<GeolocationFailure, Position>> getCurrentPosition() async {
     bool isServiceEnabled = await datasource.isLocationEnabled();
 
-    if (!isServiceEnabled) {
-      return Left(GeolocationFailure(
-        LocationFailure.locationDisabled
-      ));
-    } 
+    // if (!isServiceEnabled) {
+    //   return Left(GeolocationFailure(
+    //     LocationFailure.locationDisabled
+    //   ));
+    // } 
 
     PermissionStatus permissionStatus = await datasource.checkPermission();
     if (permissionStatus == PermissionStatus.denied) {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:latlong/latlong.dart';
 
 import '../../../../app/appTheme.dart';
 import '../../../../core/config/auth_config.dart';
@@ -15,7 +16,7 @@ class MessageViewModel {
   MessageViewModel (
     this.message, {
       this.isSelected = false,
-      this.timeLeftToBeDeleted = null
+      this.timeLeftToBeDeleted
     }
   ); 
 
@@ -119,5 +120,33 @@ class MessageViewModel {
 
   MessageStatus get messageStatus {
     return message.messageStatus;
+  }
+
+  bool get hasToShowMap {
+    return message.location != null;
+  }
+
+  LatLng get mapLocation {
+    return message.location;
+  }
+
+  String get forwardDescription {
+    if (message.text != null) {
+      return this.messageText;
+    } else {
+      return 'Вложение';
+    } 
+  }
+
+  TextStyle get forwardTextStyle {
+    if (message.text != null) {
+      return AppFontStyles.black14w400.copyWith(
+        height: 1.4,
+      );
+    } else {
+      return AppFontStyles.black14w400.copyWith(
+        height: 1.4, color: AppColors.indicatorColor
+      );
+    }
   }
 }

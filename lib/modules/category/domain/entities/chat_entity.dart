@@ -1,10 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:messenger_mobile/modules/chat/domain/entities/message.dart';
-
-import '../../../chat/data/models/message_model.dart';
+import 'package:messenger_mobile/modules/chats/data/model/chat_update_type.dart';
 import '../../../chats/domain/entities/category.dart';
-import '../../data/models/chat_permission_model.dart';
 import 'chat_permissions.dart';
 
 // ignore: must_be_immutable
@@ -20,7 +18,9 @@ class ChatEntity extends Equatable {
   final String description;
   final bool isPrivate;
   final bool isRead;
+  final int adminID;
   CategoryEntity chatCategory;
+  ChatUpdateType chatUpdateType;
 
   ChatEntity({
     this.chatCategory,
@@ -33,7 +33,9 @@ class ChatEntity extends Equatable {
     this.description,
     this.lastMessage,
     this.isPrivate = false,
-    this.isRead
+    this.isRead,
+    this.chatUpdateType,
+    this.adminID
   });
 
   @override
@@ -48,7 +50,9 @@ class ChatEntity extends Equatable {
     unreadCount,
     description,
     isPrivate,
-    isRead
+    isRead,
+    chatUpdateType,
+    adminID
   ];
 
   ChatEntity clone({
@@ -72,6 +76,8 @@ class ChatEntity extends Equatable {
       description: this.description,
       isPrivate: this.isPrivate,
       isRead: this.isRead,
+      chatUpdateType: this.chatUpdateType,
+      adminID: this.adminID
     );
   }
 
@@ -95,7 +101,8 @@ class ChatEntity extends Equatable {
       'last_message': lastMessage?.toJson(),
       'no_read_message': unreadCount,
       'description': description,
-      'is_private': isPrivate ? 1 : 0
+      'is_private': isPrivate ? 1 : 0,
+      'admin_id': adminID
     };
   }
 }

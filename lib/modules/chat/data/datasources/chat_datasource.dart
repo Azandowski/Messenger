@@ -195,7 +195,9 @@ class ChatDataSourceImpl implements ChatDataSource {
       'text': params.text ?? '',
       'forward': forward,
       if (params.timeLeft != null)
-        ...{'time_deleted': params.timeLeft}
+        ...{'time_deleted': params.timeLeft},
+      if (params.location != null)
+        ...{'latitude': params.location.latitude, 'longitude': params.location.longitude}
     };
 
     http.StreamedResponse streamedResponse = await MultipartRequestHelper.postData(
