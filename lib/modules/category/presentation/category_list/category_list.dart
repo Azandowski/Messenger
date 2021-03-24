@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:messenger_mobile/core/utils/snackbar_util.dart';
+import '../../../../core/utils/snackbar_util.dart';
 import '../../../../app/application.dart';
 
 import '../../../../app/appTheme.dart';

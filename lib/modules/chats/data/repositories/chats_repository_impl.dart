@@ -7,7 +7,6 @@ import 'package:flutter/foundation.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/services/network/network_info.dart';
 import '../../../../core/services/network/paginatedResult.dart';
-import '../../../category/data/models/chat_entity_model.dart';
 import '../../../category/domain/entities/chat_entity.dart';
 import '../../domain/entities/chat_search_response.dart';
 import '../../domain/repositories/chats_repository.dart';

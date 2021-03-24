@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
-import 'package:messenger_mobile/modules/profile/domain/entities/user.dart';
-import 'package:messenger_mobile/modules/social_media/domain/entities/social_media.dart';
+import '../../../profile/domain/entities/user.dart';
+import '../../../social_media/domain/entities/social_media.dart';
 
 import '../../../category/domain/entities/chat_entity.dart';
 import '../../../category/domain/entities/chat_permissions.dart';

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/app/appTheme.dart';
+
+import '../../app/appTheme.dart';
 
 class SnackUtil {
   static void showError ({

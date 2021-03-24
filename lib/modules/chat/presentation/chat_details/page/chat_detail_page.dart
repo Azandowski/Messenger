@@ -1,22 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:messenger_mobile/app/application.dart';
-import 'package:messenger_mobile/core/blocs/chat/bloc/bloc/chat_cubit.dart';
-import 'package:messenger_mobile/core/services/network/Endpoints.dart';
-import 'package:messenger_mobile/core/utils/snackbar_util.dart';
-import 'package:messenger_mobile/modules/chat/domain/usecases/block_user.dart';
-import 'package:messenger_mobile/modules/chat/domain/usecases/kick_member.dart';
-import 'package:messenger_mobile/modules/chat/domain/usecases/set_social_media.dart';
+import 'package:http/http.dart' as http;
+
+import '../../../../../app/application.dart';
+import '../../../../../core/blocs/chat/bloc/bloc/chat_cubit.dart';
+import '../../../../../core/services/network/Endpoints.dart';
+import '../../../../../core/utils/snackbar_util.dart';
 import '../../../../../locator.dart';
 import '../../../data/datasources/chat_datasource.dart';
 import '../../../data/repositories/chat_repository.dart';
 import '../../../domain/usecases/add_members.dart';
+import '../../../domain/usecases/block_user.dart';
 import '../../../domain/usecases/get_chat_details.dart';
+import '../../../domain/usecases/kick_member.dart';
 import '../../../domain/usecases/leave_chat.dart';
+import '../../../domain/usecases/set_social_media.dart';
 import '../../../domain/usecases/update_chat_settings.dart';
 import '../cubit/chat_details_cubit.dart';
 import 'chat_detail_screen.dart';
-import 'package:http/http.dart' as http;
 
 class ChatDetailPage extends StatefulWidget {
 

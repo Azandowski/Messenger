@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/app/appTheme.dart';
-import 'package:messenger_mobile/modules/social_media/domain/entities/social_media.dart';
+
+import '../../../../app/appTheme.dart';
+import '../../domain/entities/social_media.dart';
 import '../helpers/ui_helper.dart';
 
 class SocialMediaItem extends StatelessWidget {

@@ -2,22 +2,21 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/modules/chat/domain/usecases/block_user.dart';
-import 'package:messenger_mobile/modules/chat/domain/usecases/kick_member.dart';
-import 'package:messenger_mobile/modules/chat/domain/usecases/set_social_media.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chat_details/page/chat_detail_screen.dart';
-import 'package:messenger_mobile/modules/social_media/domain/entities/social_media.dart';
 
 import '../../../../category/data/models/chat_permission_model.dart';
 import '../../../../category/domain/entities/chat_permissions.dart';
 import '../../../../creation_module/domain/entities/contact.dart';
+import '../../../../social_media/domain/entities/social_media.dart';
 import '../../../domain/entities/chat_detailed.dart';
 import '../../../domain/usecases/add_members.dart';
+import '../../../domain/usecases/block_user.dart';
 import '../../../domain/usecases/get_chat_details.dart';
 import '../../../domain/usecases/kick_member.dart';
 import '../../../domain/usecases/leave_chat.dart';
 import '../../../domain/usecases/params.dart';
+import '../../../domain/usecases/set_social_media.dart';
 import '../../../domain/usecases/update_chat_settings.dart';
+import '../page/chat_detail_screen.dart';
 import '../widgets/chat_setting_item.dart';
 
 part 'chat_details_state.dart';

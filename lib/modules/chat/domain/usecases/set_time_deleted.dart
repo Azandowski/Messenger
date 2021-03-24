@@ -1,9 +1,9 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/modules/category/domain/entities/chat_permissions.dart';
 
 import '../../../../core/error/failures.dart';
 import '../../../../core/usecases/usecase.dart';
+import '../../../category/domain/entities/chat_permissions.dart';
 import '../repositories/chat_repository.dart';
 import 'params.dart';
 

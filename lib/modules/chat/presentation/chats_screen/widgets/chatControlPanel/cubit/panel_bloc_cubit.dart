@@ -12,9 +12,6 @@ class PanelBlocCubit extends Cubit<PanelBlocState> {
 
   PanelBlocCubit() : super(PanelBlocInitial(showBottomPanel: false)) {
     _textController.sink.addError("Invalid value entered!");
-    _textController.stream.listen((event) { 
-      print('shit happened');
-    });
   }
 
   addMessage(MessageViewModel message){

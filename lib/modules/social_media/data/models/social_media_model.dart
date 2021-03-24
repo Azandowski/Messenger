@@ -1,4 +1,4 @@
-import 'package:messenger_mobile/modules/social_media/domain/entities/social_media.dart';
+import '../../domain/entities/social_media.dart';
 
 class SocialMediaModel extends SocialMedia {
   final String facebookLink;

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../../app/appTheme.dart';
-import '../chatControlPanel/chatControlPanel.dart';
 import '../chatControlPanel/cubit/panel_bloc_cubit.dart';
+import '../chatControlPanel/presentation/chatControlPanel.dart';
 
 class SendMessageTextField extends StatelessWidget {
   const SendMessageTextField({

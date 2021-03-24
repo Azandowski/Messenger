@@ -1,7 +1,7 @@
-import 'package:messenger_mobile/core/utils/snackbar_util.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen_import.dart';
-import 'package:messenger_mobile/modules/creation_module/presentation/bloc/open_chat_cubit/open_chat_cubit.dart';
+import '../../../../../core/utils/snackbar_util.dart';
+import '../../../../chat/presentation/chats_screen/pages/chat_screen.dart';
+import '../../../../chat/presentation/chats_screen/pages/chat_screen_import.dart';
+import 'open_chat_cubit.dart';
 
 class OpenChatListener {
   void handleStateUpdate (BuildContext context, OpenChatState state) {

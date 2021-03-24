@@ -7,6 +7,9 @@ import 'package:messenger_mobile/core/config/auth_config.dart';
 import 'package:messenger_mobile/modules/chat/domain/entities/message.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen_import.dart';
 
+import '../../../../domain/entities/message.dart';
+import '../../pages/chat_screen_import.dart';
+
 part 'timer_state.dart';
 
 class TimerCubit extends Cubit<TimerState> {

@@ -56,11 +56,13 @@ class MessageDelete extends ChatEvent {
 class MessageSend extends ChatEvent {
   final Message forwardMessage;
   final String message;
+  final FieldFiles fieldFiles;
   final int timeDeleted;
   final LatLng location;
 
   MessageSend({
     this.message,
+    this.fieldFiles,
     this.forwardMessage,
     this.timeDeleted,
     this.location
@@ -81,7 +83,8 @@ class MessageSend extends ChatEvent {
     message, 
     forwardMessage,
     timeDeleted,
-    location
+    location,
+    fieldFiles
   ];
 }
 

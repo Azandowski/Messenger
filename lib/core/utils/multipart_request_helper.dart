@@ -13,7 +13,7 @@ class MultipartRequestHelper {
    */
   static Future<List<http.MultipartFile>> getFilesList(
     List<File> files,
-    String keyName
+    List<String> keyName
   ) async {
     List<http.MultipartFile> _files = [];
 
@@ -22,7 +22,7 @@ class MultipartRequestHelper {
         var stream = new http.ByteStream((files[i].openRead()));
         var length = await files[i].length();
         var date = DateTime.now().millisecondsSinceEpoch.toString();
-        var multipartFile = new http.MultipartFile(keyName, stream, length,
+        var multipartFile = new http.MultipartFile(keyName[i], stream, length,
             filename: basename(files[i].path + date));
         _files.add(multipartFile);
       }
@@ -42,7 +42,7 @@ class MultipartRequestHelper {
   static Future<http.StreamedResponse> postData({
     @required String token,
     @required http.MultipartRequest request,
-    @required String keyName,
+    @required List<String> keyName,
     Map data,
     List<File> files,
   }) async {
@@ -62,10 +62,6 @@ class MultipartRequestHelper {
 
     copyRequest.fields.addAll(request.fields);
   
-    // request.files.addAll(await getFilesList(
-    //   files ?? [], keyName
-    // ));
-
     copyRequest.files.addAll(await getFilesList(
       files ?? [], keyName
     ));

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../chatControlPanel/chatControlPanel.dart';
 import '../chatControlPanel/cubit/panel_bloc_cubit.dart';
+import '../chatControlPanel/presentation/chatControlPanel.dart';
 import 'send_message_text_field.dart';
 
 class SendMessageRow extends StatelessWidget {

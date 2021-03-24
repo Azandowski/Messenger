@@ -1,14 +1,15 @@
 
 import 'package:flutter/foundation.dart';
-import 'package:messenger_mobile/modules/profile/data/models/user_model.dart';
-import 'package:messenger_mobile/modules/profile/domain/entities/user.dart';
-import 'package:messenger_mobile/modules/social_media/data/models/social_media_model.dart';
-import 'package:messenger_mobile/modules/social_media/domain/entities/social_media.dart';
+
 import '../../../category/data/models/chat_entity_model.dart';
 import '../../../category/data/models/chat_permission_model.dart';
 import '../../../category/domain/entities/chat_entity.dart';
 import '../../../creation_module/data/models/contact_model.dart';
 import '../../../creation_module/domain/entities/contact.dart';
+import '../../../profile/data/models/user_model.dart';
+import '../../../profile/domain/entities/user.dart';
+import '../../../social_media/data/models/social_media_model.dart';
+import '../../../social_media/domain/entities/social_media.dart';
 import '../../domain/entities/chat_detailed.dart';
 
 class ChatDetailedModel extends ChatDetailed {

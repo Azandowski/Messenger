@@ -1,7 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:latlong/latlong.dart';
 import '../../domain/entities/chat_actions.dart';
+import '../../domain/entities/file_media.dart';
 import '../../domain/entities/message.dart';
+import 'file_media_model.dart';
 import 'message_user_model.dart';
 
 class MessageModel extends Message {
@@ -21,6 +23,7 @@ class MessageModel extends Message {
   MessageHandleType messageHandleType;
   final int timeDeleted;
   final LatLng location;
+  final List<FileMedia> files;
 
   MessageModel({
     this.id,
@@ -35,6 +38,7 @@ class MessageModel extends Message {
     this.willBeDeletedAt,
     this.messageStatus = MessageStatus.sent,
     this.toUser,
+    this.files,
     this.chat,
     this.messageHandleType = MessageHandleType.newMessage,
     this.timeDeleted,
@@ -55,7 +59,8 @@ class MessageModel extends Message {
     chat: chat,
     messageHandleType: messageHandleType,
     timeDeleted: timeDeleted,
-    location: location
+    location: location,
+    files: files
   );
 
   factory MessageModel.fromJson(Map json) {
@@ -80,8 +85,10 @@ class MessageModel extends Message {
         MessageChatModel.fromJson(json['chat']),
       timeDeleted: json['time_deleted'],
       location: json['map'] != null ? LatLng(
-          json['map']['latitude'].toDouble(), json['map']['longitude'].toDouble()
-        ) : null
+        json['map']['latitude'].toDouble(), json['map']['longitude'].toDouble()
+      ) : null,
+      files: json['file'] != null ? 
+        (json['file'] as List).map((v) => FileMediaModel.fromJson(v)).toList() : [],
     );
   }
 

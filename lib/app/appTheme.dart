@@ -8,6 +8,7 @@ abstract class AppColors {
   static get paleIndicatorColor => Color(0xff9357CD).withOpacity(0.4);
   static get accentBlueColor => Color(0xff396FB4);
   static get greyColor => Color(0xff898989);
+  static get gray6 => Color(0xff2F2F2);
   static get successGreenColor => Color(0xff3BE388);
   static get lightPinkColor => Color(0xff9357CD).withAlpha(15);
   static get pinkBackgroundColor => Color(0xffECE9F8);

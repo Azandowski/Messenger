@@ -1,5 +1,4 @@
-import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen_import.dart';
-import 'package:messenger_mobile/modules/social_media/domain/entities/social_media.dart';
+import '../../domain/entities/social_media.dart';
 
 extension SocialMediaTypeUIExtension on SocialMediaType {
   String get assetImagePath {

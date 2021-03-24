@@ -6,7 +6,6 @@ import 'package:dartz/dartz.dart';
 
 import '../../../../core/error/failures.dart';
 import '../../../../core/services/network/paginatedResult.dart';
-import '../../../category/data/models/chat_entity_model.dart';
 import '../../../category/domain/entities/chat_entity.dart';
 import '../entities/chat_search_response.dart';
 import '../usecase/params.dart';

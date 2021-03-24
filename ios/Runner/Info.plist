@@ -76,5 +76,12 @@
 	<false/>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Can We Use Your Microphone Please</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+    <key>NSAllowsArbitraryLoads</key>
+    <true/>
+    <key>NSAllowsArbitraryLoadsInWebContent</key>
+    <true/>
+</dict>
 </dict>
 </plist>

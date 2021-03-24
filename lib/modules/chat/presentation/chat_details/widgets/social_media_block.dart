@@ -1,6 +1,6 @@
-import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen_import.dart';
-import 'package:messenger_mobile/modules/social_media/domain/entities/social_media.dart';
-import 'package:messenger_mobile/modules/social_media/presentation/helpers/ui_helper.dart';
+import '../../chats_screen/pages/chat_screen_import.dart';
+import '../../../../social_media/domain/entities/social_media.dart';
+import '../../../../social_media/presentation/helpers/ui_helper.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SocialMediaBlock extends StatelessWidget {

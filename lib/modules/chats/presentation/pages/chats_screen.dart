@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:messenger_mobile/app/application.dart';
-import 'package:messenger_mobile/core/utils/snackbar_util.dart';
-import 'package:messenger_mobile/core/widgets/independent/small_widgets/image_text_view.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen.dart';
-import 'package:messenger_mobile/modules/chats/presentation/pages/chats_search_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../app/application.dart';
 import '../../../../core/blocs/chat/bloc/bloc/chat_cubit.dart';
 import '../../../../core/utils/paginated_scroll_controller.dart';
+import '../../../../core/utils/snackbar_util.dart';
 import '../../../../core/widgets/independent/small_widgets/cell_skeleton_item.dart';
 import '../../../../core/widgets/independent/small_widgets/image_text_view.dart';
 import '../../../../locator.dart';

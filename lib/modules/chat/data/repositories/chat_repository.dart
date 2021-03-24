@@ -2,9 +2,6 @@ import 'dart:io';
 
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
-import 'package:messenger_mobile/modules/chat/data/models/chat_message_response.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chat_details/page/chat_detail_screen.dart';
-import 'package:messenger_mobile/modules/social_media/domain/entities/social_media.dart';
 
 import '../../../../core/error/failures.dart';
 import '../../../../core/services/network/network_info.dart';
@@ -14,10 +11,12 @@ import '../../../../core/utils/pagination.dart';
 import '../../../category/data/models/chat_permission_model.dart';
 import '../../../category/domain/entities/chat_permissions.dart';
 import '../../../creation_module/domain/entities/contact.dart';
+import '../../../social_media/domain/entities/social_media.dart';
 import '../../domain/entities/chat_detailed.dart';
 import '../../domain/entities/message.dart';
 import '../../domain/repositories/chat_repository.dart';
 import '../../domain/usecases/params.dart';
+import '../../presentation/chat_details/page/chat_detail_screen.dart';
 import '../datasources/chat_datasource.dart';
 import '../models/chat_message_response.dart';
 

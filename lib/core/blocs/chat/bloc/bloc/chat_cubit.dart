@@ -11,6 +11,7 @@ import 'package:messenger_mobile/modules/chats/domain/entities/category.dart';
 import '../../../../../locator.dart';
 import '../../../../../modules/category/domain/entities/chat_entity.dart';
 import '../../../../../modules/category/domain/entities/chat_permissions.dart';
+import '../../../../../modules/chats/domain/entities/category.dart';
 import '../../../../../modules/chats/domain/repositories/chats_repository.dart';
 import '../../../../../modules/chats/domain/usecase/get_category_chats.dart';
 import '../../../../../modules/chats/domain/usecase/get_chats.dart';

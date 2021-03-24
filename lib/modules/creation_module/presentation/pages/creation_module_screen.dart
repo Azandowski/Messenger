@@ -1,20 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_share/flutter_share.dart';
-import 'package:messenger_mobile/app/application.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chat_details/page/chat_detail_page.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chat_details/page/chat_detail_screen.dart';
-import 'package:messenger_mobile/modules/creation_module/presentation/bloc/open_chat_cubit/open_chat_cubit.dart';
-import 'package:messenger_mobile/modules/creation_module/presentation/bloc/open_chat_cubit/open_chat_listener.dart';
-import 'package:messenger_mobile/modules/creation_module/presentation/pages/search_contact/search_contact_page.dart';
 
 import '../../../../app/appTheme.dart';
 import '../../../../app/application.dart';
 import '../../../../core/utils/paginated_scroll_controller.dart';
 import '../../../../locator.dart';
+import '../../../chat/presentation/chat_details/page/chat_detail_page.dart';
+import '../../../chat/presentation/chat_details/page/chat_detail_screen.dart';
 import '../../../groupChat/domain/usecases/create_chat_group.dart';
 import '../../../groupChat/presentation/create_group/create_group_page.dart';
 import '../bloc/contact_bloc/contact_bloc.dart';
+import '../bloc/open_chat_cubit/open_chat_cubit.dart';
+import '../bloc/open_chat_cubit/open_chat_listener.dart';
 import '../helpers/creation_actions.dart';
 import '../widgets/actions_builder.dart';
 import '../widgets/contcats_list.dart';

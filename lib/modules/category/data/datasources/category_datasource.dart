@@ -65,7 +65,7 @@ class CategoryDataSourceImpl implements CategoryDataSource {
       token: token, 
       request: multipartRequest, 
       files: file != null ? [file] : file,
-      keyName: 'file',
+      keyName: ['file'],
       data: {
         'transfer': chatIds.join(','),
         'name': name,

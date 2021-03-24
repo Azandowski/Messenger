@@ -149,4 +149,12 @@ class MessageViewModel {
       );
     }
   }
+
+  bool get hasMedia {
+    if (message.files != null) {
+      return message.files.length > 0;
+    } else {
+      return false;
+    }
+  }
 }

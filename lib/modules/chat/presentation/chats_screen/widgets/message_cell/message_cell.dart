@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:focused_menu/focused_menu.dart';
 import 'package:focused_menu/modals.dart';
+import 'package:messenger_mobile/core/blocs/audioplayer/bloc/audio_player_bloc.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen_import.dart';
 import 'package:swipeable/swipeable.dart';
 import 'package:vibrate/vibrate.dart';
-
-import '../../../../../app/appTheme.dart';
-import '../../../data/models/message_view_model.dart';
-import '../helpers/messageCellAction.dart';
+import '../../../../../../app/appTheme.dart';
+import '../../../../data/models/message_view_model.dart';
+import '../../helpers/messageCellAction.dart';
 import 'message_container.dart';
 
 class MessageCell extends StatefulWidget {
@@ -38,11 +39,12 @@ class MessageCell extends StatefulWidget {
 
 class _MessageCellState extends State<MessageCell> {
   bool leftSelected;
-
+  AudioPlayerBloc _audioPlayerBloc;
   bool rightSelected;
   void initState() {
     leftSelected = false;
     rightSelected = false;
+    _audioPlayerBloc = BlocProvider.of<AudioPlayerBloc>(context);
     super.initState();
   }
 
@@ -95,8 +97,7 @@ class _MessageCellState extends State<MessageCell> {
                 menuBoxDecoration: BoxDecoration(color: Colors.grey,borderRadius: BorderRadius.all(Radius.circular(15.0))),
                 menuItems: widget.messageViewModel.getActionsList(
                   isReplyEnabled: widget.isSwipeEnabled
-                )
-                  .map((e) => FocusedMenuItem(
+                ).map((e) => FocusedMenuItem(
                     title: Text(
                       e.title
                     ),
@@ -112,6 +113,7 @@ class _MessageCellState extends State<MessageCell> {
                 child: MessageContainer(
                   widget: widget,
                   onClickForwardMessage: widget.onClickForwardMessage,
+                  audioPlayerBloc: _audioPlayerBloc,
                 ),
               ),
             ),
