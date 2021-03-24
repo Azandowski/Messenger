@@ -230,6 +230,7 @@ class ChatControlPanelState extends State<ChatControlPanel>
                                         }else if(!canWrite && (voiceState is VoiceRecordingEndWillSend)){
                                           recordBloc.add(VoiceStopRecording());
                                           recordBloc.add(VoiceSendAudio());
+                                          buttonMicroCubit.resetToStable();
                                         }
                                       },
                                       splashRadius: 5,

@@ -115,16 +115,20 @@ class _VoiceRecordingRowState extends State<VoiceRecordingRow> with TickerProvid
                 stream: widget.audioPlayerBloc.playerStream,
                 initialData: PlaybackDisposition(duration: Duration(seconds: 1), position: Duration(seconds: 0)),
                 builder: (context, snapshot) {
-                  var maxDuration = snapshot.data.duration.inSeconds.toDouble();
-                  var sliderCurrentPosition = min(snapshot.data.position.inSeconds.toDouble(), maxDuration);
-                  if (sliderCurrentPosition < 0.0) {
-                    sliderCurrentPosition = 0.0;
+                  var value = 0.0;
+                  var timeNow = '00:00';
+                  if(otherState.id == state.path){
+                    var maxDuration = snapshot.data.duration.inSeconds.toDouble();
+                    var sliderCurrentPosition = min(snapshot.data.position.inSeconds.toDouble(), maxDuration);
+                    if (sliderCurrentPosition < 0.0) {
+                      sliderCurrentPosition = 0.0;
+                    }
+                    value = sliderCurrentPosition / maxDuration;
+                    var date = DateTime.fromMillisecondsSinceEpoch(
+                      snapshot.data.position.inMilliseconds,
+                      isUtc: true);
+                    timeNow = DateFormat.ms().format(date);
                   }
-                  var value = sliderCurrentPosition / maxDuration;
-                  var date = DateTime.fromMillisecondsSinceEpoch(
-                    snapshot.data.position.inMilliseconds,
-                    isUtc: true);
-                  var timeNow = DateFormat.ms().format(date);
                   return Expanded(
                     child: Container(
                       child: Row(
@@ -136,7 +140,7 @@ class _VoiceRecordingRowState extends State<VoiceRecordingRow> with TickerProvid
                               widget.audioPlayerBloc.add(StartResumeStop(path: state.path));
                             },
                             child: Icon(
-                            (otherState.status == VoicePlayerState.playing) ? Icons.pause : Icons.play_arrow,
+                            (otherState.status == VoicePlayerState.playing && otherState.id == state.path) ? Icons.pause : Icons.play_arrow,
                               color: Colors.black,
                             ),
                           ),

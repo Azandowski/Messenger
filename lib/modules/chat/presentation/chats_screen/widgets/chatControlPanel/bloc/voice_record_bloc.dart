@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_sound/flutter_sound.dart';
@@ -7,7 +6,7 @@ import 'package:messenger_mobile/core/blocs/audioplayer/bloc/audio_player_bloc.d
 import '../../../../../../../core/utils/feedbac_taptic_helper.dart';
 import '../../../../../domain/usecases/params.dart';
 import '../../../../chat_details/widgets/chat_media_block.dart';
-
+import 'package:flutter_sound_platform_interface/flutter_sound_recorder_platform_interface.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:vibrate/vibrate.dart';
@@ -107,6 +106,7 @@ class VoiceRecordBloc extends Bloc<VoiceRecordEvent, VoiceRecordState> {
           bitRate: 32000,
           numChannels: 1,
           sampleRate: 32000,
+          audioSource: AudioSource.microphone
         );
 
       _recorderSubscription = myRecorder.onProgress.listen((e) {

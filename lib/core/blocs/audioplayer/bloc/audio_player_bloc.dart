@@ -18,37 +18,6 @@ class AudioPlayerBloc extends Bloc<AudioPlayerEvent, AudioPlayerState> {
 
   FlutterSoundPlayer player = FlutterSoundPlayer();
 
-  // @override
-  // Stream<AudioPlayerState> mapEventToState(
-  //   AudioPlayerEvent event,
-  // ) async* {
-    // if(event is StopPlayer){
-  //     stopPlayer();
-  //     yield (AudioPlayerInitial(playerState: VoicePlayerState.empty, player: player, uniqueId: this.state.uniqueId));
-  //   }else if(event is PlayLocalPlayer){
-  //     startPlayer(event.path);
-  //     yield AudioPlayerInitial(playerState: VoicePlayerState.playing, player: player, uniqueId: this.state.uniqueId);
-  //   }else if(event is StartResumeStop){
-    //    try {
-    //     if(this.state.playerState == VoicePlayerState.empty){
-    //         this.add(PlayLocalPlayer(path: event.path));
-    //     }else{
-    //       if (player.isPlaying) {
-    //         await player.pausePlayer();
-    //         yield (AudioPlayerInitial(playerState: VoicePlayerState.paused, player: player, uniqueId: event.path));
-    //       } else {
-    //         await player.resumePlayer();
-    //         yield (AudioPlayerInitial(playerState: VoicePlayerState.playing, player: player, uniqueId: event.path));
-    //       }
-    //      }
-    // } on Exception catch (err) {
-    //   print('error: $err');
-    // }
-  // }else if(event is ResetPlayer){
-  //   yield (AudioPlayerInitial(playerState: VoicePlayerState.empty, player: player, uniqueId: this.state.uniqueId));
-  // }
-  // }
-
   @override
   Stream<AudioPlayerState> mapEventToState(AudioPlayerEvent event) async* {
     if(event is StopPlayer){
@@ -59,17 +28,22 @@ class AudioPlayerBloc extends Bloc<AudioPlayerEvent, AudioPlayerState> {
       yield AudioPlayerState.playing(event.path);
     }else if(event is StartResumeStop){
         try {
-        if(this.state.status == VoicePlayerState.empty){
-            this.add(PlayLocalPlayer(path: event.path));
-        }else{
-          if (player.isPlaying) {
-            await player.pausePlayer();
-            yield AudioPlayerState.paused(event.path);
-          } else {
-            await player.resumePlayer();
-            yield AudioPlayerState.playing(event.path,);
+        if(event.path == this.state.id){
+          if(this.state.status == VoicePlayerState.empty){
+              this.add(PlayLocalPlayer(path: event.path));
+          }else{
+            if (player.isPlaying) {
+              await player.pausePlayer();
+              yield AudioPlayerState.paused(event.path);
+            } else {
+              await player.resumePlayer();
+              yield AudioPlayerState.playing(event.path,);
+            }
           }
-         }
+        }else{
+          stopPlayer();
+          this.add(PlayLocalPlayer(path: event.path));
+        }
       } on Exception catch (err) {
         print('error: $err');
       }
@@ -90,6 +64,7 @@ class AudioPlayerBloc extends Bloc<AudioPlayerEvent, AudioPlayerState> {
           sampleRate: 32000,
           whenFinished: () {
             this.add(ResetPlayer());
+            _playerController.sink.add(PlaybackDisposition());
             cancelPlayerSubscriptions();
           }
         );
@@ -116,8 +91,6 @@ class AudioPlayerBloc extends Bloc<AudioPlayerEvent, AudioPlayerState> {
   Stream<PlaybackDisposition> get playerStream => _playerController.stream;
 
   StreamSubscription<PlaybackDisposition> _playerSubscription;
-
-
 
    Future<void> _initializeExample(bool withUI) async {
     await player.openAudioSession(

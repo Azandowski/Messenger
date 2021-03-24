@@ -102,8 +102,9 @@ extension ChatControlPanelStateHelper on ChatControlPanelState {
             microState: buttonMicroCubit.state,
             onSendAudio: (){
               if(recordBloc.state is VoiceRecording){
-                 recordBloc.add(VoiceStopRecording());
+                recordBloc.add(VoiceStopRecording());
                 recordBloc.add(VoiceSendAudio());     
+                buttonMicroCubit.resetToStable();
                 deleteEveryEntry(isSwipe: false);         
               }
             },
@@ -233,6 +234,7 @@ extension ChatControlPanelStateHelper on ChatControlPanelState {
         }else{
           recordBloc.add(VoiceStopRecording());
           recordBloc.add(VoiceSendAudio());
+          buttonMicroCubit.resetToStable();
         }
         deleteEveryEntry(isPause: false, isSwipe: false);
         buttonMicroCubit.resetToStable();
