@@ -10,7 +10,7 @@ abstract class MediaLocalDataSource {
 class MediaLocalDataSourceImpl implements MediaLocalDataSource {
   @override
   Future<File> getImage(source) async {
-    var pickedFile = await ImagePicker().getImage(source: source);
+    var pickedFile = await ImagePicker().getImage(source: source,imageQuality: 10);
     return File(pickedFile.path);
   }
 
@@ -20,7 +20,10 @@ class MediaLocalDataSourceImpl implements MediaLocalDataSource {
       List<Asset> images = await MultiImagePicker.pickImages(
         maxImages: 10,
         enableCamera: false,
-        cupertinoOptions: CupertinoOptions(takePhotoIcon: "chat"),
+        cupertinoOptions: CupertinoOptions(
+          takePhotoIcon: "chat",
+          
+        ),
         materialOptions: MaterialOptions(
           actionBarColor: "#abcdef",
           actionBarTitle: "Example App",

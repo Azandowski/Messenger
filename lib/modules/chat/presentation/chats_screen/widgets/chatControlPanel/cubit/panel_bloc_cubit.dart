@@ -3,10 +3,12 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:messenger_mobile/core/usecases/usecase.dart';
 import 'package:messenger_mobile/modules/chat/domain/usecases/params.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chat_details/widgets/chat_media_block.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen_import.dart';
+import 'package:messenger_mobile/modules/media/domain/usecases/get_image.dart';
 import 'package:messenger_mobile/modules/media/domain/usecases/get_images_from_gallery.dart';
 
 import '../../../../../data/models/message_view_model.dart';
@@ -16,9 +18,11 @@ part 'panel_bloc_state.dart';
 class PanelBlocCubit extends Cubit<PanelBlocState> {
   final GetImagesFromGallery getImagesFromGallery;
   final ChatBloc chatBloc;
+  final GetImage getImage;
   PanelBlocCubit({
     @required this.getImagesFromGallery,
     @required this.chatBloc,
+    @required this.getImage,
   }) : super(PanelBlocInitial(showBottomPanel: false)) {
     _textController.sink.addError("Invalid value entered!");
   }
@@ -66,6 +70,17 @@ class PanelBlocCubit extends Cubit<PanelBlocState> {
       if(assets.length > 0){
         chatBloc.add(MessageSend(
           fieldAssets: FieldAssets(assets: assets, fieldKey: TypeMedia.image)
+        ));
+      }
+    });
+  }
+
+  getCameraPhoto() async {
+    final result =  await getImage(ImageSource.camera);
+    result.fold((l) => print('error'), (file){
+      if(file != null){
+        chatBloc.add(MessageSend(
+          fieldFiles: FieldFiles(files: [file], fieldKey: TypeMedia.image)
         ));
       }
     });

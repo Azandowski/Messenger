@@ -1,5 +1,5 @@
 enum ChatBottomPanelTypes {
-  contact, image, map, audio
+  contact, image, map, audio, camera,
 }
 
 extension ChatBottomPanelTypesUIExtension on ChatBottomPanelTypes {
@@ -28,6 +28,8 @@ extension ChatBottomPanelTypesUIExtension on ChatBottomPanelTypes {
         return 'Место';
       case ChatBottomPanelTypes.audio:
         return 'Аудио';
+      case ChatBottomPanelTypes.camera:
+        return 'Камера';
       default:
         return '';
     }
