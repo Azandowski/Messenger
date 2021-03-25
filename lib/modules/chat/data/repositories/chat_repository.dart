@@ -25,14 +25,13 @@ class ChatRepositoryImpl extends ChatRepository {
   final ChatDataSource chatDataSource;
   final NetworkInfo networkInfo;
 
-  ChatRepositoryImpl({
-    @required this.chatDataSource, 
-    @required this.networkInfo
-  });
-  
+  ChatRepositoryImpl(
+      {@required this.chatDataSource, @required this.networkInfo});
+
   @override
-  Future<Either<Failure, ChatDetailed>> getChatDetails(int id, ProfileMode mode) async {
-    if (await networkInfo.isConnected) { 
+  Future<Either<Failure, ChatDetailed>> getChatDetails(
+      int id, ProfileMode mode) async {
+    if (await networkInfo.isConnected) {
       try {
         final response = await chatDataSource.getChatDetails(id, mode);
         return Right(response);
@@ -50,10 +49,8 @@ class ChatRepositoryImpl extends ChatRepository {
 
   @override
   Future<Either<Failure, PaginatedResult<ContactEntity>>> getChatMembers(
-    int id, 
-    Pagination pagination
-  ) async {
-    if (await networkInfo.isConnected) { 
+      int id, Pagination pagination) async {
+    if (await networkInfo.isConnected) {
       try {
         final response = await chatDataSource.getChatMembers(id, pagination);
         return Right(response);
@@ -68,7 +65,7 @@ class ChatRepositoryImpl extends ChatRepository {
       return Left(ConnectionFailure());
     }
   }
-  
+
   @override
   Stream<Message> get message async* {
     yield* chatDataSource.messages;
@@ -79,14 +76,15 @@ class ChatRepositoryImpl extends ChatRepository {
     yield* chatDataSource.deleteIds;
   }
 
+  // TODO check network connection?
   @override
   Future<Either<Failure, Message>> sendMessage(SendMessageParams params) async {
     try {
       final message = await chatDataSource.sendMessage(params);
       return Right(message);
-    } on SocketException catch(e){
+    } on SocketException catch (e) {
       return Left(ServerFailure(message: 'no_internet'));
-    } catch (e){
+    } catch (e) {
       if (e is Failure) {
         return Left(e);
       } else {
@@ -94,10 +92,11 @@ class ChatRepositoryImpl extends ChatRepository {
       }
     }
   }
-  
+
   @override
-  Future<Either<Failure, ChatDetailed>> addMembers(int id, List<int> members) async {
-    if (await networkInfo.isConnected) { 
+  Future<Either<Failure, ChatDetailed>> addMembers(
+      int id, List<int> members) async {
+    if (await networkInfo.isConnected) {
       try {
         final response = await chatDataSource.addMembers(id, members);
         return Right(response);
@@ -108,7 +107,6 @@ class ChatRepositoryImpl extends ChatRepository {
       return Left(ConnectionFailure());
     }
   }
-
 
   @override
   Future<Either<Failure, ChatDetailed>> kickMember(int id, int userID) async {
@@ -130,7 +128,7 @@ class ChatRepositoryImpl extends ChatRepository {
 
   @override
   Future<Either<Failure, NoParams>> leaveChat(int id) async {
-    if (await networkInfo.isConnected) { 
+    if (await networkInfo.isConnected) {
       try {
         final response = await chatDataSource.leaveChat(id);
         return Right(NoParams());
@@ -147,17 +145,13 @@ class ChatRepositoryImpl extends ChatRepository {
   }
 
   @override
-  Future<Either<Failure, ChatPermissions>> updateChatSettings({
-    @required ChatPermissionModel permissions, 
-    @required int id
-  }) async {
+  Future<Either<Failure, ChatPermissions>> updateChatSettings(
+      {@required ChatPermissionModel permissions, @required int id}) async {
     if (await networkInfo.isConnected) {
       try {
         final response = await chatDataSource.updateChatSettings(
-          chatUpdates: permissions.toJson(),
-          id: id
-        );
-        
+            chatUpdates: permissions.toJson(), id: id);
+
         return Right(response);
       } catch (e) {
         if (e is Failure) {
@@ -173,12 +167,11 @@ class ChatRepositoryImpl extends ChatRepository {
 
   @override
   Future<Either<Failure, ChatMessageResponse>> getChatMessages(
-    int lastMessageId,
-    RequestDirection direction
-  ) async {
+      int lastMessageId, RequestDirection direction) async {
     if (await networkInfo.isConnected) {
       try {
-        final response = await chatDataSource.getChatMessages(lastMessageId, direction);
+        final response =
+            await chatDataSource.getChatMessages(lastMessageId, direction);
         return Right(response);
       } catch (e) {
         if (e is Failure) {
@@ -193,15 +186,12 @@ class ChatRepositoryImpl extends ChatRepository {
   }
 
   @override
-  Future<Either<Failure, ChatPermissions>> setTimeDeleted({int id, bool isOn}) async {
-    if (await networkInfo.isConnected) { 
+  Future<Either<Failure, ChatPermissions>> setTimeDeleted(
+      {int id, bool isOn}) async {
+    if (await networkInfo.isConnected) {
       try {
         final response = await chatDataSource.updateChatSettings(
-          id: id,
-          chatUpdates: {
-            'is_secret': isOn ? '1' : '0'
-          }
-        );
+            id: id, chatUpdates: {'is_secret': isOn ? '1' : '0'});
 
         return Right(response);
       } catch (e) {
@@ -215,14 +205,16 @@ class ChatRepositoryImpl extends ChatRepository {
       return Left(ConnectionFailure());
     }
   }
-  
+
   @override
   Future<void> disposeChat() {
     return chatDataSource.disposeChat();
   }
 
   @override
-  Future<Either<Failure, bool>> deleteMessage(DeleteMessageParams params) async {
+  // TODO check for internet connection?
+  Future<Either<Failure, bool>> deleteMessage(
+      DeleteMessageParams params) async {
     try {
       await chatDataSource.deleteMessage(params);
       return Right(true);
@@ -231,15 +223,17 @@ class ChatRepositoryImpl extends ChatRepository {
         return Left(e);
       } else {
         return Left(ServerFailure(message: e.toString()));
-      } 
+      }
     }
   }
 
   @override
-  Future<Either<Failure, ChatMessageResponse>> getChatMessageContext(int chatID, int messageID) async {
+  Future<Either<Failure, ChatMessageResponse>> getChatMessageContext(
+      int chatID, int messageID) async {
     if (await networkInfo.isConnected) {
       try {
-        final response = await chatDataSource.getChatMessageContext(chatID, messageID);
+        final response =
+            await chatDataSource.getChatMessageContext(chatID, messageID);
         return Right(response);
       } catch (e) {
         if (e is Failure) {
@@ -263,7 +257,7 @@ class ChatRepositoryImpl extends ChatRepository {
         return Left(e);
       } else {
         return Left(ServerFailure(message: e.toString()));
-      } 
+      }
     }
   }
 
@@ -277,7 +271,7 @@ class ChatRepositoryImpl extends ChatRepository {
         return Left(e);
       } else {
         return Left(ServerFailure(message: e.toString()));
-      } 
+      }
     }
   }
 
@@ -291,13 +285,13 @@ class ChatRepositoryImpl extends ChatRepository {
         return Left(e);
       } else {
         return Left(ServerFailure(message: e.toString()));
-      } 
+      }
     }
   }
 
   @override
   Future<Either<Failure, bool>> blockUser(int id) async {
-    if (await networkInfo.isConnected) { 
+    if (await networkInfo.isConnected) {
       try {
         await chatDataSource.blockUser(id);
         return Right(true);
@@ -306,25 +300,7 @@ class ChatRepositoryImpl extends ChatRepository {
           return Left(e);
         } else {
           return Left(ServerFailure(message: e.toString()));
-        } 
-      }
-    } else {
-      return Left(ConnectionFailure());
-    }
-  }
-  
-  @override
-  Future<Either<Failure, bool>> unblockUser(int id) async {
-    if (await networkInfo.isConnected) { 
-      try {
-        await chatDataSource.unblockUser(id);
-        return Right(true);
-      } catch (e) {
-          if (e is Failure) {
-          return Left(e);
-        } else {
-          return Left(ServerFailure(message: e.toString()));
-        } 
+        }
       }
     } else {
       return Left(ConnectionFailure());
@@ -332,13 +308,30 @@ class ChatRepositoryImpl extends ChatRepository {
   }
 
   @override
-  Future<Either<Failure, ChatPermissions>> setSocialMedia({int id, SocialMedia socialMedia}) async {
+  Future<Either<Failure, bool>> unblockUser(int id) async {
+    if (await networkInfo.isConnected) {
+      try {
+        await chatDataSource.unblockUser(id);
+        return Right(true);
+      } catch (e) {
+        if (e is Failure) {
+          return Left(e);
+        } else {
+          return Left(ServerFailure(message: e.toString()));
+        }
+      }
+    } else {
+      return Left(ConnectionFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, ChatPermissions>> setSocialMedia(
+      {int id, SocialMedia socialMedia}) async {
     if (await networkInfo.isConnected) {
       try {
         var response = await chatDataSource.updateChatSettings(
-          id: id,
-          chatUpdates: socialMedia.toJson()
-        );
+            id: id, chatUpdates: socialMedia.toJson());
 
         return Right(response);
       } catch (e) {
@@ -346,7 +339,7 @@ class ChatRepositoryImpl extends ChatRepository {
           return Left(e);
         } else {
           return Left(ServerFailure(message: e.toString()));
-        } 
+        }
       }
     } else {
       return Left(ConnectionFailure());
