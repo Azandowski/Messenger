@@ -14,7 +14,8 @@ class MapSelectedPlace extends StatelessWidget {
   });
 
   bool get isSelectedLocation {
-    return selectedPlace != null && selectedPlace.position != LatLng(userLocation.latitude, userLocation.longitude);
+    return selectedPlace != null 
+       && (userLocation == null || selectedPlace.position != LatLng(userLocation?.latitude, userLocation?.longitude));
   }
 
   @override

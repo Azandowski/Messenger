@@ -57,7 +57,7 @@ class MapCubit extends Cubit<MapState> {
   }
 
 
-  Future<void> getPlacesNear () async {
+  Future<void> getPlacesNear ({LatLng position}) async {
     emit(MapLoading(
       currentUserPosition: state.currentUserPosition,
       selectedPlace: state.selectedPlace,
@@ -66,7 +66,7 @@ class MapCubit extends Cubit<MapState> {
     ));
 
     var currentPosition = state.currentUserPosition;
-    var response = await getNearbyPlaces(LatLng(
+    var response = await getNearbyPlaces(position ?? LatLng(
       currentPosition.latitude, currentPosition.longitude
     ));
 
@@ -162,6 +162,8 @@ class MapCubit extends Cubit<MapState> {
             position: position,
             street: placemark.name
           );
+
+          getPlacesNear(position: position);
 
           emit(MapInitial(
             places: state.places,
