@@ -45,6 +45,15 @@ class MessageViewModel {
     }
   }
 
+  String get fullTime {
+    print(message.dateTime);
+    if (message.dateTime != null) {
+      return new DateFormat.yMMMMEEEEd().add_Hm().format(message.dateTime); 
+    } else {
+      return '';
+    }
+  }
+
   String get readImageName {
     return message.isRead ? 'assets/images/read.png': 'assets/images/unread.png';
   }

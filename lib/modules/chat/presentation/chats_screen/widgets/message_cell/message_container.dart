@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:messenger_mobile/app/application.dart';
 import 'package:messenger_mobile/core/blocs/audioplayer/bloc/audio_player_bloc.dart';
 import 'package:messenger_mobile/core/widgets/independent/map/map_view.dart';
 import 'package:messenger_mobile/modules/chat/domain/entities/file_media.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chat_details/widgets/chat_media_block.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen_import.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/photo_gallery_screen.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/components/contact_item.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/components/forward_container.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/message_cell/photo_cell.dart';
@@ -23,6 +25,9 @@ class MessageContainer extends StatelessWidget {
   final MessageCell widget;
   final AudioPlayerBloc audioPlayerBloc;
   final Function(int) onClickForwardMessage; 
+  
+  NavigatorState get _navigator => sl<Application>().navKey.currentState;
+
 
   @override
   Widget build(BuildContext context) {
@@ -106,7 +111,7 @@ class MessageContainer extends StatelessWidget {
 
       if (widget.messageViewModel.hasMedia) 
         ...returnMediaWidgets(
-          widget.messageViewModel.message.files,
+          widget.messageViewModel,
           audioPlayerBloc, 
           widget.messageViewModel.isMine,
           MediaQuery.of(context).size.width,
@@ -137,11 +142,12 @@ extension MessageContainerExtension on MessageContainer {
   }
 
   List<Widget> returnMediaWidgets(
-    List<FileMedia> files, 
+    MessageViewModel messageViewModel, 
     AudioPlayerBloc audioPlayerBloc, 
     bool isMine,
     double width,
   ) {
+    var files = messageViewModel.message.files;
     if (files[0].type == TypeMedia.image) {
       switch (files.length) {
         case 1:
@@ -150,7 +156,6 @@ extension MessageContainerExtension on MessageContainer {
               url: files[0].url
             )
           ];
-
           break;
         case 2:
           var a = (width*0.8 - 22)/2;
@@ -188,6 +193,14 @@ extension MessageContainerExtension on MessageContainer {
                   url: files[1].url,
                 ),
                 SizedBox(width: 4,),
+                files.length > 3 ? PreviewMorePhoto(
+                  url: files[2].url,
+                  a: a,
+                  moreCount: files.length - 3,
+                  onMore: (){
+                    _navigator.push(PhotoGalleryScreen.route(messageViewModel, files.map((e) => e.url).toList()));
+                  },
+                ) : 
                 PreviewPhotoWidget(
                   a: a, 
                   url: files[2].url

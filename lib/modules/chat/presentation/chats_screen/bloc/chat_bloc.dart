@@ -456,7 +456,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       fieldFiles: event.fieldFiles,
       location: event.location,
       locationAddress: event.address,
-      contactID: event.contact.id,
+      contactID: event.contact?.id,
       fieldAssets: event.fieldAssets
     ));
 
