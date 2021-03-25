@@ -13,6 +13,8 @@ extension ChatBottomPanelTypesUIExtension on ChatBottomPanelTypes {
         return 'assets/icons/place.png';
       case ChatBottomPanelTypes.audio:
         return 'assets/icons/audio.png';
+      case ChatBottomPanelTypes.camera:
+        return 'assets/icons/camera.png';
       default:
         return '';
     }
