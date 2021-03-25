@@ -188,7 +188,7 @@ class ChatDataSourceImpl implements ChatDataSource {
   @override
   Future<Message> sendMessage(SendMessageParams params) async {
     var forward = params.forwardIds.map((e) => e.toString()).join(',');
-    var body =  {
+    var body = {
       'text': params.text ?? '',
       'forward': forward,
       'type': params.fieldFiles?.fieldKey?.filedKey ?? null,
@@ -199,7 +199,9 @@ class ChatDataSourceImpl implements ChatDataSource {
           'latitude': params.location.latitude, 
           'longitude': params.location.longitude,
           'address': params.locationAddress
-        }
+        },
+      if (params.contactID != null) 
+        ... {'contact_id': '${params.contactID}'}
     };
 
     http.StreamedResponse streamedResponse = await MultipartRequestHelper.postData(

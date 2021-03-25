@@ -2,6 +2,9 @@ import 'package:flutter/rendering.dart';
 import 'package:messenger_mobile/core/config/auth_config.dart';
 import 'package:messenger_mobile/core/services/network/Endpoints.dart';
 import 'package:http/http.dart' as http;
+import 'package:messenger_mobile/modules/creation_module/presentation/bloc/open_chat_cubit/open_chat_cubit.dart';
+import 'package:messenger_mobile/modules/creation_module/presentation/bloc/open_chat_cubit/open_chat_listener.dart';
+import 'package:messenger_mobile/modules/groupChat/domain/usecases/create_chat_group.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 import '../../../../../app/application.dart';
@@ -158,57 +161,69 @@ class ChatScreenState extends State<ChatScreen> implements ChatChooseDelegate{
                   body: BlocProvider(
                     lazy: false,
                     create: (context) => _panelBlocCubit,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        if (state.topMessage != null) 
-                          InkWell(
-                            onTap: () {
-                              _chatBloc.add(LoadMessages(
-                                messageID: state.topMessage.id,
-                                isPagination: false
-                              ));
-                            },
-                            child: this.buildTopMessage(state,
-                              width, height, _chatTodoCubit,
-                            ),
-                          ),
-                        Expanded(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              image: this.getBackground(state)
-                            ),
-                            child: ListView.separated(
-                              key: PageStorageKey('feed'),
-                              controller: _chatBloc.scrollController,
-                              itemBuilder: (context, int index) => this.buildMessageCell(
-                                index: index, 
-                                state: state, 
-                                cubit: cubit, 
-                                panelBlocCubit: _panelBlocCubit, 
-                                chatTodoCubit: _chatTodoCubit, 
-                                chatBloc: _chatBloc
+                    child: BlocProvider<OpenChatCubit>(
+                      create: (context) => OpenChatCubit(
+                        createChatGruopUseCase: sl<CreateChatGruopUseCase>()
+                      ),
+                      child: BlocConsumer<OpenChatCubit, OpenChatState>(
+                        listener: (context, openChatState) {
+                          OpenChatListener().handleStateUpdate(context, openChatState);
+                        },
+                        builder: (context, stopenChatStateate) {
+                          return Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              if (state.topMessage != null) 
+                                InkWell(
+                                  onTap: () {
+                                    _chatBloc.add(LoadMessages(
+                                      messageID: state.topMessage.id,
+                                      isPagination: false
+                                    ));
+                                  },
+                                  child: this.buildTopMessage(state,
+                                    width, height, _chatTodoCubit,
+                                  ),
+                                ),
+                              Expanded(
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    image: this.getBackground(state)
+                                  ),
+                                  child: ListView.separated(
+                                    key: PageStorageKey('feed'),
+                                    controller: _chatBloc.scrollController,
+                                    itemBuilder: (context, int index) => this.buildMessageCell(
+                                      index: index, 
+                                      state: state, 
+                                      cubit: cubit, 
+                                      panelBlocCubit: _panelBlocCubit, 
+                                      chatTodoCubit: _chatTodoCubit, 
+                                      chatBloc: _chatBloc
+                                    ),
+                                    scrollDirection: Axis.vertical,
+                                    itemCount: getItemsCount(state),
+                                    reverse: true,
+                                    separatorBuilder: (_, int index) {
+                                      return buildSeparator(index, state);
+                                    }
+                                  ),
+                                ),
                               ),
-                              scrollDirection: Axis.vertical,
-                              itemCount: getItemsCount(state),
-                              reverse: true,
-                              separatorBuilder: (_, int index) {
-                                return buildSeparator(index, state);
-                              }
-                            ),
-                          ),
-                        ),
-                        if (
-                          canSendMessage(state)
-                        )
-                          this.buildChatBottom(
-                            cubit, _chatTodoCubit, 
-                            width, height,
-                            canSendMedia: canSendMedia(state)
-                          )
-                      ],
-                    ),
+                              if (
+                                canSendMessage(state)
+                              )
+                                this.buildChatBottom(
+                                  cubit, _chatTodoCubit, 
+                                  width, height,
+                                  canSendMedia: canSendMedia(state)
+                                )
+                            ],
+                          );
+                        },
+                      ),
+                    )
                   ),
                 );
               }

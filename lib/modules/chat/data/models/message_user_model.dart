@@ -30,7 +30,8 @@ class MessageUserModel extends MessageUser {
       name: json['name'],
       surname: json['surname'],
       avatarURL: json['avatar'] != null ? (json['avatar'] as String).contains('://') ? json['avatar'] : 
-        ConfigExtension.buildURLHead() + json['avatar'] : null
+        ConfigExtension.buildURLHead() + json['avatar'] : null,
+      phone: json['phone']
     );
   }
 

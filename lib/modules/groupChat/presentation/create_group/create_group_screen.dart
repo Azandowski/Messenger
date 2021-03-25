@@ -149,7 +149,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> implements Contac
 
 
   @override
-  void didSaveChats(List<ContactEntity> contacts) {
+  void didSaveContacts(List<ContactEntity> contacts) {
     _groupCubit.addContacts(contacts);
   }
 }

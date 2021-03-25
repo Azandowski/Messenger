@@ -373,7 +373,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen>
   // MARK: - Delegates
 
   @override
-  void didSaveChats(List<ContactEntity> contacts) {
+  void didSaveContacts(List<ContactEntity> contacts) {
     _chatDetailsCubit.addMembersToChat(widget.id, contacts);
   }
 

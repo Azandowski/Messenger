@@ -18,13 +18,14 @@ class MessageModel extends Message {
   final int colorId;
   final int deletionSeconds;
   final DateTime willBeDeletedAt;
-  List<Message> transfer;
   final MessageStatus messageStatus;
   final MessageChat chat;
-  MessageHandleType messageHandleType;
   final int timeDeleted;
   final PositionAddress location;
   final List<FileMedia> files;
+  final List<MessageUser> contacts;
+  List<Message> transfer;
+  MessageHandleType messageHandleType;
 
   MessageModel({
     this.id,
@@ -43,7 +44,8 @@ class MessageModel extends Message {
     this.chat,
     this.messageHandleType = MessageHandleType.newMessage,
     this.timeDeleted,
-    this.location
+    this.location,
+    this.contacts
   }) : super(
     id: id,
     isRead: isRead,
@@ -61,7 +63,8 @@ class MessageModel extends Message {
     messageHandleType: messageHandleType,
     timeDeleted: timeDeleted,
     location: location,
-    files: files
+    files: files,
+    contacts: contacts
   );
 
   factory MessageModel.fromJson(Map json) {
@@ -93,6 +96,7 @@ class MessageModel extends Message {
       ) : null,
       files: json['file'] != null ? 
         (json['file'] as List).map((v) => FileMediaModel.fromJson(v)).toList() : [],
+      contacts: ((json['contact'] ?? []) as List).map((e) => MessageUserModel.fromJson(e)).toList()
     );
   }
 
@@ -110,7 +114,8 @@ class MessageModel extends Message {
           'latitude': location.position.latitude,
           'longitude': location.position.longitude,
           'address': location.description
-        } : null
+        } : null,
+      'contact': contacts.map((e) => e.toJson()).toList()
     };
   }
 }

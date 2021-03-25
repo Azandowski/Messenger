@@ -1,9 +1,12 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:latlong/latlong.dart';
+import 'package:messenger_mobile/core/utils/list_helper.dart';
 import 'package:messenger_mobile/core/blocs/audioplayer/bloc/audio_player_bloc.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/chatControlPanel/data/chat_bottom_panel_types.dart';
+import 'package:messenger_mobile/modules/creation_module/domain/entities/contact.dart';
+import 'package:messenger_mobile/modules/groupChat/presentation/choose_contacts/choose_contacts_page.dart';
+import 'package:messenger_mobile/modules/groupChat/presentation/choose_contacts/choose_contacts_screen.dart';
 import 'package:messenger_mobile/modules/maps/presentation/pages/map_screen.dart';
 import 'package:provider/provider.dart';
 import '../../../../../../../app/appTheme.dart';
@@ -41,7 +44,8 @@ class ChatControlPanel extends StatefulWidget {
 }
 
 class ChatControlPanelState extends State<ChatControlPanel> 
-  with TickerProviderStateMixin implements TimePickerDelegate, MapScreenDelegate {
+  with TickerProviderStateMixin 
+    implements TimePickerDelegate, MapScreenDelegate, ContactChooseDelegate {
 
   NavigatorState get _navigator => sl<Application>().navKey.currentState;
 
@@ -291,9 +295,12 @@ class ChatControlPanelState extends State<ChatControlPanel>
     _messageNeededToBeSent = null;
   }
 
+
   void _didSelectMediaOption (ChatBottomPanelTypes type) {
     if (type == ChatBottomPanelTypes.map) {
       _navigator.push(MapScreen.route(delegate: this));
+    } else if (type == ChatBottomPanelTypes.contact) {
+      _navigator.push(ChooseContactsPage.route(this, isSingleSelect: true));
     }
   }
 
@@ -319,6 +326,27 @@ class ChatControlPanelState extends State<ChatControlPanel>
       _panelBloc.state, 
       timeDeleted: option.seconds
     );
+  }
+
+  @override
+  void didSaveContacts(List<ContactEntity> contacts) {
+    var contact = contacts.getItemAt(0);
+
+    _messageNeededToBeSent = MessageSend(
+      contact: MessageUser(
+        id: contact.id,
+        name: contact.name,
+        surname: contact.surname,
+        avatarURL: contact.avatar,
+        phone: ''
+      )
+    );
+
+    if (chatBloc.state.isSecretModeOn) {
+      _navigator.push(TimePickerScreen.route(this));
+    } else {
+      _sendMessage(_panelBloc.state);
+    }
   }
 }
 

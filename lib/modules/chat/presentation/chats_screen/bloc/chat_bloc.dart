@@ -423,6 +423,9 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       identificator: randomID,
       isRead: false,
       messageStatus: MessageStatus.sending,
+      contacts: event.contact != null ? [
+        event.contact
+      ] : []
     );
     
     list.insert(0, newMessage);    
@@ -452,7 +455,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       timeLeft: event.timeDeleted,
       fieldFiles: event.fieldFiles,
       location: event.location,
-      locationAddress: event.address
+      locationAddress: event.address,
+      contactID: event.contact.id
     ));
 
     yield* _eitherSentOrErrorState(response, randomID);

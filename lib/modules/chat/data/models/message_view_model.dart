@@ -8,6 +8,11 @@ import '../../../../locator.dart';
 import '../../domain/entities/message.dart';
 import '../../presentation/chats_screen/helpers/messageCellAction.dart';
 
+enum MessageCellPresentationType {
+  contact, textAndMedia, location
+}
+
+
 class MessageViewModel {
   final Message message;
   final bool isSelected;
@@ -160,5 +165,19 @@ class MessageViewModel {
     } else {
       return false;
     }
+  }
+
+  MessageCellPresentationType get presentationType {
+    if ((message.contacts ?? []).length != 0) {
+      return MessageCellPresentationType.contact;
+    } else if (this.hasToShowMap) {
+      return MessageCellPresentationType.location;
+    } else {
+      return MessageCellPresentationType.textAndMedia;
+    }
+  }
+
+  MessageUser get contactItem {
+    return message.contacts[0];
   }
 }

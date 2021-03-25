@@ -3,8 +3,10 @@ import 'package:messenger_mobile/core/blocs/audioplayer/bloc/audio_player_bloc.d
 import 'package:messenger_mobile/core/widgets/independent/map/map_view.dart';
 import 'package:messenger_mobile/modules/chat/domain/entities/file_media.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen_import.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/components/contact_item.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/components/forward_container.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/name_time_read_container.dart';
+import 'package:messenger_mobile/modules/creation_module/presentation/bloc/open_chat_cubit/open_chat_cubit.dart';
 
 import 'audio_player_element.dart';
 
@@ -41,34 +43,72 @@ class MessageContainer extends StatelessWidget {
               widget.messageViewModel.message.transfer,
               onClickForwardMessage: onClickForwardMessage
             ),
-          
-          if (widget.messageViewModel.messageText != null) 
-            Text(
-              widget.messageViewModel.messageText, 
-              style: !widget.messageViewModel.isMine ? 
-                AppFontStyles.black14w400 : AppFontStyles.white14w400,
-              textAlign: TextAlign.left,
-            ),
 
-          if (widget.messageViewModel.hasMedia) 
-            ...returnAuidoWidgets(
-              widget.messageViewModel.message.files,
-              audioPlayerBloc, 
-              widget.messageViewModel.isMine
-            ),
-
-          if (widget.messageViewModel.hasToShowMap)
-            MapView(
-              position: widget.messageViewModel.mapLocation, 
-              width: MediaQuery.of(context).size.width * 0.8, 
-              heigth: 128.0,
-              locationAddress: widget.messageViewModel.mapLocationAddress,
-              locationAddressStyle: !widget.messageViewModel.isMine ? 
-                AppFontStyles.black14w400 : AppFontStyles.white14w400,
-            ) 
+          ...returnMessageCellBody(context)
         ],
       ),
     );
+  }
+
+  // MARK: - Message Cell Body 
+
+  List<Widget> returnMessageCellBody (BuildContext context) {
+    switch (widget.messageViewModel.presentationType) {
+      case MessageCellPresentationType.location:
+        return [
+          _buildLocationView(context)
+        ];
+      case MessageCellPresentationType.contact:
+        return [
+          _buildContextItemView(context)
+        ];
+      default: 
+        return _buildDefaultMessageBody(context);
+    }
+  }
+
+  // Показать геолокацию
+  MapView _buildLocationView (BuildContext context) {
+    return MapView(
+      position: widget.messageViewModel.mapLocation, 
+      width: MediaQuery.of(context).size.width * 0.8, 
+      heigth: 128.0,
+      locationAddress: widget.messageViewModel.mapLocationAddress,
+      locationAddressStyle: !widget.messageViewModel.isMine ? 
+        AppFontStyles.black14w400 : AppFontStyles.white14w400,
+    );
+  }
+
+  // Показать контакт
+  ContactItemMessage _buildContextItemView (BuildContext context) {
+    return ContactItemMessage(
+      isMyMessage: widget.messageViewModel.isMine,
+      messageUser: widget.messageViewModel.contactItem,
+      onTapOpenChat: () {
+        context.read<OpenChatCubit>().createChatWithUser(widget.messageViewModel.contactItem.id);
+      },
+    );
+  }
+
+  // Default Message body
+
+  List<Widget> _buildDefaultMessageBody (BuildContext context) {
+    return [
+      if (widget.messageViewModel.messageText != null) 
+        Text(
+          widget.messageViewModel.messageText, 
+          style: !widget.messageViewModel.isMine ? 
+            AppFontStyles.black14w400 : AppFontStyles.white14w400,
+          textAlign: TextAlign.left,
+        ),
+
+      if (widget.messageViewModel.hasMedia) 
+        ...returnAuidoWidgets(
+          widget.messageViewModel.message.files,
+          audioPlayerBloc, 
+          widget.messageViewModel.isMine
+        ),
+    ];
   }
 
 

@@ -56,6 +56,8 @@ class MultipartRequestHelper {
       copyRequest.headers[name] = value;
     });
 
+    request.fields.clear();
+
     (data ?? {}).keys.forEach((e) {
       request.fields[e] = data[e].toString();
     });

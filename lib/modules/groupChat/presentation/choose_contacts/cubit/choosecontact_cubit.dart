@@ -11,17 +11,24 @@ class ChooseContactCubit extends Cubit<List<ContactEntity>> {
     emit(contactList ?? []);
   }
 
-  void addContact(ContactEntity newContact){
-   List<ContactEntity> list = state.map((e) => e.copyWith()).toList();
-   list.add(newContact.copyWith(
-     id: newContact.id,
-     name: newContact.name,
-     avatar: newContact.avatar,
-     surname: newContact.surname,
-     patronym: newContact.patronym,
-     lastVisit: newContact.lastVisit
-   ));
-   emit(list);
+  void addContact (ContactEntity newContact, bool isSingleSelect) {
+    List<ContactEntity> list = state.map((e) => e.copyWith()).toList();
+    var clonedContact = newContact.copyWith(
+      id: newContact.id,
+      name: newContact.name,
+      avatar: newContact.avatar,
+      surname: newContact.surname,
+      patronym: newContact.patronym,
+      lastVisit: newContact.lastVisit
+    );
+   
+    if (!isSingleSelect) {
+      list.add(clonedContact);
+    } else {
+      list = [clonedContact];
+    }
+  
+    emit(list);
   }
 
   void removeContact(ContactEntity newContact){
@@ -34,6 +41,7 @@ class ChooseContactCubit extends Cubit<List<ContactEntity>> {
      patronym: newContact.patronym,
      lastVisit: newContact.lastVisit
    ));
+
    emit(list);
   }
 }

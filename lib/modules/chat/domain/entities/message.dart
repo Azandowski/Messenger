@@ -33,6 +33,7 @@ class Message extends Equatable {
   final int timeDeleted;
   final PositionAddress location;
   final List<FileMedia> files;
+  final List<MessageUser> contacts;
   
   Message({
     this.text,
@@ -52,7 +53,8 @@ class Message extends Equatable {
     this.messageHandleType = MessageHandleType.newMessage,
     this.timeDeleted,
     this.location,
-    this.files
+    this.files,
+    this.contacts
   });
 
   @override
@@ -74,7 +76,8 @@ class Message extends Equatable {
     messageHandleType,
     timeDeleted,
     location,
-    files
+    files,
+    contacts
   ];
 
    Message copyWith({
@@ -94,6 +97,7 @@ class Message extends Equatable {
      MessageChat chat,
      PositionAddress location,
      List<FileMedia> files,
+     List<MessageUser> contacts
   }) {
     return Message(
       id: id ?? this.id,
@@ -111,6 +115,7 @@ class Message extends Equatable {
       timeDeleted: timeDeleted ?? this.timeDeleted,
       location: location ?? this.location,
       files: files ?? this.files,
+      contacts: contacts ?? this.contacts
     );
   }
 
@@ -130,9 +135,11 @@ class Message extends Equatable {
         'longitude': location.position.longitude,
         'address': location.description
       } : null,
+      'contact': contacts.map((e) => e.toJson()).toList()
     };
   }
 }
+
 
 class MessageUser extends Equatable{
   final String name;

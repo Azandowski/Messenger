@@ -32,6 +32,7 @@ class SendMessageParams {
   final FieldFiles fieldFiles;
   final LatLng location;
   final String locationAddress;
+  final int contactID;
 
   SendMessageParams({
     @required this.identificator,
@@ -41,7 +42,8 @@ class SendMessageParams {
     this.text,
     this.timeLeft,
     this.location,
-    this.locationAddress
+    this.locationAddress,
+    this.contactID
   });
 }
 

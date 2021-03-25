@@ -11,15 +11,17 @@ import '../../../creation_module/presentation/widgets/contact_cell.dart';
 import 'cubit/choosecontact_cubit.dart';
 
 abstract class ContactChooseDelegate{
-  void didSaveChats(List<ContactEntity> contacts);
+  void didSaveContacts(List<ContactEntity> contacts);
 }
 
 class ChooseContactsScreen extends StatefulWidget {
 
   final ContactChooseDelegate delegate;
+  final bool isSingleSelect;
 
   ChooseContactsScreen({
     @required this.delegate,  
+    @required this.isSingleSelect
   });
 
   @override
@@ -68,8 +70,10 @@ class _ChooseContactsScreenState extends State<ChooseContactsScreen> {
                   ListView.separated(
                     controller: _scrollController,
                     itemBuilder: (context, int index) {
-                      var isSelected = contacts.where((element) => element.id == state.contacts[index].id);
+                      var isSelected = contacts.where(
+                        (element) => element.id == state.contacts[index].id);
                       var _blocChoose = context.read<ChooseContactCubit>();
+                      
                       return index >= state.contacts.length ? 
                         CellShimmerItem(circleSize: 35,) : 
                           ContactCell(
@@ -80,7 +84,7 @@ class _ChooseContactsScreenState extends State<ChooseContactsScreen> {
                               if (isSelected.length > 0) {
                                 _blocChoose.removeContact(state.contacts[index]);
                               } else {
-                                _blocChoose.addContact(state.contacts[index]);
+                                _blocChoose.addContact(state.contacts[index], widget.isSingleSelect);
                               }
                             },
                           );
@@ -93,12 +97,12 @@ class _ChooseContactsScreenState extends State<ChooseContactsScreen> {
                   ),
                   if (state.status == ContactStatus.success)  
                     Positioned(
-                        bottom: 40,
-                        child: ActionButton(
-                          text: 'Добавить контакты', 
-                          onTap: () {
-                          widget.delegate.didSaveChats(contacts);
+                      bottom: 40,
+                      child: ActionButton(
+                        text: 'Готово', 
+                        onTap: () {
                           Navigator.pop(context);
+                          widget.delegate.didSaveContacts(contacts);
                         }
                       ),
                     ),

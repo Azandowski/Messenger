@@ -60,6 +60,7 @@ class MessageSend extends ChatEvent {
   final int timeDeleted;
   final LatLng location;
   final String address;
+  final MessageUser contact;
 
   MessageSend({
     this.message,
@@ -67,7 +68,8 @@ class MessageSend extends ChatEvent {
     this.forwardMessage,
     this.timeDeleted,
     this.location,
-    this.address
+    this.address,
+    this.contact
   });
 
   MessageSend copyWith ({
@@ -78,7 +80,8 @@ class MessageSend extends ChatEvent {
     location: location,
     forwardMessage: forwardMessage ?? this.forwardMessage,
     timeDeleted: timeDeleted ?? this.timeDeleted,
-    address: this.address
+    address: this.address,
+    contact: contact
   );
 
   @override
@@ -88,7 +91,8 @@ class MessageSend extends ChatEvent {
     timeDeleted,
     location,
     fieldFiles,
-    address
+    address,
+    contact
   ];
 }
 

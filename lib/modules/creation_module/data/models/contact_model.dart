@@ -26,15 +26,16 @@ class ContactModel extends ContactEntity {
     id: id,
   );
 
-   factory ContactModel.fromJson(Map<String, dynamic> json) {
+  factory ContactModel.fromJson(Map<String, dynamic> json) {
     return ContactModel(
       id: json['id'],
       name: json['name'],
       patronym: json['patronym'] ?? '',
       surname: json['surname'] ?? '',
-      lastVisit: json['last_visit'] != null ? DateTime.parse(json['last_visit']).toLocal() : null,
+      lastVisit: json['last_visit'] != null ? 
+        DateTime.parse(json['last_visit']).toLocal() : null,
       avatar: json['avatar'],
-      );
+    );
   }
 
   Map<String, dynamic> toJson() {
