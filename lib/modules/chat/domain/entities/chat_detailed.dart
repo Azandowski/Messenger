@@ -18,69 +18,65 @@ class ChatDetailed extends Equatable {
   final List<ChatEntity> groups;
   final SocialMedia socialMedia;
 
-  ChatDetailed({
-    @required this.chat, 
-    @required this.media, 
-    @required this.members,
-    @required this.membersCount,
-    @required this.chatMemberRole,
-    @required this.user,
-    this.groups,
-    this.settings, 
-    this.socialMedia
-  });  
+  ChatDetailed(
+      {@required this.chat,
+      @required this.media,
+      @required this.members,
+      @required this.membersCount,
+      @required this.chatMemberRole,
+      @required this.user,
+      this.groups,
+      this.settings,
+      this.socialMedia});
 
-  ChatDetailed copyWith ({
-    ChatEntity chat, 
-    MediaStats media, 
-    List<ContactEntity> members,
-    int membersCount,
-    ChatPermissions settings,
-    ChatMember chatMemberRole,
-    User user,
-    List<ChatEntity> groups,
-    SocialMedia socialMedia
-  }) {
+  ChatDetailed copyWith(
+      {ChatEntity chat,
+      MediaStats media,
+      List<ContactEntity> members,
+      int membersCount,
+      ChatPermissions settings,
+      ChatMember chatMemberRole,
+      User user,
+      List<ChatEntity> groups,
+      SocialMedia socialMedia}) {
     return ChatDetailed(
-      chat: chat ?? this.chat,
-      media: media ?? this.media,
-      members: members ?? this.members,
-      membersCount: membersCount ?? this.membersCount,
-      settings: settings ?? this.settings,
-      chatMemberRole: chatMemberRole ?? this.chatMemberRole,
-      user: user ?? this.user,
-      groups: groups ?? this.groups,
-      socialMedia: socialMedia ?? this.socialMedia
-    );
+        chat: chat ?? this.chat,
+        media: media ?? this.media,
+        members: members ?? this.members,
+        membersCount: membersCount ?? this.membersCount,
+        settings: settings ?? this.settings,
+        chatMemberRole: chatMemberRole ?? this.chatMemberRole,
+        user: user ?? this.user,
+        groups: groups ?? this.groups,
+        socialMedia: socialMedia ?? this.socialMedia);
   }
 
   @override
   List<Object> get props => [
-    membersCount, 
-    members, 
-    chat, 
-    media,
-    settings, 
-    chatMemberRole,
-    user,
-    groups,
-    socialMedia
-  ];
+        membersCount,
+        members,
+        chat,
+        media,
+        settings,
+        chatMemberRole,
+        user,
+        groups,
+        socialMedia
+      ];
 }
 
-enum ChatMember {
-  admin, member
-}
+enum ChatMember { admin, member }
 
-
-class MediaStats {
+class MediaStats extends Equatable {
   final int mediaCount;
   final int documentCount;
   final int audioCount;
 
-  MediaStats({
-    @required this.mediaCount, 
-    @required this.documentCount, 
-    @required this.audioCount
-  });
+  MediaStats(
+      {@required this.mediaCount,
+      @required this.documentCount,
+      @required this.audioCount});
+
+  @override
+  List<Object> get props => [audioCount, documentCount, mediaCount];
 }

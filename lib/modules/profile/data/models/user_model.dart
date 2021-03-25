@@ -29,11 +29,11 @@ class UserModel extends User {
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
+        id: json['id'],
         name: json['name'],
         surname: json['surname'],
         patronym: json['patronym'],
         phoneNumber: json['phone'],
-        id: json['id'],
         profileImage: json['avatar'] != null
             ? (json['avatar'] as String).contains('://')
                 ? json['avatar']

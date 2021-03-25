@@ -1,0 +1,153 @@
+{
+    "chat": {
+        "id": 1, 
+        "name": "name",
+        "avatar": "avatar", 
+        "category_chat":{
+            "id": 1,
+            "name":"name",
+            "avatar":"avatar",
+            "full_link":"avatar",
+            "total_chats":1,
+            "no_read_message":1
+        },
+        "created_at": "2021-01-01 00:00:01.860545",
+        "settings":{
+            "sound":1,
+            "admin_media_send":1,
+            "admin_message_send":1,
+            "transfer_chat_message":1,
+            "is_secret":0
+        },
+        "last_message":{
+            "id":1,
+            "color":1,
+            "from_contact":{
+                "id": 1,
+                "name": "name",
+                "surname": "surname",
+                "avatar": "avatarURL",
+                "phone": "+77777777777"
+            },
+            "to_contact":{
+                "id": 2,
+                "name": "name2",
+                "surname": "surname2",
+                "avatar": "avatarURL2",
+                "phone": "+77777777777"
+            },
+            "text": "text",
+            "is_read": 0,
+            "created_at": "2021-01-01 00:00:01.860545",
+            "action": "Ad User",
+            "deleted_at": "2021-03-15 17:08:04.860545",
+            "time_deleted": 777,
+            "transfer":null,
+            "chat":{
+                "id": 1,
+                "name": "name"
+            }
+        },
+        "no_read_message":1,
+        "description":"description",
+        "is_private":0,
+        "is_read":1
+    },
+    "media":{
+        "media": 1,
+        "document": 1,
+        "audio": 1
+    },
+    "count_member": 2,
+    "members":[
+        {
+            "id":1,
+            "name":"name",
+            "patronym":"patronym",
+            "surname":"surname",
+            "last_visit": "2021-01-01 00:00:01.860545", 
+            "avatar":"avatar"
+        },
+        {
+            "id":2,
+            "name":"name2",
+            "patronym":"patronym2",
+            "surname":"surname2",
+            "last_visit": "2021-01-01 00:00:01.860545", 
+            "avatar":"avatar2"
+        }
+    ],
+    "settings":{
+        "sound": 1,
+        "admin_media_send": 1,
+        "admin_message_send": 1,
+        "transfer_chat_message": 1,
+        "is_secret": 0
+    },
+    "role":"member",
+    "user":{
+        "id":1,
+        "name":"Name",
+        "surname":"Surname",
+        "patronym":"Patronym",
+        "phone":"+77777777777",
+        "avatar":"avatar",
+        "isBlocked":0
+    }, 
+    "equal_group":[
+        {
+            "id": 1, 
+            "name": "name",
+            "avatar": "avatar", 
+            "category_chat":{
+                "id": 1,
+                "name":"name",
+                "avatar":"avatar",
+                "full_link":"avatar",
+                "total_chats":1,
+                "no_read_message":1
+            },
+            "created_at": "2021-01-01 00:00:01.860545",
+            "settings":{
+                "sound":1,
+                "admin_media_send":1,
+                "admin_message_send":1,
+                "transfer_chat_message":1,
+                "is_secret":0
+            },
+            "last_message":{
+                "id":1,
+                "color":1,
+                "from_contact":{
+                    "id": 1,
+                    "name": "name",
+                    "surname": "surname",
+                    "avatar": "avatarURL",
+                    "phone": "+77777777777"
+                },
+                "to_contact":{
+                    "id": 2,
+                    "name": "name2",
+                    "surname": "surname2",
+                    "avatar": "avatarURL2",
+                    "phone": "+77777777777"
+                },
+                "text": "text",
+                "is_read": 0,
+                "created_at": "2021-01-01 00:00:01.860545",
+                "action": "Ad User",
+                "deleted_at": "2021-03-15 17:08:04.860545",
+                "time_deleted": 777,
+                "transfer":null,
+                "chat":{
+                    "id": 1,
+                    "name": "name"
+                }
+            },
+            "no_read_message":1,
+            "description":"description",
+            "is_private":0,
+            "is_read":1
+        }
+    ]
+}

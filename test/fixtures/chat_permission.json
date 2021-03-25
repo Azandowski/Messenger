@@ -1,0 +1,7 @@
+{
+    "sound":1,
+    "admin_media_send":1,
+    "admin_message_send":1,
+    "transfer_chat_message":1,
+    "is_secret":0
+}

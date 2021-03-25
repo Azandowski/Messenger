@@ -1,13 +1,13 @@
 {
-    "id": 1,
+    "id": 1, 
     "name": "name",
-    "avatar": "imageUrl",
+    "avatar": "avatar", 
     "category_chat":{
-        "id":1,
+        "id": 1,
         "name":"name",
         "avatar":"avatar",
         "full_link":"avatar",
-        "total_chats": 1,
+        "total_chats":1,
         "no_read_message":1
     },
     "created_at": "2021-03-15 17:08:04.860545",
@@ -18,30 +18,37 @@
         "transfer_chat_message":1,
         "is_secret":0
     },
-    "description":"description",
-    "no_read_message":1,
     "last_message":{
         "id":1,
         "color":1,
         "from_contact":{
-            "id":1,
-            "name":"name",
-            "surname":"surname",
-            "avatar":"imageUrl"
+            "id": 1,
+            "name": "name",
+            "surname": "surname",
+            "avatarURL": "avatarURL",
+            "phone": "+77777777777"
         },
         "to_contact":{
-            "id":2,
-            "name":"name2",
-            "surname":"surname2",
-            "avatar":"imageUrl2"
+            "id": 1,
+            "name": "name",
+            "surname": "surname",
+            "avatarURL": "avatarURL",
+            "phone": "+77777777777"
         },
-        "text":"text",
-        "is_read":1,
-        "created_at": "2021-03-15 17:08:04.860545",
-        "deleted_at": "2021-03-16 17:08:04.860545",
+        "text": "text",
+        "is_read": 0,
+        "created_at": "2021-01-01 00:00:01.860545",
         "action":"addUser",
+        "deleted_at": "2021-03-15 17:08:04.860545",
         "time_deleted": 777,
-        "transfer":[]
-    }
-
+        "transfer":null,
+        "chat":{
+            "id": 1,
+            "name": "name"
+        }
+    },
+    "no_read_message":1,
+    "description":"description",
+    "is_private":0,
+    "is_read":1
 }

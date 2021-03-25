@@ -4,6 +4,7 @@ import '../../domain/entities/chat_actions.dart';
 import '../../domain/entities/message.dart';
 import 'message_user_model.dart';
 
+// ignore: must_be_immutable
 class MessageModel extends Message {
   final int id;
   final bool isRead;
@@ -20,11 +21,6 @@ class MessageModel extends Message {
   final MessageChat chat;
   MessageHandleType messageHandleType;
   final int timeDeleted;
-
-  @override
-  String toString() {
-    return "\nMessageModel [id:$id isRead:$isRead dateTime:$dateTime text:$text user=$user toUser=$toUser chatActions:$chatActions colorId:$colorId deletionSeconds:$deletionSeconds willBeDeletedAt:$willBeDeletedAt transfer:$transfer messageStatus:$messageStatus chat:$chat messageHandleType:$messageHandleType]";
-  }
 
   MessageModel(
       {this.id,
@@ -103,6 +99,11 @@ class MessageModel extends Message {
       'to_contact': toUser?.toJson()
     };
   }
+
+  @override
+  String toString() {
+    return "\nMessageModel [id:$id isRead:$isRead dateTime:$dateTime text:$text user=$user toUser=$toUser chatActions:$chatActions colorId:$colorId deletionSeconds:$deletionSeconds willBeDeletedAt:$willBeDeletedAt transfer:$transfer messageStatus:$messageStatus chat:$chat messageHandleType:$messageHandleType]";
+  }
 }
 
 // ignore: must_be_immutable
@@ -148,6 +149,7 @@ class Transfer extends Message {
       chatId: json['chat_id'],
       isRead: json['is_read'] == 1,
       dateTime: DateTime.parse(json['created_at']).toLocal(),
+      // TODO DateTime.parse(json['updated_at']).toLocal() ???
       updatedAt: json['updated_at'],
       user: json['from_contact'] != null
           ? MessageUserModel.fromJson(json['from_contact'])
@@ -155,16 +157,18 @@ class Transfer extends Message {
     );
   }
 
+  // ATTENTION: Here amanokerim edited data['action'] and data['is_read']
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
     data['from_id'] = this.fromId;
     data['to_id'] = this.toId;
     data['text'] = this.text;
-    data['action'] = this.action;
+    data['action'] = this.action.key;
     data['chat_id'] = this.chatId;
-    data['is_read'] = this.isRead;
-    data['updated_at'] = this.updatedAt;
+    data['is_read'] = this.isRead ? 1 : 0;
+    data['updated_at'] = this
+        .updatedAt; // should be this.updatedAt.toIso8601String() after changing type from String to DateTime
     return data;
   }
 }

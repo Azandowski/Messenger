@@ -24,6 +24,7 @@ class MessageUserModel extends MessageUser {
         id: json['id'],
         name: json['name'],
         surname: json['surname'],
+        phone: json['phone'],
         avatarURL: json['avatar'] != null
             ? (json['avatar'] as String).contains('://')
                 ? json['avatar']
@@ -32,11 +33,17 @@ class MessageUserModel extends MessageUser {
   }
 
   Map toJson() {
-    return {'id': id, 'name': name, 'surname': surname, 'avatarURL': avatarURL};
+    return {
+      'id': id,
+      'name': name,
+      'surname': surname,
+      'avatar': avatarURL, // amanokerim fixed key from avatarURL to avatar
+      'phone': phone,
+    };
   }
 
   @override
   String toString() {
-    return "MessageUserModel [name=$name id=$id avatarURL=$avatarURL phone=$phone surname=$surname]";
+    return "MessageUserModel [name:$name id:$id avatarURL:$avatarURL phone:$phone surname:$surname]";
   }
 }

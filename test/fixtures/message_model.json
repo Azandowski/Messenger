@@ -1,0 +1,29 @@
+{
+    "id":1,
+    "color":1,
+    "from_contact":{
+        "id": 1,
+        "name": "name",
+        "surname": "surname",
+        "avatar": "avatarURL",
+        "phone": "+77777777777"
+    },
+    "to_contact":{
+        "id": 2,
+        "name": "name2",
+        "surname": "surname2",
+        "avatar": "avatarURL2",
+        "phone": "+77777777777"
+    },
+    "text": "text",
+    "is_read": 0,
+    "created_at": "2021-01-01 00:00:01.860545",
+    "action":"Ad User",
+    "deleted_at": "2021-03-15 17:08:04.860545",
+    "time_deleted": 777,
+    "transfer":null,
+    "chat":{
+        "id": 1,
+        "name": "name"
+    }
+}

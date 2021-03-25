@@ -1,4 +1,3 @@
-
 import 'package:flutter/foundation.dart';
 import 'package:messenger_mobile/modules/profile/data/models/user_model.dart';
 import 'package:messenger_mobile/modules/profile/domain/entities/user.dart';
@@ -22,50 +21,59 @@ class ChatDetailedModel extends ChatDetailed {
   final List<ChatEntity> groups;
   final SocialMedia socialMedia;
 
-  ChatDetailedModel({
-    @required this.chat, 
-    @required this.media, 
-    @required this.members,
-    @required this.membersCount,
-    @required this.chatMemberRole,
-    @required this.user,
-    this.settings, 
-    this.groups,
-    this.socialMedia
-  }) : super(
-    chat: chat,
-    media: media,
-    members: members,
-    membersCount: membersCount,
-    chatMemberRole: chatMemberRole,
-    user: user,
-    groups: groups,
-    socialMedia: socialMedia
-  );
+  ChatDetailedModel(
+      {@required this.chat,
+      @required this.media,
+      @required this.members,
+      @required this.membersCount,
+      @required this.chatMemberRole,
+      @required this.user,
+      this.settings,
+      this.groups,
+      this.socialMedia})
+      : super(
+            chat: chat,
+            media: media,
+            members: members,
+            membersCount: membersCount,
+            chatMemberRole: chatMemberRole,
+            user: user,
+            groups: groups,
+            socialMedia: socialMedia);
 
-  factory ChatDetailedModel.fromJson (Map<String, dynamic> json) {
+  factory ChatDetailedModel.fromJson(Map<String, dynamic> json) {
     var profileModel = json['user'] ?? json['chat'];
-    bool hasSocialMedia = profileModel['youtube'] != null || 
-      profileModel['instagram'] != null || 
+    bool hasSocialMedia = profileModel['youtube'] != null ||
+        profileModel['instagram'] != null ||
         profileModel['facebook'] != null ||
-          profileModel['site'] != null || profileModel['whatsapp'] != null;
-    
+        profileModel['site'] != null ||
+        profileModel['whatsapp'] != null;
+
     return ChatDetailedModel(
-      chat: json['chat'] != null ?
-        ChatEntityModel.fromJson(json['chat']) : null,
-      media: json['media'] != null ?
-        MediaStatsModel.fromJson(json['media']) : null,
-      membersCount: json['count_member'],
-      members: ((json['members'] ?? []) as List).map(
-        (e) => ContactModel.fromJson(e)
-      ).toList(),
-      settings: ChatPermissionModel.fromJson(json['settings']),
-      chatMemberRole: json['role'] == 'member' ? ChatMember.member : ChatMember.admin,
-      user: json['user'] != null ? UserModel.fromJson(json['user']) : null,
-      groups: ((json['equal_group'] ?? []) as List)
-        .map((e) => ChatEntityModel.fromJson(e)).toList(),
-      socialMedia: hasSocialMedia ? SocialMediaModel.fromJson(profileModel) : null
-    );
+        chat: json['chat'] != null
+            ? ChatEntityModel.fromJson(json['chat'])
+            : null,
+        media: json['media'] != null
+            ? MediaStatsModel.fromJson(json['media'])
+            : null,
+        membersCount: json['count_member'],
+        members: ((json['members'] ?? []) as List)
+            .map((e) => ContactModel.fromJson(e))
+            .toList(),
+        settings: ChatPermissionModel.fromJson(json['settings']),
+        chatMemberRole:
+            json['role'] == 'member' ? ChatMember.member : ChatMember.admin,
+        user: json['user'] != null ? UserModel.fromJson(json['user']) : null,
+        groups: ((json['equal_group'] ?? []) as List)
+            .map((e) => ChatEntityModel.fromJson(e))
+            .toList(),
+        socialMedia:
+            hasSocialMedia ? SocialMediaModel.fromJson(profileModel) : null);
+  }
+
+  @override
+  String toString() {
+    return "\nChatDetailedModel [user:$user chat:$chat media:$media settings:$settings members:$members membersCount:$membersCount chatMemberRole:$chatMemberRole groups:$groups socialMedia:$socialMedia]";
   }
 }
 
@@ -74,21 +82,24 @@ class MediaStatsModel extends MediaStats {
   final int documentCount;
   final int audioCount;
 
-  MediaStatsModel({
-    @required this.mediaCount, 
-    @required this.documentCount, 
-    @required this.audioCount
-  }) : super(
-    mediaCount: mediaCount,
-    documentCount: documentCount,
-    audioCount: audioCount
-  );
+  @override
+  String toString() {
+    return "mediaCount:$mediaCount documentCount:$documentCount audioCount:$audioCount";
+  }
 
-  factory MediaStatsModel.fromJson (Map<String, dynamic> json) {
+  MediaStatsModel(
+      {@required this.mediaCount,
+      @required this.documentCount,
+      @required this.audioCount})
+      : super(
+            mediaCount: mediaCount,
+            documentCount: documentCount,
+            audioCount: audioCount);
+
+  factory MediaStatsModel.fromJson(Map<String, dynamic> json) {
     return MediaStatsModel(
-      mediaCount: json['media'],
-      documentCount: json['document'],
-      audioCount: json['audio']
-    );
+        mediaCount: json['media'],
+        documentCount: json['document'],
+        audioCount: json['audio']);
   }
 }
