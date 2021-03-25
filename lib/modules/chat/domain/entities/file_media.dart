@@ -5,7 +5,7 @@ import '../../presentation/chat_details/widgets/chat_media_block.dart';
 class FileMedia extends Equatable {
   final int id;
   final String url;
-  final MediaType type;
+  final TypeMedia type;
   final int userId;
   final Duration maxDuration;
 

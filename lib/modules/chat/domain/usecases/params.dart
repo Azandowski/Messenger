@@ -5,6 +5,7 @@ import 'package:messenger_mobile/modules/chat/data/datasources/chat_datasource.d
 import 'package:messenger_mobile/modules/chat/presentation/chat_details/page/chat_detail_screen.dart';
 import 'package:messenger_mobile/modules/social_media/domain/entities/social_media.dart';
 import 'package:latlong/latlong.dart';
+import 'package:multi_image_picker/multi_image_picker.dart';
 
 import '../../../../core/utils/pagination.dart';
 import '../../../category/data/models/chat_permission_model.dart';
@@ -30,6 +31,7 @@ class SendMessageParams {
   final int identificator;
   final int timeLeft;
   final FieldFiles fieldFiles;
+  final FieldAssets fieldAssets;
   final LatLng location;
 
   SendMessageParams({
@@ -37,17 +39,20 @@ class SendMessageParams {
     @required this.chatID,
     this.forwardIds,
     this.fieldFiles,
+    this.fieldAssets,
     this.text,
     this.timeLeft,
     this.location
   });
 }
 
-extension FileKeysExtension on MediaType {
+extension FileKeysExtension on TypeMedia {
   String get filedKey {
     switch (this) {
-      case MediaType.audio:
+      case TypeMedia.audio:
       return 'audio';
+      case TypeMedia.image:
+      return 'image';
       default:
       return 'photo';
     }
@@ -55,12 +60,23 @@ extension FileKeysExtension on MediaType {
 }
 
 class FieldFiles {
-  final MediaType fieldKey;
+  final TypeMedia fieldKey;
   final List<File> files;
 
   FieldFiles({
     @required this.fieldKey,
     @required this.files
+  });
+
+}
+
+class FieldAssets {
+  final TypeMedia fieldKey;
+  final List<Asset> assets;
+
+  FieldAssets({
+    @required this.fieldKey,
+    @required this.assets
   });
 
 }

@@ -451,6 +451,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       forwardIds: forwardArray,
       timeLeft: event.timeDeleted,
       fieldFiles: event.fieldFiles,
+      fieldAssets: event.fieldAssets,
       location: event.location
     ));
 

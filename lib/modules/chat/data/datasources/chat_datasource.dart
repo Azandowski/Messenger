@@ -188,22 +188,32 @@ class ChatDataSourceImpl implements ChatDataSource {
   @override
   Future<Message> sendMessage(SendMessageParams params) async {
     var forward = params.forwardIds.map((e) => e.toString()).join(',');
+    String type;
+    List<String> keyNames = [];
+    if(params.fieldFiles?.files != null){
+      keyNames = List.generate(params.fieldFiles?.files?.length, (index) => 'file[$index]');
+      type = params.fieldFiles?.fieldKey?.filedKey;
+    }else if(params.fieldAssets?.assets != null){
+      keyNames = List.generate(params.fieldAssets.assets.length, (index) => 'file[$index]');
+      type = params.fieldAssets?.fieldKey?.filedKey;
+    }
     var body =  {
       'text': params.text ?? '',
       'forward': forward,
-      'type': params.fieldFiles?.fieldKey?.filedKey ?? null,
+      'type': type,
       if (params.timeLeft != null)
         ...{'time_deleted': params.timeLeft},
       if (params.location != null)
         ...{'latitude': params.location.latitude, 'longitude': params.location.longitude}
     };
-
     http.StreamedResponse streamedResponse = await MultipartRequestHelper.postData(
         token: sl<AuthConfig>().token,
         request: multipartRequest,
         data: body,
-        files: params.fieldFiles?.files != null ? params.fieldFiles?.files : [],
-        keyName: params.fieldFiles?.files != null ?  List.generate(params.fieldFiles?.files?.length, (index) => 'file[$index]') : [] );
+        assets: params.fieldAssets?.assets != null ? params.fieldAssets.assets : [],
+        files: params.fieldFiles?.files != null ? params.fieldFiles?.files : null,
+        keyName: keyNames
+    );
 
     final response = await http.Response.fromStream(streamedResponse);
 

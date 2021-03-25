@@ -14,7 +14,7 @@ class ChatMediaBlock extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DividerWrapper(
-      children: MediaType.values.map(
+      children: TypeMedia.values.map(
         (e) => ListTile(
           leading: Image(
             image: AssetImage(e.imageAssetPath),
@@ -39,16 +39,16 @@ class ChatMediaBlock extends StatelessWidget {
   }
 }
 
-enum MediaType { media, documents, audio, undefined }
+enum TypeMedia { media, documents, audio, undefined, image }
 
-extension MediaTypeUIExtension on MediaType {
+extension MediaTypeUIExtension on TypeMedia {
   String get title {
     switch (this) {
-      case MediaType.media:
+      case TypeMedia.media:
         return 'Медиа';
-      case MediaType.documents:
+      case TypeMedia.documents:
         return 'Документы';
-      case MediaType.audio:
+      case TypeMedia.audio:
         return 'Аудио';
       default:
         return '';
@@ -57,10 +57,12 @@ extension MediaTypeUIExtension on MediaType {
 
   String get string {
     switch (this) {
-      case MediaType.audio:
+      case TypeMedia.audio:
         return 'audio';
-      case MediaType.documents:
+      case TypeMedia.documents:
         return 'documents';
+      case TypeMedia.image:
+        return 'image';
       default:
         return '';
     }
@@ -68,11 +70,11 @@ extension MediaTypeUIExtension on MediaType {
 
   String get imageAssetPath {
     switch (this) {
-      case MediaType.media:
+      case TypeMedia.media:
         return 'assets/icons/media.png';
-      case MediaType.documents:
+      case TypeMedia.documents:
         return 'assets/icons/documents.png';
-      case MediaType.audio:
+      case TypeMedia.audio:
         return 'assets/icons/audio.png';
       default:
         return '';
@@ -81,11 +83,11 @@ extension MediaTypeUIExtension on MediaType {
 
   int getCountFrom (MediaStats stats) {
     switch (this) {
-      case MediaType.media:
+      case TypeMedia.media:
         return stats.mediaCount;
-      case MediaType.documents:
+      case TypeMedia.documents:
         return stats.documentCount;
-      case MediaType.audio:
+      case TypeMedia.audio:
         return stats.audioCount;
       default:
         return 0;

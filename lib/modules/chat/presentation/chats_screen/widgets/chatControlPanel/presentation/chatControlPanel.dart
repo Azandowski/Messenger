@@ -159,8 +159,7 @@ class ChatControlPanelState extends State<ChatControlPanel>
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         state is PanelBlocReplyMessage ?
-                          ReplyContainer(cubit: _panelBloc) : SizedBox(height: 4),
-                        
+                        ReplyContainer(cubit: _panelBloc) : SizedBox(height: 4),
                         Padding(
                           padding: const EdgeInsets.only(right: 16, left: 16, bottom: 8),
                           child: Row(
@@ -294,6 +293,8 @@ class ChatControlPanelState extends State<ChatControlPanel>
   void _didSelectMediaOption (ChatBottomPanelTypes type) {
     if (type == ChatBottomPanelTypes.map) {
       _navigator.push(MapScreen.route(delegate: this));
+    }else if(type == ChatBottomPanelTypes.image){
+      _panelBloc.getGalleryImages();
     }
   }
 

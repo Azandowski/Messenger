@@ -5,7 +5,7 @@ class FileMediaModel extends FileMedia{
 
   final int id;
   final String url;
-  final MediaType type;
+  final TypeMedia type;
   final int userId;
   final Duration maxDuration;
 

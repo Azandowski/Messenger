@@ -43,6 +43,13 @@
 	<true/>
 	<key>LSSupportsOpeningDocumentsInPlace</key>
 	<true/>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+		<key>NSAllowsArbitraryLoadsInWebContent</key>
+		<true/>
+	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>Для прикрепления фотографии к сообщениям</string>
 	<key>NSContactsUsageDescription</key>
@@ -51,6 +58,8 @@
 	<string>This app needs access to location when in the background.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>This app needs access to location when open.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Can We Use Your Microphone Please</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Для прикрепления фотографии к сообщениям</string>
 	<key>UIFileSharingEnabled</key>
@@ -74,14 +83,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>Can We Use Your Microphone Please</string>
-	<key>NSAppTransportSecurity</key>
-	<dict>
-    <key>NSAllowsArbitraryLoads</key>
-    <true/>
-    <key>NSAllowsArbitraryLoadsInWebContent</key>
-    <true/>
-</dict>
 </dict>
 </plist>

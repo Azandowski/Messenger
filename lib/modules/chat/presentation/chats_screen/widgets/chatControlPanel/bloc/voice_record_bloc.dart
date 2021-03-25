@@ -65,7 +65,7 @@ class VoiceRecordBloc extends Bloc<VoiceRecordEvent, VoiceRecordState> {
     }else if(event is VoiceSendAudio){
       chatBloc.add(MessageSend(
         fieldFiles: FieldFiles(
-          fieldKey: MediaType.audio,
+          fieldKey: TypeMedia.audio,
           files: [File(this.state.path)]
         ),
       ));

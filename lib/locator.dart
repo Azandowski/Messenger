@@ -49,6 +49,7 @@ import 'modules/media/data/datasources/local_media_datasource.dart';
 import 'modules/media/data/repositories/media_repository_impl.dart';
 import 'modules/media/domain/repositories/media_repository.dart';
 import 'modules/media/domain/usecases/get_image.dart';
+import 'modules/media/domain/usecases/get_images_from_gallery.dart';
 import 'modules/profile/data/datasources/profile_datasource.dart';
 import 'modules/profile/data/repositories/profile_repository.dart';
 import 'modules/profile/domain/repositories/profile_respository.dart';
@@ -171,6 +172,7 @@ Future<void> init() async {
   //Use Cases
   sl.registerLazySingleton(() => CreateCategoryUseCase(sl()));
   sl.registerLazySingleton(() => GetImage(sl()));
+  sl.registerLazySingleton(() => GetImagesFromGallery(sl()));
   sl.registerLazySingleton(() => TransferChats(repository: sl()));
   sl.registerLazySingleton(() => GetCategoryChats(sl()));
   sl.registerLazySingleton(() => ReorderCategories(repository: sl()));
