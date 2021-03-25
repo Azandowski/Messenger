@@ -1,12 +1,14 @@
 import '../../modules/chat/presentation/chat_details/widgets/chat_media_block.dart';
 
 extension StringExtension on String {
-  MediaType get getMediaType {
+  TypeMedia get getMediaType {
     switch (this) {
       case 'audio':
-      return MediaType.audio;
+      return TypeMedia.audio;
+      case 'image':
+      return TypeMedia.image;
       default:
-      return MediaType.undefined;
+      return TypeMedia.undefined;
     }
   }
 }

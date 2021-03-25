@@ -187,29 +187,19 @@ class ChatDataSourceImpl implements ChatDataSource {
 
   @override
   Future<Message> sendMessage(SendMessageParams params) async {
-    var forward = params.forwardIds.map((e) => e.toString()).join(',');
-    var body = {
-      'text': params.text ?? '',
-      'forward': forward,
-      'type': params.fieldFiles?.fieldKey?.filedKey ?? null,
-      if (params.timeLeft != null)
-        ...{'time_deleted': params.timeLeft},
-      if (params.location != null)
-        ...{
-          'latitude': params.location.latitude, 
-          'longitude': params.location.longitude,
-          'address': params.locationAddress
-        },
-      if (params.contactID != null) 
-        ... {'contact_id': '${params.contactID}'}
-    };
+    String type; List<String> keyNames = [];
+    _handleFilesForSendMessages(params: params, callback: (String type, List<String> keyNames) {
+      type = type; keyNames = keyNames;
+    });
 
     http.StreamedResponse streamedResponse = await MultipartRequestHelper.postData(
         token: sl<AuthConfig>().token,
         request: multipartRequest,
-        data: body,
-        files: params.fieldFiles?.files != null ? params.fieldFiles?.files : [],
-        keyName: params.fieldFiles?.files != null ?  List.generate(params.fieldFiles?.files?.length, (index) => 'file[$index]') : [] );
+        data: _generateBodyForSendMessage(params: params, type: type),
+        assets: params.fieldAssets?.assets != null ? params.fieldAssets.assets : [],
+        files: params.fieldFiles?.files != null ? params.fieldFiles?.files : null,
+        keyName: keyNames
+    );
 
     final response = await http.Response.fromStream(streamedResponse);
 
@@ -485,5 +475,48 @@ class ChatDataSourceImpl implements ChatDataSource {
     if (!response.isSuccess) {
       throw ServerFailure(message: ErrorHandler.getErrorMessage(response.body.toString()));
     } 
+  }
+
+
+  // MARK: - Utils
+
+  void _handleFilesForSendMessages ({
+    SendMessageParams params,
+    Function(String, List<String>) callback
+  }) {
+    if (params.fieldFiles?.files != null) {
+      callback(
+        params.fieldFiles?.fieldKey?.filedKey,
+        List.generate(params.fieldFiles?.files?.length, (index) => 'file[$index]')
+      );
+    } else if(params.fieldAssets?.assets != null) {
+      callback(
+        params.fieldAssets?.fieldKey?.filedKey,
+        List.generate(params.fieldAssets.assets.length, (index) => 'file[$index]')
+      );
+    }
+  }
+
+  Map<String, dynamic> _generateBodyForSendMessage ({
+    @required SendMessageParams params, 
+    @required String type
+  }) {
+    var forward = params.forwardIds.map((e) => e.toString()).join(',');
+    
+    return {
+      'text': params.text ?? '',
+      'forward': forward,
+      'type': type,
+      if (params.timeLeft != null)
+        ...{'time_deleted': params.timeLeft},
+      if (params.location != null)
+        ...{
+          'latitude': params.location.latitude, 
+          'longitude': params.location.longitude,
+          'address': params.locationAddress
+        },
+      if (params.contactID != null) 
+        ... {'contact_id': '${params.contactID}'}
+    };
   }
 }

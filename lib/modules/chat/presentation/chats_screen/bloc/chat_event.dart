@@ -57,6 +57,7 @@ class MessageSend extends ChatEvent {
   final Message forwardMessage;
   final String message;
   final FieldFiles fieldFiles;
+  final FieldAssets fieldAssets;
   final int timeDeleted;
   final LatLng location;
   final String address;
@@ -64,6 +65,7 @@ class MessageSend extends ChatEvent {
 
   MessageSend({
     this.message,
+    this.fieldAssets,
     this.fieldFiles,
     this.forwardMessage,
     this.timeDeleted,

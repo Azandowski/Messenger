@@ -2,8 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:http/http.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen_import.dart';
+import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:path/path.dart';
-
 
 class MultipartRequestHelper {
   /**
@@ -31,6 +33,32 @@ class MultipartRequestHelper {
     return _files;
   }
 
+  /**
+   * Converts list of assets to MultipartFiles
+   * * assets => assets The list of input assets
+   * * keyName => field's name in backend
+   */
+  static Future<List<http.MultipartFile>> getAssetsList(
+    List<Asset> assets,
+    List<String> keyName
+  ) async {
+    List<http.MultipartFile> _files = [];
+
+    for (int i = 0; i < assets.length; i++) {
+      if (assets[i] != null) {
+        ByteData byteData = await assets[i].getByteData(quality: 10);
+        List<int> imageData = byteData.buffer.asUint8List();
+        http.MultipartFile multipartFile = MultipartFile.fromBytes(
+          keyName[i],
+          imageData,
+          filename: assets[i].name,
+        );
+        _files.add(multipartFile);
+      }
+    }
+
+    return _files;
+  }
 
   /**
    * Sends MultiPart Request
@@ -38,6 +66,7 @@ class MultipartRequestHelper {
    * * files => files The list of input files
    * * keyName => field's name in backend
    * * data => body of the request,
+   * * assets => assets for uploading
    */
   static Future<http.StreamedResponse> postData({
     @required String token,
@@ -45,6 +74,7 @@ class MultipartRequestHelper {
     @required List<String> keyName,
     Map data,
     List<File> files,
+    List<Asset> assets,
   }) async {
 
     http.MultipartRequest copyRequest = http.MultipartRequest('POST', request.url);
@@ -63,10 +93,15 @@ class MultipartRequestHelper {
     });
 
     copyRequest.fields.addAll(request.fields);
-  
-    copyRequest.files.addAll(await getFilesList(
-      files ?? [], keyName
-    ));
+    if(files != null && files.length > 0){
+      copyRequest.files.addAll(await getFilesList(
+        files, keyName
+      ));
+    }else{
+      copyRequest.files.addAll(await getAssetsList(
+        assets ?? [], keyName
+      ));
+    }
 
     return copyRequest.send();
   }

@@ -72,7 +72,6 @@ class ChatScreenState extends State<ChatScreen> implements ChatChooseDelegate{
     );
     
     categoryBloc = context.read<CategoryBloc>();
-    _panelBlocCubit = PanelBlocCubit();
     _chatBloc = ChatBloc(
       chatId: widget.chatEntity.chatId,
       chatRepository: chatRepository,
@@ -87,6 +86,10 @@ class ChatScreenState extends State<ChatScreen> implements ChatChooseDelegate{
       isPagination: false,
       messageID: widget.messageID,
     ));
+     _panelBlocCubit = PanelBlocCubit(
+      getImagesFromGallery: sl(),
+      chatBloc: _chatBloc,
+    );
 
     _chatBloc.scrollController = AutoScrollController(
       viewportBoundaryGetter: () =>

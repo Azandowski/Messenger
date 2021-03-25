@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:messenger_mobile/core/blocs/audioplayer/bloc/audio_player_bloc.dart';
 import 'package:messenger_mobile/core/widgets/independent/map/map_view.dart';
 import 'package:messenger_mobile/modules/chat/domain/entities/file_media.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chat_details/widgets/chat_media_block.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen_import.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/components/contact_item.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/components/forward_container.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/message_cell/photo_cell.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/name_time_read_container.dart';
 import 'package:messenger_mobile/modules/creation_module/presentation/bloc/open_chat_cubit/open_chat_cubit.dart';
 
@@ -103,15 +105,23 @@ class MessageContainer extends StatelessWidget {
         ),
 
       if (widget.messageViewModel.hasMedia) 
-        ...returnAuidoWidgets(
+        ...returnMediaWidgets(
           widget.messageViewModel.message.files,
           audioPlayerBloc, 
-          widget.messageViewModel.isMine
+          widget.messageViewModel.isMine,
+          MediaQuery.of(context).size.width,
         ),
     ];
   }
+}
 
 
+
+
+
+// MARK: - Helpers
+
+extension MessageContainerExtension on MessageContainer {
   List<Widget> returnForwardColumn(
     List<Message> transfers,
     {Function(int) onClickForwardMessage}
@@ -126,15 +136,81 @@ class MessageContainer extends StatelessWidget {
     )).toList();
   }
 
-  List<Widget> returnAuidoWidgets(
+  List<Widget> returnMediaWidgets(
     List<FileMedia> files, 
     AudioPlayerBloc audioPlayerBloc, 
-    bool isMine
+    bool isMine,
+    double width,
   ) {
-    return files.map((e) => AudioPlayerElement(
-      file: e,
-      isMine: isMine,
-      audioPlayerBloc: audioPlayerBloc,
-    )).toList();
+    if (files[0].type == TypeMedia.image) {
+      switch (files.length) {
+        case 1:
+          return[
+            PreviewPhotoLarge(
+              url: files[0].url
+            )
+          ];
+
+          break;
+        case 2:
+          var a = (width*0.8 - 22)/2;
+          
+          return [
+            Row(
+              children: [
+                PreviewPhotoWidget(
+                  a: a, 
+                  url: files[0].url,
+                ),
+                SizedBox(
+                  width: 4
+                ),
+                PreviewPhotoWidget(
+                  a: a, 
+                  url: files[1].url
+                ),
+              ]
+          )];
+
+          break;
+        default:
+          var a = (width*0.8 - 26)/3;
+          return [
+            Row(
+              children: [
+                PreviewPhotoWidget(
+                  a: a, 
+                  url: files[0].url
+                ),
+                SizedBox(width: 4,),
+                PreviewPhotoWidget(
+                  a: a, 
+                  url: files[1].url,
+                ),
+                SizedBox(width: 4,),
+                PreviewPhotoWidget(
+                  a: a, 
+                  url: files[2].url
+                ),
+              ]
+            )
+          ];
+      }
+    } else {
+      return files.map((e) {
+        switch (e.type){
+          case TypeMedia.audio:
+            return AudioPlayerElement(
+              file: e,
+              isMine: isMine,
+              audioPlayerBloc: audioPlayerBloc,
+            );
+            break;
+        default:
+          return Text('salam');
+          break;
+        }
+      }).toList();
+    }
   }
-}
+} 
