@@ -9,6 +9,7 @@ class UserModel extends User {
   final String profileImage;
   final int id;
   final bool isBlocked;
+  final String status;
 
   UserModel({
     this.name,
@@ -17,7 +18,8 @@ class UserModel extends User {
     this.phoneNumber,
     this.id,
     this.profileImage,
-    this.isBlocked
+    this.isBlocked,
+    this.status
   }) : super(
     name: name,
     surname: surname,
@@ -25,7 +27,8 @@ class UserModel extends User {
     phoneNumber: phoneNumber,
     id: id,
     profileImage: profileImage,
-    isBlocked: isBlocked
+    isBlocked: isBlocked,
+    status: status
   );
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
@@ -37,7 +40,8 @@ class UserModel extends User {
       id: json['id'],
       profileImage: json['avatar'] != null ? (json['avatar'] as String).contains('://') ? json['avatar'] : 
         ConfigExtension.buildURLHead() + json['avatar'] : null,
-      isBlocked: json['isBlocked'] == 1
+      isBlocked: json['isBlocked'] == 1,
+      status: json['status']
     );
   }
 
@@ -49,7 +53,8 @@ class UserModel extends User {
       'patronym': patronym,
       'phone': phoneNumber,
       'avatar': profileImage,
-      'isBlocked': isBlocked ? 1 : 0
+      'isBlocked': isBlocked ? 1 : 0,
+      'status': status
     };
   }
 }

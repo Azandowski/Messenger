@@ -28,18 +28,28 @@ class EditProfileUpdateUser extends EditProfileEvent {
   final String patronym;
   final String token;
   final String phoneNumber;
+  final String status;
 
-  EditProfileUpdateUser(
-      {@required this.token,
-      this.image,
-      this.name,
-      this.surname,
-      this.patronym,
-      this.phoneNumber});
+  EditProfileUpdateUser({
+    @required this.token,
+    this.image,
+    this.name,
+    this.surname,
+    this.patronym,
+    this.phoneNumber,
+    this.status
+  });
 
   @override
-  List<Object> get props =>
-      [token, image, name, surname, patronym, phoneNumber];
+  List<Object> get props => [
+    token, 
+    image, 
+    name, 
+    surname, 
+    patronym, 
+    phoneNumber,
+    status
+  ];
 }
 
 class PickProfileImage extends EditProfileEvent {

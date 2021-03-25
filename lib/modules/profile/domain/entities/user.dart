@@ -8,6 +8,7 @@ class User extends Equatable {
   final String profileImage;
   final int id;
   final bool isBlocked;
+  final String status;
 
   User({
     this.name,
@@ -16,7 +17,8 @@ class User extends Equatable {
     this.id,
     this.phoneNumber,
     this.profileImage,
-    this.isBlocked
+    this.isBlocked,
+    this.status
   });
 
   @override
@@ -27,15 +29,16 @@ class User extends Equatable {
     phoneNumber, 
     profileImage,
     id,
-    isBlocked
+    isBlocked,
+    status
   ];
 
   static const empty = null;
 
   String get fullName {
     return [surname, name, patronym]
-        .where((e) => e != null && e != "")
-        .join(" ");
+      .where((e) => e != null && e != "")
+      .join(" ");
   }
 
   User copyWith ({
@@ -45,7 +48,8 @@ class User extends Equatable {
     String phoneNumber,
     String profileImage,
     int id,
-    bool isBlocked
+    bool isBlocked,
+    String status
   }) {
     return User(
       name: name ?? this.name,
@@ -54,7 +58,8 @@ class User extends Equatable {
       phoneNumber: phoneNumber ?? this.phoneNumber,
       id: id ?? this.id,
       profileImage: profileImage ?? this.profileImage,
-      isBlocked: isBlocked ?? this.isBlocked
+      isBlocked: isBlocked ?? this.isBlocked,
+      status: status ?? this.status
     );
   }
 }

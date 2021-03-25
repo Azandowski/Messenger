@@ -160,7 +160,8 @@ class ChatControlPanelState extends State<ChatControlPanel>
                 child: BlocBuilder<PanelBlocCubit, PanelBlocState>(
                   builder: (context, state) {
                     return Column(
-                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      mainAxisSize: MainAxisSize.max,
                       children: [
                         state is PanelBlocReplyMessage ?
                         ReplyContainer(cubit: _panelBloc) : SizedBox(height: 4),

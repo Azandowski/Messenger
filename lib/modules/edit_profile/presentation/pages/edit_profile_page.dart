@@ -115,6 +115,18 @@ class _EditProfilePageState extends State<EditProfilePage> {
                             const SizedBox(
                               height: 12,
                             ),
+                            IgnorePointer(
+                              ignoring: state is EditProfileLoading,
+                              child: CustomTextField(
+                                customPadding:
+                                    const EdgeInsets.only(left: 16, right: 16),
+                                labelText: "Статус",
+                                textCtr: cubit.statusTextController,
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 12,
+                            ),
                             ActionButton(
                               isLoading: state is EditProfileLoading,
                               text: 'Сохранить',
@@ -125,7 +137,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                     image: cubit.imageFile,
                                     name: cubit.nameTextController.text,
                                     surname: cubit.surnameTextController.text,
-                                    patronym: cubit.patronymTextController.text));
+                                    patronym: cubit.patronymTextController.text,
+                                    status: cubit.statusTextController.text
+                                  ));
                                 }
                               },
                             )

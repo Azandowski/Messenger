@@ -93,11 +93,12 @@ class MultipartRequestHelper {
     });
 
     copyRequest.fields.addAll(request.fields);
-    if(files != null && files.length > 0){
+    
+    if (files != null && files.length > 0) {
       copyRequest.files.addAll(await getFilesList(
         files, keyName
       ));
-    }else{
+    } else if (assets != null && assets.length > 0) {
       copyRequest.files.addAll(await getAssetsList(
         assets ?? [], keyName
       ));
