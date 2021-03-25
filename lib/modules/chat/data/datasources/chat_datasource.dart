@@ -188,14 +188,16 @@ class ChatDataSourceImpl implements ChatDataSource {
   @override
   Future<Message> sendMessage(SendMessageParams params) async {
     String type; List<String> keyNames = [];
-    _handleFilesForSendMessages(params: params, callback: (String type, List<String> keyName) {
-      type = type; keyNames = keyName;
+    _handleFilesForSendMessages(params: params, callback: (String newType, List<String> keyName) {
+      type = newType; keyNames = keyName;
     });
+
+    var data = _generateBodyForSendMessage(params: params, type: type);
 
     http.StreamedResponse streamedResponse = await MultipartRequestHelper.postData(
         token: sl<AuthConfig>().token,
         request: multipartRequest,
-        data: _generateBodyForSendMessage(params: params, type: type),
+        data: data,
         assets: params.fieldAssets?.assets != null ? params.fieldAssets.assets : [],
         files: params.fieldFiles?.files != null ? params.fieldFiles?.files : null,
         keyName: keyNames

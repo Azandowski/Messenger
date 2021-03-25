@@ -87,12 +87,12 @@ class PreviewMorePhoto extends StatelessWidget {
   Widget build(BuildContext context) {
     return Flexible(
       fit: FlexFit.loose,
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            GestureDetector(
-              onTap: onMore,
-              child: ClipRRect(
+        child: GestureDetector(
+          onTap: onMore,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              ClipRRect(
                borderRadius: BorderRadius.circular(10),
                child: CachedNetworkImage(
                  fadeInDuration: const Duration(milliseconds: 400),
@@ -113,16 +113,16 @@ class PreviewMorePhoto extends StatelessWidget {
                    ),
                ),
                 ),
-            ),
-            Text(
-              '+$moreCount',
-              style: TextStyle(
-                fontWeight: FontWeight.w700,
-                fontSize: 24,
-                color: Colors.white
-              ),
-            )
-          ],
+              Text(
+                '+$moreCount',
+                style: TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 24,
+                  color: Colors.white
+                ),
+              )
+            ],
+          ),
         ),
     );
   }
