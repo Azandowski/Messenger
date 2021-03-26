@@ -3,6 +3,8 @@ import 'package:messenger_mobile/core/config/auth_config.dart';
 import 'package:messenger_mobile/core/utils/snackbar_util.dart';
 import 'package:messenger_mobile/modules/category/presentation/chooseChats/presentation/chat_choose_page.dart';
 import 'package:messenger_mobile/modules/chat/domain/entities/chat_actions.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chat_details/page/chat_detail_page.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chat_details/page/chat_detail_screen.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/cubit/time_cubit/timer_cubit.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen_import.dart';
@@ -223,6 +225,10 @@ extension ChatScreenStateHelper on ChatScreenState {
       case MessageCellActions.deleteMessage:
         chatTodoCubit.enableSelectionMode(messageViewModel.message, true);
         break;
+      case MessageCellActions.openProfile:
+        navigator.push(ChatDetailPage.route(
+          messageViewModel.message.user.id, ProfileMode.user
+        ));
     }
   }
 

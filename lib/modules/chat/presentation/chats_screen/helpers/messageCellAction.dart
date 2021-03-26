@@ -7,7 +7,8 @@ enum MessageCellActions {
   attachMessage, 
   replyMessage,
   replyMore,
-  deleteMessage
+  openProfile,
+  deleteMessage,
 }
 
 extension MessageCellActionsUiExtensin on MessageCellActions {
@@ -18,11 +19,15 @@ extension MessageCellActionsUiExtensin on MessageCellActions {
       case MessageCellActions.attachMessage:
         return 'Закрепить';
       case MessageCellActions.replyMessage:
-         return 'Ответить';
+        return 'Ответить';
       case MessageCellActions.replyMore:
-         return 'Переслать';
+        return 'Переслать';
       case MessageCellActions.deleteMessage:
-         return 'Удалить';
+        return 'Удалить';
+      case MessageCellActions.openProfile:
+        return 'Профиль';
+      default:
+        return '';
     }
   }
 
@@ -38,6 +43,8 @@ extension MessageCellActionsUiExtensin on MessageCellActions {
         return Icon(Icons.reply_all_sharp);
       case MessageCellActions.deleteMessage:
         return Icon(Icons.delete, color: AppColors.redDeleteColor,);
+      case MessageCellActions.openProfile:
+        return Icon(Icons.person);
     }
   }
 }

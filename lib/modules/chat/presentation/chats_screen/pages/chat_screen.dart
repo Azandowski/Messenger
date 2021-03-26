@@ -37,7 +37,7 @@ class ChatScreen extends StatefulWidget {
 
 class ChatScreenState extends State<ChatScreen> implements ChatChooseDelegate{
 
-  NavigatorState get _navigator => sl<Application>().navKey.currentState;
+  NavigatorState get navigator => sl<Application>().navKey.currentState;
   
   // MARK: - Props
 
@@ -140,7 +140,7 @@ class ChatScreenState extends State<ChatScreen> implements ChatChooseDelegate{
                 return Scaffold(
                   appBar: this.buildAppBar(
                     _chatTodoCubit, 
-                    cubit, state, chatViewModel, _navigator,
+                    cubit, state, chatViewModel, navigator,
                     (ChatAppBarActions action) {
                       if (action == ChatAppBarActions.onOffSecretMode) {
                         _chatBloc.add(SetInitialTime(isOn: !(state.isSecretModeOn ?? false)));

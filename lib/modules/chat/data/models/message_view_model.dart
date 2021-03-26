@@ -86,7 +86,7 @@ class MessageViewModel {
   List<MessageCellActions> getActionsList ({
     @required bool isReplyEnabled
   }) {
-    if (message.text != null && message.text != ''){
+    if (message.text != null && message.text != '') {
       return MessageCellActions.values.where(
         (e) => isReplyEnabled ? true : e != MessageCellActions.replyMessage && e != MessageCellActions.replyMore
       ).toList(); 
@@ -98,7 +98,8 @@ class MessageViewModel {
             MessageCellActions.replyMessage, 
             MessageCellActions.replyMore
           ],
-        MessageCellActions.deleteMessage
+        MessageCellActions.openProfile,
+        MessageCellActions.deleteMessage,
       ];
     } 
   }
