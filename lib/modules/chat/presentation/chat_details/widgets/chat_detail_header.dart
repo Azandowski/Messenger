@@ -1,10 +1,7 @@
-
 import 'package:flutter/material.dart';
-
 import '../../../../../app/appTheme.dart';
 import '../../../../category/data/models/chat_view_model.dart';
 import '../../../domain/entities/chat_detailed.dart';
-
 
 enum CommunicationType { chat, audio, video,  }
 
@@ -43,10 +40,11 @@ class ChatDetailHeader extends StatelessWidget {
       child: Stack(
         children: [
           Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               FadeInImage(
                 placeholder: AssetImage("assets/images/logo.png"),
-                image: chatDetailed?.chat?.imageUrl == null || chatDetailed?.user?.profileImage == null ? 
+                image: chatDetailed?.chat?.imageUrl == null && chatDetailed?.user?.profileImage == null ? 
                   AssetImage(
                     'assets/images/placeholder.png', 
                   ) : NetworkImage(chatDetailed?.user?.profileImage ?? chatViewModel?.imageURL),
@@ -76,46 +74,61 @@ class ChatDetailHeader extends StatelessWidget {
                 children: [
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Expanded(
-                        child: Text(
-                          chatDetailed?.user?.name ?? chatViewModel.title,
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 15,
-                            height: 1.8
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            chatDetailed?.user?.name ?? chatViewModel.title,
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 15,
+                              height: 1.8
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
                           ),
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                        ),
+                          if (chatDetailed?.user != null)
+                            Text(
+                              chatDetailed?.user?.phoneNumber ?? 'no_number',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 15,
+                                height: 1.8
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                            ),
+                        ],
                       ),
-                      SizedBox(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Text('в сети'),
-                            SizedBox(height: 8),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: communicationTypes.map(
-                                (e) => IconButton(
-                                  onPressed: () {
-                                    onCommunicationHandle(e);
-                                  },
-                                  icon: Icon(e.icon, color: AppColors.indicatorColor)
-                                )
-                              ).toList(),
-                            )
-                          ],
-                        ),
+                      SizedBox(width: 10),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(''),
+                          SizedBox(height: 8),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: communicationTypes.map(
+                              (e) => IconButton(
+                                onPressed: () {
+                                  onCommunicationHandle(e);
+                                },
+                                icon: Icon(e.icon, color: AppColors.indicatorColor)
+                              )
+                            ).toList(),
+                          )
+                        ],
                       )
                     ],
                   ),
                   Divider(),
                   Text(
-                    chatViewModel.description,
+                    chatDetailed?.user?.status ?? chatViewModel.description,
                     overflow: TextOverflow.ellipsis,
                     maxLines: 2,
                     textAlign: TextAlign.left,

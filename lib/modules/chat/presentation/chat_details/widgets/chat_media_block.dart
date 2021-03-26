@@ -14,7 +14,7 @@ class ChatMediaBlock extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DividerWrapper(
-      children: TypeMedia.values.map(
+      children: [TypeMedia.media, TypeMedia.documents, TypeMedia.audio].map(
         (e) => ListTile(
           leading: Image(
             image: AssetImage(e.imageAssetPath),
