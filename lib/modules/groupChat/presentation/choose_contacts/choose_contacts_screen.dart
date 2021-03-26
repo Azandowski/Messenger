@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
+import 'package:messenger_mobile/app/application.dart';
+import 'package:messenger_mobile/core/widgets/independent/buttons/bottom_action_button.dart';
+import 'package:messenger_mobile/modules/creation_module/presentation/pages/search_contact/search_contact_page.dart';
 import '../../../../core/utils/paginated_scroll_controller.dart';
 import '../../../../core/utils/snackbar_util.dart';
 import '../../../../core/widgets/independent/buttons/gradient_main_button.dart';
 import '../../../../core/widgets/independent/small_widgets/cell_skeleton_item.dart';
+import '../../../../locator.dart';
 import '../../../creation_module/domain/entities/contact.dart';
 import '../../../creation_module/presentation/bloc/contact_bloc/contact_bloc.dart';
 import '../../../creation_module/presentation/widgets/contact_cell.dart';
 import 'cubit/choosecontact_cubit.dart';
+import 'cubit/contact_entity_viewmodel.dart';
 
 abstract class ContactChooseDelegate{
   void didSaveContacts(List<ContactEntity> contacts);
@@ -28,14 +32,13 @@ class ChooseContactsScreen extends StatefulWidget {
   _ChooseContactsScreenState createState() => _ChooseContactsScreenState();
 }
 
-class _ChooseContactsScreenState extends State<ChooseContactsScreen> {
+
+class _ChooseContactsScreenState extends State<ChooseContactsScreen> implements SearchContactDelegate {
   
   // * * Props
   
-  int _contactsCount = 0;
   ContactBloc _contactBloc;
-  
-  
+  NavigatorState get _navigator => sl<Application>().navKey.currentState;
   final _scrollController = PaginatedScrollController();
 
   @override
@@ -43,18 +46,21 @@ class _ChooseContactsScreenState extends State<ChooseContactsScreen> {
     super.initState();
     _scrollController.addListener(_onScroll);
     _contactBloc = context.read<ContactBloc>();    
+    context.read<ChooseContactCubit>().injectUserContacts(_contactBloc.state.contacts);
   }
 
   // * * UI
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ChooseContactCubit, List<ContactEntity>>(
+    return BlocBuilder<ChooseContactCubit, List<ContactEntityViewModel>>(
       builder: (context, contacts) {
         return BlocConsumer<ContactBloc, ContactState>(
           listener: (context, state) {
             if (state.status == ContactStatus.failure) {
               SnackUtil.showError(context: context, message: 'Не удалось обработать ваши контакты');
+            } else if (state.status == ContactStatus.success) {
+              context.read<ChooseContactCubit>().injectUserContacts(state.contacts);
             }
           },
           builder: (_, state) { 
@@ -63,49 +69,61 @@ class _ChooseContactsScreenState extends State<ChooseContactsScreen> {
                 title: Text(
                   'Выбрано: ${contacts.length}'
                 ),
+                actions: [
+                  IconButton(
+                    icon: Icon(Icons.search),
+                    onPressed: () {
+                      _navigator.push(SearchContactPage.route(
+                        initialContacts: context.read<ContactBloc>().state.contacts,
+                        delegate: this
+                      ));
+                    },
+                  )
+                ],
               ),
               body: Stack(
                 alignment: Alignment.center,
                 children: [
-                  ListView.separated(
-                    controller: _scrollController,
-                    itemBuilder: (context, int index) {
-                      var isSelected = contacts.where(
-                        (element) => element.id == state.contacts[index].id);
-                      var _blocChoose = context.read<ChooseContactCubit>();
-                      
-                      return index >= state.contacts.length ? 
-                        CellShimmerItem(circleSize: 35,) : 
-                          ContactCell(
-                            contactItem: state.contacts[index],
-                            cellType: ContactCellType.add,
-                            isSelected: isSelected.length > 0,
-                            onTap:() {
-                              if (isSelected.length > 0) {
-                                _blocChoose.removeContact(state.contacts[index]);
-                              } else {
-                                _blocChoose.addContact(state.contacts[index], widget.isSingleSelect);
-                              }
-                            },
-                          );
-                    }, 
-                    separatorBuilder: (context, int index) {
-                      return Divider();
-                    }, 
-                    itemCount: state.hasReachedMax ? 
-                      state.contacts.length : state.contacts.length + 4
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 80.0),
+                    child: ListView.separated(
+                      controller: _scrollController,
+                      itemBuilder: (context, int index) {
+                        var isSelected = contacts[index].isSelected;
+                        var _blocChoose = context.read<ChooseContactCubit>();
+                        
+                        return (
+                          index >= contacts.length 
+                            && state.status == ContactStatus.loading ) ? 
+                          CellShimmerItem(circleSize: 35) : 
+                            ContactCell(
+                              contactItem: contacts[index].contactEntity,
+                              cellType: ContactCellType.add,
+                              isSelected: isSelected,
+                              onTap:() {
+                                if (isSelected) {
+                                  _blocChoose.removeContact(state.contacts[index]);
+                                } else {
+                                  _blocChoose.addContact(state.contacts[index], widget.isSingleSelect);
+                                }
+                              },
+                            );
+                      }, 
+                      separatorBuilder: (context, int index) {
+                        return Divider();
+                      }, 
+                      itemCount: state.hasReachedMax ? 
+                        contacts.length : contacts.length + 4
+                    ),
                   ),
                   if (state.status == ContactStatus.success)  
-                    Positioned(
-                      bottom: 40,
-                      child: ActionButton(
-                        text: 'Готово', 
-                        onTap: () {
-                          Navigator.pop(context);
-                          widget.delegate.didSaveContacts(contacts);
-                        }
-                      ),
-                    ),
+                    BottomActionButtonContainer(
+                      onTap: () {
+                        Navigator.pop(context);
+                        widget.delegate.didSaveContacts(contacts.map((e) => e.contactEntity).toList());
+                      }, 
+                      title: 'Готово'
+                    )
                 ],
               )
             );
@@ -117,6 +135,13 @@ class _ChooseContactsScreenState extends State<ChooseContactsScreen> {
 
   void _onScroll() {
     if (_scrollController.isPaginated) _contactBloc.add(ContactFetched());
+  }
+
+  @override
+  void didSelectContact(ContactEntity contact) {
+    Navigator.of(context).pop();
+    var _blocChoose = context.read<ChooseContactCubit>();
+    _blocChoose.addContact(contact, widget.isSingleSelect);
   }
 }
 

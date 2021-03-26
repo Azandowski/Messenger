@@ -12,19 +12,28 @@ import '../../../domain/usecases/search_contacts.dart';
 import '../../bloc/search_contact_cubit/search_contact_cubit.dart';
 import '../../widgets/contact_cell.dart';
 
+abstract class SearchContactDelegate {
+  void didSelectContact (ContactEntity contact);
+}
+
+
 class SearchContactPage extends StatefulWidget {
 
   final List<ContactEntity> initialContacts;
+  final SearchContactDelegate delegate;
 
   SearchContactPage({
-    @required this.initialContacts
+    @required this.initialContacts,
+    this.delegate
   });
 
   static Route route({
-    List<ContactEntity> initialContacts
+    List<ContactEntity> initialContacts,
+    SearchContactDelegate delegate
   }) {
     return MaterialPageRoute<void>(builder: (_) => SearchContactPage(
-      initialContacts: initialContacts
+      initialContacts: initialContacts,
+      delegate: delegate
     ));
   }
   
@@ -111,7 +120,10 @@ class _SearchContactPageState extends State<SearchContactPage> implements Search
                   contactItem: state.contacts.data[index],
                   onTrilinIconTapped: () async {
                     print("HERE START CHAT");
-                  }
+                  },
+                  onTap: widget.delegate != null ? () {
+                    widget.delegate.didSelectContact(state.contacts.data[index]);
+                  } : null,
                 );
               }, 
               separatorBuilder: (_, int index) => Divider(), 
