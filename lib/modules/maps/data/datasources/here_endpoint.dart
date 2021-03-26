@@ -12,7 +12,7 @@ extension HereEnpointsExtension on HereEndpoints {
   String get path {
     switch (this) {
       case HereEndpoints.getNearbyPlaces:
-        return 'places/v1/discover/here';
+        return 'places/v1/discover/around';
       case HereEndpoints.searchPlaces:
         return 'places/v1/discover/search';
     }

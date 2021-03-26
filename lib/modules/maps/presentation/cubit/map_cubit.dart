@@ -95,7 +95,8 @@ class MapCubit extends Cubit<MapState> {
 
     var currentPosition = state.currentUserPosition;
     var response = await searchPlaces(SearchPlacesParams(
-      currentPosition: LatLng(currentPosition.latitude, currentPosition.longitude),
+      currentPosition: currentPosition != null ? 
+        LatLng(currentPosition.latitude, currentPosition.longitude) : null,
       queryText: queryText
     ));
 

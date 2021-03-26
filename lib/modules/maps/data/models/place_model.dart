@@ -26,8 +26,21 @@ class PlaceModel extends Place {
         json['position'][1]
       ),
       distance: json['distance'],
-      street: json['vicinity'],
+      street: ((json['vicinity'] ?? '') as String).removeAllHtmlTags(),
       title: json['title']
     );
   }
 }  
+
+
+extension StringPlaceHereExtension on String {
+  String removeAllHtmlTags() {
+    RegExp exp = RegExp(
+      r"<[^>]*>",
+      multiLine: true,
+      caseSensitive: true
+    );
+
+    return this.replaceAll(exp, ' ');
+  }
+}

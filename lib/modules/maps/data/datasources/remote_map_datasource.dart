@@ -23,14 +23,15 @@ class RemoteMapDataSourceImpl extends RemoteMapDataSource {
   RemoteMapDataSourceImpl({
     @required this.client
   });
-
+  //https://places.ls.hereapi.com/places/v1/discover/here?apiKey=GLfkTqRAR2Sz2Wtrxyp5AhF4IarjNdHyFHlGvu1rMaU&at52.28168879244234,76.98489305536721;
   @override
   Future<PlaceResponse> getNearbyPlaces(LatLng currentPosition) async {
     http.Response response = await client.get(
       HereEndpoints.getNearbyPlaces.buildURL(
         queryParameters: {
           'apiKey': _hereAPIKey,
-          'at': '${currentPosition.latitude},${currentPosition.longitude};'
+          'at': '${currentPosition.latitude},${currentPosition.longitude};',
+          'pretty': '1'
         }
       ),
       headers: new Map<String, String>.from(HereEndpoints.getNearbyPlaces.headers)
@@ -49,8 +50,12 @@ class RemoteMapDataSourceImpl extends RemoteMapDataSource {
       HereEndpoints.searchPlaces.buildURL(
         queryParameters: {
           'apiKey': _hereAPIKey,
-          'at': '${currentPosition.latitude},${currentPosition.longitude};',
-          'q': queryText
+          if (currentPosition != null)
+            ...{'at': '${currentPosition.latitude},${currentPosition.longitude};'},
+          if (currentPosition == null)
+            ...{'at': '43.239130,76.850774;'},
+          'q': queryText,
+          'pretty': '1'
         }
       ),
       headers: new Map<String, String>.from(HereEndpoints.searchPlaces.headers)
