@@ -62,6 +62,10 @@
 	<string>Can We Use Your Microphone Please</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Для прикрепления фотографии к сообщениям</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
 	<key>UIFileSharingEnabled</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>

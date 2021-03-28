@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger_mobile/core/screens/splash_screen.dart';
 import 'app/application.dart';
+import 'core/services/notifications/notification_handler.dart';
 import 'modules/creation_module/presentation/bloc/contact_bloc/contact_bloc.dart';
 import 'package:messenger_mobile/core/blocs/audioplayer/bloc/audio_player_bloc.dart';
 
@@ -20,6 +21,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await serviceLocator.init();
   await EasyLocalization.ensureInitialized();
+  await NotificationHandler().initNotifications();
+  
   // initializeDateFormatting('ru', null);
 
   Bloc.observer = SimpleBlocObserver();
