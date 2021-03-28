@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:messenger_mobile/core/utils/unavailable_dialog.dart';
 
 import '../../../../../app/appTheme.dart';
 import '../../../../../app/application.dart';
@@ -41,7 +42,9 @@ class ChatScreenActions extends StatelessWidget {
             Icons.video_call, 
             color: AppColors.indicatorColor,
           ), 
-          onPressed: () {},
+          onPressed: () {
+            UnavailableFeatureDialog.show(context);
+          },
         ),
         IconButton(
           icon: Icon(
@@ -49,7 +52,7 @@ class ChatScreenActions extends StatelessWidget {
             color: AppColors.indicatorColor,
           ),
           onPressed: () {
-          
+            UnavailableFeatureDialog.show(context);
           },
         ),
         IconButton(

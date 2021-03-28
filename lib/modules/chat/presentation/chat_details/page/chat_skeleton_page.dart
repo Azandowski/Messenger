@@ -48,7 +48,7 @@ class ChatSkeletonPage extends StatelessWidget {
                             Shimmer.fromColors(
                               child: Container(
                                 width: 140,
-                                height: 20,
+                                height: 16,
                                 color: Colors.white,
                               ), 
                               baseColor: Colors.grey[300], 
@@ -58,7 +58,7 @@ class ChatSkeletonPage extends StatelessWidget {
                             Shimmer.fromColors(
                               child: Container(
                                 width: 240,
-                                height: 24,
+                                height: 14,
                                 color: Colors.white,
                               ), 
                               baseColor: Colors.grey[300], 
@@ -70,7 +70,7 @@ class ChatSkeletonPage extends StatelessWidget {
                         Shimmer.fromColors(
                           child: Container(
                             width: 280,
-                            height: 16,
+                            height: 12,
                             color: Colors.white,
                           ), 
                           baseColor: Colors.grey[300], 
@@ -86,6 +86,14 @@ class ChatSkeletonPage extends StatelessWidget {
           DividerWrapper(
             children: [
                Shimmer.fromColors(
+                child: Container(
+                  height: 64,
+                  color: Colors.white,
+                ), 
+                baseColor: Colors.grey[300], 
+                highlightColor: Colors.grey[350]
+              ),
+              Shimmer.fromColors(
                 child: Container(
                   height: 64,
                   color: Colors.white,

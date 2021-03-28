@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:messenger_mobile/core/utils/unavailable_dialog.dart';
 import '../../../../../app/application.dart';
 import '../../../../../core/config/auth_config.dart';
 import '../../../../../core/utils/snackbar_util.dart';
@@ -278,14 +279,20 @@ class _ChatDetailScreenState extends State<ChatDetailScreen>
           return ChatDetailHeader(
             chatDetailed: state.chatDetailed,
             onCommunicationHandle: (CommunicationType type) {
-              if (widget.mode == ProfileMode.user) {
-                context.read<OpenChatCubit>().createChatWithUser(state.chatDetailed?.user?.id);
-              } else {
-                Navigator.push(
-                  context, 
-                  MaterialPageRoute(builder: (context) => 
-                    ChatScreen(chatEntity: _chatDetailsCubit.state.chatDetailed.chat)),
-                );
+              switch (type) {
+                case CommunicationType.chat:
+                  if (widget.mode == ProfileMode.user) { 
+                    context.read<OpenChatCubit>().createChatWithUser(state.chatDetailed?.user?.id);
+                  } else {
+                    Navigator.push(
+                      context, 
+                      MaterialPageRoute(builder: (context) => 
+                        ChatScreen(chatEntity: _chatDetailsCubit.state.chatDetailed.chat)),
+                    );
+                  }
+                  break;
+                default:
+                  UnavailableFeatureDialog.show(context);
               }
             },
           );
