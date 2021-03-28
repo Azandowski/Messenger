@@ -84,7 +84,9 @@ class MultipartRequestHelper {
       request.url,
       onProgress: (int bytes, int total) {
         final progress = bytes / total;
-       uploadStreamCtrl.add(progress);
+        if (uploadStreamCtrl != null) {
+          uploadStreamCtrl.add(progress);
+        }
       },
     );
 

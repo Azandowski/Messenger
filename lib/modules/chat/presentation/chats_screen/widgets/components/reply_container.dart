@@ -14,6 +14,7 @@ class ReplyContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var messageVM = (cubit.state as PanelBlocReplyMessage).messageViewModel;
+    
     return Padding(
       padding: const EdgeInsets.only(bottom: 4),
       child: Container(
@@ -31,40 +32,41 @@ class ReplyContainer extends StatelessWidget {
             ),
             SizedBox(width: 8,),
             Expanded(
-                child: Column( 
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      messageVM.isMine ? 'Вы' : 
+              child: Column( 
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    messageVM.isMine ? 'Вы' : 
                       messageVM.userNameText,
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                        height: 1.4,
-                        color: messageVM.color,
-                      ),
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      height: 1.4,
+                      color: messageVM.color,
                     ),
-                    Container(
-                      child: Text(messageVM.messageText,
-                        style: AppFontStyles.black14w400.copyWith(
-                          height: 1.4,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                        softWrap: true,
-                        maxLines: 1,
-                      ),
+                  ),
+                  Container(
+                    child: Text(messageVM.forwardDescription,
+                      style: messageVM.forwardTextStyle,
+                      overflow: TextOverflow.ellipsis,
+                      softWrap: true,
+                      maxLines: 1,
                     ),
+                  ),
                 ],
-          ),
+              ),
             ),
-          IconButton(icon: Icon(Icons.close), onPressed: (){
-            cubit.detachMessage();
-          })
-      ],
-    ),
-  ),
-  );
+            IconButton(
+              icon: Icon(Icons.close), 
+              onPressed: () {
+                cubit.detachMessage();
+              }
+            )
+          ],
+        ),
+      ),
+    );
   }
 }
