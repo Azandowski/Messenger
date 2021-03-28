@@ -73,13 +73,20 @@ class MultipartRequestHelper {
     @required String token,
     @required http.MultipartRequest request,
     @required List<String> keyName,
-    @required StreamController<double> uploadStreamCtrl,
+    StreamController<double> uploadStreamCtrl,
     Map data,
     List<File> files,
     List<Asset> assets,
   }) async {
 
-    http.MultipartRequest copyRequest = http.MultipartRequest('POST', request.url);
+    http.MultipartRequest copyRequest = MultipartRequest(
+      'POST',
+      request.url,
+      onProgress: (int bytes, int total) {
+        final progress = bytes / total;
+       uploadStreamCtrl.add(progress);
+      },
+    );
 
     request.headers["Authorization"] = "Bearer $token";
     request.headers["Accept"] = 'application/json';
@@ -105,30 +112,38 @@ class MultipartRequestHelper {
         assets ?? [], keyName
       ));
     }
-    var msStream = copyRequest.finalize();
-
-    var totalByteLength = copyRequest.contentLength;
-
-    int byteCount = 0;
-
-    Stream<List<int>> streamUpload = msStream.transform(
-      new StreamTransformer.fromHandlers(
-        handleData: (data, sink) {
-          sink.add(data);
-          byteCount += data.length;
-          var percent = byteCount / totalByteLength;
-          uploadStreamCtrl.add(percent);
-          // percentStream.add(percent);
-        },
-        handleError: (error, stack, sink) {
-          throw error;
-        },
-        handleDone: (sink) {
-          sink.close();
-        },
-      ),
-    );
-
     return copyRequest.send();
+  }
+}
+
+
+class MultipartRequest extends http.MultipartRequest {
+  /// Creates a new [MultipartRequest].
+  MultipartRequest(
+    String method,
+    Uri url, {
+    this.onProgress,
+  }) : super(method, url);
+
+  final void Function(int bytes, int totalBytes) onProgress;
+
+  /// Freezes all mutable fields and returns a single-subscription [ByteStream]
+  /// that will emit the request body.
+  http.ByteStream finalize() {
+    final byteStream = super.finalize();
+    if (onProgress == null) return byteStream;
+
+    final total = this.contentLength;
+    int bytes = 0;
+
+    final t = StreamTransformer.fromHandlers(
+      handleData: (List<int> data, EventSink<List<int>> sink) {
+        bytes += data.length;
+        onProgress(bytes, total);
+        sink.add(data);
+      },
+    );
+    final stream = byteStream.transform(t);
+    return http.ByteStream(stream);
   }
 }

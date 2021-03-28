@@ -6,19 +6,23 @@ import 'package:flutter_sound/public/flutter_sound_player.dart';
 import 'package:messenger_mobile/app/appTheme.dart';
 import 'package:messenger_mobile/core/blocs/audioplayer/bloc/audio_player_bloc.dart';
 import 'package:messenger_mobile/modules/chat/domain/entities/file_media.dart';
+import 'package:messenger_mobile/modules/chat/domain/entities/message.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/message_cell/play_button.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'music_progress_indicator.dart';
 
 class AudioPlayerElement extends StatelessWidget {
 
-  const AudioPlayerElement({Key key, @required this.file, @required this.audioPlayerBloc, @required this.isMine,}) : super(key: key);
+  const AudioPlayerElement({Key key, @required this.file, @required this.audioPlayerBloc, @required this.isMine, @required this.message}) : super(key: key);
   final bool isMine;
+  final Message message;
   final FileMedia file;
   final AudioPlayerBloc audioPlayerBloc;
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AudioPlayerBloc, AudioPlayerState>(
+    final isSending = message.messageStatus == MessageStatus.sending;
+    return isSending ? SendingAudioElement(message: message,) : BlocBuilder<AudioPlayerBloc, AudioPlayerState>(
       builder: (context, state) {
         var maxDurationInDate = DateTime.fromMillisecondsSinceEpoch(
             file.maxDuration.inMilliseconds,
@@ -112,3 +116,51 @@ class AudioPlayerElement extends StatelessWidget {
   }
 }
 
+class SendingAudioElement extends StatelessWidget {
+  final Message message;
+
+  const SendingAudioElement({Key key, this.message}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<double>(
+      stream: message.uploadController?.stream,
+      builder: (context, progress) {
+        var percent = progress?.data ?? 0.0;
+        return Container(
+          child: Row(
+            children: [
+              ClipOval(
+                child: Container(
+                  child: CircularPercentIndicator(
+                    percent: percent,
+                    radius: 45,
+                    progressColor: AppColors.successGreenColor,
+                    backgroundColor: Colors.white,
+                    circularStrokeCap: CircularStrokeCap.round,
+                    center: Text(
+                      (percent * 100).floor().toString() + '%',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 10,
+                      ),
+                    ),
+                    fillColor: AppColors.indicatorColor,
+                  ),
+                ),
+              ),
+              SizedBox(width: 4,),
+              MusicProgressIndicator(value: 0.0, isMine: true),
+              SizedBox(width: 4,),
+              Text('Отправка',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 10,
+              ))
+            ],
+          ),
+        );
+      }
+    );
+  }
+}

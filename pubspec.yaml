@@ -51,6 +51,7 @@ dependencies:
   file_picker: ^3.0.0
   photo_view: ^0.11.1
   cached_network_image: ^2.5.1
+  percent_indicator: ^3.0.1
   shimmer: ^1.1.2
   pin_input_text_field: ^3.3.1
   sembast: ^2.4.10+4

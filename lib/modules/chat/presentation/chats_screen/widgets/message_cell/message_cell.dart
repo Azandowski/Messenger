@@ -58,68 +58,67 @@ class _MessageCellState extends State<MessageCell> {
   @override
   Widget build(BuildContext context) {
     var w = MediaQuery.of(context).size.width;
-    
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 4,horizontal: 8),
-      color: widget.messageViewModel.isSelected ? AppColors.paleIndicatorColor : Colors.transparent,
-      child: Swipeable(
-        background: Container(
-          child: ListTile(
-            leading: !widget.messageViewModel.isMine ? Icon(Icons.reply) : SizedBox(),
-            trailing: widget.messageViewModel.isMine ? Icon(Icons.reply) : SizedBox(),
+      return Container(
+        padding: EdgeInsets.symmetric(vertical: 4,horizontal: 8),
+        color: widget.messageViewModel.isSelected ? AppColors.paleIndicatorColor : Colors.transparent,
+        child: Swipeable(
+          background: Container(
+            child: ListTile(
+              leading: !widget.messageViewModel.isMine ? Icon(Icons.reply) : SizedBox(),
+              trailing: widget.messageViewModel.isMine ? Icon(Icons.reply) : SizedBox(),
+            ),
           ),
-        ),
-        threshold: 64.0,
-        onSwipeLeft: () {
-          if (widget.isSwipeEnabled) {
-            vibrate();
-            widget.onReply(widget.messageViewModel);
-          }
-        },
-        onSwipeRight: () {
-          if (widget.isSwipeEnabled) {
-            vibrate();
-            widget.onReply(widget.messageViewModel);
-          }
-        },
-        child: Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: widget.messageViewModel.isMine ?
-            MainAxisAlignment.end : MainAxisAlignment.start,
-          children: [
-            LimitedBox(
-              maxWidth: w * 0.8,
-              child: FocusedMenuHolder(
-                blurSize: 5.0,
-                animateMenuItems: true,
-                blurBackgroundColor: Colors.black54,
-                menuOffset: 10.0, 
-                menuBoxDecoration: BoxDecoration(color: Colors.grey,borderRadius: BorderRadius.all(Radius.circular(15.0))),
-                menuItems: widget.messageViewModel.getActionsList(
-                  isReplyEnabled: widget.isSwipeEnabled
-                ).map((e) => FocusedMenuItem(
-                    title: Text(
-                      e.title
-                    ),
-                    trailingIcon: e.icon, 
-                    onPressed: () {
-                      widget.onAction(e);
-                    })
-                  ).toList(),
-                onPressed: () {
-                  widget.onTap();
-                  vibrate();
-                },
-                child: MessageContainer(
-                  widget: widget,
-                  onClickForwardMessage: widget.onClickForwardMessage,
-                  audioPlayerBloc: _audioPlayerBloc,
+          threshold: 64.0,
+          onSwipeLeft: () {
+            if (widget.isSwipeEnabled) {
+              vibrate();
+              widget.onReply(widget.messageViewModel);
+            }
+          },
+          onSwipeRight: () {
+            if (widget.isSwipeEnabled) {
+              vibrate();
+              widget.onReply(widget.messageViewModel);
+            }
+          },
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: widget.messageViewModel.isMine ?
+              MainAxisAlignment.end : MainAxisAlignment.start,
+            children: [
+              LimitedBox(
+                maxWidth: w * 0.8,
+                child: FocusedMenuHolder(
+                  blurSize: 5.0,
+                  animateMenuItems: true,
+                  blurBackgroundColor: Colors.black54,
+                  menuOffset: 10.0, 
+                  menuBoxDecoration: BoxDecoration(color: Colors.grey,borderRadius: BorderRadius.all(Radius.circular(15.0))),
+                  menuItems: widget.messageViewModel.getActionsList(
+                    isReplyEnabled: widget.isSwipeEnabled
+                  ).map((e) => FocusedMenuItem(
+                      title: Text(
+                        e.title
+                      ),
+                      trailingIcon: e.icon, 
+                      onPressed: () {
+                        widget.onAction(e);
+                      })
+                    ).toList(),
+                  onPressed: () {
+                    widget.onTap();
+                    vibrate();
+                  },
+                  child: MessageContainer(
+                    widget: widget,
+                    onClickForwardMessage: widget.onClickForwardMessage,
+                    audioPlayerBloc: _audioPlayerBloc,
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
-    );
+      );
   }
 }

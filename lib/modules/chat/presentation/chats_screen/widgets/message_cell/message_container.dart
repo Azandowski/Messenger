@@ -147,13 +147,14 @@ extension MessageContainerExtension on MessageContainer {
     bool isMine,
     double width,
   ) {
+    const placeholderLink = 'https://via.placeholder.com/150.png?text=Loading';
     var files = messageViewModel.message.files;
     if (files[0].type == TypeMedia.image) {
       switch (files.length) {
         case 1:
           return[
             PreviewPhotoLarge(
-              url: files[0].url
+              url: files[0].url ?? placeholderLink
             )
           ];
           break;
@@ -165,14 +166,14 @@ extension MessageContainerExtension on MessageContainer {
               children: [
                 PreviewPhotoWidget(
                   a: a, 
-                  url: files[0].url,
+                  url: files[0].url ?? placeholderLink, 
                 ),
                 SizedBox(
                   width: 4
                 ),
                 PreviewPhotoWidget(
                   a: a, 
-                  url: files[1].url
+                  url: files[1].url ?? placeholderLink
                 ),
               ]
           )];
@@ -185,16 +186,16 @@ extension MessageContainerExtension on MessageContainer {
               children: [
                 PreviewPhotoWidget(
                   a: a, 
-                  url: files[0].url
+                  url: files[0].url ?? placeholderLink
                 ),
                 SizedBox(width: 4,),
                 PreviewPhotoWidget(
                   a: a, 
-                  url: files[1].url,
+                  url: files[1].url ?? placeholderLink
                 ),
                 SizedBox(width: 4,),
                 files.length > 3 ? PreviewMorePhoto(
-                  url: files[2].url,
+                  url: files[2].url ?? placeholderLink,
                   a: a,
                   moreCount: files.length - 3,
                   onMore: (){
@@ -203,7 +204,7 @@ extension MessageContainerExtension on MessageContainer {
                 ) : 
                 PreviewPhotoWidget(
                   a: a, 
-                  url: files[2].url
+                  url: files[2].url ?? placeholderLink
                 ),
               ]
             )
@@ -214,6 +215,7 @@ extension MessageContainerExtension on MessageContainer {
         switch (e.type){
           case TypeMedia.audio:
             return AudioPlayerElement(
+              message: messageViewModel.message,
               file: e,
               isMine: isMine,
               audioPlayerBloc: audioPlayerBloc,

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -34,6 +36,7 @@ class Message extends Equatable {
   final PositionAddress location;
   final List<FileMedia> files;
   final List<MessageUser> contacts;
+  final StreamController<double> uploadController;
 
   Message({
     this.text,
@@ -54,7 +57,8 @@ class Message extends Equatable {
     this.timeDeleted,
     this.location,
     this.files,
-    this.contacts
+    this.contacts,
+    this.uploadController,
   });
 
   @override

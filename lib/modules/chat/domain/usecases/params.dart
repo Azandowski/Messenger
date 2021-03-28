@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -35,6 +36,7 @@ class SendMessageParams {
   final LatLng location;
   final String locationAddress;
   final int contactID;
+  final StreamController uploadController;
 
   SendMessageParams({
     @required this.identificator,
@@ -42,6 +44,7 @@ class SendMessageParams {
     this.forwardIds,
     this.fieldFiles,
     this.fieldAssets,
+    this.uploadController,
     this.text,
     this.timeLeft,
     this.location,

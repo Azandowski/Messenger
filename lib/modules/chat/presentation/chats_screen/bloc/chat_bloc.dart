@@ -6,6 +6,8 @@ import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:messenger_mobile/modules/chat/domain/entities/file_media.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chat_details/widgets/chat_media_block.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 import '../../../../../core/config/auth_config.dart';
@@ -413,6 +415,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   Stream<ChatState> _messageSendToState(MessageSend event) async* {
     var list = getCopyMessages();
     int randomID = _random.nextInt(99999);
+
+    StreamController<double> controller = StreamController<double>();
     
     var newMessage = Message(
       user: MessageUser(
@@ -420,12 +424,14 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       ),
       transfer: event.forwardMessage!= null ? [event.forwardMessage] : [],
       text: event.message,
+      files: event.fieldFiles?.fieldKey == TypeMedia.audio ? [FileMedia(type: TypeMedia.audio)] : null,
       identificator: randomID,
       isRead: false,
       messageStatus: MessageStatus.sending,
       contacts: event.contact != null ? [
         event.contact
-      ] : []
+      ] : [],
+      uploadController: controller,
     );
     
     list.insert(0, newMessage);    
@@ -454,11 +460,14 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       forwardIds: forwardArray,
       timeLeft: event.timeDeleted,
       fieldFiles: event.fieldFiles,
+      uploadController: controller,
       location: event.location,
       locationAddress: event.address,
       contactID: event.contact?.id,
       fieldAssets: event.fieldAssets
     ));
+
+    controller.close();
 
     yield* _eitherSentOrErrorState(response, randomID);
   }
