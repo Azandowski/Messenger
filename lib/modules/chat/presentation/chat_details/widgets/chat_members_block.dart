@@ -57,7 +57,8 @@ class ChatMembersBlock extends StatelessWidget {
             onTapItem(e);
           },
         )).toList(),
-        _buildSubmitButton()
+        if (members.length != membersCount)
+          _buildSubmitButton()
       ]
     );
   }

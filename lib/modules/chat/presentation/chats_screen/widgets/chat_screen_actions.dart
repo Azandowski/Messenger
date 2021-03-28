@@ -63,7 +63,7 @@ class ChatScreenActions extends StatelessWidget {
                 dialogViewType: DialogViewType.actionSheet,
                 actionButton: [
                   DialogActionButton(
-                    title: 'Данные профиля', 
+                    title: chatEntity.isPrivate ? 'Данные профиля' : 'Подробнее', 
                     iconData: Icons.person,
                     buttonStyle: DialogActionButtonStyle.black,
                     onPress: () {
