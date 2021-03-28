@@ -310,6 +310,9 @@ class ChatControlPanelState extends State<ChatControlPanel>
       case ChatBottomPanelTypes.camera:
         _panelBloc.getCameraPhoto();
         break;
+      case ChatBottomPanelTypes.audio:
+        _panelBloc.getAudio();
+        break;
       default:
         break;
     }

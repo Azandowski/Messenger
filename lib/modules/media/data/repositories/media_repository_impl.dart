@@ -11,7 +11,7 @@ import '../datasources/local_media_datasource.dart';
 
 class MediaRepositoryImpl implements MediaRepository {
   final MediaLocalDataSource mediaLocalDataSource;
-
+  
   MediaRepositoryImpl({@required this.mediaLocalDataSource});
 
   @override
@@ -32,5 +32,15 @@ class MediaRepositoryImpl implements MediaRepository {
     } on StorageFailure {
       return Left(StorageFailure());
     }
+  }
+
+  @override
+  Future<Either<Failure, List<File>>> getAudio() async{
+    try {
+      var audios = await mediaLocalDataSource.getAudio();
+      return Right(audios);
+    } on StorageFailure catch (e) {
+      return Left(e);
+    } 
   }
 }

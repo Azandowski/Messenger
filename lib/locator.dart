@@ -1,6 +1,7 @@
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
+import 'package:messenger_mobile/modules/media/domain/usecases/get_audios.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app/application.dart';
@@ -172,6 +173,7 @@ Future<void> init() async {
   //Use Cases
   sl.registerLazySingleton(() => CreateCategoryUseCase(sl()));
   sl.registerLazySingleton(() => GetImage(sl()));
+  sl.registerLazySingleton(() => GetAudios(sl()));
   sl.registerLazySingleton(() => GetImagesFromGallery(sl()));
   sl.registerLazySingleton(() => TransferChats(repository: sl()));
   sl.registerLazySingleton(() => GetCategoryChats(sl()));

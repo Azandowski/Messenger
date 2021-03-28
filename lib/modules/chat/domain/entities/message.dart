@@ -34,7 +34,7 @@ class Message extends Equatable {
   final PositionAddress location;
   final List<FileMedia> files;
   final List<MessageUser> contacts;
-  
+
   Message({
     this.text,
     this.identificator,

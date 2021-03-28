@@ -16,7 +16,8 @@ class ServerFailure extends Failure {
 }
 
 class StorageFailure extends Failure {
-  StorageFailure() : super(message: null);
+  final message;
+  StorageFailure({this.message}) : super(message: null);
 }
 
 class ConnectionFailure extends Failure {

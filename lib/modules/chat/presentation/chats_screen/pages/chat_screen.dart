@@ -88,6 +88,7 @@ class ChatScreenState extends State<ChatScreen> implements ChatChooseDelegate{
     ));
      _panelBlocCubit = PanelBlocCubit(
       getImagesFromGallery: sl(),
+      getAudios: sl(),
       getImage: sl(),
       chatBloc: _chatBloc,
     );

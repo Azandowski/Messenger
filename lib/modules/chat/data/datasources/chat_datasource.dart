@@ -196,6 +196,7 @@ class ChatDataSourceImpl implements ChatDataSource {
 
     http.StreamedResponse streamedResponse = await MultipartRequestHelper.postData(
         token: sl<AuthConfig>().token,
+        uploadStreamCtrl: ,
         request: multipartRequest,
         data: data,
         assets: params.fieldAssets?.assets != null ? params.fieldAssets.assets : [],

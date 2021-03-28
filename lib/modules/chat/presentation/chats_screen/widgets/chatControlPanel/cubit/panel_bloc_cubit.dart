@@ -8,6 +8,7 @@ import 'package:messenger_mobile/core/usecases/usecase.dart';
 import 'package:messenger_mobile/modules/chat/domain/usecases/params.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chat_details/widgets/chat_media_block.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen_import.dart';
+import 'package:messenger_mobile/modules/media/domain/usecases/get_audios.dart';
 import 'package:messenger_mobile/modules/media/domain/usecases/get_image.dart';
 import 'package:messenger_mobile/modules/media/domain/usecases/get_images_from_gallery.dart';
 
@@ -18,10 +19,12 @@ part 'panel_bloc_state.dart';
 class PanelBlocCubit extends Cubit<PanelBlocState> {
   final GetImagesFromGallery getImagesFromGallery;
   final ChatBloc chatBloc;
+  final GetAudios getAudios;
   final GetImage getImage;
   PanelBlocCubit({
     @required this.getImagesFromGallery,
     @required this.chatBloc,
+    @required this.getAudios,
     @required this.getImage,
   }) : super(PanelBlocInitial(showBottomPanel: false)) {
     _textController.sink.addError("Invalid value entered!");
@@ -81,6 +84,17 @@ class PanelBlocCubit extends Cubit<PanelBlocState> {
       if(file != null){
         chatBloc.add(MessageSend(
           fieldFiles: FieldFiles(files: [file], fieldKey: TypeMedia.image)
+        ));
+      }
+    });
+  }
+
+   getAudio() async {
+    final result =  await getAudios(NoParams());
+    result.fold((l) => print('error'), (audios){
+      if(audios != null){
+        chatBloc.add(MessageSend(
+          fieldFiles: FieldFiles(files: audios, fieldKey: TypeMedia.audio)
         ));
       }
     });

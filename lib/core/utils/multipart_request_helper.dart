@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -72,6 +73,7 @@ class MultipartRequestHelper {
     @required String token,
     @required http.MultipartRequest request,
     @required List<String> keyName,
+    @required StreamController<double> uploadStreamCtrl,
     Map data,
     List<File> files,
     List<Asset> assets,
@@ -103,6 +105,29 @@ class MultipartRequestHelper {
         assets ?? [], keyName
       ));
     }
+    var msStream = copyRequest.finalize();
+
+    var totalByteLength = copyRequest.contentLength;
+
+    int byteCount = 0;
+
+    Stream<List<int>> streamUpload = msStream.transform(
+      new StreamTransformer.fromHandlers(
+        handleData: (data, sink) {
+          sink.add(data);
+          byteCount += data.length;
+          var percent = byteCount / totalByteLength;
+          uploadStreamCtrl.add(percent);
+          // percentStream.add(percent);
+        },
+        handleError: (error, stack, sink) {
+          throw error;
+        },
+        handleDone: (sink) {
+          sink.close();
+        },
+      ),
+    );
 
     return copyRequest.send();
   }
