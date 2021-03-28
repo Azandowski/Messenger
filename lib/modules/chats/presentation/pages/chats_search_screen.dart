@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_search_bar/flutter_search_bar.dart';
+import 'package:messenger_mobile/core/widgets/independent/small_widgets/image_text_view.dart';
 
 import '../../../../core/utils/paginated_scroll_controller.dart';
 import '../../../../core/utils/search_engine.dart';
@@ -131,13 +132,16 @@ class _ChatsSearchScreenState extends State<ChatsSearchScreen> implements Search
             return ListView.separated(
               controller: scrollController,
               itemBuilder: (context, int index) {
-                if (
-                  state is SearchChatsLoading && 
-                  (!state.isPagination || 
-                    index >= getChatsLength(state) + 1
-                  )) {
-                    return CellShimmerItem();
+                bool isShimmerItem = (state is SearchChatsLoading && (!state.isPagination || index >= getChatsLength(state) + 1));
+                bool isEmptyScreen = !(state is SearchChatsLoading) && state.data.messages.data.length == 0;
+
+                if (isEmptyScreen && index == getItemsCount(state) - 1) {
+                  return EmptyView(text: 'Ничего не найдено');
+                } else if (isShimmerItem) {
+                  // Показать загрузку
+                  return CellShimmerItem();
                 } else if (index + 1 <= state.data.chats.length) {
+                  // Показать cell чата
                   return InkWell(
                     onTap: () {
                       widget.delegate?.didSelectChatItem(state.data.chats[index]);
@@ -149,6 +153,7 @@ class _ChatsSearchScreenState extends State<ChatsSearchScreen> implements Search
                     ),
                   );
                 } else if (
+                  // Показать шапку
                   index == state.data.chats.length 
                     && widget.designStyle == ChatDesignStyle.chatsMessages) {
                   return CellHeaderView(
@@ -156,6 +161,7 @@ class _ChatsSearchScreenState extends State<ChatsSearchScreen> implements Search
                   );
                 } else {
                   // Show Messages
+                  
                   int newIndex = index - state.data.chats.length - 1;
                   var currentItem = state.data.messages.data[newIndex];
   
@@ -200,7 +206,10 @@ class _ChatsSearchScreenState extends State<ChatsSearchScreen> implements Search
     if (state is SearchChatsLoading) {
       return itemsCount + 11;
     } else {
-      return itemsCount + (widget.designStyle == ChatDesignStyle.onlyChats ? 0 : 1);
+      var totalItemsCount = itemsCount + (widget.designStyle == ChatDesignStyle.onlyChats ? 0 : 1);
+      // return totalItemsCount;
+      return state.data.messages.data.length == 0 ? 
+        totalItemsCount + 1 : totalItemsCount;
     }
   }
 
