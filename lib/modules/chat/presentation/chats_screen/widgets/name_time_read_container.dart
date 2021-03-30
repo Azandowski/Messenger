@@ -32,6 +32,9 @@ class NameTimeBloc extends StatelessWidget {
               messageViewModel.readImageName, width: 20, height: 8
             )
           ),
+          
+        if (!messageViewModel.isMine)
+          Spacer(),
 
         Text(
           messageViewModel.time,

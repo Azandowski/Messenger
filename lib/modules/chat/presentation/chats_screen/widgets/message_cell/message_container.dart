@@ -39,7 +39,8 @@ class MessageContainer extends StatelessWidget {
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: widget.messageViewModel.isMine ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+        crossAxisAlignment: widget.messageViewModel.isMine ? 
+          CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: [
           NameTimeBloc(
             messageViewModel: widget.messageViewModel

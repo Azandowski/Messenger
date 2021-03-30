@@ -50,13 +50,14 @@ class ChatHeading extends StatelessWidget {
                       style: AppFontStyles.mediumStyle,
                     ),
                   ), 
-                  if(description != null && description != '') Container(
-                    height: 18,
-                    child: MarqueText(
-                      text: description ?? '',
-                      style: AppFontStyles.placeholderStyle,
-                    ),
-                  ), 
+                  if (description != null && description != '') 
+                    Container(
+                      height: 18,
+                      child: MarqueText(
+                        text: description ?? '',
+                        style: AppFontStyles.placeholderStyle,
+                      ),
+                    ), 
                 ],
               ),
             ),
