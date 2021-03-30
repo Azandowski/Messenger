@@ -67,18 +67,31 @@ abstract class ChatDataSource {
   Future<void> disposeChat();
 }
 
+class Cattt {
+  String sound() => "Meow";
+  bool eatFood(String food, {bool hungry}) => true;
+  Future<void> chew() async => print("Chewing...");
+  int walk(List<String> places) => 7;
+  void sleep() {}
+  void hunt(String place, String prey) {}
+  int lives = 9;
+}
+
 class ChatDataSourceImpl implements ChatDataSource {
   final http.Client client;
   final http.MultipartRequest multipartRequest;
   final SocketService socketService;
   final int id;
+  final Cattt cat;
 
   ChatDataSourceImpl({
     @required this.id,
     @required this.client,
     @required this.socketService,
     @required this.multipartRequest,
+    this.cat,
   }) {
+    print(cat.sound());
     socketService.echo
         .channel(SocketChannels.getChatByID(id))
         .listen('.messages.$id', (updates) {

@@ -4,24 +4,23 @@ import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 import '../../config/auth_config.dart';
 
-
 class SocketService {
-  
   final AuthConfig authConfig;
-  
+
   IO.Socket socket;
   Echo echo;
+  int age = 1;
 
-  SocketService({
-    @required this.authConfig
-  });
+  SocketService({@required this.authConfig});
 
-  void init () {
-    Map headers = { 'Authorization': 'Bearer ${authConfig.token}' };
+  void init() {
+    Map headers = {'Authorization': 'Bearer ${authConfig.token}'};
 
-    socket = IO.io('https://aio-test-vps.kulenkov-group.kz:6002',
-      IO.OptionBuilder().setExtraHeaders(new Map<String, dynamic>.from(headers))
-        .setTransports(['websocket']).build());
+    socket = IO.io(
+        'https://aio-test-vps.kulenkov-group.kz:6002',
+        IO.OptionBuilder()
+            .setExtraHeaders(new Map<String, dynamic>.from(headers))
+            .setTransports(['websocket']).build());
 
     socket.connect();
 
@@ -30,11 +29,9 @@ class SocketService {
     echo = new Echo({
       'broadcaster': 'socket.io',
       'client': socket,
-      'auth': {
-        'headers': headers
-      }
+      'auth': {'headers': headers}
     });
-    
+
     echo.connect();
 
     echo.join('online.2').here((d) {
@@ -45,19 +42,18 @@ class SocketService {
   }
 }
 
-
 abstract class SocketChannels {
-  /// New changes in chat room 
+  /// New changes in chat room
   /// [id] - id of the chat
-  static String getChatByID (int id) {
+  static String getChatByID(int id) {
     return 'messages.$id';
-  } 
+  }
 
-  static String getChatsUpdates (int id) {
+  static String getChatsUpdates(int id) {
     return 'get.index.$id';
   }
 
-  static String getChatDeleteById (int id) {
+  static String getChatDeleteById(int id) {
     return 'deleted.message.$id';
-  } 
+  }
 }

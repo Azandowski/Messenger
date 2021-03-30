@@ -23,7 +23,6 @@ import '../widgets/chat_setting_item.dart';
 part 'chat_details_state.dart';
 
 class ChatDetailsCubit extends Cubit<ChatDetailsState> {
-  
   final GetChatDetails getChatDetails;
   final AddMembers addMembers;
   final LeaveChat leaveChat;
@@ -34,209 +33,190 @@ class ChatDetailsCubit extends Cubit<ChatDetailsState> {
 
   ChatPermissions initialPermissions;
 
-  ChatDetailsCubit({
-    @required this.getChatDetails,
-    @required this.addMembers,
-    @required this.leaveChat,
-    @required this.updateChatSettings,
-    @required this.kickMembers,
-    @required this.blockUser,
-    @required this.setSocialMedia
-  }) : super(ChatDetailsLoading());
+  ChatDetailsCubit(
+      {@required this.getChatDetails,
+      @required this.addMembers,
+      @required this.leaveChat,
+      @required this.updateChatSettings,
+      @required this.kickMembers,
+      @required this.blockUser,
+      @required this.setSocialMedia})
+      : super(ChatDetailsLoading());
 
-  Future<void> loadDetails (int id, ProfileMode mode) async {
-    var response =  await getChatDetails.call(GetChatDetailsParams(
-      mode: mode, id: id
-    ));
+  Future<void> loadDetails(int id, ProfileMode mode) async {
+    var response =
+        await getChatDetails.call(GetChatDetailsParams(mode: mode, id: id));
 
     response.fold(
-      (failure) => emit(ChatDetailsError(
-        chatDetailed: this.state.chatDetailed, 
-        message: failure.message
-      )), 
+      (failure) => emit(
+        ChatDetailsError(
+            chatDetailed: this.state.chatDetailed, message: failure.message),
+      ),
       (data) {
         initialPermissions = data.settings;
-        emit(ChatDetailsLoaded(
-          chatDetailed: data
-        ));
-      }
+        emit(ChatDetailsLoaded(chatDetailed: data));
+      },
     );
   }
 
-
-  Future<void> doLeaveChat (int id) async {
+  Future<void> doLeaveChat(int id) async {
     emit(ChatDetailsProccessing(chatDetailed: this.state.chatDetailed));
 
     var response = await leaveChat(id);
 
-    response.fold((failure) => emit(ChatDetailsError(
-      message: failure.message,
-      chatDetailed: this.state.chatDetailed
-    )), (response) {
-      emit(ChatDetailsLeave(
-        chatDetailed: this.state.chatDetailed
-      ));
+    response.fold(
+        (failure) => emit(ChatDetailsError(
+            message: failure.message,
+            chatDetailed: this.state.chatDetailed)), (response) {
+      emit(ChatDetailsLeave(chatDetailed: this.state.chatDetailed));
     });
   }
 
-  Future<void> kickMember (int id, int userID) async {
+  Future<void> kickMember(int id, int userID) async {
     emit(ChatDetailsProccessing(chatDetailed: this.state.chatDetailed));
 
-    var response = await kickMembers(KickMemberParams(
-      id: id, 
-      userID: userID
-    ));
+    var response = await kickMembers(KickMemberParams(id: id, userID: userID));
 
     response.fold(
-      (failure) => emit(ChatDetailsError(
-        message: failure.message,
-        chatDetailed: this.state.chatDetailed
-      )), (newChatDetailed) => emit(ChatDetailsLoaded(
-        chatDetailed: newChatDetailed
-      ))
-    );
+        (failure) => emit(ChatDetailsError(
+            message: failure.message, chatDetailed: this.state.chatDetailed)),
+        (newChatDetailed) =>
+            emit(ChatDetailsLoaded(chatDetailed: newChatDetailed)));
   }
 
-  Future<void> addMembersToChat (int id, List<ContactEntity> contacts) async {
+  Future<void> addMembersToChat(int id, List<ContactEntity> contacts) async {
     emit(ChatDetailsProccessing(chatDetailed: this.state.chatDetailed));
-    
+
     var response = await addMembers(AddMembersToChatParams(
-      id: id,
-      members: contacts.map((e) => e.id).toList()
-    ));
+        id: id, members: contacts.map((e) => e.id).toList()));
 
     response.fold(
-      (failure) => emit(ChatDetailsError(
-        message: failure.message,
-        chatDetailed: this.state.chatDetailed
-      )), (newChatDetailed) => emit(ChatDetailsLoaded(
-        chatDetailed: newChatDetailed
-      ))
-    );
+        (failure) => emit(ChatDetailsError(
+            message: failure.message, chatDetailed: this.state.chatDetailed)),
+        (newChatDetailed) =>
+            emit(ChatDetailsLoaded(chatDetailed: newChatDetailed)));
   }
 
-  void toggleChatSetting ({
-    @required ChatSettings settings, 
-    @required bool newValue, 
-    @required int id,
-    @required Function(ChatPermissions) callback 
-  }) async {
+  void toggleChatSetting(
+      {@required ChatSettings settings,
+      @required bool newValue,
+      @required int id,
+      @required Function(ChatPermissions) callback}) async {
     ChatPermissions newPermissions;
-    
+
     switch (settings) {
       case ChatSettings.noSound:
-        newPermissions = this.state.chatDetailed.settings?.copyWith(
-          isSoundOn: !newValue
-        ) ?? ChatPermissions(isSoundOn: !newValue, isMediaSendOn: false);
+        newPermissions =
+            this.state.chatDetailed.settings?.copyWith(isSoundOn: !newValue) ??
+                ChatPermissions(isSoundOn: !newValue, isMediaSendOn: false);
         break;
       case ChatSettings.noMedia:
-        newPermissions = this.state.chatDetailed.settings?.copyWith(
-          isMediaSendOn: !newValue
-        ) ?? ChatPermissions(isSoundOn: false, isMediaSendOn: !newValue);
+        newPermissions = this
+                .state
+                .chatDetailed
+                .settings
+                ?.copyWith(isMediaSendOn: !newValue) ??
+            ChatPermissions(isSoundOn: false, isMediaSendOn: !newValue);
         break;
       case ChatSettings.adminSendMessage:
-        newPermissions = this.state.chatDetailed.settings?.copyWith(
-          adminMessageSend: newValue
-        );
+        newPermissions = this
+            .state
+            .chatDetailed
+            .settings
+            ?.copyWith(adminMessageSend: newValue);
         break;
       case ChatSettings.forwardMessages:
-        newPermissions = this.state.chatDetailed.settings?.copyWith(
-          isForwardOn: newValue
-        );
+        newPermissions =
+            this.state.chatDetailed.settings?.copyWith(isForwardOn: newValue);
         break;
     }
 
-    var newState = this.state.copyWith(chatDetailed: this.state.chatDetailed.copyWith(
-      settings: newPermissions
-    ));
+    var newState = this.state.copyWith(
+        chatDetailed:
+            this.state.chatDetailed.copyWith(settings: newPermissions));
 
     emit(newState);
     callback(newPermissions);
   }
 
-  Future<void> onFinish ({
-    @required int id,
-    @required Function(ChatPermissions) callback
-  }) async {
+  Future<void> onFinish(
+      {@required int id, @required Function(ChatPermissions) callback}) async {
     if (_needsPermissionsUpdate) {
       var newPermissions = this.state.chatDetailed?.settings;
 
       var response = await updateChatSettings(UpdateChatSettingsParams(
-        id: id,
-        permissionModel: ChatPermissionModel(
-          isSoundOn: newPermissions.isSoundOn,
-          isMediaSendOn: newPermissions.isMediaSendOn,
-          adminMessageSend: newPermissions.adminMessageSend,
-          isForwardOn: newPermissions.isForwardOn
-        )
-      ));
+          id: id,
+          permissionModel: ChatPermissionModel(
+              isSoundOn: newPermissions.isSoundOn,
+              isMediaSendOn: newPermissions.isMediaSendOn,
+              adminMessageSend: newPermissions.adminMessageSend,
+              isForwardOn: newPermissions.isForwardOn)));
 
-      response.fold((failure) => emit(ChatDetailsError(
-          chatDetailed: this.state.chatDetailed, 
-          message: failure.message
-        )), (result) {
+      response.fold(
+        (failure) => emit(ChatDetailsError(
+            chatDetailed: this.state.chatDetailed, message: failure.message)),
+        (result) {
           callback(result);
-      });
+        },
+      );
     }
   }
 
-  Future<void> blockUnblockUser ({
-    @required int userID, 
-    @required bool isBlock
-  }) async {
+  Future<void> blockUnblockUser(
+      {@required int userID, @required bool isBlock}) async {
     emit(ChatDetailsProccessing(chatDetailed: this.state.chatDetailed));
 
-    var response = await blockUser(BlockUserParams(
-      isBloc: isBlock, 
-      userID: userID
-    ));
+    var response =
+        await blockUser(BlockUserParams(isBloc: isBlock, userID: userID));
 
-    response.fold((failure) => emit(ChatDetailsError(
-      message: failure.message,
-      chatDetailed: this.state.chatDetailed
-    )), (_) {
-      var newUser = state.chatDetailed.user.copyWith(isBlocked: isBlock);
-      var chatDetails = state.chatDetailed.copyWith(user: newUser);
-      emit(ChatDetailsLoaded(
-        chatDetailed: chatDetails
-      ));
-    });
+    response.fold(
+      (failure) => emit(ChatDetailsError(
+          message: failure.message, chatDetailed: this.state.chatDetailed)),
+      (_) {
+        var newUser = state.chatDetailed.user.copyWith(isBlocked: isBlock);
+        var chatDetails = state.chatDetailed.copyWith(user: newUser);
+        emit(ChatDetailsLoaded(chatDetailed: chatDetails));
+      },
+    );
   }
 
-  Future<void> setNewSocialMedia ({
+  Future<void> setNewSocialMedia({
     @required int id,
     @required SocialMedia newSocialMedia,
   }) async {
     emit(ChatDetailsProccessing(chatDetailed: this.state.chatDetailed));
 
-    var response = await setSocialMedia(SetSocialMediaParams(
-      id: id, 
-      socialMedia: newSocialMedia
-    ));
+    var response = await setSocialMedia(
+        SetSocialMediaParams(id: id, socialMedia: newSocialMedia));
 
-    response.fold((failure) => emit(ChatDetailsError(
-      message: failure.message,
-      chatDetailed: this.state.chatDetailed
-    )), (response) {
+    response.fold(
+        (failure) => emit(ChatDetailsError(
+            message: failure.message,
+            chatDetailed: this.state.chatDetailed)), (response) {
       emit(ChatDetailsLoaded(
-        chatDetailed: state.chatDetailed.copyWith(socialMedia: newSocialMedia)
-      ));
+          chatDetailed:
+              state.chatDetailed.copyWith(socialMedia: newSocialMedia)));
     });
   }
 
-  void showError (String message) {
+  void showError(String message) {
     emit(ChatDetailsError(
-      chatDetailed: this.state.chatDetailed,
-      message: message
-    ));
+        chatDetailed: this.state.chatDetailed, message: message));
   }
 
-
   bool get _needsPermissionsUpdate {
-    return 
-      initialPermissions?.isSoundOn != this.state.chatDetailed?.settings?.isSoundOn || 
-        initialPermissions?.isMediaSendOn != this.state.chatDetailed?.settings?.isMediaSendOn ||
-          initialPermissions.adminMessageSend != this.state.chatDetailed?.settings?.adminMessageSend || 
-            initialPermissions.isForwardOn != this.state.chatDetailed?.settings?.isForwardOn; 
+    return initialPermissions?.isSoundOn !=
+            this.state.chatDetailed?.settings?.isSoundOn ||
+        initialPermissions?.isMediaSendOn !=
+            this.state.chatDetailed?.settings?.isMediaSendOn ||
+        initialPermissions.adminMessageSend !=
+            this.state.chatDetailed?.settings?.adminMessageSend ||
+        initialPermissions.isForwardOn !=
+            this.state.chatDetailed?.settings?.isForwardOn;
+  }
+
+  // this method added by amanokerim for testing purposes
+  void setState(ChatDetailsState state) {
+    emit(state);
   }
 }

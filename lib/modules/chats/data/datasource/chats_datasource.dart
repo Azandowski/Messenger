@@ -20,148 +20,128 @@ import '../../domain/entities/chat_search_response.dart';
 import '../model/chat_search_response_model.dart';
 
 abstract class ChatsDataSource {
-  Future<PaginatedResultViaLastItem<ChatEntity>> getUserChats ({
-    @required String token,
-    int lastChatId
-  });
+  Future<PaginatedResultViaLastItem<ChatEntity>> getUserChats(
+      {@required String token, int lastChatId});
 
-  Future<PaginatedResultViaLastItem<ChatEntity>> getCategoryChat ({
-    @required String token,
-    @required int categoryID,
-    int lastChatId
-  });
+  Future<PaginatedResultViaLastItem<ChatEntity>> getCategoryChat(
+      {@required String token, @required int categoryID, int lastChatId});
 
   Stream<ChatEntity> get chats;
 
-  Future<File> getLocalWallpaper ();
+  Future<File> getLocalWallpaper();
 
-  Future<void> setLocalWallpaper(File file); 
+  Future<void> setLocalWallpaper(File file);
 
-  Future<ChatMessageResponse> searchChats ({
-    Uri nextPageURL,
-    String queryText,
-    int chatID
-  });
+  Future<ChatMessageResponse> searchChats(
+      {Uri nextPageURL, String queryText, int chatID});
 }
-
 
 class ChatsDataSourceImpl implements ChatsDataSource {
   final http.Client client;
   final SocketService socketService;
 
-  ChatsDataSourceImpl({
-    @required this.client,
-    @required this.socketService
-  });
+  ChatsDataSourceImpl({@required this.client, @required this.socketService});
 
-  void init () {
+  void init() {
     int userID = sl<AuthConfig>().user.id;
 
-    socketService.echo.channel(SocketChannels.getChatsUpdates(userID)).listen(
-      '.get.index.$userID', 
-      (updates) {
-        Map chatJSON = updates['chat'];
-        chatJSON['last_message'] = updates['last_message'];
-        chatJSON['category_chat'] = updates['category_chat'];
-        chatJSON['settings'] = updates['settings'];
-        chatJSON['no_read_message'] = updates['no_read_message'];
+    socketService.echo
+        .channel(SocketChannels.getChatsUpdates(userID))
+        .listen('.get.index.$userID', (updates) {
+      Map chatJSON = updates['chat'];
+      chatJSON['last_message'] = updates['last_message'];
+      chatJSON['category_chat'] = updates['category_chat'];
+      chatJSON['settings'] = updates['settings'];
+      chatJSON['no_read_message'] = updates['no_read_message'];
 
-        ChatEntityModel model = ChatEntityModel.fromJson(chatJSON);
-        _controller.add(model);
-      });
+      ChatEntityModel model = ChatEntityModel.fromJson(chatJSON);
+      _controller.add(model);
+    });
   }
 
   /**
   * * Loading List of user's all chats via token
   */
   @override
-  Future<PaginatedResultViaLastItem<ChatEntity>> getUserChats({
-    @required String token,
-    int lastChatId
-  }) async {
+  Future<PaginatedResultViaLastItem<ChatEntity>> getUserChats(
+      {@required String token, int lastChatId}) async {
     http.Response response = await client.get(
       Endpoints.getAllUserChats.buildURL(queryParameters: {
-        if (lastChatId != null)
-          'last_chat_id': '$lastChatId'
+        if (lastChatId != null) 'last_chat_id': '$lastChatId'
       }),
       headers: Endpoints.getAllUserChats.getHeaders(token: token),
     );
-    
+
     if (response.isSuccess) {
       var responseJSON = json.decode(response.body);
 
       return PaginatedResultViaLastItem<ChatEntity>(
-        data: ((responseJSON['chats'] ?? []) as List).map(
-          (e) => ChatEntityModel.fromJson(e)).toList(),
-        hasReachMax: !responseJSON['has_more_results']
-      );
+          data: ((responseJSON['chats'] ?? []) as List)
+              .map((e) => ChatEntityModel.fromJson(e))
+              .toList(),
+          hasReachMax: !responseJSON['has_more_results']);
     } else {
-      throw ServerFailure(message: ErrorHandler.getErrorMessage(response.body.toString()));
+      throw ServerFailure(
+          message: ErrorHandler.getErrorMessage(response.body.toString()));
     }
   }
 
   @override
-  Future<ChatMessageResponse> searchChats({
-    Uri nextPageURL,
-    String queryText,
-    int chatID
-  }) async {
+  Future<ChatMessageResponse> searchChats(
+      {Uri nextPageURL, String queryText, int chatID}) async {
     http.Response response = await client.get(
-      nextPageURL ?? Endpoints.searchChats.buildURL(
-        queryParameters: {
-          'search': queryText,
-          if (chatID != null) 
-            ...{'chat_id': '$chatID'}
-        }
-      ),
-      headers: Endpoints.searchChats.getHeaders(token: sl<AuthConfig>().token)
-    );
+        nextPageURL ??
+            Endpoints.searchChats.buildURL(queryParameters: {
+              'search': queryText,
+              if (chatID != null) ...{'chat_id': '$chatID'}
+            }),
+        headers:
+            Endpoints.searchChats.getHeaders(token: sl<AuthConfig>().token));
 
     if (response.isSuccess) {
       var responseJSON = json.decode(response.body);
       return ChatSearchResponseModel.fromJson(responseJSON);
     } else {
-      throw ServerFailure(message: ErrorHandler.getErrorMessage(response.body.toString()));   
+      throw ServerFailure(
+          message: ErrorHandler.getErrorMessage(response.body.toString()));
     }
   }
 
   @override
-  Future<PaginatedResultViaLastItem<ChatEntity>> getCategoryChat({
-    @required String token, 
-    @required int categoryID,
-    int lastChatId
-  }) async {
-      http.Response response = await client.get(
-        Endpoints.categoryChats.buildURL(
-          urlParams: ['$categoryID'],
-          queryParameters: {
-            if (lastChatId != null)
-              'last_chat_id': '$lastChatId'
-          }
-        ),
-        headers: Endpoints.categoryChats.getHeaders(token: token),
-      );
+  Future<PaginatedResultViaLastItem<ChatEntity>> getCategoryChat(
+      {@required String token,
+      @required int categoryID,
+      int lastChatId}) async {
+    http.Response response = await client.get(
+      Endpoints.categoryChats.buildURL(urlParams: [
+        '$categoryID'
+      ], queryParameters: {
+        if (lastChatId != null) 'last_chat_id': '$lastChatId'
+      }),
+      headers: Endpoints.categoryChats.getHeaders(token: token),
+    );
 
-    if (response.isSuccess) { 
+    if (response.isSuccess) {
       var responseJSON = json.decode(response.body);
 
       return PaginatedResultViaLastItem<ChatEntity>(
-        data: ((responseJSON['chats'] ?? []) as List).map(
-          (e) => ChatEntityModel.fromJson(e)).toList(),
-        hasReachMax: !responseJSON['hasMoreResults']
-      );
+          data: ((responseJSON['chats'] ?? []) as List)
+              .map((e) => ChatEntityModel.fromJson(e))
+              .toList(),
+          hasReachMax: !responseJSON['hasMoreResults']);
     } else {
-      throw ServerFailure(message: ErrorHandler.getErrorMessage(response.body.toString()));
+      throw ServerFailure(
+          message: ErrorHandler.getErrorMessage(response.body.toString()));
     }
   }
 
   @override
   Future<File> getLocalWallpaper() async {
-    Directory appDocumentsDirectory = await getApplicationDocumentsDirectory(); 
-    String appDocumentsPath = appDocumentsDirectory.path; 
+    Directory appDocumentsDirectory = await getApplicationDocumentsDirectory();
+    String appDocumentsPath = appDocumentsDirectory.path;
     String filePath = '$appDocumentsPath/wallpaper.png';
     File output;
-    
+
     try {
       output = File(filePath);
     } catch (e) {}
@@ -171,8 +151,8 @@ class ChatsDataSourceImpl implements ChatsDataSource {
 
   @override
   Future<void> setLocalWallpaper(File file) async {
-    Directory appDocumentsDirectory = await getApplicationDocumentsDirectory(); 
-    String appDocumentsPath = appDocumentsDirectory.path; 
+    Directory appDocumentsDirectory = await getApplicationDocumentsDirectory();
+    String appDocumentsPath = appDocumentsDirectory.path;
     String filePath = '$appDocumentsPath/wallpaper.png';
     file.copy(filePath);
   }
@@ -182,6 +162,6 @@ class ChatsDataSourceImpl implements ChatsDataSource {
     yield* _controller.stream;
   }
 
-  @override 
+  @override
   final StreamController _controller = StreamController<ChatEntity>.broadcast();
 }
