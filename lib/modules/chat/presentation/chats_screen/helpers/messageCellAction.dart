@@ -9,6 +9,7 @@ enum MessageCellActions {
   replyMore,
   openProfile,
   deleteMessage,
+  translateMessage
 }
 
 extension MessageCellActionsUiExtensin on MessageCellActions {
@@ -26,6 +27,8 @@ extension MessageCellActionsUiExtensin on MessageCellActions {
         return 'Удалить';
       case MessageCellActions.openProfile:
         return 'Профиль';
+      case MessageCellActions.translateMessage:
+        return 'Перевести';
       default:
         return '';
     }
@@ -45,6 +48,8 @@ extension MessageCellActionsUiExtensin on MessageCellActions {
         return Icon(Icons.delete, color: AppColors.redDeleteColor,);
       case MessageCellActions.openProfile:
         return Icon(Icons.person);
+      case MessageCellActions.translateMessage:
+        return Icon(Icons.translate);
     }
   }
 }

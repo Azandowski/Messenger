@@ -2,6 +2,7 @@ import 'package:flutter/rendering.dart';
 import 'package:messenger_mobile/core/config/auth_config.dart';
 import 'package:messenger_mobile/core/services/network/Endpoints.dart';
 import 'package:http/http.dart' as http;
+import 'package:messenger_mobile/modules/chat/data/datasources/local_chat_datasource.dart';
 import 'package:messenger_mobile/modules/creation_module/presentation/bloc/open_chat_cubit/open_chat_cubit.dart';
 import 'package:messenger_mobile/modules/creation_module/presentation/bloc/open_chat_cubit/open_chat_listener.dart';
 import 'package:messenger_mobile/modules/groupChat/domain/usecases/create_chat_group.dart';
@@ -46,12 +47,13 @@ class ChatScreenState extends State<ChatScreen> implements ChatChooseDelegate{
   ChatBloc _chatBloc;
   PanelBlocCubit _panelBlocCubit;
   ChatTodoCubit _chatTodoCubit;
+  ChatRepository chatRepository;
   
   // MARK: - Life-Cycle
   
   @override
   void initState() {
-    final ChatRepository chatRepository = ChatRepositoryImpl(
+    chatRepository = ChatRepositoryImpl(
       networkInfo: sl(),
       chatDataSource: ChatDataSourceImpl(
         id: widget.chatEntity.chatId,
@@ -60,7 +62,8 @@ class ChatScreenState extends State<ChatScreen> implements ChatChooseDelegate{
         multipartRequest: http.MultipartRequest(
           'POST', Endpoints.sendMessages.buildURL(urlParams:  [widget.chatEntity.chatId.toString()])
         ),
-      )
+      ),
+      localChatDataSource: LocalChatDataSourceImpl()
     );
 
     _chatTodoCubit = ChatTodoCubit(
@@ -205,7 +208,8 @@ class ChatScreenState extends State<ChatScreen> implements ChatChooseDelegate{
                                       cubit: cubit, 
                                       panelBlocCubit: _panelBlocCubit, 
                                       chatTodoCubit: _chatTodoCubit, 
-                                      chatBloc: _chatBloc
+                                      chatBloc: _chatBloc,
+                                      chatRepository: chatRepository
                                     ),
                                     scrollDirection: Axis.vertical,
                                     itemCount: getItemsCount(state),

@@ -88,7 +88,9 @@ class MessageViewModel {
   }) {
     if (message.text != null && message.text != '') {
       return MessageCellActions.values.where(
-        (e) => isReplyEnabled ? true : e != MessageCellActions.replyMessage && e != MessageCellActions.replyMore
+        (e) => 
+          isReplyEnabled ? true : e != MessageCellActions.replyMessage 
+            && e != MessageCellActions.replyMore 
       ).toList(); 
     } else {
       return [

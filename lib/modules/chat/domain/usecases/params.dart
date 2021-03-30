@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:messenger_mobile/core/config/language.dart';
 import 'package:messenger_mobile/modules/chat/data/datasources/chat_datasource.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chat_details/page/chat_detail_screen.dart';
 import 'package:messenger_mobile/modules/social_media/domain/entities/social_media.dart';
@@ -219,5 +220,18 @@ class MarkAsReadParams {
   MarkAsReadParams({
     @required this.id,
     @required this.messageID
+  });
+}
+
+
+class TranslateMessageParams {
+  final int messageID;
+  final String originalText;
+  final ApplicationLanguage applicationLanguage;
+
+  TranslateMessageParams({
+    @required this.messageID, 
+    @required this.originalText, 
+    @required this.applicationLanguage
   });
 }

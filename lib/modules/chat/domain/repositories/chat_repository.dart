@@ -1,7 +1,8 @@
 import 'dart:async';
 
 import 'package:dartz/dartz.dart';
-
+import 'package:messenger_mobile/core/config/language.dart';
+import 'package:messenger_mobile/modules/chat/data/models/translation_response.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/services/network/paginatedResult.dart';
 import '../../../../core/usecases/usecase.dart';
@@ -51,4 +52,13 @@ abstract class ChatRepository {
   Future<Either<Failure, bool>> replyMore(ReplyMoreParams params);
   Future<Either<Failure, ChatMessageResponse>> getChatMessageContext (int chatID, int messageID);
   Future<void> markMessageAsRead (MarkAsReadParams params);
+  
+  // MARK: - Translation
+  Future<Either<Failure, TranslationResponse>> translateMessage (
+    int messageID,
+    String message,
+    ApplicationLanguage language
+  );
+
+  Future<Either<Failure, TranslationResponse>> getOldTranslation (int messageID, ApplicationLanguage language);
 }

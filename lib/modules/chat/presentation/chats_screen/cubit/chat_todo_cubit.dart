@@ -32,13 +32,13 @@ class ChatTodoCubit extends Cubit<ChatTodoState> {
   }) : super(ChatToDoDisabled());
 
 
-  void selectMessage(Message newMessage){
+  void selectMessage(Message newMessage) {
     var messages = (state.selectedMessages ?? []).map((e) => e.copyWith()).toList();
     messages.add(newMessage);
     emit(ChatTodoSelection(selectedMessages: messages, isDelete: this.state.isDelete));
   }
 
-  void removeMessage(Message message){
+  void removeMessage(Message message) {
     var messages = (state.selectedMessages ?? []).map((e) => e.copyWith()).toList();
     messages.removeWhere((element) => element.id == message.id);
     emit(ChatTodoSelection(selectedMessages: messages, isDelete: this.state.isDelete));
@@ -48,7 +48,7 @@ class ChatTodoCubit extends Cubit<ChatTodoState> {
     emit(ChatTodoSelection(selectedMessages: [message], isDelete: isDelete));
   }
 
-  void disableSelectionMode(){
+  void disableSelectionMode() {
     emit(ChatToDoDisabled());
   }
 
@@ -70,7 +70,9 @@ class ChatTodoCubit extends Cubit<ChatTodoState> {
     result.fold((l) => emit(ChatToDoError(errorMessage: l.message)), (r) => emit(ChatToDoDisabled()));
   }
 
-  void replyMessageToMore({List<ChatEntity> chatIds}) async {
+  void replyMessageToMore({
+    List<ChatEntity> chatIds
+  }) async {
     emit(ChatToDoLoading(
       selectedMessages: this.state.selectedMessages,
       isDelete: false,

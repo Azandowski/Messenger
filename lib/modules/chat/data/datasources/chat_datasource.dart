@@ -3,7 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
-
+import 'package:messenger_mobile/modules/chat/data/models/translation_response.dart';
 import '../../../../core/config/auth_config.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/services/network/Endpoints.dart';
@@ -70,6 +70,10 @@ abstract class ChatDataSource {
   Future<bool> unblockUser(int id);
   Future<void> disposeChat();
   Future<void> markAsRead (int id, int messageID);
+  Future<TranslationResponse> translateText ({
+    @required String originalText,
+    @required String langCode
+  });
 }
 
 
@@ -521,5 +525,45 @@ class ChatDataSourceImpl implements ChatDataSource {
       if (params.contactID != null) 
         ... {'contact_id': '${params.contactID}'}
     };
+  }
+
+  Future<TranslationResponse> translateText ({
+    @required String originalText,
+    @required String langCode
+  }) async {
+    // return Future.delayed(Duration(seconds: 1), () {
+    //   return TranslationResponse(
+    //     detectedLanguage: 'en',
+    //     text: 'Привет',
+    //     detectedLanguageUnformatted: 'en'
+    //   );
+    // });
+
+    http.Response response = await client.post(
+      Uri.parse("https://translate.api.cloud.yandex.net/translate/v2/translate"),
+      body: json.encode({
+        "folder_id": "b1gkq1ghkfika97l9en2",
+        'texts': [originalText],
+        'targetLanguageCode': langCode
+      }),
+      headers: {
+        'Authorization': 'Api-Key AQVN1vzRDlStWsG4chCPOYI3cZAwXBIIJBS2warl',
+        'Content-type': 'application/json'
+      }
+    );
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      List translations = json.decode(Utf8Decoder().convert(response.bodyBytes))['translations'] ?? [];
+
+      if (translations.length != 0) {
+        var jsonModel = translations[0];
+        jsonModel['translated_to'] = langCode;
+        return TranslationResponse.fromJson(jsonModel);
+      } else {
+        throw ServerFailure(message: 'Not Found');
+      }
+    } else {
+      throw ServerFailure(message: response.body);
+    }
   }
 }

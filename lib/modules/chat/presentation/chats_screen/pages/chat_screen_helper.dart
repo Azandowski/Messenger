@@ -229,6 +229,9 @@ extension ChatScreenStateHelper on ChatScreenState {
         navigator.push(ChatDetailPage.route(
           messageViewModel.message.user.id, ProfileMode.user
         ));
+        break;
+      default:
+        break;
     }
   }
 
@@ -339,7 +342,8 @@ extension ChatScreenStateHelper on ChatScreenState {
     @required ChatTodoState cubit,
     @required PanelBlocCubit panelBlocCubit,
     @required ChatTodoCubit chatTodoCubit,
-    @required ChatBloc chatBloc
+    @required ChatBloc chatBloc,
+    ChatRepository chatRepository
   }) {
     var spinnerIndex;
     if (state is ChatLoading) {
@@ -399,7 +403,8 @@ extension ChatScreenStateHelper on ChatScreenState {
         cubit: cubit,
         panelBlocCubit: panelBlocCubit, 
         isSelected: isSelected,
-        timeDeleted: timeLeft
+        timeDeleted: timeLeft,
+        chatRepository: chatRepository
       );
 
       return AutoScrollTag(
@@ -443,6 +448,7 @@ extension ChatScreenStateHelper on ChatScreenState {
     @required ChatBloc chatBloc
   }) {
     return MessageCell(
+      chatRepository: params.chatRepository,
       isSwipeEnabled: params.state.chatEntity.permissions?.isForwardOn ?? true,
       nextMessageUserID: params.nextMessageUserID,
       prevMessageUserID: params.prevMessageUserID,
@@ -506,6 +512,7 @@ class MessageCellParams {
   final PanelBlocCubit panelBlocCubit;
   final bool isSelected;
   final int timeDeleted;
+  final ChatRepository chatRepository;
 
   MessageCellParams({
     @required this.state,
@@ -516,6 +523,7 @@ class MessageCellParams {
     @required this.cubit,
     @required this.panelBlocCubit,
     @required this.isSelected,
-    @required this.timeDeleted
+    @required this.timeDeleted,
+    @required this.chatRepository
   });
 }

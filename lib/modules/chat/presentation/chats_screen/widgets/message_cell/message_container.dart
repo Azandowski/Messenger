@@ -4,6 +4,7 @@ import 'package:messenger_mobile/core/blocs/audioplayer/bloc/audio_player_bloc.d
 import 'package:messenger_mobile/core/widgets/independent/map/map_view.dart';
 import 'package:messenger_mobile/modules/chat/domain/entities/file_media.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chat_details/widgets/chat_media_block.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chats_screen/cubit/translation_cubit.dart/translation_cubit.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen_import.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/photo_gallery_screen.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/components/contact_item.dart';
@@ -15,15 +16,18 @@ import 'package:messenger_mobile/modules/creation_module/presentation/bloc/open_
 import 'audio_player_element.dart';
 
 class MessageContainer extends StatelessWidget {
+  
   const MessageContainer({
     Key key,
     @required this.widget,
     @required this.audioPlayerBloc,
-    @required this.onClickForwardMessage
+    @required this.onClickForwardMessage,
+    @required this.translationCubit
   }) : super(key: key);
 
   final MessageCell widget;
   final AudioPlayerBloc audioPlayerBloc;
+  final TranslationCubit translationCubit;
   final Function(int) onClickForwardMessage; 
   
   NavigatorState get _navigator => sl<Application>().navKey.currentState;
@@ -52,7 +56,11 @@ class MessageContainer extends StatelessWidget {
               onClickForwardMessage: onClickForwardMessage
             ),
 
-          ...returnMessageCellBody(context)
+          ...returnMessageCellBody(context),
+
+          if (widget.messageViewModel.message.text != null 
+            && widget.messageViewModel.message.text.isNotEmpty)
+            _buildTranslationBody()
         ],
       ),
     );
@@ -122,7 +130,70 @@ class MessageContainer extends StatelessWidget {
 }
 
 
+extension MessageContainerTranslationExtension on MessageContainer {
+  Widget _buildTranslationBody () {
 
+    if (widget.messageViewModel.message.id != translationCubit.idOfMessage) {
+      // Reusable Cell updated its content
+      translationCubit.resetTranslation(widget.messageViewModel.message.id);
+    }
+
+    return Container(
+      child: BlocProvider.value(
+        value: translationCubit,
+        child: BlocConsumer<TranslationCubit, TranslationState>(
+          listener: (context, state) {},
+          builder: (context, state) {
+            if (state is TranslatedState) {
+              return _buildTranslatedItem(state);
+            } else if (state is TranslatingState) {
+              return Text(
+                'Переводим ...',
+                style: !widget.messageViewModel.isMine ? 
+                  AppFontStyles.grey12w400 : AppFontStyles.ligthGrey12w400
+              );
+            }
+
+            return Container();
+          },
+        )
+      ),
+    );
+  }
+
+  Widget _buildTranslatedItem (TranslatedState state) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Wrap(
+          children: [
+            Icon(
+              Icons.translate, 
+              color: widget.messageViewModel.isMine ? 
+                Colors.white : AppColors.indicatorColor,
+              size: 14,
+            ),
+            SizedBox(width: 10),
+            Text(
+              'Оригинальный язык: ' +
+                state.translationResponse.detectedLanguage,
+              style: !widget.messageViewModel.isMine ? 
+                AppFontStyles.grey12w400 : AppFontStyles.ligthGrey12w400,
+              textAlign: TextAlign.left,
+            ),
+          ],
+        ),
+        SizedBox(height: 4),
+        Text(
+          state.translationResponse.text,
+          style: !widget.messageViewModel.isMine ? 
+            AppFontStyles.black14w400 : AppFontStyles.white14w400,
+          textAlign: TextAlign.left,
+        )
+      ],
+    );
+  }
+}
 
 
 // MARK: - Helpers

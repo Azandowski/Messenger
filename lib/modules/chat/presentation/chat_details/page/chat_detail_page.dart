@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
+import 'package:messenger_mobile/modules/chat/data/datasources/local_chat_datasource.dart';
 
 import '../../../../../app/application.dart';
 import '../../../../../core/blocs/chat/bloc/bloc/chat_cubit.dart';
@@ -68,7 +69,8 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
         ),
         client: sl(), 
         socketService: sl()
-      )
+      ),
+      localChatDataSource: LocalChatDataSourceImpl()
     );
 
     addMembers = AddMembers(repository: chatRepositoryImpl);
