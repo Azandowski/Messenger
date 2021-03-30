@@ -39,9 +39,9 @@ class ChatTodoCubit extends Cubit<ChatTodoState> {
   }
 
   void removeMessage(Message message){
-     var messages = (state.selectedMessages ?? []).map((e) => e.copyWith()).toList();
-     messages.removeWhere((element) => element.id == message.id);
-     emit(ChatTodoSelection(selectedMessages: messages, isDelete: this.state.isDelete));
+    var messages = (state.selectedMessages ?? []).map((e) => e.copyWith()).toList();
+    messages.removeWhere((element) => element.id == message.id);
+    emit(ChatTodoSelection(selectedMessages: messages, isDelete: this.state.isDelete));
   }
 
   void enableSelectionMode(Message message, bool isDelete){
@@ -57,6 +57,7 @@ class ChatTodoCubit extends Cubit<ChatTodoState> {
       selectedMessages: this.state.selectedMessages,
       isDelete: true,
     ));
+
     var ids = this.state.selectedMessages.map((e) => e.id.toString()).join(',');
     final result = await deleteMessageUseCase(
       DeleteMessageParams(
@@ -65,6 +66,7 @@ class ChatTodoCubit extends Cubit<ChatTodoState> {
         forMe: forMe ? 1 : 0,
       )
     );
+    
     result.fold((l) => emit(ChatToDoError(errorMessage: l.message)), (r) => emit(ChatToDoDisabled()));
   }
 

@@ -79,6 +79,10 @@ class MainApp extends StatelessWidget {
               ],
               child: Builder(
                 builder: (BuildContext context) {
+                  serviceLocator.sl<Application>().changeAppLanguage(
+                    context.locale
+                  );
+
                   return MaterialApp(
                     debugShowCheckedModeBanner: false,
                     home: SplashScreen(),
