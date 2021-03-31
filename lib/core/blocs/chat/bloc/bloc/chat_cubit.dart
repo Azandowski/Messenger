@@ -41,6 +41,7 @@ class ChatGlobalCubit extends Cubit<ChatState> {
       isPagination: false,
       currentCategory: 0
     )) {
+    getChatsFromCache();
 
     _chatsSubscription = chatsRepository.chats.listen((chat) {
       chatsRepository.saveNewChatLocally(chat);
@@ -260,5 +261,38 @@ class ChatGlobalCubit extends Cubit<ChatState> {
         currentCategory: this.state.currentCategory
       ));
     }
+  }
+
+  Future<void> getChatsFromCache () async {
+    emit(ChatLoading(
+      chats: [], 
+      isPagination: false,
+      hasReachedMax: false,
+      currentCategory: null
+    ));
+
+    Either<Failure, PaginatedResultViaLastItem<ChatEntity>> response = await getChats(
+      GetChatsParams(
+        lastChatID: null,
+        token: sl<AuthConfig>().token,
+        fromCache: true
+      )
+    );
+
+    response.fold(
+      (failure) => emit(ChatsError(
+        chats: this.state.chats, 
+        errorMessage: failure.message, 
+        hasReachedMax: this.state.hasReachedMax,
+        currentCategory: this.state.currentCategory
+      )),
+      (chatsResponse) {
+        emit(ChatsLoaded( 
+          chats: chatsResponse.data,
+          hasReachedMax: chatsResponse.hasReachMax ?? false,
+          currentCategory: this.state.currentCategory)
+        );
+      }
+    );
   }
 }

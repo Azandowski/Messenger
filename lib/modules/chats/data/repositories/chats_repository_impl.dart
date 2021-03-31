@@ -49,17 +49,17 @@ class ChatsRepositoryImpl extends ChatsRepository {
         hasReachMax: false
       ));
     } else if (await networkInfo.isConnected) {
-      if (params.lastChatID == null) {
-        hasInitialized = true;
-        await localChatsDataSource.resetAll();
-      }
-
       try {
         final response = await chatsDataSource.getUserChats(
           token: params.token, 
           lastChatId: params.lastChatID
         );
-
+        
+        if (params.lastChatID == null) {
+          hasInitialized = true;
+          await localChatsDataSource.resetAll();
+        }
+        
         await localChatsDataSource.setCategoryChats(response.data);
         return Right(response);
       } catch (e) {
