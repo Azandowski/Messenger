@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:messenger_mobile/modules/chats/domain/entities/chat_attachment_type.dart';
 
 import '../../../../app/appTheme.dart';
 import '../../../../core/services/network/config.dart';
@@ -29,6 +30,22 @@ class ChatViewModel {
     return entity.chatCategory != null || entity.lastMessage != null;
   }
 
+  bool get hasAttachment {
+    return entity.lastMessage?.type != null && entity.lastMessage.type != ChatAttachmentType.none;
+  }
+
+  String get attachmentPath {
+    if (hasAttachment) {
+      return entity.lastMessage?.type.iconPath;
+    } else {
+      return '';
+    }
+  }
+
+  String get chatDesription {
+    return entity?.description ?? '';
+  }
+
   String get description {
     if (isInLive) {
       return 'Сейчас в прямом эфире'.toUpperCase();
@@ -44,6 +61,10 @@ class ChatViewModel {
       if (entity.lastMessage.timeDeleted != null) {
         return 'Секретное сообщение';
       } 
+
+      if (hasAttachment) {
+        return entity.lastMessage.type.title;
+      }
 
       return entity.lastMessage.text ?? '';
     } else if (entity?.chatCategory != null){
@@ -142,3 +163,4 @@ class ChatViewModel {
 enum ChatBottomPin { unread, read, badge, none }
 
 enum ChatSettingType { muted, hideImages, pinned }
+

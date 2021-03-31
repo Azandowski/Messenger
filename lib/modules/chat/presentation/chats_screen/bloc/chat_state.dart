@@ -94,7 +94,8 @@ class ChatInitial extends ChatState {
       focusMessageID: focusMessageID ?? this.focusMessageID,
       unreadCount: unreadCount ?? this.unreadCount,
       showBottomPin: showBottomPin ?? this.showBottomPin,
-      chatEntity: chatEntity ?? this.chatEntity
+      chatEntity: chatEntity ?? this.chatEntity,
+      isSecretModeOn: this.isSecretModeOn
     );
   }
 
@@ -170,7 +171,8 @@ class ChatLoading extends ChatState {
       unreadCount: unreadCount ?? this.unreadCount,
       showBottomPin: showBottomPin ?? this.showBottomPin,
       isPagination: isPagination ?? this.isPagination,
-      chatEntity: chatEntity ?? this.chatEntity
+      chatEntity: chatEntity ?? this.chatEntity,
+      isSecretModeOn: this.isSecretModeOn
     );
   }
  
@@ -244,7 +246,8 @@ class ChatLoadingSilently extends ChatState {
       wallpaperPath: wallpaperPath ?? this.wallpaperPath,
       unreadCount: unreadCount ?? this.unreadCount,
       showBottomPin: showBottomPin ?? this.showBottomPin,
-      chatEntity: chatEntity ?? this.chatEntity
+      chatEntity: chatEntity ?? this.chatEntity,
+      isSecretModeOn: this.isSecretModeOn
     );
   }
 
@@ -319,7 +322,8 @@ class ChatError extends ChatState {
       unreadCount: unreadCount ?? this.unreadCount,
       showBottomPin: showBottomPin ?? this.showBottomPin,
       message: message ?? this.message,
-      chatEntity: chatEntity ?? this.chatEntity
+      chatEntity: chatEntity ?? this.chatEntity,
+      isSecretModeOn: this.isSecretModeOn
     );
   }
 

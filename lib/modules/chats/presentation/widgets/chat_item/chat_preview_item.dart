@@ -54,6 +54,15 @@ class ChatPreviewItem extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    if (viewModel.hasAttachment)
+                      ...[
+                        Image.asset(
+                          viewModel.attachmentPath,
+                          width: 12,
+                          height: 12,
+                        ),
+                        SizedBox(width: 8)
+                      ],
                     Expanded(
                       child: Text(
                         viewModel.description,

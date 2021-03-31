@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:latlong/latlong.dart';
+import 'package:messenger_mobile/modules/chats/domain/entities/chat_attachment_type.dart';
 import 'package:messenger_mobile/modules/maps/presentation/pages/map_screen.dart';
 import '../../domain/entities/chat_actions.dart';
 import '../../domain/entities/file_media.dart';
@@ -24,6 +25,7 @@ class MessageModel extends Message {
   final PositionAddress location;
   final List<FileMedia> files;
   final List<MessageUser> contacts;
+  final ChatAttachmentType type;
   List<Message> transfer;
   MessageHandleType messageHandleType;
 
@@ -45,6 +47,7 @@ class MessageModel extends Message {
     this.messageHandleType = MessageHandleType.newMessage,
     this.timeDeleted,
     this.location,
+    this.type,
     this.contacts
   }) : super(
     id: id,
@@ -64,7 +67,8 @@ class MessageModel extends Message {
     timeDeleted: timeDeleted,
     location: location,
     files: files,
-    contacts: contacts
+    contacts: contacts,
+    type: type
   );
 
   factory MessageModel.fromJson(Map json) {
@@ -96,7 +100,10 @@ class MessageModel extends Message {
       ) : null,
       files: json['file'] != null ? 
         (json['file'] as List).map((v) => FileMediaModel.fromJson(v)).toList() : [],
-      contacts: ((json['contact'] ?? []) as List).map((e) => MessageUserModel.fromJson(e)).toList()
+      contacts: ((json['contact'] ?? []) as List).map((e) => MessageUserModel.fromJson(e)).toList(),
+      type: json['type'] != null ? 
+        ChatAttachmentType.values.firstWhere((e) => e.key == json['type'], orElse: () => ChatAttachmentType.none) 
+          : ChatAttachmentType.none
     );
   }
 
@@ -115,7 +122,8 @@ class MessageModel extends Message {
           'longitude': location.position.longitude,
           'address': location.description
         } : null,
-      'contact': contacts.map((e) => e.toJson()).toList()
+      'contact': contacts.map((e) => e.toJson()).toList(),
+      'type': type.key
     };
   }
 }

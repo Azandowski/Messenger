@@ -109,6 +109,7 @@ flutter:
     - assets/images/
     - assets/icons/
     - assets/icons/social_media/
+    - assets/icons/chat/
     - assets/translations/
 
   # An image asset can refer to one or more resolution-specific "variants", see

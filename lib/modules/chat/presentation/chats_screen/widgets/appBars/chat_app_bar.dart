@@ -36,7 +36,7 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget{
       titleSpacing: 0.0,
       title: ChatHeading(
         title: chatViewModel.title ?? '',
-        description: chatViewModel.description ?? '',
+        description: chatViewModel.chatDesription ?? '',
         avatarURL: chatViewModel.imageURL,
         onTap: () async {
           var newPermissions = await _navigator.push(ChatDetailPage.route(widget.chatEntity.chatId, ProfileMode.chat));

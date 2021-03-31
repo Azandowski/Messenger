@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong/latlong.dart';
 import 'package:messenger_mobile/modules/chat/domain/entities/file_media.dart';
+import 'package:messenger_mobile/modules/chats/domain/entities/chat_attachment_type.dart';
 import 'package:messenger_mobile/modules/maps/presentation/pages/map_screen.dart';
 
 import 'chat_actions.dart';
@@ -37,6 +38,7 @@ class Message extends Equatable {
   final List<FileMedia> files;
   final List<MessageUser> contacts;
   final StreamController<double> uploadController;
+  final ChatAttachmentType type;
 
   Message({
     this.text,
@@ -59,6 +61,7 @@ class Message extends Equatable {
     this.files,
     this.contacts,
     this.uploadController,
+    this.type
   });
 
   @override
@@ -81,7 +84,8 @@ class Message extends Equatable {
     timeDeleted,
     location,
     files,
-    contacts
+    contacts,
+    type
   ];
 
    Message copyWith({
@@ -101,7 +105,8 @@ class Message extends Equatable {
      MessageChat chat,
      PositionAddress location,
      List<FileMedia> files,
-     List<MessageUser> contacts
+     List<MessageUser> contacts,
+     ChatAttachmentType type
   }) {
     return Message(
       id: id ?? this.id,
@@ -119,7 +124,8 @@ class Message extends Equatable {
       timeDeleted: timeDeleted ?? this.timeDeleted,
       location: location ?? this.location,
       files: files ?? this.files,
-      contacts: contacts ?? this.contacts
+      contacts: contacts ?? this.contacts,
+      type: type ?? this.type
     );
   }
 
@@ -139,7 +145,8 @@ class Message extends Equatable {
         'longitude': location.position.longitude,
         'address': location.description
       } : null,
-      'contact': contacts.map((e) => e.toJson()).toList()
+      'contact': contacts.map((e) => e.toJson()).toList(),
+      'type': type.key
     };
   }
 }
