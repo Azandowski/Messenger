@@ -262,7 +262,6 @@ extension ChatScreenStateHelper on ChatScreenState {
         if (chatGlobalCubit.state.chats[globalIndexOfChat].unreadCount != 0) {
           context.read<main_chat_cubit.ChatGlobalCubit>().resetChatNoReadCounts(chatId: widget.chatEntity.chatId);
           if (widget.chatEntity.chatCategory?.id != null) {
-
             int index = categoryBloc.state.categoryList.indexWhere((e) => e.id == widget.chatEntity.chatCategory?.id);
             int noReadCount = categoryBloc.state.categoryList[index].noReadCount;
             categoryBloc.add(CategoryReadCountChanged(
