@@ -41,19 +41,6 @@ class _VoiceRecordingRowState extends State<VoiceRecordingRow> with TickerProvid
     super.dispose();
   }
 
-    Widget getShit(status){
-      switch (status) {
-        case VoicePlayerState.empty:  
-          return Text('MAL');
-          break;
-        case VoicePlayerState.playing:  
-          return Text('SUKA');
-          break;
-        default:
-          return Text('QOTAQ');
-      }
-    }
-
   @override
   Widget build(BuildContext context) {
     var state = widget.voiceRecordBloc.state;

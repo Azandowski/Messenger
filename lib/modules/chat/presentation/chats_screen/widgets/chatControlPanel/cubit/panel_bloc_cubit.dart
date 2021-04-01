@@ -5,12 +5,14 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:messenger_mobile/core/usecases/usecase.dart';
+import 'package:messenger_mobile/core/widgets/independent/dialogs/achievment_view.dart';
 import 'package:messenger_mobile/modules/chat/domain/usecases/params.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chat_details/widgets/chat_media_block.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen_import.dart';
 import 'package:messenger_mobile/modules/media/domain/usecases/get_audios.dart';
 import 'package:messenger_mobile/modules/media/domain/usecases/get_image.dart';
 import 'package:messenger_mobile/modules/media/domain/usecases/get_images_from_gallery.dart';
+import 'package:messenger_mobile/modules/media/domain/usecases/get_video.dart';
 
 import '../../../../../data/models/message_view_model.dart';
 
@@ -19,11 +21,13 @@ part 'panel_bloc_state.dart';
 class PanelBlocCubit extends Cubit<PanelBlocState> {
   final GetImagesFromGallery getImagesFromGallery;
   final ChatBloc chatBloc;
+  final GetVideo getVideoUseCase;
   final GetAudios getAudios;
   final GetImage getImage;
   PanelBlocCubit({
     @required this.getImagesFromGallery,
     @required this.chatBloc,
+    @required this.getVideoUseCase,
     @required this.getAudios,
     @required this.getImage,
   }) : super(PanelBlocInitial(showBottomPanel: false)) {
@@ -95,6 +99,19 @@ class PanelBlocCubit extends Cubit<PanelBlocState> {
       if(audios != null){
         chatBloc.add(MessageSend(
           fieldFiles: FieldFiles(files: audios, fieldKey: TypeMedia.audio)
+        ));
+      }
+    });
+  }
+
+  getVideo()async{
+    final result =  await getVideoUseCase(NoParams());
+    result.fold((error) {
+      emit(PanelBlocError(showBottomPanel: this.state.showBottomPanel, errorMessage: error.message));
+    }, (video){
+      if(video != null){
+        chatBloc.add(MessageSend(
+          fieldFiles: FieldFiles(files: [video], fieldKey: TypeMedia.video)
         ));
       }
     });

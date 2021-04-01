@@ -43,4 +43,14 @@ class MediaRepositoryImpl implements MediaRepository {
       return Left(e);
     } 
   }
+
+  @override
+  Future<Either<Failure, File>> getVideo() async {
+    try {
+      var video = await mediaLocalDataSource.getVideo();
+      return Right(video);
+    } on StorageFailure catch(e) {
+      return Left(e);
+    }
+  }
 }

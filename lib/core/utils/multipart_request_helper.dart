@@ -136,6 +136,7 @@ class MultipartRequest extends http.MultipartRequest {
     if (onProgress == null) return byteStream;
 
     final total = this.contentLength;
+    print(total);
     int bytes = 0;
 
     final t = StreamTransformer.fromHandlers(

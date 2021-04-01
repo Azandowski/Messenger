@@ -1,20 +1,17 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:messenger_mobile/app/application.dart';
 import 'package:messenger_mobile/core/blocs/audioplayer/bloc/audio_player_bloc.dart';
 import 'package:messenger_mobile/core/widgets/independent/map/map_view.dart';
-import 'package:messenger_mobile/modules/chat/domain/entities/file_media.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chat_details/widgets/chat_media_block.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen_import.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/photo_gallery_screen.dart';
+import 'message_container_helper.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/components/contact_item.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/components/forward_container.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/message_cell/photo_cell.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/name_time_read_container.dart';
 import 'package:messenger_mobile/modules/creation_module/presentation/bloc/open_chat_cubit/open_chat_cubit.dart';
 
-import 'audio_player_element.dart';
-
 class MessageContainer extends StatelessWidget {
+
   const MessageContainer({
     Key key,
     @required this.widget,
@@ -26,8 +23,7 @@ class MessageContainer extends StatelessWidget {
   final AudioPlayerBloc audioPlayerBloc;
   final Function(int) onClickForwardMessage; 
   
-  NavigatorState get _navigator => sl<Application>().navKey.currentState;
-
+  NavigatorState get navigator => sl<Application>().navKey.currentState;
 
   @override
   Widget build(BuildContext context) {
@@ -119,113 +115,3 @@ class MessageContainer extends StatelessWidget {
     ];
   }
 }
-
-
-
-
-
-// MARK: - Helpers
-
-extension MessageContainerExtension on MessageContainer {
-  List<Widget> returnForwardColumn(
-    List<Message> transfers,
-    {Function(int) onClickForwardMessage}
-  ) {
-    return transfers.map((e) => InkWell(
-      onTap: () {
-        onClickForwardMessage(e.id);
-      },
-      child: ForwardContainer(
-        messageViewModel: MessageViewModel(e)
-      ),
-    )).toList();
-  }
-
-  List<Widget> returnMediaWidgets(
-    MessageViewModel messageViewModel, 
-    AudioPlayerBloc audioPlayerBloc, 
-    bool isMine,
-    double width,
-  ) {
-    const placeholderLink = 'https://via.placeholder.com/150.png?text=Loading';
-    var files = messageViewModel.message.files;
-    if (files[0].type == TypeMedia.image) {
-      switch (files.length) {
-        case 1:
-          return[
-            PreviewPhotoLarge(
-              url: files[0].url ?? placeholderLink
-            )
-          ];
-          break;
-        case 2:
-          var a = (width*0.8 - 22)/2;
-          
-          return [
-            Row(
-              children: [
-                PreviewPhotoWidget(
-                  a: a, 
-                  url: files[0].url ?? placeholderLink, 
-                ),
-                SizedBox(
-                  width: 4
-                ),
-                PreviewPhotoWidget(
-                  a: a, 
-                  url: files[1].url ?? placeholderLink
-                ),
-              ]
-          )];
-
-          break;
-        default:
-          var a = (width*0.8 - 26)/3;
-          return [
-            Row(
-              children: [
-                PreviewPhotoWidget(
-                  a: a, 
-                  url: files[0].url ?? placeholderLink
-                ),
-                SizedBox(width: 4,),
-                PreviewPhotoWidget(
-                  a: a, 
-                  url: files[1].url ?? placeholderLink
-                ),
-                SizedBox(width: 4,),
-                files.length > 3 ? PreviewMorePhoto(
-                  url: files[2].url ?? placeholderLink,
-                  a: a,
-                  moreCount: files.length - 3,
-                  onMore: (){
-                    _navigator.push(PhotoGalleryScreen.route(messageViewModel, files.map((e) => e.url).toList()));
-                  },
-                ) : 
-                PreviewPhotoWidget(
-                  a: a, 
-                  url: files[2].url ?? placeholderLink
-                ),
-              ]
-            )
-          ];
-      }
-    } else {
-      return files.map((e) {
-        switch (e.type){
-          case TypeMedia.audio:
-            return AudioPlayerElement(
-              message: messageViewModel.message,
-              file: e,
-              isMine: isMine,
-              audioPlayerBloc: audioPlayerBloc,
-            );
-            break;
-        default:
-          return Text('salam');
-          break;
-        }
-      }).toList();
-    }
-  }
-} 

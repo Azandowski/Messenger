@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
-class PreviewPhotoWidget extends StatelessWidget {
+class PreviewPhotoWidget extends StatefulWidget {
   const PreviewPhotoWidget({
     Key key,
     @required this.a,
@@ -12,15 +12,20 @@ class PreviewPhotoWidget extends StatelessWidget {
   final url;
 
   @override
+  _PreviewPhotoWidgetState createState() => _PreviewPhotoWidgetState();
+}
+
+class _PreviewPhotoWidgetState extends State<PreviewPhotoWidget> with AutomaticKeepAliveClientMixin{
+  @override
   Widget build(BuildContext context) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: CachedNetworkImage(
         fadeInDuration: const Duration(milliseconds: 400),
         filterQuality: FilterQuality.low,
-        imageUrl: url,
-        width: a,
-        height: a,
+        imageUrl: widget.url,
+        width: widget.a,
+        height: widget.a,
         fit: BoxFit.cover,
         placeholder: (context, url) => Icon(
           Icons.image,
@@ -33,10 +38,13 @@ class PreviewPhotoWidget extends StatelessWidget {
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 
-class PreviewPhotoLarge extends StatelessWidget {
+class PreviewPhotoLarge extends StatefulWidget  {
   const PreviewPhotoLarge({
     Key key,
     @required this.url,
@@ -44,6 +52,11 @@ class PreviewPhotoLarge extends StatelessWidget {
 
   final url;
 
+  @override
+  _PreviewPhotoLargeState createState() => _PreviewPhotoLargeState() ;
+}
+
+class _PreviewPhotoLargeState extends State<PreviewPhotoLarge> with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     return Flexible(
@@ -53,7 +66,7 @@ class PreviewPhotoLarge extends StatelessWidget {
           child: CachedNetworkImage(
             fadeInDuration: const Duration(milliseconds: 400),
             filterQuality: FilterQuality.low,
-            imageUrl: url,
+            imageUrl: widget.url,
             fit: BoxFit.cover,
             placeholder: (context, url) => Icon(
               Icons.image,
@@ -67,9 +80,12 @@ class PreviewPhotoLarge extends StatelessWidget {
         ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
-class PreviewMorePhoto extends StatelessWidget {
+class PreviewMorePhoto extends StatefulWidget {
   const PreviewMorePhoto({
     Key key,
     @required this.url,
@@ -84,11 +100,16 @@ class PreviewMorePhoto extends StatelessWidget {
   final int moreCount;
 
   @override
+  _PreviewMorePhotoState createState() => _PreviewMorePhotoState();
+}
+
+class _PreviewMorePhotoState extends State<PreviewMorePhoto> with AutomaticKeepAliveClientMixin {
+  @override
   Widget build(BuildContext context) {
     return Flexible(
       fit: FlexFit.loose,
         child: GestureDetector(
-          onTap: onMore,
+          onTap: widget.onMore,
           child: Stack(
             alignment: Alignment.center,
             children: [
@@ -97,11 +118,11 @@ class PreviewMorePhoto extends StatelessWidget {
                child: CachedNetworkImage(
                  fadeInDuration: const Duration(milliseconds: 400),
                  filterQuality: FilterQuality.low,
-                 imageUrl: url,
-                 width: a,
+                 imageUrl: widget.url,
+                 width: widget.a,
                  colorBlendMode: BlendMode.darken,
                  color: Colors.black54,
-                 height: a,
+                 height: widget.a,
                  fit: BoxFit.cover,
                  placeholder: (context, url) => Icon(
                    Icons.image,
@@ -114,7 +135,7 @@ class PreviewMorePhoto extends StatelessWidget {
                ),
                 ),
               Text(
-                '+$moreCount',
+                '+${widget.moreCount}',
                 style: TextStyle(
                   fontWeight: FontWeight.w700,
                   fontSize: 24,
@@ -126,4 +147,7 @@ class PreviewMorePhoto extends StatelessWidget {
         ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

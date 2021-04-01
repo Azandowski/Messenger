@@ -87,6 +87,7 @@ class ChatScreenState extends State<ChatScreen> implements ChatChooseDelegate{
       messageID: widget.messageID,
     ));
      _panelBlocCubit = PanelBlocCubit(
+      getVideoUseCase: sl(),
       getImagesFromGallery: sl(),
       getAudios: sl(),
       getImage: sl(),
@@ -207,6 +208,7 @@ class ChatScreenState extends State<ChatScreen> implements ChatChooseDelegate{
                                       chatTodoCubit: _chatTodoCubit, 
                                       chatBloc: _chatBloc
                                     ),
+                                    cacheExtent: 40,
                                     scrollDirection: Axis.vertical,
                                     itemCount: getItemsCount(state),
                                     reverse: true,

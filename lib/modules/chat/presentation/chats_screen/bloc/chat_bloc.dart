@@ -231,7 +231,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         
         list[i]= message.copyWith(
           identificator: message.id,
-          status: list[i].messageStatus,
+          // status: list[i].messageStatus,
         );
 
         return ChatInitial(
@@ -312,11 +312,9 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
           var i = list.indexWhere((e) => e.identificator == event.message.id);
           
           if (i != -1) {
-            list.removeAt(i);
+            list[i] = event.message;
           }
 
-          list.insert(0, event.message);
-          
           bool didNotRead = 
             scrollController.offset > scrollController.position.viewportDimension * 1.5;
 
@@ -417,6 +415,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     int randomID = _random.nextInt(99999);
 
     StreamController<double> controller = StreamController<double>();
+
+    List<FileMedia> files = getLoadFiles(event.fieldFiles);
     
     var newMessage = Message(
       user: MessageUser(
@@ -424,7 +424,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       ),
       transfer: event.forwardMessage!= null ? [event.forwardMessage] : [],
       text: event.message,
-      files: event.fieldFiles?.fieldKey == TypeMedia.audio ? [FileMedia(type: TypeMedia.audio)] : null,
+      files: files,
       identificator: randomID,
       isRead: false,
       messageStatus: MessageStatus.sending,
@@ -528,6 +528,21 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   void directlyMoveToMessage (int id) {
 
+  }
+
+  getLoadFiles(FieldFiles fieldFiles){
+    if(fieldFiles != null){
+      switch (fieldFiles.fieldKey){
+        case TypeMedia.audio:
+          return [FileMedia(type: TypeMedia.audio)];
+        case TypeMedia.video:
+          return [FileMedia(type: TypeMedia.video, url: fieldFiles.files[0].path)];
+        default:
+          return null;
+      }
+    }else{
+      return null;
+    }
   }
 
 

@@ -157,7 +157,14 @@ class ChatControlPanelState extends State<ChatControlPanel>
               key: panelKey,
               decoration: panelDecoration,
               child: SafeArea(
-                child: BlocBuilder<PanelBlocCubit, PanelBlocState>(
+                child: BlocConsumer<PanelBlocCubit, PanelBlocState>(
+                  listener: (context, panelState) {
+                    if(panelState is PanelBlocError){
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(panelState.errorMessage)),
+                      );
+                    }
+                  },
                   builder: (context, state) {
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -312,6 +319,9 @@ class ChatControlPanelState extends State<ChatControlPanel>
         break;
       case ChatBottomPanelTypes.audio:
         _panelBloc.getAudio();
+        break;
+      case ChatBottomPanelTypes.video:
+        _panelBloc.getVideo();
         break;
       default:
         break;

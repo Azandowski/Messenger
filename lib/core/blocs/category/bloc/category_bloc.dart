@@ -82,33 +82,28 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
           );
       });
     } else if (event is CategoryReadCountChanged) {
-        print('dmkasmdlasmd');
         yield* _mapCountChangeToState(event);
     }
   }
 
   Stream<CategoryState> _mapCountChangeToState(CategoryReadCountChanged event) async* {
-    print('something is done');
     int index = this.state.categoryList.indexWhere((element) => element.id == event.categoryID);
-    print(index);
+    if (index != -1) {
+      var newCategory = CategoryEntity(
+        id: this.state.categoryList[index].id, 
+        name: this.state.categoryList[index].name, 
+        avatar: this.state.categoryList[index].avatar, 
+        totalChats: this.state.categoryList[index].totalChats, 
+        noReadCount: event.newReadCount
+      );
 
-        if (index != -1) {
-        print('dkslmklsmj;nvgvjfdnvdfnkjnvknvkjenvjerngvjkengvjkern');
-        var newCategory = CategoryEntity(
-          id: this.state.categoryList[index].id, 
-          name: this.state.categoryList[index].name, 
-          avatar: this.state.categoryList[index].avatar, 
-          totalChats: this.state.categoryList[index].totalChats, 
-          noReadCount: event.newReadCount
-        );
+      final newCategories = this.state.categoryList.map(
+        (e) => e.id == event.categoryID ? newCategory :  e.clone()
+      ).toList();
 
-        final newCategories = this.state.categoryList.map(
-          (e) => e.id == event.categoryID ? newCategory :  e.clone()
-        ).toList();
-
-        yield CategoryLoaded(
-          categoryList: newCategories
-        );
-      }
+      yield CategoryLoaded(
+        categoryList: newCategories
+      );
+    }
   }
 }

@@ -50,6 +50,8 @@
 		<key>NSAllowsArbitraryLoadsInWebContent</key>
 		<true/>
 	</dict>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>Allow send music from file</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Для прикрепления фотографии к сообщениям</string>
 	<key>NSContactsUsageDescription</key>
@@ -83,7 +85,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>NSAppleMusicUsageDescription</key>
-	<string>Allow send music from file</string>
 </dict>
 </plist>

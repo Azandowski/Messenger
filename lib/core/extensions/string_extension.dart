@@ -7,6 +7,8 @@ extension StringExtension on String {
       return TypeMedia.audio;
       case 'image':
       return TypeMedia.image;
+      case 'video':
+      return TypeMedia.video;
       default:
       return TypeMedia.undefined;
     }

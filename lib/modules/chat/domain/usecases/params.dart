@@ -60,6 +60,8 @@ extension FileKeysExtension on TypeMedia {
       return 'audio';
       case TypeMedia.image:
       return 'image';
+      case TypeMedia.video:
+      return 'video';
       default:
       return 'photo';
     }
