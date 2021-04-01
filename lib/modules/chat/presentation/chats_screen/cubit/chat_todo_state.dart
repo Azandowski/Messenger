@@ -21,40 +21,44 @@ class ChatTodoSelection extends ChatTodoState {
   ChatTodoSelection({
     this.selectedMessages,
     @required this.isDelete,
-  }) : super(selectedMessages: selectedMessages, isDelete: isDelete); 
+  }) : super(selectedMessages: selectedMessages, isDelete: isDelete);
 
   @override
   List<Object> get props => [selectedMessages, isDelete];
+
+  @override
+  String toString() {
+    return "ChatTodoSelection: selectedMessages=$selectedMessages isDelete=$isDelete";
+  }
 }
 
-class ChatToDoDisabled extends ChatTodoState{}
+class ChatToDoDisabled extends ChatTodoState {}
 
-class ChatToDoLoading extends ChatTodoState{
- final List<Message> selectedMessages;
- final bool isDelete;
+class ChatToDoLoading extends ChatTodoState {
+  final List<Message> selectedMessages;
+  final bool isDelete;
 
-  ChatToDoLoading({
-    this.selectedMessages,
-    this.isDelete
-  }) : super(selectedMessages: selectedMessages, isDelete: isDelete ?? false); 
+  ChatToDoLoading({this.selectedMessages, this.isDelete})
+      : super(selectedMessages: selectedMessages, isDelete: isDelete ?? false);
 
   @override
   List<Object> get props => [selectedMessages, isDelete];
+
+  @override
+  String toString() {
+    return "ChatTodoSelection: selectedMessages=$selectedMessages isDelete=$isDelete";
+  }
 }
 
-class ChatToDoError extends ChatTodoState{
+class ChatToDoError extends ChatTodoState {
+  final List<Message> selectedMessages;
+  final bool isDelete;
+  final String errorMessage;
 
- final List<Message> selectedMessages;
- final bool isDelete;
- final String errorMessage;
-
-  ChatToDoError({
-    @required this.errorMessage,
-    this.selectedMessages,
-    this.isDelete
-  }) : super(selectedMessages: selectedMessages, isDelete: isDelete ?? false); 
+  ChatToDoError(
+      {@required this.errorMessage, this.selectedMessages, this.isDelete})
+      : super(selectedMessages: selectedMessages, isDelete: isDelete ?? false);
 
   @override
   List<Object> get props => [selectedMessages, isDelete, errorMessage];
-
 }

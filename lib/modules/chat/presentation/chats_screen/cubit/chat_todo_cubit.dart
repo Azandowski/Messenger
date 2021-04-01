@@ -1,6 +1,3 @@
-
-import 'dart:async';
-
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +20,7 @@ class ChatTodoCubit extends Cubit<ChatTodoState> {
   final AttachMessage attachMessageUseCase;
   final DisAttachMessage disAttachMessageUseCase;
   final ReplyMore replyMoreUseCase;
-  
+
   ChatTodoCubit({
     @required this.deleteMessageUseCase,
     @required this.disAttachMessageUseCase,
@@ -32,41 +29,43 @@ class ChatTodoCubit extends Cubit<ChatTodoState> {
     @required this.context,
   }) : super(ChatToDoDisabled());
 
-
-  void selectMessage(Message newMessage){
-    var messages = (state.selectedMessages ?? []).map((e) => e.copyWith()).toList();
+  void selectMessage(Message newMessage) {
+    var messages =
+        (state.selectedMessages ?? []).map((e) => e.copyWith()).toList();
     messages.add(newMessage);
-    emit(ChatTodoSelection(selectedMessages: messages, isDelete: this.state.isDelete));
+    emit(ChatTodoSelection(
+        selectedMessages: messages, isDelete: this.state.isDelete));
   }
 
-  void removeMessage(Message message){
-     var messages = (state.selectedMessages ?? []).map((e) => e.copyWith()).toList();
-     messages.removeWhere((element) => element.id == message.id);
-     emit(ChatTodoSelection(selectedMessages: messages, isDelete: this.state.isDelete));
+  void removeMessage(Message message) {
+    var messages =
+        (state.selectedMessages ?? []).map((e) => e.copyWith()).toList();
+    messages.removeWhere((element) => element.id == message.id);
+    emit(ChatTodoSelection(
+        selectedMessages: messages, isDelete: this.state.isDelete));
   }
 
-  void enableSelectionMode(Message message, bool isDelete){
+  void enableSelectionMode(Message message, bool isDelete) {
     emit(ChatTodoSelection(selectedMessages: [message], isDelete: isDelete));
   }
 
-  void disableSelectionMode(){
+  void disableSelectionMode() {
     emit(ChatToDoDisabled());
   }
 
-  void deleteMessage({@required int chatID,@required  bool forMe}) async {
+  void deleteMessage({@required int chatID, @required bool forMe}) async {
     emit(ChatToDoLoading(
       selectedMessages: this.state.selectedMessages,
       isDelete: true,
     ));
     var ids = this.state.selectedMessages.map((e) => e.id.toString()).join(',');
-    final result = await deleteMessageUseCase(
-      DeleteMessageParams(
-        ids: ids,
-        chatID: chatID,
-        forMe: forMe ? 1 : 0,
-      )
-    );
-    result.fold((l) => emit(ChatToDoError(errorMessage: l.message)), (r) => emit(ChatToDoDisabled()));
+    final result = await deleteMessageUseCase(DeleteMessageParams(
+      ids: ids,
+      chatID: chatID,
+      forMe: forMe ? 1 : 0,
+    ));
+    result.fold((l) => emit(ChatToDoError(errorMessage: l.message)),
+        (r) => emit(ChatToDoDisabled()));
   }
 
   void replyMessageToMore({List<ChatEntity> chatIds}) async {
@@ -76,16 +75,16 @@ class ChatTodoCubit extends Cubit<ChatTodoState> {
     ));
     var messageIds = this.state.selectedMessages.map((e) => e.id).toList();
     var chatsId = chatIds.map((e) => e.chatId).toList();
-    final response = await replyMoreUseCase(ReplyMoreParams(chatIds: chatsId, messageIds: messageIds));
-    
-    response.fold((l) => emit(ChatToDoError(errorMessage: l.message)), (r) { 
+    final response = await replyMoreUseCase(
+        ReplyMoreParams(chatIds: chatsId, messageIds: messageIds));
+
+    response.fold((l) => emit(ChatToDoError(errorMessage: l.message)), (r) {
       emit(ChatToDoDisabled());
       AchievementService().showAchievmentView(
-        context: context,
-        isError: false,
-        mainText: 'Успешно',
-        subTitle: 'Все сообщения пересланы'
-      );  
+          context: context,
+          isError: false,
+          mainText: 'Успешно',
+          subTitle: 'Все сообщения пересланы');
     });
   }
 
@@ -95,5 +94,16 @@ class ChatTodoCubit extends Cubit<ChatTodoState> {
 
   void disattachMessage() async {
     await disAttachMessageUseCase(NoParams());
+  }
+
+  //for testing purposes
+  void setState(Message tMessageModel) {
+    emit(ChatTodoSelection(selectedMessages: [
+      tMessageModel,
+      tMessageModel.copyWith(
+        id: 5,
+        colorId: 5,
+      ),
+    ], isDelete: false));
   }
 }

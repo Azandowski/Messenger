@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:messenger_mobile/core/error/failures.dart';
-import 'package:messenger_mobile/core/services/network/socket_service.dart';
 import 'package:messenger_mobile/modules/chats/data/datasource/chats_datasource.dart';
 import 'package:messenger_mobile/modules/chats/data/model/category_model.dart';
 import 'package:messenger_mobile/modules/chats/domain/entities/category.dart';
@@ -10,23 +9,19 @@ import 'dart:convert';
 
 class MockHttpClient extends Mock implements http.Client {}
 
-class MockSocketService extends Mock implements SocketService {}
-
 main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   ChatsDataSourceImpl chatsDataSourceImpl;
   MockHttpClient httpClient;
-  MockSocketService socketService;
 
   setUp(() async {
     httpClient = MockHttpClient();
-    chatsDataSourceImpl =
-        ChatsDataSourceImpl(client: httpClient, socketService: socketService);
+    chatsDataSourceImpl = ChatsDataSourceImpl(client: httpClient);
   });
 
-  // final List<CategoryModel> categories = [
-  //   CategoryModel(id: 1, totalChats: 1, name: 'Superwork', avatar: 'image.png')
-  // ];
+  final List<CategoryModel> categories = [
+    CategoryModel(id: 1, totalChats: 1, name: 'Superwork', avatar: 'image.png')
+  ];
 
   group('Loading Categories for the chat', () {
     test('should successfully load categories', () async {

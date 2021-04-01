@@ -19,37 +19,35 @@ import '../entities/chat_detailed.dart';
 import '../entities/message.dart';
 import '../usecases/params.dart';
 
-
 abstract class ChatRepository {
-  Future<Either<Failure, ChatDetailed>> getChatDetails (int id, ProfileMode mode);
-  Future<Either<Failure, PaginatedResult<ContactEntity>>> getChatMembers (int id, Pagination pagination);
+  Future<Either<Failure, ChatDetailed>> getChatDetails(
+      int id, ProfileMode mode);
+  Future<Either<Failure, PaginatedResult<ContactEntity>>> getChatMembers(
+      int id, Pagination pagination);
   Future<Either<Failure, Message>> sendMessage(SendMessageParams params);
   Future<Either<Failure, bool>> deleteMessage(DeleteMessageParams params);
-  Future<Either<Failure, ChatDetailed>> addMembers (int id, List<int> members);
-  Future<Either<Failure, ChatDetailed>> kickMember (int id, int userID);
+  Future<Either<Failure, ChatDetailed>> addMembers(int id, List<int> members);
+  Future<Either<Failure, ChatDetailed>> kickMember(int id, int userID);
   Stream<Message> message;
   Stream<List<int>> deleteIds;
-  Future<Either<Failure, NoParams>> leaveChat (int id);
-  Future<Either<Failure, ChatPermissions>> updateChatSettings({ ChatPermissionModel permissions, int id }); 
-  Future<Either<Failure, ChatMessageResponse>> getChatMessages (
-    int lastMessageId,
-    RequestDirection direction
-  );
-  
-  Future<Either<Failure, ChatPermissions>> setTimeDeleted ({
-    int id, bool isOn
-  });
-  
-  Future<Either<Failure, ChatPermissions>> setSocialMedia ({
-    int id, SocialMedia socialMedia
-  });
+  Future<Either<Failure, NoParams>> leaveChat(int id);
+  Future<Either<Failure, ChatPermissions>> updateChatSettings(
+      {ChatPermissionModel permissions, int id});
+  Future<Either<Failure, ChatMessageResponse>> getChatMessages(
+      int lastMessageId, RequestDirection direction);
 
-  Future<Either<Failure, bool>> blockUser (int id);
-  Future<Either<Failure, bool>> unblockUser (int id);
+  Future<Either<Failure, ChatPermissions>> setTimeDeleted({int id, bool isOn});
+
+  Future<Either<Failure, ChatPermissions>> setSocialMedia(
+      {int id, SocialMedia socialMedia});
+
+  Future<Either<Failure, bool>> blockUser(int id);
+  Future<Either<Failure, bool>> unblockUser(int id);
 
   Future<void> disposeChat();
   Future<Either<Failure, bool>> attachMessage(Message message);
   Future<Either<Failure, bool>> disAttachMessage(NoParams noParams);
   Future<Either<Failure, bool>> replyMore(ReplyMoreParams params);
-  Future<Either<Failure, ChatMessageResponse>> getChatMessageContext (int chatID, int messageID);
+  Future<Either<Failure, ChatMessageResponse>> getChatMessageContext(
+      int chatID, int messageID);
 }
