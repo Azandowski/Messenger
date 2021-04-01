@@ -55,12 +55,14 @@ void main() {
     'sould',
     build: () => chatBloc,
     act: (ChatBloc chatBloc) {
-      when(mockSendMessage(any)).thenAnswer((_) async => Right(tMessage));
-
+      when(mockChatsRepository.getLocalWallpaper())
+          .thenAnswer((_) async => File('path'));
+      //  проблема здесь
       when(mockChatRepository.message)
-          .thenReturn(Stream<Message>.fromIterable([tMessageModel]));
+          .thenAnswer((_) => Stream.fromIterable([tMessage]));
+
       chatBloc.add(ChatScreenStarted());
     },
-    expect: () => [],
+    expect: () => [isA<ChatInitial>()],
   );
 }

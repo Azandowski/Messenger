@@ -61,7 +61,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
             isSecretModeOn: isSecretModeOn,
             chatEntity: chatEntity)) {
     this.add(ChatScreenStarted());
-    pr();
     _chatSubscription = chatRepository.message.listen((message) {
       if (message.chatActions == ChatActions.setSecret) {
         add(SetInitialTime(isOn: true));
@@ -75,11 +74,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     _chatDeleteSubscription = chatRepository.deleteIds.listen((ids) {
       add(MessageDelete(ids: ids));
     });
-  }
-
-  void pr() async {
-    print('sendMessage:');
-    print(await sendMessage(SendMessageParams(identificator: 1, chatID: 1)));
   }
 
   StreamSubscription<Message> _chatSubscription;
