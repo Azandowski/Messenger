@@ -8,6 +8,7 @@ import 'package:messenger_mobile/app/appTheme.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:video_player/video_player.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
+
 class VideoPlayerElement extends StatefulWidget {
   final url;
 
@@ -132,25 +133,41 @@ class _PreviewVideoState extends State<PreviewVideo> with AutomaticKeepAliveClie
   @override
   void initState() {
     super.initState();
-    if(widget.url != null){
+    if (widget.url != null) {
       initThumnail();
     }
   }
   
   initThumnail() async {
-    try{
-      var fileName = await VideoThumbnail.thumbnailFile(
-        video: widget.url,
-        thumbnailPath: (await getTemporaryDirectory()).path,
-        maxWidth: ((screenWidth - 32) * 0.55).floor(), // specify the height of the thumbnail, let the width auto-scaled to keep the source aspect ratio
-        quality: 60,
-      );
-      final file = File(fileName);
+    final Directory temp = await getTemporaryDirectory();
+    final String videoName = widget.url.split('/').last;
+
+    final File imageFile = File('${temp.path}/${videoName}.png');
+
+    if (await imageFile.exists()) {
       setState(() {
-        bytes = file.readAsBytesSync();
+        bytes = imageFile.readAsBytesSync();
       });
-    }catch (e){
-      print(e);
+    } else {
+      try {
+        var fileName = await VideoThumbnail.thumbnailFile(
+          video: widget.url,
+          thumbnailPath: (await getTemporaryDirectory()).path,
+          maxWidth: ((screenWidth - 32) * 0.55).floor(), // specify the height of the thumbnail, let the width auto-scaled to keep the source aspect ratio
+          quality: 60,
+        );
+
+        final file = File(fileName);
+        
+        final File file2 = File('${temp.path}/${videoName}.png');
+        file2.writeAsBytesSync(file.readAsBytesSync());
+
+        setState(() {
+          bytes = file.readAsBytesSync();
+        });
+      } catch (e) {
+        print(e);
+      }
     }
   }
 
@@ -164,16 +181,17 @@ class _PreviewVideoState extends State<PreviewVideo> with AutomaticKeepAliveClie
           Image(
             image: MemoryImage(bytes),
             fit: BoxFit.cover,
+            height: 200,
           ),
          widget.centerWidget,
         ],
       ) : 
       SizedBox(
-        width: 20,
-        height: 20,
-          child: CircularProgressIndicator(
-           valueColor: AlwaysStoppedAnimation<Color>(AppColors.successGreenColor)
-        ),
+        width: ((screenWidth - 32) * 0.55),
+        height: 200,
+          child: Container(
+            color: Colors.blue
+          )
       )
     );
   }
