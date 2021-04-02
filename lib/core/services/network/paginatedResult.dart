@@ -58,7 +58,7 @@ class PaginationData extends Equatable {
   }
 }
 
-class PaginatedResultViaLastItem<T> {
+class PaginatedResultViaLastItem<T> extends Equatable {
   final List<T> data;
   // first side pagination
   final bool hasReachMax;
@@ -69,4 +69,12 @@ class PaginatedResultViaLastItem<T> {
       {@required this.data,
       @required this.hasReachMax,
       this.hasReachMaxSecondSide = true});
+
+  @override
+  List<Object> get props => [data, hasReachMax, hasReachMaxSecondSide];
+
+  @override
+  String toString() {
+    return "\nPaginatedResultViaLastItem<T>  [  data = $data   hasReachMax=$hasReachMax  hasReachMaxSecondSide=$hasReachMaxSecondSide  ]";
+  }
 }

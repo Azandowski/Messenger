@@ -19,12 +19,9 @@ import 'chat_detail_screen.dart';
 import 'package:http/http.dart' as http;
 
 class ChatDetailPage extends StatefulWidget {
-
   static Route route(int id, ProfileMode mode) {
-    return MaterialPageRoute<void>(builder: (_) => ChatDetailPage(
-      id: id,
-      mode: mode ?? ProfileMode.chat
-    ));
+    return MaterialPageRoute<void>(
+        builder: (_) => ChatDetailPage(id: id, mode: mode ?? ProfileMode.chat));
   }
 
   final int id;
@@ -33,7 +30,7 @@ class ChatDetailPage extends StatefulWidget {
   const ChatDetailPage({
     @required this.id,
     this.mode = ProfileMode.chat,
-    Key key, 
+    Key key,
   }) : super(key: key);
 
   @override
@@ -41,7 +38,6 @@ class ChatDetailPage extends StatefulWidget {
 }
 
 class _ChatDetailPageState extends State<ChatDetailPage> {
-
   NavigatorState get _navigator => sl<Application>().navKey.currentState;
 
   GetChatDetails getChatDetails;
@@ -57,24 +53,19 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   @override
   void initState() {
     ChatRepositoryImpl chatRepositoryImpl = ChatRepositoryImpl(
-      networkInfo: sl(),
-      chatDataSource: ChatDataSourceImpl(
-        id: widget.id, 
-        multipartRequest: http.MultipartRequest(
-          'POST', Endpoints.sendMessages.buildURL(
-            urlParams: ['${widget.id}']
-          )
-        ),
-        client: sl(), 
-        socketService: sl()
-      )
-    );
+        networkInfo: sl(),
+        chatDataSource: ChatDataSourceImpl(
+          id: widget.id,
+          multipartRequest: http.MultipartRequest('POST',
+              Endpoints.sendMessages.buildURL(urlParams: ['${widget.id}'])),
+          client: sl(),
+          socketService: sl(),
+          authConfig: sl(),
+        ));
 
     addMembers = AddMembers(repository: chatRepositoryImpl);
 
-    getChatDetails = GetChatDetails(
-      repository: chatRepositoryImpl
-    );
+    getChatDetails = GetChatDetails(repository: chatRepositoryImpl);
 
     leaveChat = LeaveChat(repository: chatRepositoryImpl);
 
@@ -87,17 +78,15 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
     setSocialMedia = SetSocialMedia(repository: chatRepositoryImpl);
 
     _chatDetailsCubit = ChatDetailsCubit(
-      getChatDetails: getChatDetails,
-      addMembers: addMembers,
-      leaveChat: leaveChat,
-      updateChatSettings: updateChatSettings,
-      kickMembers: kickMembers,
-      blockUser: blockUser,
-      setSocialMedia: setSocialMedia
-    );
+        getChatDetails: getChatDetails,
+        addMembers: addMembers,
+        leaveChat: leaveChat,
+        updateChatSettings: updateChatSettings,
+        kickMembers: kickMembers,
+        blockUser: blockUser,
+        setSocialMedia: setSocialMedia);
     super.initState();
   }
-
 
   @override
   void dispose() {
@@ -116,7 +105,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
         builder: (context, state) {
           return Scaffold(
             body: ChatDetailScreen(
-              id: widget.id, 
+              id: widget.id,
               getChatDetails: getChatDetails,
               mode: widget.mode,
             ),
@@ -126,7 +115,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
     );
   }
 
-  void _handleListener (ChatDetailsState state) {
+  void _handleListener(ChatDetailsState state) {
     if (state is ChatDetailsError) {
       SnackUtil.showError(context: context, message: state.message);
     } else if (state is ChatDetailsProccessing) {

@@ -227,6 +227,10 @@ final tPaginationData = PaginationData(
   isFirstPage: false,
   total: 3,
 );
+final tPaginationData2 = PaginationData(
+  nextPageUrl: Uri.parse('nextPageUrl'),
+  isFirstPage: false,
+);
 
 final tPaginatedResultChatEntity = PaginatedResult<ChatEntity>(
   data: [tChatEntityModel],
@@ -237,15 +241,29 @@ final tPaginatedResultContactEntity = PaginatedResult<ContactEntity>(
   data: [tContactEntity],
   paginationData: tPaginationData,
 );
+final tPaginatedResultContactModel = PaginatedResult<ContactEntity>(
+  data: [tContactModel],
+  paginationData: tPaginationData2,
+);
 
 final tPaginatedResultViaLastItemMessage = PaginatedResultViaLastItem<Message>(
   data: [tMessage],
+  hasReachMax: true,
+);
+final tPaginatedResultViaLastItemMessageModel =
+    PaginatedResultViaLastItem<Message>(
+  data: [tMessageModel],
   hasReachMax: true,
 );
 
 final tChatMessageResponse = ChatMessageResponse(
   result: tPaginatedResultViaLastItemMessage,
   topMessage: tMessage,
+);
+
+final tChatMessageResponseModel = ChatMessageResponse(
+  result: tPaginatedResultViaLastItemMessageModel,
+  topMessage: tMessageModel,
 );
 
 final tNoParams = NoParams();

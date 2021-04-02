@@ -1,0 +1,13 @@
+{
+    "data":[
+        {
+            "id":1,
+            "name":"name",
+            "patronym":"patronym",
+            "surname":"surname",
+            "last_visit": "2021-01-01 00:00:01.860545", 
+            "avatar":"avatar"
+        }
+    ],
+    "next_page_url": "nextPageUrl"
+}

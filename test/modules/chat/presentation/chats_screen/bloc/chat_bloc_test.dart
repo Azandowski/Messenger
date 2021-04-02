@@ -9,6 +9,7 @@ import 'package:messenger_mobile/modules/chat/domain/usecases/set_time_deleted.d
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen_import.dart';
 import 'package:messenger_mobile/modules/chats/domain/repositories/chats_repository.dart';
 import 'package:mockito/mockito.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 
 import '../../../../../variables.dart';
 
@@ -24,6 +25,8 @@ class MockGetMessagesContext extends Mock implements GetMessagesContext {}
 
 class MockSetTimeDeleted extends Mock implements SetTimeDeleted {}
 
+class MockAutoScrollController extends Mock implements AutoScrollController {}
+
 void main() {
   MockChatsRepository mockChatsRepository;
   MockChatRepository mockChatRepository;
@@ -31,6 +34,7 @@ void main() {
   MockGetMessages mockGetMessages;
   MockGetMessagesContext mockGetMessagesContext;
   MockSetTimeDeleted mockSetTimeDeleted;
+  MockAutoScrollController mockAutoScrollController;
   ChatBloc chatBloc;
 
   setUp(() {
@@ -40,6 +44,24 @@ void main() {
     mockGetMessages = MockGetMessages();
     mockGetMessagesContext = MockGetMessagesContext();
     mockSetTimeDeleted = MockSetTimeDeleted();
+    mockAutoScrollController = MockAutoScrollController();
+
+    when(mockChatRepository.message).thenAnswer((_) {
+      return Stream.fromIterable([tMessage]);
+    });
+    when(mockChatRepository.deleteIds).thenAnswer(
+      (_) => Stream.fromIterable([
+        [tMessage.id]
+      ]),
+    );
+
+    final scrollCon = AutoScrollController(
+      viewportBoundaryGetter: () => Rect.fromLTRB(0, 0, 0, 20.0),
+      axis: Axis.vertical,
+    );
+
+    when(mockAutoScrollController.position).thenReturn(scrollCon.position);
+
     chatBloc = ChatBloc(
       chatId: 1,
       chatRepository: mockChatRepository,
@@ -48,6 +70,7 @@ void main() {
       getMessages: mockGetMessages,
       setTimeDeleted: mockSetTimeDeleted,
       getMessagesContext: mockGetMessagesContext,
+      scrollController: mockAutoScrollController,
     );
   });
 
@@ -57,7 +80,7 @@ void main() {
     act: (ChatBloc chatBloc) {
       when(mockChatsRepository.getLocalWallpaper())
           .thenAnswer((_) async => File('path'));
-      //  проблема здесь
+
       when(mockChatRepository.message)
           .thenAnswer((_) => Stream.fromIterable([tMessage]));
 

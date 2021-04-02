@@ -42,7 +42,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   var _random = Random();
 
-  AutoScrollController scrollController = AutoScrollController();
+  AutoScrollController scrollController;
 
   ChatBloc(
       {@required this.chatRepository,
@@ -52,6 +52,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       @required this.getMessages,
       @required this.setTimeDeleted,
       @required this.getMessagesContext,
+      this.scrollController,
       bool isSecretModeOn,
       ChatEntity chatEntity})
       : super(ChatLoading(
@@ -61,6 +62,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
             isSecretModeOn: isSecretModeOn,
             chatEntity: chatEntity)) {
     this.add(ChatScreenStarted());
+
     _chatSubscription = chatRepository.message.listen((message) {
       if (message.chatActions == ChatActions.setSecret) {
         add(SetInitialTime(isOn: true));

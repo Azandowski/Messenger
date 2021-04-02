@@ -67,31 +67,20 @@ abstract class ChatDataSource {
   Future<void> disposeChat();
 }
 
-class Cattt {
-  String sound() => "Meow";
-  bool eatFood(String food, {bool hungry}) => true;
-  Future<void> chew() async => print("Chewing...");
-  int walk(List<String> places) => 7;
-  void sleep() {}
-  void hunt(String place, String prey) {}
-  int lives = 9;
-}
-
 class ChatDataSourceImpl implements ChatDataSource {
   final http.Client client;
   final http.MultipartRequest multipartRequest;
   final SocketService socketService;
   final int id;
-  final Cattt cat;
+  final AuthConfig authConfig;
 
   ChatDataSourceImpl({
     @required this.id,
     @required this.client,
     @required this.socketService,
     @required this.multipartRequest,
-    this.cat,
+    @required this.authConfig,
   }) {
-    print(cat.sound());
     socketService.echo
         .channel(SocketChannels.getChatByID(id))
         .listen('.messages.$id', (updates) {
@@ -134,8 +123,7 @@ class ChatDataSourceImpl implements ChatDataSource {
             ? Endpoints.getChatDetails.buildURL(urlParams: ['$id'])
             : Endpoints.getUserProfile
                 .buildURL(queryParameters: {'user_id': '$id'}),
-        headers:
-            Endpoints.getChatDetails.getHeaders(token: sl<AuthConfig>().token));
+        headers: Endpoints.getChatDetails.getHeaders(token: authConfig.token));
 
     if (response.isSuccess) {
       return ChatDetailedModel.fromJson(json.decode(response.body));
@@ -155,8 +143,7 @@ class ChatDataSourceImpl implements ChatDataSource {
       }, urlParams: [
         '$id'
       ]),
-      headers:
-          Endpoints.getCurrentUser.getHeaders(token: sl<AuthConfig>().token),
+      headers: Endpoints.getCurrentUser.getHeaders(token: authConfig.token),
     );
 
     if (response.isSuccess) {
@@ -198,7 +185,7 @@ class ChatDataSourceImpl implements ChatDataSource {
 
     http.StreamedResponse streamedResponse =
         await MultipartRequestHelper.postData(
-            token: sl<AuthConfig>().token,
+            token: authConfig.token,
             request: multipartRequest,
             data: body,
             files: params.fieldFiles?.files != null
@@ -222,8 +209,7 @@ class ChatDataSourceImpl implements ChatDataSource {
   Future<ChatDetailed> addMembers(int id, List<int> userIDs) async {
     http.Response response = await client.post(
         Endpoints.addMembersToChat.buildURL(urlParams: ['$id']),
-        headers: Endpoints.addMembersToChat
-            .getHeaders(token: sl<AuthConfig>().token),
+        headers: Endpoints.addMembersToChat.getHeaders(token: authConfig.token),
         body: json.encode({'contact': userIDs.join(',')}));
 
     if (response.isSuccess) {
@@ -238,7 +224,7 @@ class ChatDataSourceImpl implements ChatDataSource {
   Future<ChatDetailed> kickMember(int id, int userID) async {
     http.Response response = await client.post(
         Endpoints.kickUser.buildURL(urlParams: ['$id']),
-        headers: Endpoints.kickUser.getHeaders(token: sl<AuthConfig>().token),
+        headers: Endpoints.kickUser.getHeaders(token: authConfig.token),
         body: json.encode({'contact': userID}));
 
     if (response.isSuccess) {
@@ -253,8 +239,7 @@ class ChatDataSourceImpl implements ChatDataSource {
   Future<void> leaveChat(int id) async {
     http.Response response = await client.post(
       Endpoints.leaveChat.buildURL(urlParams: ['$id']),
-      headers:
-          Endpoints.addMembersToChat.getHeaders(token: sl<AuthConfig>().token),
+      headers: Endpoints.addMembersToChat.getHeaders(token: authConfig.token),
     );
 
     if (!response.isSuccess) {
@@ -268,8 +253,8 @@ class ChatDataSourceImpl implements ChatDataSource {
       {@required Map chatUpdates, @required int id}) async {
     http.Response response = await client.post(
         Endpoints.changeChatSettings.buildURL(urlParams: ['$id']),
-        headers: Endpoints.changeChatSettings
-            .getHeaders(token: sl<AuthConfig>().token),
+        headers:
+            Endpoints.changeChatSettings.getHeaders(token: authConfig.token),
         body: json.encode(chatUpdates));
 
     if (response.isSuccess) {
@@ -285,16 +270,16 @@ class ChatDataSourceImpl implements ChatDataSource {
       int lastMessageId, RequestDirection direction) async {
     print("request lastMessageId: $lastMessageId, type: $direction");
     http.Response response = await client.get(
-      Endpoints.getChatMessages.buildURL(urlParams: [
-        '$id'
-      ], queryParameters: {
-        if (direction != null && lastMessageId != null) ...{
-          'type': direction.key
+      Endpoints.getChatMessages.buildURL(
+        urlParams: ['$id'],
+        queryParameters: {
+          if (direction != null && lastMessageId != null) ...{
+            'type': direction.key
+          },
+          if (lastMessageId != null) ...{'last_message_id': '$lastMessageId'}
         },
-        if (lastMessageId != null) ...{'last_message_id': '$lastMessageId'}
-      }),
-      headers: Endpoints.changeChatSettings
-          .getHeaders(token: sl<AuthConfig>().token),
+      ),
+      headers: Endpoints.changeChatSettings.getHeaders(token: authConfig.token),
     );
 
     if (response.isSuccess) {
@@ -321,8 +306,8 @@ class ChatDataSourceImpl implements ChatDataSource {
     http.Response response = await client.get(
         Endpoints.getMessagesContext
             .buildURL(urlParams: ['$chatID', '$messageID']),
-        headers: Endpoints.getMessagesContext
-            .getHeaders(token: sl<AuthConfig>().token));
+        headers:
+            Endpoints.getMessagesContext.getHeaders(token: authConfig.token));
 
     if (response.isSuccess) {
       var responseJSON = json.decode(response.body);
@@ -354,8 +339,7 @@ class ChatDataSourceImpl implements ChatDataSource {
     http.Response response = await client.post(
       Endpoints.deleteMessage.buildURL(),
       body: json.encode(params.body),
-      headers: Endpoints.changeChatSettings
-          .getHeaders(token: sl<AuthConfig>().token),
+      headers: Endpoints.changeChatSettings.getHeaders(token: authConfig.token),
     );
     if (response.isSuccess) {
       return true;
@@ -370,8 +354,7 @@ class ChatDataSourceImpl implements ChatDataSource {
     http.Response response = await client.post(
       Endpoints.attachMessage.buildURL(urlParams: ['$id']),
       body: json.encode({'message_id': message.id.toString()}),
-      headers: Endpoints.changeChatSettings
-          .getHeaders(token: sl<AuthConfig>().token),
+      headers: Endpoints.changeChatSettings.getHeaders(token: authConfig.token),
     );
     print(response.body);
     print(response.statusCode);
@@ -387,8 +370,7 @@ class ChatDataSourceImpl implements ChatDataSource {
   Future<bool> disAttachMessage(NoParams noParams) async {
     http.Response response = await client.post(
       Endpoints.disAttachMessage.buildURL(urlParams: ['$id']),
-      headers: Endpoints.changeChatSettings
-          .getHeaders(token: sl<AuthConfig>().token),
+      headers: Endpoints.changeChatSettings.getHeaders(token: authConfig.token),
     );
     if (response.isSuccess) {
       return true;
@@ -406,8 +388,7 @@ class ChatDataSourceImpl implements ChatDataSource {
         'chats': params.chatIds.map((e) => e.toString()).join(','),
         'forward': params.messageIds.map((e) => e.toString()).join(',')
       }),
-      headers: Endpoints.changeChatSettings
-          .getHeaders(token: sl<AuthConfig>().token),
+      headers: Endpoints.changeChatSettings.getHeaders(token: authConfig.token),
     );
 
     if (response.isSuccess) {
@@ -423,7 +404,7 @@ class ChatDataSourceImpl implements ChatDataSource {
     http.Response response = await client.post(
       Endpoints.blockUser.buildURL(),
       body: json.encode({'contact': id}),
-      headers: Endpoints.blockUser.getHeaders(token: sl<AuthConfig>().token),
+      headers: Endpoints.blockUser.getHeaders(token: authConfig.token),
     );
 
     if (response.isSuccess) {
@@ -439,7 +420,7 @@ class ChatDataSourceImpl implements ChatDataSource {
     http.Response response = await client.post(
       Endpoints.unblockUser.buildURL(),
       body: json.encode({'contact': id}),
-      headers: Endpoints.unblockUser.getHeaders(token: sl<AuthConfig>().token),
+      headers: Endpoints.unblockUser.getHeaders(token: authConfig.token),
     );
 
     if (response.isSuccess) {
