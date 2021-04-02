@@ -1,5 +1,6 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/app/appTheme.dart';
 import 'package:messenger_mobile/core/blocs/audioplayer/bloc/audio_player_bloc.dart';
 import 'package:messenger_mobile/modules/chat/data/models/message_view_model.dart';
 import 'package:messenger_mobile/modules/chat/domain/entities/message.dart';
@@ -10,7 +11,6 @@ import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/message_cell/photo_cell.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/message_cell/play_video_button.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/message_cell/video_player_element.dart';
-import 'package:percent_indicator/circular_percent_indicator.dart';
 
 import 'circullar_upload_indicator.dart';
 import 'message_container.dart';
@@ -40,9 +40,13 @@ extension MessageContainerExtension on MessageContainer {
   ) {
     var files = messageViewModel.message.files;
     if (files[0].type == TypeMedia.image) {
-      return returnPhotoRow(files, width, (){
-         navigator.push(PhotoGalleryScreen.route(messageViewModel, files.map((e) => e.url).toList()));
-      });
+      if(messageViewModel.message.files[0].isLocal){
+        return returnLoadPhotoRow(messageViewModel.message.files[0].memoryPhotos, width, (){});
+      }else{
+        return returnPhotoRow(files, width, (){
+          navigator.push(PhotoGalleryScreen.route(messageViewModel, files.map((e) => e.url).toList()));
+        });
+      }
     } else {
       return files.map((e) {
         switch (e.type){
@@ -137,6 +141,74 @@ List<Widget> returnPhotoRow(files, width, Function onMore){
             PreviewPhotoWidget(
               a: a, 
               url: files[2].url ?? placeholderLink
+            ),
+          ]
+        )
+    ];
+  }
+}
+
+List<Widget> returnLoadPhotoRow(List<Uint8List> data, width, Function onMore){
+  switch (data.length) {
+    case 1:
+      return[
+        PreviewPhotoLarge(
+          url: data[0],
+          isLocal: true,
+        )
+      ];
+      break;
+    case 2:
+      var a = (width*0.8 - 22)/2;
+      
+      return [
+        Row(
+          children: [
+            PreviewPhotoWidget(
+              a: a, 
+              isLocal: true,
+              url: data[0], 
+            ),
+            SizedBox(
+              width: 4
+            ),
+            PreviewPhotoWidget(
+              a: a, 
+              isLocal: true,
+              url: data[1],
+            ),
+          ]
+      )];
+
+      break;
+    default:
+      var a = (width*0.8 - 26)/3;
+      return [
+        Row(
+          children: [
+            PreviewPhotoWidget(
+              a: a, 
+              isLocal: true,
+              url: data[0],
+            ),
+            SizedBox(width: 4,),
+            PreviewPhotoWidget(
+              a: a, 
+              isLocal: true,
+              url: data[1],
+            ),
+            SizedBox(width: 4,),
+            data.length > 3 ? PreviewMorePhoto(
+              isLocal: true,
+              url: data[2],
+              a: a,
+              moreCount: data.length - 3,
+              onMore: onMore,
+            ) : 
+            PreviewPhotoWidget(
+              isLocal: true,
+              a: a, 
+              url: data[2]
             ),
           ]
         )

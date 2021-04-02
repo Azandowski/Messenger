@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:math';
+import 'dart:typed_data';
 
 import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
@@ -416,15 +417,19 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
     StreamController<double> controller = StreamController<double>();
 
-    List<FileMedia> files = getLoadFiles(event.fieldFiles);
-    
+    List<FileMedia> localFiles;
+    if(event.memoryPhotos != null){
+     localFiles = getLocalFiles(event.memoryPhotos);
+    }else{
+      localFiles = getLoadFiles(event);
+    }
     var newMessage = Message(
       user: MessageUser(
         id: sl<AuthConfig>().user.id,
       ),
       transfer: event.forwardMessage!= null ? [event.forwardMessage] : [],
       text: event.message,
-      files: files,
+      files: localFiles,
       identificator: randomID,
       isRead: false,
       messageStatus: MessageStatus.sending,
@@ -530,19 +535,26 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   }
 
-  getLoadFiles(FieldFiles fieldFiles){
+  getLoadFiles(MessageSend event){
+    var fieldFiles = event.fieldFiles;
     if(fieldFiles != null){
       switch (fieldFiles.fieldKey){
         case TypeMedia.audio:
           return [FileMedia(type: TypeMedia.audio)];
         case TypeMedia.video:
           return [FileMedia(type: TypeMedia.video, url: fieldFiles.files[0].path)];
+        case TypeMedia.image:
+          return [FileMedia(type: TypeMedia.image, memoryPhotos: event.memoryPhotos, isLocal: true)];
         default:
           return null;
       }
     }else{
       return null;
     }
+  }
+
+  getLocalFiles(memoryPhotos){
+    return [FileMedia(type: TypeMedia.image, memoryPhotos: memoryPhotos, isLocal: true)];
   }
 
 

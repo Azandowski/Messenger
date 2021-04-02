@@ -5,9 +5,10 @@ class PreviewPhotoWidget extends StatefulWidget {
   const PreviewPhotoWidget({
     Key key,
     @required this.a,
+    this.isLocal = false,
     @required this.url,
   }) : super(key: key);
-
+  final bool isLocal;
   final double a;
   final url;
 
@@ -20,7 +21,12 @@ class _PreviewPhotoWidgetState extends State<PreviewPhotoWidget> with AutomaticK
   Widget build(BuildContext context) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
-      child: CachedNetworkImage(
+      child: widget.isLocal ? Image.memory(
+        widget.url,
+        fit: BoxFit.cover,
+        width: widget.a,
+        height: widget.a,
+      ) : CachedNetworkImage(
         fadeInDuration: const Duration(milliseconds: 400),
         filterQuality: FilterQuality.low,
         imageUrl: widget.url,
@@ -48,9 +54,11 @@ class PreviewPhotoLarge extends StatefulWidget  {
   const PreviewPhotoLarge({
     Key key,
     @required this.url,
+    this.isLocal = false,
   }) : super(key: key);
 
   final url;
+  final isLocal;
 
   @override
   _PreviewPhotoLargeState createState() => _PreviewPhotoLargeState() ;
@@ -63,7 +71,10 @@ class _PreviewPhotoLargeState extends State<PreviewPhotoLarge> with AutomaticKee
       fit: FlexFit.loose,
         child: ClipRRect(
           borderRadius: BorderRadius.circular(10),
-          child: CachedNetworkImage(
+          child: widget.isLocal ? Image.memory(
+            widget.url,
+            fit: BoxFit.cover,
+          ) : CachedNetworkImage(
             fadeInDuration: const Duration(milliseconds: 400),
             filterQuality: FilterQuality.low,
             imageUrl: widget.url,
@@ -92,12 +103,14 @@ class PreviewMorePhoto extends StatefulWidget {
     @required this.moreCount,
     @required this.a,
     @required this.onMore,
+    this.isLocal,
   }) : super(key: key);
 
   final url;
   final double a;
   final onMore;
   final int moreCount;
+  final bool isLocal;
 
   @override
   _PreviewMorePhotoState createState() => _PreviewMorePhotoState();
@@ -115,7 +128,14 @@ class _PreviewMorePhotoState extends State<PreviewMorePhoto> with AutomaticKeepA
             children: [
               ClipRRect(
                borderRadius: BorderRadius.circular(10),
-               child: CachedNetworkImage(
+               child: widget.isLocal ? Image.memory(
+                  widget.url,
+                  fit: BoxFit.cover,
+                  width: widget.a,
+                  colorBlendMode: BlendMode.darken,
+                  color: Colors.black54,
+                  height: widget.a,
+                ) :  CachedNetworkImage(
                  fadeInDuration: const Duration(milliseconds: 400),
                  filterQuality: FilterQuality.low,
                  imageUrl: widget.url,
@@ -129,9 +149,9 @@ class _PreviewMorePhotoState extends State<PreviewMorePhoto> with AutomaticKeepA
                    color: Colors.white,
                  ),
                  errorWidget: (context, url, error) => Icon(
-                     Icons.error,
-                     color: Colors.white,
-                   ),
+                    Icons.error,
+                    color: Colors.white,
+                  ),
                ),
                 ),
               Text(
