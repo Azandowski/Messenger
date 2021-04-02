@@ -114,6 +114,7 @@ class PreviewVideo extends StatefulWidget {
 class _PreviewVideoState extends State<PreviewVideo> with AutomaticKeepAliveClientMixin {
   var bytes;
   var screenWidth = window.physicalSize.width / window.devicePixelRatio;
+  String tempPath;
 
   @override
   void dispose() {
@@ -123,11 +124,12 @@ class _PreviewVideoState extends State<PreviewVideo> with AutomaticKeepAliveClie
   @override
   void didUpdateWidget(covariant PreviewVideo oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if(oldWidget.url != widget.url){
-      print(oldWidget.url);
-      print(widget.url);
-      initThumnail();
-    }
+    
+    // if (oldWidget.url != widget.url) {
+    //   print(oldWidget.url);
+    //   print(widget.url);
+    //   initThumnail();
+    // }
   }
 
   @override
@@ -139,49 +141,39 @@ class _PreviewVideoState extends State<PreviewVideo> with AutomaticKeepAliveClie
   }
   
   initThumnail() async {
-    final Directory temp = await getTemporaryDirectory();
-    final String videoName = widget.url.split('/').last;
-
-    final File imageFile = File('${temp.path}/${videoName}.png');
-
-    if (await imageFile.exists()) {
-      setState(() {
-        bytes = imageFile.readAsBytesSync();
-      });
-    } else {
-      try {
-        var fileName = await VideoThumbnail.thumbnailFile(
-          video: widget.url,
-          thumbnailPath: (await getTemporaryDirectory()).path,
-          maxWidth: ((screenWidth - 32) * 0.55).floor(), // specify the height of the thumbnail, let the width auto-scaled to keep the source aspect ratio
-          quality: 60,
-        );
-
-        final file = File(fileName);
-        
-        final File file2 = File('${temp.path}/${videoName}.png');
-        file2.writeAsBytesSync(file.readAsBytesSync());
-
-        setState(() {
-          bytes = file.readAsBytesSync();
-        });
-      } catch (e) {
-        print(e);
-      }
-    }
+    var _tempPath = (await getTemporaryDirectory()).path;
+    setState(() {
+      tempPath = _tempPath;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return  ClipRRect(
       borderRadius: BorderRadius.circular(10),
-      child: bytes != null ? Stack(
+      child: widget.url != null && tempPath != null ? Stack(
         alignment: Alignment.center,
         children: [
-          Image(
-            image: MemoryImage(bytes),
-            fit: BoxFit.cover,
-            height: 200,
+          FutureBuilder(
+            future: VideoThumbnail.thumbnailFile(
+              video: widget.url,
+              thumbnailPath: tempPath,
+              maxWidth: ((screenWidth - 32) * 0.55).floor(), // specify the height of the thumbnail, let the width auto-scaled to keep the source aspect ratio
+              quality: 60,
+            ),
+            builder: (context, snapshot) {
+              if (snapshot.data != null) {
+                final file = File(snapshot.data);
+
+                return Image(
+                  image: MemoryImage(file.readAsBytesSync()),
+                  fit: BoxFit.cover,
+                  height: 200,
+                );
+              } else {
+                return Container();
+              }
+            }
           ),
          widget.centerWidget,
         ],
