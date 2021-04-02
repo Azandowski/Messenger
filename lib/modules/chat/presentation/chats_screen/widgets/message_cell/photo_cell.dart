@@ -136,24 +136,24 @@ class _PreviewMorePhotoState extends State<PreviewMorePhoto> with AutomaticKeepA
                   color: Colors.black54,
                   height: widget.a,
                 ) :  CachedNetworkImage(
-                 fadeInDuration: const Duration(milliseconds: 400),
-                 filterQuality: FilterQuality.low,
-                 imageUrl: widget.url,
-                 width: widget.a,
-                 colorBlendMode: BlendMode.darken,
-                 color: Colors.black54,
-                 height: widget.a,
-                 fit: BoxFit.cover,
-                 placeholder: (context, url) => Icon(
-                   Icons.image,
-                   color: Colors.white,
-                 ),
-                 errorWidget: (context, url, error) => Icon(
+                  fadeInDuration: const Duration(milliseconds: 400),
+                  filterQuality: FilterQuality.low,
+                  imageUrl: widget.url,
+                  width: widget.a,
+                  colorBlendMode: BlendMode.darken,
+                  color: Colors.black54,
+                  height: widget.a,
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) => Icon(
+                    Icons.image,
+                    color: Colors.white,
+                  ),
+                  errorWidget: (context, url, error) => Icon(
                     Icons.error,
                     color: Colors.white,
                   ),
-               ),
                 ),
+              ),
               Text(
                 '+${widget.moreCount}',
                 style: TextStyle(
