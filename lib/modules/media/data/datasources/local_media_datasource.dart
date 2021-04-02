@@ -8,6 +8,7 @@ abstract class MediaLocalDataSource {
   Future<File> getImage(ImageSource source);
   Future<List<Asset>> getImagesFromGallery();
   Future<List<File>> getAudio();
+  Future<File> getVideo();
 }
 
 class MediaLocalDataSourceImpl implements MediaLocalDataSource {
@@ -16,11 +17,24 @@ class MediaLocalDataSourceImpl implements MediaLocalDataSource {
     var pickedFile = await ImagePicker().getImage(source: source,imageQuality: 10);
     return File(pickedFile.path);
   }
-
-   Future<File> getVideo(source) async {
-    var pickedFile = await ImagePicker().getVideo(source: ImageSource.gallery,);
-
-    return File(pickedFile.path);
+  @override
+   Future<File> getVideo() async {
+    var videos = await FilePicker.platform.pickFiles(
+      type: FileType.video,
+      withData: true,
+      allowMultiple: false,
+      allowCompression: true,
+    );
+    if(videos != null) {
+      var video = videos.files[0];
+      if(video.size < 94371840){
+        return File(video.path);
+      }else{
+        throw StorageFailure(message: 'Размер файла не должен превышать 100 мб');
+      }
+    }else{
+      //File was not selected
+    }
   }
 
   @override

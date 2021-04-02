@@ -13,6 +13,22 @@ abstract class PanelBlocState extends Equatable {
   ];
 }
 
+class PanelBlocError extends PanelBlocState{
+  final bool showBottomPanel;
+  final String errorMessage;
+
+  PanelBlocError({
+    @required this.showBottomPanel,
+    @required this.errorMessage,
+  });
+
+  @override
+  List<Object> get props => [
+    showBottomPanel,
+    errorMessage,
+  ];
+}
+
 class PanelBlocInitial extends PanelBlocState {
   final bool showBottomPanel;
 

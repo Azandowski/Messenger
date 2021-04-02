@@ -9,6 +9,7 @@ import '../../../../core/error/failures.dart';
 
 abstract class MediaRepository {
   Future<Either<Failure, File>> getImage(ImageSource source);
+  Future<Either<Failure, File>> getVideo();
   Future<Either<Failure, List<Asset>>> getImagesFromGallery();
   Future<Either<Failure, List<File>>> getAudio();
 

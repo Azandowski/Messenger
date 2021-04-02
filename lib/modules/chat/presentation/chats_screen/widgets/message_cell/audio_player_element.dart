@@ -7,8 +7,8 @@ import 'package:messenger_mobile/app/appTheme.dart';
 import 'package:messenger_mobile/core/blocs/audioplayer/bloc/audio_player_bloc.dart';
 import 'package:messenger_mobile/modules/chat/domain/entities/file_media.dart';
 import 'package:messenger_mobile/modules/chat/domain/entities/message.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/message_cell/circullar_upload_indicator.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/message_cell/play_button.dart';
-import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'music_progress_indicator.dart';
 
 class AudioPlayerElement extends StatelessWidget {
@@ -132,21 +132,7 @@ class SendingAudioElement extends StatelessWidget {
             children: [
               ClipOval(
                 child: Container(
-                  child: CircularPercentIndicator(
-                    percent: percent,
-                    radius: 45,
-                    progressColor: AppColors.successGreenColor,
-                    backgroundColor: Colors.white,
-                    circularStrokeCap: CircularStrokeCap.round,
-                    center: Text(
-                      (percent * 100).floor().toString() + '%',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 10,
-                      ),
-                    ),
-                    fillColor: AppColors.indicatorColor,
-                  ),
+                  child: CircullarUploadIndicator(percent: percent, radius: 45,)
                 ),
               ),
               SizedBox(width: 4,),

@@ -62,6 +62,7 @@ class MessageSend extends ChatEvent {
   final LatLng location;
   final String address;
   final MessageUser contact;
+  final List<Uint8List> memoryPhotos;
 
   MessageSend({
     this.message,
@@ -71,7 +72,8 @@ class MessageSend extends ChatEvent {
     this.timeDeleted,
     this.location,
     this.address,
-    this.contact
+    this.contact,
+    this.memoryPhotos,
   });
 
   MessageSend copyWith ({

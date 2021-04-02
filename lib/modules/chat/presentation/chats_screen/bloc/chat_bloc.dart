@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:math';
+import 'dart:typed_data';
 
 import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
@@ -231,7 +232,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         
         list[i]= message.copyWith(
           identificator: message.id,
-          status: list[i].messageStatus,
+          // status: list[i].messageStatus,
         );
 
         return ChatInitial(
@@ -312,11 +313,9 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
           var i = list.indexWhere((e) => e.identificator == event.message.id);
           
           if (i != -1) {
-            list.removeAt(i);
+            list[i] = event.message;
           }
 
-          list.insert(0, event.message);
-          
           bool didNotRead = 
             scrollController.offset > scrollController.position.viewportDimension * 1.5;
 
@@ -417,14 +416,20 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     int randomID = _random.nextInt(99999);
 
     StreamController<double> controller = StreamController<double>();
-    
+
+    List<FileMedia> localFiles;
+    if(event.memoryPhotos != null){
+     localFiles = getLocalFiles(event.memoryPhotos);
+    }else{
+      localFiles = getLoadFiles(event);
+    }
     var newMessage = Message(
       user: MessageUser(
         id: sl<AuthConfig>().user.id,
       ),
       transfer: event.forwardMessage!= null ? [event.forwardMessage] : [],
       text: event.message,
-      files: event.fieldFiles?.fieldKey == TypeMedia.audio ? [FileMedia(type: TypeMedia.audio)] : null,
+      files: localFiles,
       identificator: randomID,
       isRead: false,
       messageStatus: MessageStatus.sending,
@@ -528,6 +533,28 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   void directlyMoveToMessage (int id) {
 
+  }
+
+  getLoadFiles(MessageSend event){
+    var fieldFiles = event.fieldFiles;
+    if(fieldFiles != null){
+      switch (fieldFiles.fieldKey){
+        case TypeMedia.audio:
+          return [FileMedia(type: TypeMedia.audio)];
+        case TypeMedia.video:
+          return [FileMedia(type: TypeMedia.video, url: fieldFiles.files[0].path)];
+        case TypeMedia.image:
+          return [FileMedia(type: TypeMedia.image, memoryPhotos: event.memoryPhotos, isLocal: true)];
+        default:
+          return null;
+      }
+    }else{
+      return null;
+    }
+  }
+
+  getLocalFiles(memoryPhotos){
+    return [FileMedia(type: TypeMedia.image, memoryPhotos: memoryPhotos, isLocal: true)];
   }
 
 

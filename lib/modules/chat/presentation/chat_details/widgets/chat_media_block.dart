@@ -39,7 +39,7 @@ class ChatMediaBlock extends StatelessWidget {
   }
 }
 
-enum TypeMedia { media, documents, audio, undefined, image }
+enum TypeMedia { media, documents, audio, undefined, image, video }
 
 extension MediaTypeUIExtension on TypeMedia {
   String get title {

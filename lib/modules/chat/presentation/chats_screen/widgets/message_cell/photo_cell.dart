@@ -1,26 +1,37 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
-class PreviewPhotoWidget extends StatelessWidget {
+class PreviewPhotoWidget extends StatefulWidget {
   const PreviewPhotoWidget({
     Key key,
     @required this.a,
+    this.isLocal = false,
     @required this.url,
   }) : super(key: key);
-
+  final bool isLocal;
   final double a;
   final url;
 
   @override
+  _PreviewPhotoWidgetState createState() => _PreviewPhotoWidgetState();
+}
+
+class _PreviewPhotoWidgetState extends State<PreviewPhotoWidget> with AutomaticKeepAliveClientMixin{
+  @override
   Widget build(BuildContext context) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
-      child: CachedNetworkImage(
+      child: widget.isLocal ? Image.memory(
+        widget.url,
+        fit: BoxFit.cover,
+        width: widget.a,
+        height: widget.a,
+      ) : CachedNetworkImage(
         fadeInDuration: const Duration(milliseconds: 400),
         filterQuality: FilterQuality.low,
-        imageUrl: url,
-        width: a,
-        height: a,
+        imageUrl: widget.url,
+        width: widget.a,
+        height: widget.a,
         fit: BoxFit.cover,
         placeholder: (context, url) => Icon(
           Icons.image,
@@ -33,27 +44,40 @@ class PreviewPhotoWidget extends StatelessWidget {
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 
-class PreviewPhotoLarge extends StatelessWidget {
+class PreviewPhotoLarge extends StatefulWidget  {
   const PreviewPhotoLarge({
     Key key,
     @required this.url,
+    this.isLocal = false,
   }) : super(key: key);
 
   final url;
+  final isLocal;
 
+  @override
+  _PreviewPhotoLargeState createState() => _PreviewPhotoLargeState() ;
+}
+
+class _PreviewPhotoLargeState extends State<PreviewPhotoLarge> with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     return Flexible(
       fit: FlexFit.loose,
         child: ClipRRect(
           borderRadius: BorderRadius.circular(10),
-          child: CachedNetworkImage(
+          child: widget.isLocal ? Image.memory(
+            widget.url,
+            fit: BoxFit.cover,
+          ) : CachedNetworkImage(
             fadeInDuration: const Duration(milliseconds: 400),
             filterQuality: FilterQuality.low,
-            imageUrl: url,
+            imageUrl: widget.url,
             fit: BoxFit.cover,
             placeholder: (context, url) => Icon(
               Icons.image,
@@ -67,54 +91,71 @@ class PreviewPhotoLarge extends StatelessWidget {
         ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
-class PreviewMorePhoto extends StatelessWidget {
+class PreviewMorePhoto extends StatefulWidget {
   const PreviewMorePhoto({
     Key key,
     @required this.url,
     @required this.moreCount,
     @required this.a,
     @required this.onMore,
+    this.isLocal,
   }) : super(key: key);
 
   final url;
   final double a;
   final onMore;
   final int moreCount;
+  final bool isLocal;
 
+  @override
+  _PreviewMorePhotoState createState() => _PreviewMorePhotoState();
+}
+
+class _PreviewMorePhotoState extends State<PreviewMorePhoto> with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     return Flexible(
       fit: FlexFit.loose,
         child: GestureDetector(
-          onTap: onMore,
+          onTap: widget.onMore,
           child: Stack(
             alignment: Alignment.center,
             children: [
               ClipRRect(
                borderRadius: BorderRadius.circular(10),
-               child: CachedNetworkImage(
+               child: widget.isLocal ? Image.memory(
+                  widget.url,
+                  fit: BoxFit.cover,
+                  width: widget.a,
+                  colorBlendMode: BlendMode.darken,
+                  color: Colors.black54,
+                  height: widget.a,
+                ) :  CachedNetworkImage(
                  fadeInDuration: const Duration(milliseconds: 400),
                  filterQuality: FilterQuality.low,
-                 imageUrl: url,
-                 width: a,
+                 imageUrl: widget.url,
+                 width: widget.a,
                  colorBlendMode: BlendMode.darken,
                  color: Colors.black54,
-                 height: a,
+                 height: widget.a,
                  fit: BoxFit.cover,
                  placeholder: (context, url) => Icon(
                    Icons.image,
                    color: Colors.white,
                  ),
                  errorWidget: (context, url, error) => Icon(
-                     Icons.error,
-                     color: Colors.white,
-                   ),
+                    Icons.error,
+                    color: Colors.white,
+                  ),
                ),
                 ),
               Text(
-                '+$moreCount',
+                '+${widget.moreCount}',
                 style: TextStyle(
                   fontWeight: FontWeight.w700,
                   fontSize: 24,
@@ -126,4 +167,7 @@ class PreviewMorePhoto extends StatelessWidget {
         ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

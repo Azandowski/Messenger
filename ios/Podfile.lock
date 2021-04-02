@@ -87,6 +87,15 @@ PODS:
     - GoogleUtilities/Environment
   - image_picker (0.0.1):
     - Flutter
+  - libwebp (1.2.0):
+    - libwebp/demux (= 1.2.0)
+    - libwebp/mux (= 1.2.0)
+    - libwebp/webp (= 1.2.0)
+  - libwebp/demux (1.2.0):
+    - libwebp/webp
+  - libwebp/mux (1.2.0):
+    - libwebp/demux
+  - libwebp/webp (1.2.0)
   - mobile-ffmpeg-full (4.4.LTS)
   - multi_image_picker (4.8.00):
     - BSImagePicker (~> 2.10.3)
@@ -119,6 +128,13 @@ PODS:
     - Flutter
   - vibrate (0.0.1):
     - Flutter
+  - video_player (0.0.1):
+    - Flutter
+  - video_thumbnail (0.0.1):
+    - Flutter
+    - libwebp
+  - wakelock (0.0.1):
+    - Flutter
 
 DEPENDENCIES:
   - contacts_service (from `.symlinks/plugins/contacts_service/ios`)
@@ -141,6 +157,9 @@ DEPENDENCIES:
   - sqflite (from `.symlinks/plugins/sqflite/ios`)
   - url_launcher (from `.symlinks/plugins/url_launcher/ios`)
   - vibrate (from `.symlinks/plugins/vibrate/ios`)
+  - video_player (from `.symlinks/plugins/video_player/ios`)
+  - video_thumbnail (from `.symlinks/plugins/video_thumbnail/ios`)
+  - wakelock (from `.symlinks/plugins/wakelock/ios`)
 
 SPEC REPOS:
   trunk:
@@ -156,6 +175,7 @@ SPEC REPOS:
     - FMDB
     - GoogleDataTransport
     - GoogleUtilities
+    - libwebp
     - mobile-ffmpeg-full
     - nanopb
     - OneSignal
@@ -203,6 +223,12 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/url_launcher/ios"
   vibrate:
     :path: ".symlinks/plugins/vibrate/ios"
+  video_player:
+    :path: ".symlinks/plugins/video_player/ios"
+  video_thumbnail:
+    :path: ".symlinks/plugins/video_thumbnail/ios"
+  wakelock:
+    :path: ".symlinks/plugins/wakelock/ios"
 
 SPEC CHECKSUMS:
   BSGridCollectionViewLayout: 333dcb457a5a3bdd9212607ab5756553dcfe06cb
@@ -228,6 +254,7 @@ SPEC CHECKSUMS:
   GoogleDataTransport: 1024b1a4dfbd7a0e92cb20d7e0a6f1fb66b449a4
   GoogleUtilities: 31c5b01f978a70c6cff2afc6272b3f1921614b43
   image_picker: 50e7c7ff960e5f58faa4d1f4af84a771c671bc4a
+  libwebp: e90b9c01d99205d03b6bb8f2c8c415e5a4ef66f0
   mobile-ffmpeg-full: f17c82219b4ff9e4018b5e21f88b78c28a3475db
   multi_image_picker: 6dfd22d7e6441a1cb06f6876fe8cc5f32f7f6610
   nanopb: 59221d7f958fb711001e6a449489542d92ae113e
@@ -243,6 +270,9 @@ SPEC CHECKSUMS:
   tau_sound_core: c34a32074c96cc960a5b457c91e25211203707cf
   url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
   vibrate: 967ba16b8bd87d2fa3646472bb10429f1927c32f
+  video_player: 9cc823b1d9da7e8427ee591e8438bfbcde500e6e
+  video_thumbnail: c4e2a3c539e247d4de13cd545344fd2d26ffafd1
+  wakelock: b0843b2479edbf6504d8d262c2959446f35373aa
 
 PODFILE CHECKSUM: a3c02901c64d6298e037badfff48e6ee8246f41d
 
