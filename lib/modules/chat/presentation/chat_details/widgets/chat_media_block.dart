@@ -30,7 +30,7 @@ class ChatMediaBlock extends StatelessWidget {
                 style: TextStyle(color: Colors.grey[400]),
               ),
               SizedBox(width: 8),
-              Icon(Icons.chevron_right, color: Colors.grey[400])
+              // Icon(Icons.chevron_right, color: Colors.grey[400])
             ],
           ),
         )
@@ -47,7 +47,7 @@ extension MediaTypeUIExtension on TypeMedia {
       case TypeMedia.media:
         return 'Медиа';
       case TypeMedia.documents:
-        return 'Документы';
+        return 'Файлы';
       case TypeMedia.audio:
         return 'Аудио';
       default:

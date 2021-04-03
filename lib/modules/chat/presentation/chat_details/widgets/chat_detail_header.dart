@@ -46,7 +46,7 @@ class ChatDetailHeader extends StatelessWidget {
                 placeholder: AssetImage("assets/images/logo.png"),
                 image: chatDetailed?.chat?.imageUrl == null && chatDetailed?.user?.profileImage == null ? 
                   AssetImage(
-                    'assets/images/placeholder.png', 
+                    'assets/images/logo.png', 
                   ) : NetworkImage(chatDetailed?.user?.profileImage ?? chatViewModel?.imageURL),
                 height: 286,
                 fit: BoxFit.cover,

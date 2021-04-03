@@ -32,7 +32,7 @@ class AppBottomBar extends StatelessWidget {
             BottomBarItem(
               index: 1,
               isSelected: currentIndex == 1,
-              iconData: Icons.home,
+              iconData: Icons.face,
               onChangeIndex: (index) {
                 onTap(index);
               },

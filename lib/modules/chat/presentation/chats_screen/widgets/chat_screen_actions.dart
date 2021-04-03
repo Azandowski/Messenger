@@ -85,6 +85,14 @@ class ChatScreenActions extends StatelessWidget {
                     }
                   ),
                   DialogActionButton(
+                    title: 'Поменять обои', 
+                    iconData: Icons.search,
+                    buttonStyle: DialogActionButtonStyle.black,
+                    onPress: () {
+                      _navigator.push(ChatsSearchScreen.route(chatEntity: chatEntity));
+                    }
+                  ),
+                  DialogActionButton(
                     title: (isSecretModeOn ?? false) ? 'Выключить таймер сгорания' : 'Включить таймер сгорания', 
                     iconData: Icons.timer,
                     buttonStyle: DialogActionButtonStyle.dangerous,
