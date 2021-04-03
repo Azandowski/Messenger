@@ -40,6 +40,12 @@ abstract class AppFontStyles {
     fontSize: 15,
   );
 
+  static get headerIndicatorMediumStyle => TextStyle(
+    color: AppColors.indicatorColor,
+    fontWeight: FontWeight.w500,
+    fontSize: 15,
+  );
+
   static get black16 => TextStyle(
     color: Colors.black,
     fontWeight: FontWeight.w500,

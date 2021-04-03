@@ -144,7 +144,15 @@ class _ChatsSearchScreenState extends State<ChatsSearchScreen> implements Search
                   // Показать cell чата
                   return InkWell(
                     onTap: () {
-                      widget.delegate?.didSelectChatItem(state.data.chats[index]);
+                      if (widget.delegate == null) {
+                        Navigator.push(
+                          context, MaterialPageRoute(builder: (context) => ChatScreen(
+                            chatEntity: state.data.chats[index]
+                          )),
+                        );
+                      } else {
+                        widget.delegate.didSelectChatItem(state.data.chats[index]);
+                      }
                     },
                     child: ChatPreviewItem(
                       ChatViewModel(

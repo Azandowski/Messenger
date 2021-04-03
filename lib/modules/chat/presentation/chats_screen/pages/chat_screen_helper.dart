@@ -391,7 +391,6 @@ extension ChatScreenStateHelper on ChatScreenState {
       bool isTimeDeletionEnabled = (currentMessage.isRead || currentMessage.user?.id != myUserID) && 
         currentMessage.timeDeleted != null && 
           currentMessage.chatActions == null;
-      print('isTimeDeletionEnabled: $isTimeDeletionEnabled');
 
       MessageCellParams messageCellParams ({int timeLeft}) => MessageCellParams(
         state: state, 

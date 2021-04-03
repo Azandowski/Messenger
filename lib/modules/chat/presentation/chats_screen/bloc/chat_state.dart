@@ -29,16 +29,6 @@ abstract class ChatState extends Equatable {
     unreadCount, showBottomPin, showBottomPin, topMessage,
     isSecretModeOn, chatEntity
   ];
-
-  ChatState copyWith ({
-    List<Message> messages,
-    bool hasReachedMax,
-    bool hasReachBottomMax,
-    String wallpaperPath,
-    int unreadCount,
-    bool showBottomPin,
-    ChatEntity chatEntity
-  });
 }
 
 class ChatInitial extends ChatState {
@@ -74,30 +64,6 @@ class ChatInitial extends ChatState {
     isSecretModeOn: isSecretModeOn,
     chatEntity: chatEntity
   );
-
-  @override
-  ChatInitial copyWith ({
-    bool hasReachBottomMax,
-    List<Message> messages,
-    bool hasReachedMax,
-    String wallpaperPath,
-    int focusMessageID,
-    int unreadCount,
-    bool showBottomPin,
-    ChatEntity chatEntity
-  }) {
-    return ChatInitial(
-      hasReachBottomMax: hasReachBottomMax ?? this.hasReachBottomMax,
-      messages: messages ?? this.messages,
-      hasReachedMax: hasReachedMax ?? this.hasReachedMax,
-      wallpaperPath: wallpaperPath ?? this.wallpaperPath,
-      focusMessageID: focusMessageID ?? this.focusMessageID,
-      unreadCount: unreadCount ?? this.unreadCount,
-      showBottomPin: showBottomPin ?? this.showBottomPin,
-      chatEntity: chatEntity ?? this.chatEntity,
-      isSecretModeOn: this.isSecretModeOn
-    );
-  }
 
   @override
   List<Object> get props => [
@@ -150,31 +116,6 @@ class ChatLoading extends ChatState {
     isSecretModeOn: isSecretModeOn,
     chatEntity: chatEntity
   );
-
-  @override 
-  ChatLoading copyWith ({
-    bool hasReachBottomMax,
-    List<Message> messages,
-    bool hasReachedMax,
-    String wallpaperPath,
-    int focusMessageID,
-    int unreadCount,
-    bool showBottomPin,
-    bool isPagination,
-    ChatEntity chatEntity
-  }) {
-    return ChatLoading(
-      hasReachBottomMax: hasReachBottomMax ?? this.hasReachBottomMax,
-      messages: messages ?? this.messages,
-      hasReachedMax: hasReachedMax ?? this.hasReachedMax,
-      wallpaperPath: wallpaperPath ?? this.wallpaperPath,
-      unreadCount: unreadCount ?? this.unreadCount,
-      showBottomPin: showBottomPin ?? this.showBottomPin,
-      isPagination: isPagination ?? this.isPagination,
-      chatEntity: chatEntity ?? this.chatEntity,
-      isSecretModeOn: this.isSecretModeOn
-    );
-  }
  
   @override
   List<Object> get props => [
@@ -227,30 +168,6 @@ class ChatLoadingSilently extends ChatState {
     chatEntity: chatEntity
   );
 
-  @override 
-  ChatLoadingSilently copyWith ({
-    bool hasReachBottomMax,
-    List<Message> messages,
-    bool hasReachedMax,
-    String wallpaperPath,
-    int focusMessageID,
-    int unreadCount,
-    bool showBottomPin,
-    bool isPagination,
-    ChatEntity chatEntity
-  }) {
-    return ChatLoadingSilently(
-      hasReachBottomMax: hasReachBottomMax ?? this.hasReachBottomMax,
-      messages: messages ?? this.messages,
-      hasReachedMax: hasReachedMax ?? this.hasReachedMax,
-      wallpaperPath: wallpaperPath ?? this.wallpaperPath,
-      unreadCount: unreadCount ?? this.unreadCount,
-      showBottomPin: showBottomPin ?? this.showBottomPin,
-      chatEntity: chatEntity ?? this.chatEntity,
-      isSecretModeOn: this.isSecretModeOn
-    );
-  }
-
   @override
   List<Object> get props => [
     messages, 
@@ -300,32 +217,6 @@ class ChatError extends ChatState {
     isSecretModeOn: isSecretModeOn,
     chatEntity: chatEntity
   );
-
-  @override 
-  ChatError copyWith ({
-    bool hasReachBottomMax,
-    List<Message> messages,
-    bool hasReachedMax,
-    String wallpaperPath,
-    int focusMessageID,
-    int unreadCount,
-    bool showBottomPin,
-    bool isPagination,
-    String message,
-    ChatEntity chatEntity
-  }) {
-    return ChatError(
-      hasReachBottomMax: hasReachBottomMax ?? this.hasReachBottomMax,
-      messages: messages ?? this.messages,
-      hasReachedMax: hasReachedMax ?? this.hasReachedMax,
-      wallpaperPath: wallpaperPath ?? this.wallpaperPath,
-      unreadCount: unreadCount ?? this.unreadCount,
-      showBottomPin: showBottomPin ?? this.showBottomPin,
-      message: message ?? this.message,
-      chatEntity: chatEntity ?? this.chatEntity,
-      isSecretModeOn: this.isSecretModeOn
-    );
-  }
 
   @override
   List<Object> get props => [

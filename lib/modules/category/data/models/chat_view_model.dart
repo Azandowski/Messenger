@@ -34,6 +34,21 @@ class ChatViewModel {
     return entity.lastMessage?.type != null && entity.lastMessage.type != ChatAttachmentType.none;
   }
 
+
+  bool get isSecretModeOn {
+    bool lastMessageIsSecret = entity.lastMessage?.timeDeleted != null;
+    bool secretModeSet = entity.lastMessage?.chatActions == ChatActions.setSecret;
+    return lastMessageIsSecret || secretModeSet;
+  }
+
+  String get avatarBottomIconPath {
+    if (isSecretModeOn) {
+      return 'assets/icons/secret.png';
+    }
+
+    return null;
+  }
+
   String get attachmentPath {
     if (hasAttachment) {
       return entity.lastMessage?.type.iconPath;
@@ -88,6 +103,14 @@ class ChatViewModel {
       
       return AppFontStyles.mediumStyle;
     }
+  }
+
+  TextStyle get titleStyle {
+    if (isSecretModeOn) {
+      return AppFontStyles.headerIndicatorMediumStyle;
+    } 
+
+    return AppFontStyles.headerMediumStyle;
   }
 
   bool get isInLive {
