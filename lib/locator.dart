@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
 import 'package:messenger_mobile/modules/media/domain/usecases/get_audios.dart';
 import 'package:messenger_mobile/modules/media/domain/usecases/get_video.dart';
+import 'package:messenger_mobile/modules/profile/domain/usecases/set_wallpaper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app/application.dart';
@@ -75,7 +76,11 @@ Future<void> init() async {
     ),
   );
 
-  sl.registerFactory(() => ProfileCubit(getUser: sl()));
+  sl.registerFactory(() => ProfileCubit(
+    getUser: sl(),
+    setWallpaper: SetWallpaper(sl())
+  ));
+
   sl.registerFactory(() => ChatsCubit(sl()));
 
   // Use cases

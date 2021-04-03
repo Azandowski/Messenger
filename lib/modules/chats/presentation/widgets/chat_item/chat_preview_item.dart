@@ -69,7 +69,7 @@ class ChatPreviewItem extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    if (viewModel.hasAttachment)
+                    if (viewModel.attachmentPath != null)
                       ...[
                         Image.asset(
                           viewModel.attachmentPath,

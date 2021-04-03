@@ -198,7 +198,8 @@ class ChatScreenState extends State<ChatScreen> implements ChatChooseDelegate{
                               Expanded(
                                 child: Container(
                                   decoration: BoxDecoration(
-                                    image: this.getBackground(state)
+                                    image: this.getBackground(state),
+                                    // color: Colors.red
                                   ),
                                   child: ListView.separated(
                                     key: PageStorageKey('feed'),
@@ -222,9 +223,7 @@ class ChatScreenState extends State<ChatScreen> implements ChatChooseDelegate{
                                   ),
                                 ),
                               ),
-                              if (
-                                canSendMessage(state)
-                              )
+                              if (canSendMessage(state))
                                 this.buildChatBottom(
                                   cubit, _chatTodoCubit, 
                                   width, height,

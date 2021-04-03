@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:messenger_mobile/modules/profile/domain/usecases/set_wallpaper.dart';
 
 import '../../../../core/config/auth_config.dart';
 import '../../../../locator.dart';
@@ -8,9 +11,11 @@ import 'index.dart';
 
 class ProfileCubit extends Cubit<ProfileState> {
   final GetCurrentUser getUser;
+  final SetWallpaper setWallpaper;
 
   ProfileCubit({
     @required this.getUser,
+    @required this.setWallpaper
   }) : super(ProfileLoaded(user: sl<AuthConfig>().user));
 
   Future<void> updateProfile () async {
@@ -31,5 +36,9 @@ class ProfileCubit extends Cubit<ProfileState> {
         )
       )
     );
+  }
+
+  Future<void> setWallpaperFile (File file) async {
+    return setWallpaper(file);
   }
 }

@@ -31,9 +31,9 @@ class ChatViewModel {
   }
 
   bool get hasAttachment {
-    return entity.lastMessage?.type != null && entity.lastMessage.type != ChatAttachmentType.none;
+    return entity.lastMessage?.type != null 
+      && entity.lastMessage.type != ChatAttachmentType.none;
   }
-
 
   bool get isSecretModeOn {
     bool lastMessageIsSecret = entity.lastMessage?.timeDeleted != null;
@@ -52,9 +52,11 @@ class ChatViewModel {
   String get attachmentPath {
     if (hasAttachment) {
       return entity.lastMessage?.type.iconPath;
-    } else {
-      return '';
+    } else if (isSecretModeOn) {
+      return 'assets/icons/hot.png';
     }
+
+    return null;
   }
 
   String get chatDesription {

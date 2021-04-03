@@ -50,7 +50,7 @@ class ChatGlobalCubit extends Cubit<ChatState> {
       if (lastCategoryID == null || lastCategoryID == chat.chatCategory?.id)  {
         if (chatIndex == -1) {
           if (chat.chatUpdateType == ChatUpdateType.newLastMessage) {
-            List<ChatEntity> newChats = [...this.state.chats, chat];
+            List<ChatEntity> newChats = [chat, ...this.state.chats];
             emit(ChatsLoaded(
               currentCategory: this.state.currentCategory,
               hasReachedMax: this.state.hasReachedMax,

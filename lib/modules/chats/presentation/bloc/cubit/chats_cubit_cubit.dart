@@ -40,16 +40,6 @@ class ChatsCubit extends Cubit<ChatsCubitState> {
     } 
   }
 
-  Future<void> setWallpaper (File file) async {
-    emit(
-      ChatsCubitStateNormal(
-        currentTabIndex: this.state.currentTabIndex,
-      )
-    );
-    
-    return repository.setLocalWallpaper(file);
-  }
-
   void tabUpdate(int index) {
     FeedbackEngine.showFeedback(FeedbackType.selection);
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_share/flutter_share.dart';
+import 'package:messenger_mobile/core/utils/unavailable_dialog.dart';
 
 import '../../../../app/appTheme.dart';
 import '../../../../app/application.dart';
@@ -121,10 +122,10 @@ class _CreationModuleScreenState extends State<CreationModuleScreen> {
         _navigator.push(CreateGroupPage.route());
         break;
       case CreationActions.startVideo:
-        // TODO: Handle this case.
+        UnavailableFeatureDialog.show(context);
         break;
       case CreationActions.startLive:
-        // TODO: Handle this case.
+        UnavailableFeatureDialog.show(context);
         break;
       case CreationActions.inviteFriends:
         return await FlutterShare.share(

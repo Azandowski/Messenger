@@ -120,7 +120,9 @@ class _ChooseContactsScreenState extends State<ChooseContactsScreen> implements 
                     BottomActionButtonContainer(
                       onTap: () {
                         Navigator.pop(context);
-                        widget.delegate.didSaveContacts(contacts.map((e) => e.contactEntity).toList());
+                        widget.delegate.didSaveContacts(
+                          contacts.where((e) => e.isSelected).map((e) => e.contactEntity)
+                        .toList());
                       }, 
                       title: 'Готово'
                     )

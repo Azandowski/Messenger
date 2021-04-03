@@ -1,5 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:messenger_mobile/modules/chats/presentation/bloc/cubit/chats_cubit_cubit.dart';
 
 import '../../../../core/blocs/authorization/bloc/auth_bloc.dart';
 import '../../../../core/blocs/category/bloc/category_bloc.dart';
@@ -70,6 +74,21 @@ class _ProfilePageState extends State<ProfilePage> {
                             icon: Icons.info,
                             title: 'Политика конфиденциальности',
                             isRed: false),
+                      ),
+                      ProfileItem(
+                        profileItemData: ProfileItemData(
+                          icon: Icons.wallpaper,
+                          title: 'Обои',
+                          isRed: false,
+                        ),
+                        onTap: () async {
+                          final PickedFile image = await ImagePicker().getImage(
+                            source: ImageSource.gallery
+                          );
+                          
+                          final file = File(image.path);
+                          cubit.setWallpaperFile(file);
+                        }
                       ),
                       buildSeparator(),
                       ProfileItem(

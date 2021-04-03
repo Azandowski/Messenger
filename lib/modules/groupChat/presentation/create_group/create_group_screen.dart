@@ -123,7 +123,8 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> implements Contac
                             itemCount: contacts.length,
                           ),
                         )
-                      ]
+                      ],
+                    SizedBox(height: 80),
                   ],
                 ),
               ),
