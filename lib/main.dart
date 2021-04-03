@@ -84,7 +84,7 @@ class MainApp extends StatelessWidget {
                     // context.locale
                   );
 
-                  context.setLocale(Locale('en', 'US'));
+                  context.setLocale(Locale('kk', 'KZ'));
 
                   return MaterialApp(
                     debugShowCheckedModeBanner: false,

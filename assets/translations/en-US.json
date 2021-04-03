@@ -163,5 +163,10 @@
     "file_should_not_more_than_100mb": "File size must not exceed 100 mb",
     "file_is_not_selected": "No file selected",
     "you_agree_by_continuing": "By continuing you agree with the",
-    "handle_personal_info": "processing of personal data"
+    "handle_personal_info": "processing of personal data",
+    "whatsapp_number": "WhatsApp number",
+    "link_to": "Link to {service}",
+    "website": "Website",
+    "link_error": "Need a direct link to {service}",
+    "whatsapp_number_error": "Need a direct number from WhatsApp"
 }
