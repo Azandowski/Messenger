@@ -80,6 +80,7 @@ dependencies:
   flutter_search_bar: ^2.1.0
   scroll_to_index: ^1.0.6
   achievement_view: ^0.2.1
+  native_pdf_view: ^4.0.1
 
   # agora_rtc_engine: ^3.3.1
   # Media Dependencies
@@ -111,6 +112,7 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
+    - assets/docs/
     - assets/icons/social_media/
     - assets/icons/chat/
     - assets/translations/
