@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:easy_localization/easy_localization.dart';
 import '../../../domain/entities/chat_detailed.dart';
 import 'divider_wrapper.dart';
 
@@ -45,11 +45,11 @@ extension MediaTypeUIExtension on TypeMedia {
   String get title {
     switch (this) {
       case TypeMedia.media:
-        return 'Медиа';
+        return 'media'.tr();
       case TypeMedia.documents:
-        return 'Файлы';
+        return 'files'.tr();
       case TypeMedia.audio:
-        return 'Аудио';
+        return 'audio'.tr();
       default:
         return '';
     }

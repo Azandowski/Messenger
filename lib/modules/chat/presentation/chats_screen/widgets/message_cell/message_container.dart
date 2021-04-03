@@ -1,5 +1,5 @@
 import 'dart:ui';
-
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:messenger_mobile/app/application.dart';
 import 'package:messenger_mobile/core/blocs/audioplayer/bloc/audio_player_bloc.dart';
@@ -144,7 +144,7 @@ extension MessageContainerTranslationExtension on MessageContainer {
               return _buildTranslatedItem(state);
             } else if (state is TranslatingState) {
               return Text(
-                'Переводим ...',
+                'translating'.tr(),
                 style: !widget.messageViewModel.isMine ? 
                   AppFontStyles.grey12w400 : AppFontStyles.ligthGrey12w400
               );
@@ -171,7 +171,7 @@ extension MessageContainerTranslationExtension on MessageContainer {
             ),
             SizedBox(width: 10),
             Text(
-              'Оригинальный язык: ' +
+              'original_language'.tr() + ": " +
                 state.translationResponse.detectedLanguage,
               style: !widget.messageViewModel.isMine ? 
                 AppFontStyles.grey12w400 : AppFontStyles.ligthGrey12w400,

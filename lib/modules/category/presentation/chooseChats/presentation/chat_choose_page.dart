@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
-
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../../app/appTheme.dart';
 import '../../../../../app/application.dart';
 import '../../../../../core/blocs/chat/bloc/bloc/chat_cubit.dart';
@@ -28,7 +28,7 @@ class ChooseChatsPage extends StatefulWidget {
     return MaterialPageRoute<void>(builder: (_) => 
       ChooseChatsPage(
         delegate: delegate,
-        actionText: actionText ?? 'Добавить чаты',
+        actionText: actionText ?? 'add_chats'.tr(),
         excludeChats: excludeChats ?? []
     ));
   }
@@ -40,7 +40,7 @@ class ChooseChatsPage extends StatefulWidget {
   ChooseChatsPage({
     @required this.delegate,
     this.excludeChats,
-    this.actionText = 'Добавить чаты',
+    this.actionText,
     Key key,
   }) : super(key: key);
 
@@ -97,7 +97,11 @@ class _ChooseChatsPageState extends State<ChooseChatsPage> implements ChatsSearc
             builder: (context, selectState) {
               return Scaffold(
                 appBar: AppBar(
-                  title: Text('Выбрано: ${selectState.selectedChats.length}'),
+                  title: Text(
+                    'selected_count'.tr(namedArgs: {
+                      'count': '${selectState.selectedChats.length}'
+                    })
+                  ),
                   actions: [
                     IconButton(
                       icon: Icon(Icons.search),
@@ -120,7 +124,7 @@ class _ChooseChatsPageState extends State<ChooseChatsPage> implements ChatsSearc
                           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                           child: Container(
                             child: Text(
-                              'Выберите те чаты, которые вы хотите добавить',
+                              'select_chats_hint'.tr(),
                               style: AppFontStyles.placeholderStyle,
                             ),
                           ),
@@ -134,7 +138,7 @@ class _ChooseChatsPageState extends State<ChooseChatsPage> implements ChatsSearc
                         Navigator.pop(context);
                         widget.delegate.didSaveChats(selectState.selectedChats);
                       }, 
-                      title: widget.actionText
+                      title: widget.actionText ?? 'add_chats'.tr()
                     )
                   ],
                 )

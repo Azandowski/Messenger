@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../../app/appTheme.dart';
 import '../../../../../core/widgets/independent/dialogs/dialog_action_button.dart';
 import '../../../../../core/widgets/independent/dialogs/dialog_params.dart';
@@ -124,14 +124,14 @@ class _ChatAdminSettingsState extends State<ChatAdminSettings> {
         actionButton: [
           DialogActionButton(
             buttonStyle: DialogActionButtonStyle.cancel,
-            title: 'Отмена',
+            title: 'cancel'.tr(),
             onPress: () {
               Navigator.of(context).pop();
             }
           ),
           DialogActionButton(
             buttonStyle: DialogActionButtonStyle.submit,
-            title: 'Готово',
+            title: 'ready'.tr(),
             onPress: () {
               Navigator.of(context).pop();
               onNewValue(_currentOptionIndex);

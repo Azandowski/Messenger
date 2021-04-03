@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../app/appTheme.dart';
 import '../../domain/entities/category.dart';
 import 'category_item.dart';
@@ -31,7 +31,7 @@ class CategoriesSection extends StatelessWidget {
         children: [
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
             Text(
-              'Категории чатов', 
+              'chat_categories'.tr(), 
               style: AppFontStyles.headerMediumStyle),
             InkWell(
               child: Icon(Icons.chevron_right),
@@ -79,7 +79,7 @@ class CategoryItemsScroll extends StatelessWidget {
               entity: CategoryEntity(
                 id: 0, totalChats: 0,
                 avatar: 'assets/images/logo.png',
-                name: 'Все',
+                name: 'all'.tr(),
                 noReadCount: 0
               ),
               onSelect: () {

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../../../app/appTheme.dart';
 import '../chatControlPanel/cubit/panel_bloc_cubit.dart';
 import '../chatControlPanel/presentation/chatControlPanel.dart';
@@ -24,7 +24,7 @@ class SendMessageTextField extends StatelessWidget {
         border: InputBorder.none,
         contentPadding: EdgeInsets.symmetric(
         horizontal: widget.width / (360 / 16), vertical: widget.height / (724 / 18)),
-      hintText: 'Сообщение',
+      hintText: 'message'.tr(),
       labelStyle: AppFontStyles.blueSmallStyle)),
     );
   }

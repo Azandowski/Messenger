@@ -15,6 +15,7 @@ import 'package:messenger_mobile/modules/maps/presentation/cubit/map_cubit.dart'
 import 'package:latlong/latlong.dart';
 import '../../../../locator.dart';
 import 'map_screen.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:http/http.dart' as http;
 
 
@@ -117,7 +118,7 @@ extension MapScreenExtension on MapScreenState {
 
   AppBar buildAppBar(BuildContext context) {
     return new AppBar(
-      title: new Text('Местоположение'),
+      title: new Text('location'.tr()),
       actions: [
         searchBar.getSearchAction(context)
       ]
@@ -153,7 +154,7 @@ extension MapScreenExtension on MapScreenState {
         ));
       } else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(newState.errorMessage ?? 'Ошибка карты')
+          content: Text(newState.errorMessage ?? 'map_error'.tr())
         ));
       }
     }

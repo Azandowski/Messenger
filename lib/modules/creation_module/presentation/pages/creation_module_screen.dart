@@ -2,13 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_share/flutter_share.dart';
 import 'package:messenger_mobile/core/utils/unavailable_dialog.dart';
-
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../app/appTheme.dart';
 import '../../../../app/application.dart';
 import '../../../../core/utils/paginated_scroll_controller.dart';
 import '../../../../locator.dart';
-import '../../../chat/presentation/chat_details/page/chat_detail_page.dart';
-import '../../../chat/presentation/chat_details/page/chat_detail_screen.dart';
 import '../../../groupChat/domain/usecases/create_chat_group.dart';
 import '../../../groupChat/presentation/create_group/create_group_page.dart';
 import '../bloc/contact_bloc/contact_bloc.dart';
@@ -56,7 +54,7 @@ class _CreationModuleScreenState extends State<CreationModuleScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Создать',
+          'create'.tr(),
           style: AppFontStyles.headingTextSyle,
         ),
         actions: [
@@ -130,7 +128,7 @@ class _CreationModuleScreenState extends State<CreationModuleScreen> {
       case CreationActions.inviteFriends:
         return await FlutterShare.share(
           title: 'AIO Messenger',
-          text: 'Хэй, поскорее скачай мессенджер AIO!',
+          text: 'invite_friends_hint'.tr(),
           linkUrl: 'https://messengeraio.page.link/invite'
         );
         break;

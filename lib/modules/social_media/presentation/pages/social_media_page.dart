@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../core/widgets/independent/buttons/gradient_main_button.dart';
 import '../../domain/entities/social_media.dart';
 import '../widgets/social_media_item.dart';
@@ -55,7 +55,7 @@ class _SocialMediaScreenState extends State<SocialMediaScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Сайт и соцсети"),
+        title: Text("social_media".tr()),
       ),
       body: Container(
         child: Form(
@@ -87,7 +87,7 @@ class _SocialMediaScreenState extends State<SocialMediaScreen> {
       color: Color.fromRGBO(236, 233, 248, 1),
       padding: const EdgeInsets.only(top: 30, bottom: 60, left: 16, right: 16),
       child: ActionButton(
-        text: 'Сохранить',
+        text: 'save'.tr(),
         onTap: () {
           if (_formKey.currentState.validate()) {
             widget.delegate.didFillSocialMedia(_buildSocialMedia());

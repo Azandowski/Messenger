@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../../app/appTheme.dart';
 
 enum MessageCellActions {
@@ -16,19 +16,19 @@ extension MessageCellActionsUiExtensin on MessageCellActions {
   String get title {
     switch (this) {
       case MessageCellActions.copyMessage:
-        return 'Копировать';
+        return 'copy'.tr();
       case MessageCellActions.attachMessage:
-        return 'Закрепить';
+        return 'attach'.tr();
       case MessageCellActions.replyMessage:
-        return 'Ответить';
+        return 'reply'.tr();
       case MessageCellActions.replyMore:
-        return 'Переслать';
+        return 'forward'.tr();
       case MessageCellActions.deleteMessage:
-        return 'Удалить';
+        return 'delete'.tr();
       case MessageCellActions.openProfile:
-        return 'Профиль';
+        return 'profile'.tr();
       case MessageCellActions.translateMessage:
-        return 'Перевести';
+        return 'translate'.tr();
       default:
         return '';
     }

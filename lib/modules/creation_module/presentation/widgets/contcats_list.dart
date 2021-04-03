@@ -1,17 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:messenger_mobile/app/application.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chat_details/page/chat_detail_page.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chat_details/page/chat_detail_screen.dart';
-
 import '../../../../core/utils/paginated_scroll_controller.dart';
 import '../../../../core/utils/snackbar_util.dart';
 import '../../../../core/widgets/independent/small_widgets/cell_skeleton_item.dart';
 import '../../../../core/widgets/independent/small_widgets/chat_count_view.dart';
-import '../../../../locator.dart';
 import '../../domain/entities/contact.dart';
 import '../bloc/contact_bloc/contact_bloc.dart';
 import 'contact_cell.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 enum ContactsMode { showPeople, showMyContacts }
 
@@ -52,7 +48,10 @@ class _ContactsListState extends State<ContactsList> {
     return BlocConsumer<ContactBloc, ContactState>(
       listener: (context, state) {
         if (state.status == ContactStatus.failure){
-          SnackUtil.showError(context: context, message: 'Не удалось обработать ваши контакты');
+          SnackUtil.showError(
+            context: context, 
+            message: 'could_not_handle_contacts'.tr()
+          );
         }
       },
       builder: (_, state) {
@@ -68,9 +67,14 @@ class _ContactsListState extends State<ContactsList> {
             itemBuilder: (context, int index) {
               if (index == 0) {
                 return CellHeaderView(
-                  title: widget.mode == ContactsMode.showMyContacts?
-                    'Ваши контакты: ${state.contacts.length}' : 
-                      'Контакты: ${state.contacts.length}'
+                  title: widget.mode == ContactsMode.showMyContacts ?
+                    'contacts_count'.tr(namedArgs: {
+                      'count': '${state.contacts.length}'
+                    }) : 'your_contacts_count'.tr(
+                      namedArgs: {
+                        'count': '${state.contacts.length}'
+                      }
+                    )
                 );
               } else {
                 return index >= state.contacts.length + 1 ? 

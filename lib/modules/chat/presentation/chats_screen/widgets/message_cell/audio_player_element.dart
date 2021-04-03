@@ -138,11 +138,12 @@ class SendingAudioElement extends StatelessWidget {
               SizedBox(width: 4,),
               MusicProgressIndicator(value: 0.0, isMine: true),
               SizedBox(width: 4,),
-              Text('Отправка',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 10,
-              ))
+              Text('sending'.tr(),
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 10,
+                )
+              )
             ],
           ),
         );

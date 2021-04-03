@@ -6,6 +6,7 @@ import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/ch
 import 'package:messenger_mobile/modules/maps/domain/entities/place.dart';
 import 'package:messenger_mobile/modules/maps/presentation/widgets/map_selected_place.dart';
 import 'package:messenger_mobile/modules/maps/presentation/widgets/place_item.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class MapBottomSheet extends StatefulWidget {
   
@@ -88,7 +89,7 @@ class _MapBottomSheetState extends State<MapBottomSheet> {
                   else
                     Center(
                       child: EmptyView(
-                        text: 'Ничего не найдено',
+                        text: 'nothing_found'.tr(),
                       )
                     )
                 ],
@@ -116,7 +117,7 @@ class _MapBottomSheetState extends State<MapBottomSheet> {
       padding: const EdgeInsets.only(top: 15, bottom: 20),
       child: Center(
         child: Text(
-          'Или выберите место',
+          'or_select_place'.tr(),
           style: AppFontStyles.mediumStyle,
           textAlign: TextAlign.center,
         ),

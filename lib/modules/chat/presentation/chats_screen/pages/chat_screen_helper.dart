@@ -10,7 +10,7 @@ import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/ch
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen_import.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/remove_dialog_view.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
-
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../../core/blocs/chat/bloc/bloc/chat_cubit.dart' as main_chat_cubit;
 import '../../../../../core/utils/snackbar_util.dart';
 import '../../../../category/presentation/chooseChats/presentation/chat_choose_page.dart';
@@ -69,7 +69,7 @@ extension ChatScreenStateHelper on ChatScreenState {
         padding: EdgeInsets.fromLTRB(16,8,16,8),
         child: ActionButton(
           isLoading: state is ChatToDoLoading,
-          text: state.isDelete ? 'Удалить' : 'Переслать',
+          text: state.isDelete ? 'delete'.tr() : 'forward'.tr(),
           onTap: () {
             if (state.isDelete) {
               showDialog(context: context, builder: (ctx) {
@@ -81,7 +81,7 @@ extension ChatScreenStateHelper on ChatScreenState {
                 });
               });
             } else {
-              Navigator.push(context, ChooseChatsPage.route(this, actionText: 'Переслать'));
+              Navigator.push(context, ChooseChatsPage.route(this, actionText: 'forward'.tr()));
             }
           }
         ),
@@ -122,7 +122,7 @@ extension ChatScreenStateHelper on ChatScreenState {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'Закрепленное сообщение',
+                  'attached_message'.tr(),
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
@@ -146,17 +146,17 @@ extension ChatScreenStateHelper on ChatScreenState {
           IconButton(icon: Icon(Icons.close), onPressed: (){
             showDialog(context: context, builder: (ctx){
               return DialogsView( 
-                title: 'Вы хотите открепить сообщение?',
+                title: 'do_u_want_unset_message'.tr(),
                 actionButton: [
                   DialogActionButton(
-                    title: 'Отмена', 
+                    title: 'cancel'.tr(), 
                     buttonStyle: DialogActionButtonStyle.cancel,
                     onPress: () {
                       Navigator.pop(context);
                     }
                   ),
                   DialogActionButton(
-                    title: 'Открепить', 
+                    title: 'unattach'.tr(), 
                     buttonStyle: DialogActionButtonStyle.submit,
                     onPress: () {
                       cubit.disattachMessage();
@@ -207,7 +207,7 @@ extension ChatScreenStateHelper on ChatScreenState {
         Clipboard.setData(ClipboardData(text: messageViewModel.messageText))
         ..then((result) {
           final snackBar = SnackBar(
-            content: Text('Скопировано в буфер обмена'),
+            content: Text('copied'.tr()),
           );
           
           ScaffoldMessenger.of(context).showSnackBar(snackBar);

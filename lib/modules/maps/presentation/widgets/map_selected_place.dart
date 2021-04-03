@@ -2,6 +2,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen_import.dart';
 import 'package:messenger_mobile/modules/maps/domain/entities/place.dart';
 import 'package:latlong/latlong.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class MapSelectedPlace extends StatelessWidget {
   
@@ -41,8 +42,8 @@ class MapSelectedPlace extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    isSelectedLocation ? 'Отправить выбранные геоданные' : 
-                      'Отправить мои геоданные',
+                    isSelectedLocation ? 'send_selected_location'.tr() : 
+                      'send_my_location'.tr(),
                     style: AppFontStyles.white14w400.copyWith(
                       fontWeight: FontWeight.bold
                     ),
@@ -51,7 +52,7 @@ class MapSelectedPlace extends StatelessWidget {
                   SizedBox(height: 4,),
                   Text(
                     isSelectedLocation ? selectedPlace.street : 
-                      'С точностью до 12 метров',
+                      'location_best_distance'.tr(),
                     style: AppFontStyles.white12w400,
                     overflow: TextOverflow.ellipsis,
                   )

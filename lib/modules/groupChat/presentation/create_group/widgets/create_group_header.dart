@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../../core/widgets/independent/buttons/icon_text_button.dart';
 import '../../../../../core/widgets/independent/small_widgets/photo_picker_view.dart';
 import '../../../../../core/widgets/independent/textfields/customTextField.dart';
@@ -35,18 +35,18 @@ class CreateGroupHeader extends StatelessWidget {
         ),
         CustomTextField(
           textCtr: nameController,
-          labelText: 'Название группы',
+          labelText: 'group_name'.tr(),
           customPadding: EdgeInsets.symmetric(horizontal: 16,vertical: 0),
         ),
         CustomTextField(
           textCtr: descriptionController,
-          labelText: 'Описание (необязательно)',
+          labelText: 'description_unoptional'.tr(),
           customPadding: EdgeInsets.symmetric(horizontal: 16,vertical: 0),
         ),
         IconTextButton(
           imageAssetPath: 'assets/images/chat_gradient_icon.png',
           onPress: onAddContacts,
-          title: 'Добавить контакты',
+          title: 'add_contacts'.tr(),
         )
       ],
     );

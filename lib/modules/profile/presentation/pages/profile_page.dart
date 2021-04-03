@@ -3,8 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:messenger_mobile/modules/chats/presentation/bloc/cubit/chats_cubit_cubit.dart';
-
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../core/blocs/authorization/bloc/auth_bloc.dart';
 import '../../../../core/blocs/category/bloc/category_bloc.dart';
 import '../../../../core/blocs/chat/bloc/bloc/chat_cubit.dart';
@@ -39,7 +38,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Профиль', style: TextStyle(color: Colors.black)),
+        title: Text('profile'.tr(), style: TextStyle(color: Colors.black)),
         backgroundColor: Color.fromRGBO(250, 249, 255, 1)),
       backgroundColor: Colors.grey[200],
       body: BlocListener(
@@ -72,13 +71,13 @@ class _ProfilePageState extends State<ProfilePage> {
                       ProfileItem(
                         profileItemData: ProfileItemData(
                             icon: Icons.info,
-                            title: 'Политика конфиденциальности',
+                            title: 'privacy_policy'.tr(),
                             isRed: false),
                       ),
                       ProfileItem(
                         profileItemData: ProfileItemData(
                           icon: Icons.wallpaper,
-                          title: 'Обои',
+                          title: 'wallpaper'.tr(),
                           isRed: false,
                         ),
                         onTap: () async {
@@ -94,7 +93,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       ProfileItem(
                         profileItemData: ProfileItemData(
                           icon: Icons.exit_to_app,
-                          title: 'Выйти из аккаунта',
+                          title: 'logout_from_account'.tr(),
                           isRed: true,
                         ),
                         onTap: () {

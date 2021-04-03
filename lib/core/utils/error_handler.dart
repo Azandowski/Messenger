@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'package:easy_localization/easy_localization.dart';
 
 enum ServerCustomErrors {
   blocUser, 
@@ -11,7 +11,7 @@ extension ServerCustomErrorsExtension on ServerCustomErrors {
   String get key {
     switch (this) {
       case ServerCustomErrors.blocUser:
-        return '"Block user"';
+        return 'Block user';
       case ServerCustomErrors.userNotAdmin: 
         return 'User not Admin Chat';
       default:
@@ -22,9 +22,9 @@ extension ServerCustomErrorsExtension on ServerCustomErrors {
   String get localization {
     switch (this) {
       case ServerCustomErrors.blocUser:
-        return 'Пользователь заблокирован';
+        return 'user_blocked'.tr();
       case ServerCustomErrors.userNotAdmin:
-        return 'Вы не являетесь админом';
+        return 'you_arenot_admin'.tr();
       default:
         return '';
     }
@@ -58,7 +58,7 @@ class ErrorHandler {
         if (response['message'] != null) {
           output = response['message'];
         } else if (response['type'] != null && response['type'] == ServerErrors.validationError.key) {
-          output = 'Ошибка валидации';
+          output = 'validation_error'.tr();
         } else {
           output = response.toString();
         }

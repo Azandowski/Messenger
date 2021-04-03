@@ -1,4 +1,5 @@
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen_import.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class UnavailableScreen extends StatelessWidget {
   
@@ -19,13 +20,13 @@ class UnavailableScreen extends StatelessWidget {
                 ),
                 SizedBox(height: 16),
                 Text(
-                  'Уважаемые пользователи',
+                  'dear_users'.tr(),
                   style: AppFontStyles.headingBlackStyle,
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 8),
                 Text(
-                  'В данный момент эта функция находится в разработке и будет доступна в скором времени',
+                  'unavailable_function_hint'.tr(),
                   style: AppFontStyles.grey14w400,
                   textAlign: TextAlign.center,
                 )

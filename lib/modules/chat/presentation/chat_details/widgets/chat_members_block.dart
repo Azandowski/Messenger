@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../../app/appTheme.dart';
 import '../../../../../core/config/auth_config.dart';
 import '../../../../../locator.dart';
@@ -37,7 +37,7 @@ class ChatMembersBlock extends StatelessWidget {
             child: RichText(
               textAlign: TextAlign.center,
               text: TextSpan(
-                text: 'Участники: ',
+                text: 'members'.tr() + ": ",
                 style: TextStyle(color: Colors.black),
                 children: [
                   TextSpan(
@@ -72,7 +72,7 @@ class ChatMembersBlock extends StatelessWidget {
           horizontal: 16
         ),
         child: Text(
-          'Открыть весь список участников',
+          'show_all_members'.tr(),
           textAlign: TextAlign.left,
           style: TextStyle(color: AppColors.indicatorColor, fontWeight: FontWeight.w500),
         ),

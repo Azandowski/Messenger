@@ -1,5 +1,5 @@
 import 'package:flutter_search_bar/flutter_search_bar.dart';
-
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../../core/utils/paginated_scroll_controller.dart';
 import '../../../../../core/utils/search_engine.dart';
 import '../../../../../core/utils/snackbar_util.dart';
@@ -139,7 +139,7 @@ class _SearchContactPageState extends State<SearchContactPage> implements Search
 
   AppBar buildAppBar(BuildContext context) {
     return new AppBar(
-      title: new Text('Пользователи'),
+      title: new Text('users'.tr()),
       actions: [
         searchBar.getSearchAction(context)
       ]

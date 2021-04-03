@@ -80,8 +80,11 @@ class MainApp extends StatelessWidget {
               child: Builder(
                 builder: (BuildContext context) {
                   serviceLocator.sl<Application>().changeAppLanguage(
-                    context.locale
+                    Locale('en', 'US'),
+                    // context.locale
                   );
+
+                  context.setLocale(Locale('en', 'US'));
 
                   return MaterialApp(
                     debugShowCheckedModeBanner: false,

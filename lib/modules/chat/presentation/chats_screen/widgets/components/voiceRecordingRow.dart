@@ -76,7 +76,10 @@ class _VoiceRecordingRowState extends State<VoiceRecordingRow> with TickerProvid
         [
           SizedBox(width: MediaQuery.of(context).size.width/2-144,),
           TextButton(
-            child: Text('Отмена',style: AppFontStyles.black16,),
+            child: Text(
+              'cancel'.tr(), 
+              style: AppFontStyles.black16
+            ),
             onPressed: widget.onCancel,
           ),
         ],
@@ -104,7 +107,7 @@ class _VoiceRecordingRowState extends State<VoiceRecordingRow> with TickerProvid
                 builder: (context, snapshot) {
                   var value = 0.0;
                   var timeNow = '00:00';
-                  if(otherState.id == state.path){
+                  if (otherState.id == state.path) {
                     var maxDuration = snapshot.data.duration.inSeconds.toDouble();
                     var sliderCurrentPosition = min(snapshot.data.position.inSeconds.toDouble(), maxDuration);
                     if (sliderCurrentPosition < 0.0) {
@@ -116,6 +119,7 @@ class _VoiceRecordingRowState extends State<VoiceRecordingRow> with TickerProvid
                       isUtc: true);
                     timeNow = DateFormat.ms().format(date);
                   }
+                  
                   return Expanded(
                     child: Container(
                       child: Row(

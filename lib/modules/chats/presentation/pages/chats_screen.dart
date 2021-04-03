@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../app/application.dart';
 import '../../../../core/blocs/chat/bloc/bloc/chat_cubit.dart';
 import '../../../../core/utils/paginated_scroll_controller.dart';
@@ -25,13 +25,11 @@ class _ChatsScreenState extends State<ChatsScreen> {
   
   PaginatedScrollController scrollController = PaginatedScrollController();
   ChatsCubit cubit;
-  String language;
 
   NavigatorState get _navigator => sl<Application>().navKey.currentState;
 
   @override
   void initState() {
-    language = sl<SharedPreferences>().getString('language') ?? 'English';
     cubit = sl<ChatsCubit>();
     context.read<ChatGlobalCubit>().loadChats(isPagination: false);
     scrollController.addListener(() {
@@ -102,7 +100,7 @@ class _ChatsScreenState extends State<ChatsScreen> {
                           );
                         } else {
                           return Center(child: EmptyView(
-                            text: 'В этой категории еще нет чатов.\nСоздайте новую.',
+                            text: 'no_chats_in_category'.tr(),
                           ));
                         }
                       } else {
@@ -148,7 +146,7 @@ class _ChatsScreenState extends State<ChatsScreen> {
 
   AppBar buildAppBar(BuildContext context) {
     return new AppBar(
-      title: new Text('Chats'),
+      title: new Text('chats'.tr()),
       actions: [
         IconButton(
           icon: Icon(Icons.search),

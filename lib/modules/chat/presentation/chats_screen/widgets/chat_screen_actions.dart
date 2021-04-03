@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:messenger_mobile/core/utils/unavailable_dialog.dart';
-
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../../app/appTheme.dart';
 import '../../../../../app/application.dart';
 import '../../../../../core/widgets/independent/dialogs/dialog_action_button.dart';
@@ -66,7 +66,7 @@ class ChatScreenActions extends StatelessWidget {
                 dialogViewType: DialogViewType.actionSheet,
                 actionButton: [
                   DialogActionButton(
-                    title: chatEntity.isPrivate ? 'Данные профиля' : 'Подробнее', 
+                    title: chatEntity.isPrivate ? 'profile_info'.tr() : 'more_info'.tr(), 
                     iconData: Icons.person,
                     buttonStyle: DialogActionButtonStyle.black,
                     onPress: () {
@@ -77,7 +77,7 @@ class ChatScreenActions extends StatelessWidget {
                     }
                   ),
                   DialogActionButton(
-                    title: 'Поиск', 
+                    title: 'search'.tr(), 
                     iconData: Icons.search,
                     buttonStyle: DialogActionButtonStyle.black,
                     onPress: () {
@@ -85,7 +85,7 @@ class ChatScreenActions extends StatelessWidget {
                     }
                   ),
                   DialogActionButton(
-                    title: (isSecretModeOn ?? false) ? 'Выключить таймер сгорания' : 'Включить таймер сгорания', 
+                    title: (isSecretModeOn ?? false) ? 'turn_off_secret_mode'.tr() : 'turn_on_secret_mode'.tr(), 
                     iconData: Icons.timer,
                     buttonStyle: DialogActionButtonStyle.dangerous,
                     onPress: () {

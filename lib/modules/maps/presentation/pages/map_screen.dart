@@ -9,6 +9,7 @@ import 'map_screen_helper.dart';
 import 'package:messenger_mobile/modules/maps/domain/entities/map_type.dart';
 import 'package:messenger_mobile/modules/maps/presentation/cubit/map_cubit.dart';
 import 'package:latlong/latlong.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class PositionAddress {
   final String description;
@@ -71,7 +72,7 @@ class MapScreenState extends State<MapScreen> implements SearchEngingeDelegate {
         searchEngine.onTextChanged(text);
       },
       buildDefaultAppBar: buildAppBar,
-      hintText: 'Поиск'
+      hintText: 'search'.tr()
     );
 
     searchEngine = SearchEngine(delegate: this);

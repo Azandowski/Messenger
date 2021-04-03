@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../../app/appTheme.dart';
 import '../../../../../core/widgets/independent/images/ImageWithCorner.dart';
 import '../../../../category/data/models/chat_view_model.dart';
@@ -22,7 +22,7 @@ class ChatGroups extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 16),
           child: Center(
             child: Text(
-              'Общие группы',
+              'shared_groups'.tr(),
               style: AppFontStyles.grey14w400,
             ),
           ),

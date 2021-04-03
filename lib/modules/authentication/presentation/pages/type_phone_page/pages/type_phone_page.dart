@@ -54,6 +54,7 @@ class _TypePhonePageState extends State<TypePhonePage> {
               Text(
                 'enterPhone'.tr(),
                 style: AppFontStyles.headingBlackStyle,
+                textAlign: TextAlign.center,
               ),
               SizedBox(
                 height: height * 0.05,

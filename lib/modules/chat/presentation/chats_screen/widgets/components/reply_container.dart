@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../../../app/appTheme.dart';
 import '../chatControlPanel/cubit/panel_bloc_cubit.dart';
 
@@ -38,7 +38,7 @@ class ReplyContainer extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    messageVM.isMine ? 'Вы' : 
+                    messageVM.isMine ? 'you'.tr() : 
                       messageVM.userNameText,
                     style: TextStyle(
                       fontSize: 14,

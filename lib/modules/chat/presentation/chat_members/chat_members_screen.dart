@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../locator.dart';
 import '../../../creation_module/presentation/bloc/contact_bloc/contact_bloc.dart';
 import '../../../creation_module/presentation/bloc/open_chat_cubit/open_chat_cubit.dart';
@@ -29,7 +29,7 @@ class ChatMembersScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Участники'),
+        title: Text('members'.tr()),
       ),
       body: BlocProvider(
         create: (context) => ContactBloc(

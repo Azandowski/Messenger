@@ -5,7 +5,7 @@ import 'package:messenger_mobile/core/widgets/independent/buttons/bottom_action_
 import 'package:messenger_mobile/modules/creation_module/presentation/pages/search_contact/search_contact_page.dart';
 import '../../../../core/utils/paginated_scroll_controller.dart';
 import '../../../../core/utils/snackbar_util.dart';
-import '../../../../core/widgets/independent/buttons/gradient_main_button.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../core/widgets/independent/small_widgets/cell_skeleton_item.dart';
 import '../../../../locator.dart';
 import '../../../creation_module/domain/entities/contact.dart';
@@ -58,7 +58,7 @@ class _ChooseContactsScreenState extends State<ChooseContactsScreen> implements 
         return BlocConsumer<ContactBloc, ContactState>(
           listener: (context, state) {
             if (state.status == ContactStatus.failure) {
-              SnackUtil.showError(context: context, message: 'Не удалось обработать ваши контакты');
+              SnackUtil.showError(context: context, message: 'could_not_handle_contacts'.tr());
             } else if (state.status == ContactStatus.success) {
               context.read<ChooseContactCubit>().injectUserContacts(state.contacts);
             }
@@ -67,7 +67,9 @@ class _ChooseContactsScreenState extends State<ChooseContactsScreen> implements 
             return Scaffold(
               appBar: AppBar(
                 title: Text(
-                  'Выбрано: ${contacts.length}'
+                  'selected_count'.tr(namedArgs: {
+                    'count': '${contacts.length}'
+                  })
                 ),
                 actions: [
                   IconButton(
@@ -124,7 +126,7 @@ class _ChooseContactsScreenState extends State<ChooseContactsScreen> implements 
                           contacts.where((e) => e.isSelected).map((e) => e.contactEntity)
                         .toList());
                       }, 
-                      title: 'Готово'
+                      title: 'ready'.tr()
                     )
                 ],
               )

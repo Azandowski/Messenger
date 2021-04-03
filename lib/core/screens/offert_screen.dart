@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:native_pdf_view/native_pdf_view.dart';
+
 class OffertView extends StatelessWidget {
   final OffertType type;
 

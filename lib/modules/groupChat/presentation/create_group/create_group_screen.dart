@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../app/application.dart';
 import '../../../../core/utils/snackbar_util.dart';
 import '../../../../core/widgets/independent/buttons/bottom_action_button.dart';
@@ -108,7 +108,10 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> implements Contac
                     if (widget.mode == CreateGroupScreenMode.create)
                       ...[
                         CellHeaderView(
-                          title: 'Участники: ${state is CreateGroupContactsLoading ? "Загрузка ,,," : (contacts ?? []).length }'
+                          title: (state is CreateGroupContactsLoading) ? 'loading'.tr() : 
+                            'members_count'.tr(namedArgs: {
+                              'count': '${(contacts ?? []).length}'
+                            })
                         ),
                         Flexible(
                           child: ListView.builder(
@@ -129,7 +132,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> implements Contac
                 ),
               ),
               BottomActionButtonContainer(
-                title: 'Готово',
+                title: 'ready'.tr(),
                 isLoading: state is CreateGroupLoading,
                 onTap: () {
                   _groupCubit.createChat(
@@ -164,9 +167,9 @@ extension CreateGroupScreenModeUIExtension on CreateGroupScreenMode {
   String get title {
     switch (this) {
       case CreateGroupScreenMode.edit:
-        return 'Редактировать';
+        return 'edit'.tr();
       case CreateGroupScreenMode.create:
-        return 'Создать чат';
+        return 'create_chat'.tr();
     }
   }
 }

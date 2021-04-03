@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:messenger_mobile/modules/maps/data/datasources/local_map_datasource.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 abstract class Failure extends Equatable {
   final String message;
@@ -32,9 +33,9 @@ class GeolocationFailure extends Failure {
 
 
 abstract class FailureMessages {
-  static final String noConnection = "no_connection";
-  static final String invalidPhone = "invalidPhone";
-  static final String invalidCode = "invalidCode";
+  static String get noConnection => "no_connection".tr();
+  static String get invalidPhone => "invalidPhone".tr();
+  static String get invalidCode => "invalidCode".tr();
 }
 
 

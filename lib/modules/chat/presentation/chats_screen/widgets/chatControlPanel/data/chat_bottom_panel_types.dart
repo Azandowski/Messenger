@@ -1,3 +1,5 @@
+import 'package:easy_localization/easy_localization.dart';
+
 enum ChatBottomPanelTypes {
   contact, image, map, audio, camera, video,
 }
@@ -25,17 +27,17 @@ extension ChatBottomPanelTypesUIExtension on ChatBottomPanelTypes {
   String get title {
     switch (this) {
       case ChatBottomPanelTypes.contact:
-        return 'Контакт';
+        return 'contact'.tr();
       case ChatBottomPanelTypes.image:
-        return 'Галерея';
+        return 'gallery'.tr();
       case ChatBottomPanelTypes.map:
-        return 'Место';
+        return 'place'.tr();
       case ChatBottomPanelTypes.audio:
-        return 'Аудио';
+        return 'audio'.tr();
       case ChatBottomPanelTypes.camera:
-        return 'Камера';
+        return 'camera'.tr();
       case ChatBottomPanelTypes.video:
-        return 'Видео';
+        return 'video'.tr();
       default:
         return '';
     }

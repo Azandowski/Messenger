@@ -1,3 +1,5 @@
+import 'package:easy_localization/easy_localization.dart';
+
 enum CreationActions {
   createGroup, 
   startVideo,
@@ -9,13 +11,13 @@ extension CreationActionsUIExtension on CreationActions {
   String get title {
     switch (this) {
       case CreationActions.createGroup:
-        return 'Создать группу';
+        return 'create_group'.tr();
       case CreationActions.startVideo:
-        return 'Начать видеоконференцию';
+        return 'start_video_meeting'.tr();
       case CreationActions.startLive:
-        return 'Начать прямой эфир';
+        return 'start_live'.tr();
       case CreationActions.inviteFriends:
-        return 'Пригласить друзей';
+        return 'invite_friends'.tr();
       default:
         return '';
     }

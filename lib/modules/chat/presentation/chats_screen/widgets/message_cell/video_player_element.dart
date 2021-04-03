@@ -4,10 +4,10 @@ import 'dart:ui';
 
 import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/app/appTheme.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:video_player/video_player.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class VideoPlayerElement extends StatefulWidget {
   final url;
@@ -37,20 +37,8 @@ class _VideoPlayerElementState extends State<VideoPlayerElement> {
       fullScreenByDefault: true,
       showControls: true,
       autoInitialize: true,
-      // Try playing around with some of these other options:
-
-      // showControls: false,
-      // materialProgressColors: ChewieProgressColors(
-      //   playedColor: Colors.red,
-      //   handleColor: Colors.blue,
-      //   backgroundColor: Colors.grey,
-      //   bufferedColor: Colors.lightGreen,
-      // ),
-      // placeholder: Container(
-      //   color: Colors.grey,
-      // ),
-      // autoInitialize: true,
     );
+
     setState(() {});
   }
 
@@ -88,13 +76,13 @@ class _VideoPlayerElementState extends State<VideoPlayerElement> {
           ),
         )
         : Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
-              CircularProgressIndicator(),
-              SizedBox(height: 20),
-              Text('Loading'),
-            ],
-          ),
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CircularProgressIndicator(),
+            SizedBox(height: 20),
+            Text('loading'.tr()),
+          ],
+        ),
     );
   }
 }
@@ -119,17 +107,6 @@ class _PreviewVideoState extends State<PreviewVideo> with AutomaticKeepAliveClie
   @override
   void dispose() {
     super.dispose();
-  }
-
-  @override
-  void didUpdateWidget(covariant PreviewVideo oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    
-    // if (oldWidget.url != widget.url) {
-    //   print(oldWidget.url);
-    //   print(widget.url);
-    //   initThumnail();
-    // }
   }
 
   @override

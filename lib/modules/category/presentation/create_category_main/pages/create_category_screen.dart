@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../../app/application.dart';
 import '../../../../../core/blocs/category/bloc/category_bloc.dart';
 import '../../../../../core/blocs/chat/bloc/bloc/chat_cubit.dart';
@@ -74,7 +74,7 @@ class _CreateCategoryScreenState extends State<CreateCategoryScreen> implements 
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Создать категорию'),
+        title: Text('create_category'.tr()),
       ),
       body: BlocConsumer<CreateCategoryCubit, CreateCategoryState>(
         bloc: cubit,
@@ -130,7 +130,11 @@ class _CreateCategoryScreenState extends State<CreateCategoryScreen> implements 
                           } 
                         ),
                         CellHeaderView(
-                          title: 'Чаты: ${state is CreateCategoryChatsLoading ? "Загрузка ,,," : (chats ?? []).length }'
+                          title: (state is CreateCategoryChatsLoading) ? 'loading'.tr() : 'chats_count'.tr(
+                            namedArgs: {
+                              'count': '${(chats ?? []).length}'
+                            }
+                          )
                         ),
                         ChatsList(
                           itemsCount: (state is CreateCategoryChatsLoading ? 4 : 0) + (chats ?? []).length,
@@ -158,7 +162,7 @@ class _CreateCategoryScreenState extends State<CreateCategoryScreen> implements 
                   ),
                 ),
                 BottomActionButtonContainer(
-                  title: 'Сохранить',
+                  title: 'save'.tr(),
                   isLoading: state is CreateCategoryLoading,
                   onTap: () {
                     cubit.sendData(widget.mode, widget.entity?.id ?? null);

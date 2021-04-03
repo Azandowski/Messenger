@@ -19,32 +19,25 @@ import '../../../../groupChat/presentation/create_group/create_group_screen.dart
 import '../../../../social_media/domain/entities/social_media.dart';
 import '../../../../social_media/presentation/pages/social_media_page.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-import '../../../../../app/application.dart';
 import '../../../../../core/blocs/chat/bloc/bloc/chat_cubit.dart';
 import '../../../../../core/widgets/independent/buttons/icon_text_button.dart';
-import '../../../../../core/widgets/independent/dialogs/dialog_action_button.dart';
-import '../../../../../core/widgets/independent/dialogs/dialog_params.dart';
-import '../../../../../core/widgets/independent/dialogs/dialogs.dart';
 import '../../../../../locator.dart';
 import '../../../../category/domain/entities/chat_permissions.dart';
 import '../../../../creation_module/domain/entities/contact.dart';
 import '../../../../groupChat/presentation/choose_contacts/choose_contacts_page.dart';
 import '../../../../groupChat/presentation/choose_contacts/choose_contacts_screen.dart';
-import '../../../../groupChat/presentation/create_group/create_group_page.dart';
-import '../../../../groupChat/presentation/create_group/create_group_screen.dart';
 import '../../../../profile/presentation/widgets/profile_item.dart';
 import '../../../domain/entities/chat_detailed.dart';
 import '../../../domain/usecases/get_chat_details.dart';
 import '../../chat_members/chat_members_screen.dart';
 import '../cubit/chat_details_cubit.dart';
 import '../widgets/chat_admin_settings.dart';
-import '../widgets/chat_detail_appbar.dart';
 import '../widgets/chat_detail_header.dart';
 import '../widgets/chat_media_block.dart';
 import '../widgets/chat_members_block.dart';
 import '../widgets/chat_setting_item.dart';
 import 'chat_skeleton_page.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 enum ProfileMode { user, chat }
 
@@ -174,7 +167,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen>
                             onPress: () {
                               _navigator.push(ChooseContactsPage.route(this));
                             },
-                            title: 'Добавить участников',
+                            title: 'add_users'.tr(),
                           ),
                           _buildSeparator(),
                         ],
@@ -219,8 +212,9 @@ class _ChatDetailScreenState extends State<ChatDetailScreen>
                         profileItemData: ProfileItemData(
                           icon: widget.mode == ProfileMode.chat ? 
                             Icons.exit_to_app : Icons.block,
-                          title: widget.mode == ProfileMode.chat ? 'Выйти' : 
-                            (state.chatDetailed.user?.isBlocked ?? false) ? 'Разблокировать' : 'Заблокировать',
+                          title: widget.mode == ProfileMode.chat ? 'logout'.tr() : 
+                            (state.chatDetailed.user?.isBlocked ?? false) ? 
+                              'unblock'.tr() : 'block'.tr(),
                           isRed: true,
                         ),
                         onTap: () {
@@ -307,7 +301,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen>
     if (await canLaunch(_url)) {
       await launch(_url);
     } else {
-      _chatDetailsCubit.showError('Не удалось открыть');
+      _chatDetailsCubit.showError('couldnot_open'.tr());
     }
   }
 
@@ -337,18 +331,18 @@ class _ChatDetailScreenState extends State<ChatDetailScreen>
 
   void _handleContactDeletionAlert (ContactEntity entity) {
     showDialog(context: context, builder: (context) => DialogsView(
-      title: 'Удалить участника',
-      description: 'Это действие нельзя отменить',
+      title: 'delete_user'.tr(),
+      description: 'action_cannot_be_cancelled'.tr(),
       actionButton: [
         DialogActionButton(
-          title: 'Назад',
+          title: 'cancel'.tr(),
           buttonStyle: DialogActionButtonStyle.cancel,
           onPress: () {
             Navigator.of(context).pop();
           }
         ),
         DialogActionButton(
-          title: 'Удалить',
+          title: 'delete'.tr(),
           buttonStyle: DialogActionButtonStyle.dangerous,
           onPress: () {
             Navigator.of(context).pop();

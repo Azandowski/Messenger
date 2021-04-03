@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../../../app/appTheme.dart';
 import '../../../../../../core/utils/snackbar_util.dart';
 import '../../../../../../core/widgets/independent/buttons/gradient_main_button.dart';
@@ -66,7 +66,7 @@ class _TypeCodePageState extends State<TypeCodePage> {
             _pinPutController.clear();
             SnackUtil.showError(context: context, message: state.message);
           } else if (state is SuccessCode) {
-            SnackUtil.showInfo(context: context, message: 'Success');
+            SnackUtil.showInfo(context: context, message: 'success'.tr());
           }
         },
         builder: (context, state) {
@@ -75,11 +75,19 @@ class _TypeCodePageState extends State<TypeCodePage> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text('Введите полученный код',
-                    style: AppFontStyles.headingBlackStyle),
+                Text(
+                  'enter_code'.tr(),
+                  style: AppFontStyles.headingBlackStyle,
+                  textAlign: TextAlign.center,
+                ),
                 SizedBox(height: 8),
-                Text('Код отправлен на ${widget.codeEntity.phone}',
-                    style: AppFontStyles.placeholderStyle),
+                Text(
+                  'code_sent_to'.tr(namedArgs: {
+                    'number': '${widget.codeEntity.phone}' 
+                  }),
+                  style: AppFontStyles.placeholderStyle,
+                  textAlign: TextAlign.center,
+                ),
                 SizedBox(height: 20),
                 PinField(
                   pinPutFocusNode: _pinPutFocusNode,
@@ -95,26 +103,31 @@ class _TypeCodePageState extends State<TypeCodePage> {
                   height: 12,
                 ),
                 Center(
-                    child: timer > 0
-                        ? Text('Получить код повторно через: $timer сек',
-                            style: AppFontStyles.placeholderStyle)
-                        : InkWell(
-                            onTap: () {
-                              phoneCubit.sendPhone(widget.codeEntity.phone);
-                              setState(() {
-                                timer = 30;
-                                _startTimer();
-                                _pinPutController.clear();
-                              });
-                            },
-                            child: Text('Получить код повторно',
-                                style: AppFontStyles.placeholderStyle),
-                          )),
+                  child: timer > 0
+                    ? Text(
+                      'get_code_after'.tr(namedArgs: {
+                        'seconds': '$timer'
+                      }),
+                      style: AppFontStyles.placeholderStyle
+                    )
+                    : InkWell(
+                        onTap: () {
+                          phoneCubit.sendPhone(widget.codeEntity.phone);
+                          setState(() {
+                            timer = 30;
+                            _startTimer();
+                            _pinPutController.clear();
+                          });
+                        },
+                        child: Text('retry_code'.tr(),
+                            style: AppFontStyles.placeholderStyle),
+                      )
+                ),
                 SizedBox(
                   height: height * 0.1,
                 ),
                 ActionButton(
-                  text: 'Подтвердить',
+                  text: 'confirm'.tr(),
                   isLoading: state is SendingCode,
                   onTap: () {
                     if (_pinPutController.value.text != null &&
@@ -125,7 +138,7 @@ class _TypeCodePageState extends State<TypeCodePage> {
                             _pinPutController.text,
                           );
                     } else {
-                      SnackUtil.showError(context: context, message: 'Type Valid Code');
+                      SnackUtil.showError(context: context, message: 'invalidCode'.tr());
                     }
                   },
                 ),

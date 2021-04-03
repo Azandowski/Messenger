@@ -3,6 +3,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:messenger_mobile/core/error/failures.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 abstract class MediaLocalDataSource {
   Future<File> getImage(ImageSource source);
@@ -30,7 +31,7 @@ class MediaLocalDataSourceImpl implements MediaLocalDataSource {
       if(video.size < 94371840){
         return File(video.path);
       }else{
-        throw StorageFailure(message: 'Размер файла не должен превышать 100 мб');
+        throw StorageFailure(message: 'file_should_not_more_than_100mb'.tr());
       }
     }else{
       //File was not selected
@@ -71,7 +72,7 @@ class MediaLocalDataSourceImpl implements MediaLocalDataSource {
       List<File> files = result.paths.map((path) => File(path)).toList();
       return files;
     } else {
-      throw StorageFailure(message: 'Файл не выбран'); 
+      throw StorageFailure(message: 'file_is_not_selected'.tr()); 
     }
   }
 }

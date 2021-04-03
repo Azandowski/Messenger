@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../../../app/appTheme.dart';
 import '../../../../data/models/message_view_model.dart';
 
@@ -38,7 +38,7 @@ class ForwardContainer extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    messageViewModel.isMine ? 'Вы' : 
+                    messageViewModel.isMine ? 'you'.tr() : 
                       messageViewModel.userNameText,
                     style: TextStyle(
                       fontSize: 14,

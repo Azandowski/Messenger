@@ -4,6 +4,7 @@ import 'package:messenger_mobile/core/widgets/independent/buttons/circular_butto
 import 'package:messenger_mobile/core/widgets/independent/buttons/gradient_main_button.dart';
 import 'package:messenger_mobile/core/widgets/independent/images/ImageWithCorner.dart';
 import 'package:messenger_mobile/modules/chat/domain/entities/message.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class ContactItemMessage extends StatelessWidget {
   final MessageUser messageUser;
@@ -53,7 +54,7 @@ class ContactItemMessage extends StatelessWidget {
           ),
           SizedBox(height: 8),
           CircularButtonOutlined(
-            text: 'Написать'.toUpperCase(),
+            text: 'write'.tr().toUpperCase(),
             borderColor: isMyMessage ? Colors.white : AppColors.indicatorColor,
             textStyle: AppFontStyles.white12w400.copyWith(
               color: isMyMessage ? Colors.white : AppColors.indicatorColor

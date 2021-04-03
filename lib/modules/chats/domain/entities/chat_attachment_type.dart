@@ -1,3 +1,5 @@
+import 'package:easy_localization/easy_localization.dart';
+
 enum ChatAttachmentType {
   file, map, contact, none
 }
@@ -19,11 +21,11 @@ extension ChatAttachmentTypeExtension on ChatAttachmentType {
   String get title {
     switch (this) {
       case ChatAttachmentType.file:
-        return 'Вложение';
+        return 'attachment'.tr();
       case ChatAttachmentType.map:
-        return 'Координаты';
+        return 'coordinates'.tr();
       case ChatAttachmentType.contact:
-        return 'Контакт';
+        return 'contact'.tr();
       default:
         return null; 
     }

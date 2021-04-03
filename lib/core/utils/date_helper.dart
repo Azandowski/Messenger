@@ -1,5 +1,5 @@
 import 'package:intl/intl.dart';
-
+import 'package:easy_localization/easy_localization.dart';
 
 extension DateExtension on DateTime {
   bool isToday() {
@@ -26,21 +26,29 @@ extension DateExtension on DateTime {
 class DateHelper {
   String getLastOnlineDate (DateTime dateTime) {
     if (dateTime.isToday()) {
-      return 'Был(а) в ' + DateFormat.Hm('ru-RU').format(dateTime);
+      return 'was_at'.tr(namedArgs: {
+        'data': DateFormat.Hm('ru-RU').format(dateTime)
+      });
     } else if (dateTime.isYesterday()) {
-      return 'Был(а) Вчера в ' + DateFormat.Hm('ru-RU').format(dateTime);
+      return 'was_yesterday_at'.tr(namedArgs: {
+        'data': DateFormat.Hm('ru-RU').format(dateTime)
+      });
     } else if (dateTime.isThisYear()) {
-      return 'Был(а) ' + DateFormat.MMMMd('ru-RU').format(dateTime);
+      return 'was_at'.tr(namedArgs: {
+        'data': DateFormat.MMMMd('ru-RU').format(dateTime)
+      });
     } else {
-      return 'Был(а) ' + DateFormat.yMMMMd('ru-RU').format(dateTime);
+      return 'was_at'.tr(namedArgs: {
+        'data': DateFormat.yMMMMd('ru-RU').format(dateTime)
+      });
     }
   }
 
   String getChatDay (DateTime dateTime) {
     if (dateTime.isToday()) { 
-      return 'Сегодня';
+      return 'today'.tr();
     } else if (dateTime.isYesterday()) {
-      return 'Вчера';
+      return 'yesterday'.tr();
     } else if (dateTime.isThisYear()) { 
       return DateFormat.MMMMd('ru-RU').format(dateTime);
     } else {

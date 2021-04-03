@@ -136,7 +136,7 @@ class _ChatsSearchScreenState extends State<ChatsSearchScreen> implements Search
                 bool isEmptyScreen = !(state is SearchChatsLoading) && state.data.messages.data.length == 0;
 
                 if (isEmptyScreen && index == getItemsCount(state) - 1) {
-                  return EmptyView(text: 'Ничего не найдено');
+                  return EmptyView(text: 'nothing_found'.tr());
                 } else if (isShimmerItem) {
                   // Показать загрузку
                   return CellShimmerItem();
@@ -165,7 +165,7 @@ class _ChatsSearchScreenState extends State<ChatsSearchScreen> implements Search
                   index == state.data.chats.length 
                     && widget.designStyle == ChatDesignStyle.chatsMessages) {
                   return CellHeaderView(
-                    title: 'Сообщения'
+                    title: 'messages'.tr()
                   );
                 } else {
                   // Show Messages
@@ -228,7 +228,7 @@ class _ChatsSearchScreenState extends State<ChatsSearchScreen> implements Search
 
   AppBar buildAppBar(BuildContext context) {
     return new AppBar(
-      title: new Text('Chats'),
+      title: new Text('chats'.tr()),
       actions: [
         searchBar.getSearchAction(context)
       ]
