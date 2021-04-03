@@ -1,5 +1,8 @@
 import 'package:intl/intl.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:messenger_mobile/app/application.dart';
+import 'package:messenger_mobile/core/config/language.dart';
+import '../../locator.dart';
 
 extension DateExtension on DateTime {
   bool isToday() {
@@ -25,21 +28,23 @@ extension DateExtension on DateTime {
 
 class DateHelper {
   String getLastOnlineDate (DateTime dateTime) {
+    var locale = sl<Application>().appLanguage.localeKey;
+
     if (dateTime.isToday()) {
       return 'was_at'.tr(namedArgs: {
-        'data': DateFormat.Hm('ru-RU').format(dateTime)
+        'date': DateFormat.Hm(locale).format(dateTime)
       });
     } else if (dateTime.isYesterday()) {
       return 'was_yesterday_at'.tr(namedArgs: {
-        'data': DateFormat.Hm('ru-RU').format(dateTime)
+        'date': DateFormat.Hm(locale).format(dateTime)
       });
     } else if (dateTime.isThisYear()) {
       return 'was_at'.tr(namedArgs: {
-        'data': DateFormat.MMMMd('ru-RU').format(dateTime)
+        'date': DateFormat.MMMMd(locale).format(dateTime)
       });
     } else {
       return 'was_at'.tr(namedArgs: {
-        'data': DateFormat.yMMMMd('ru-RU').format(dateTime)
+        'date': DateFormat.yMMMMd(locale).format(dateTime)
       });
     }
   }

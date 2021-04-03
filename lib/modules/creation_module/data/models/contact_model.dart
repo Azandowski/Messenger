@@ -27,13 +27,18 @@ class ContactModel extends ContactEntity {
   );
 
   factory ContactModel.fromJson(Map<String, dynamic> json) {
+    var lastVisit = json['last_visit'] != null ? 
+      DateTime.parse(json['last_visit']).toLocal() : null;
+    if (lastVisit != null) {
+      lastVisit = lastVisit.add(lastVisit.timeZoneOffset);
+    }
+    
     return ContactModel(
       id: json['id'],
       name: json['name'],
       patronym: json['patronym'] ?? '',
       surname: json['surname'] ?? '',
-      lastVisit: json['last_visit'] != null ? 
-        DateTime.parse(json['last_visit']).toLocal() : null,
+      lastVisit: lastVisit,
       avatar: json['avatar'],
     );
   }

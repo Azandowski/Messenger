@@ -49,4 +49,21 @@ extension ApplicationLanguageExtension on ApplicationLanguage {
         return '';
     }
   }
+
+  String get localeKey {
+    switch (this) {
+      case ApplicationLanguage.kazakh:
+        return 'kk-KZ';
+      case ApplicationLanguage.russian:
+        return 'ru-RU';
+      case ApplicationLanguage.english:
+        return 'en-US';
+      case ApplicationLanguage.chinese:
+        return 'zh-CN';
+      case ApplicationLanguage.turkish:
+        return "tr-TR";
+      default:
+        return '';
+    }
+  }
 }

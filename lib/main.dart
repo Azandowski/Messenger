@@ -80,7 +80,7 @@ class MainApp extends StatelessWidget {
               child: Builder(
                 builder: (BuildContext context) {
                   serviceLocator.sl<Application>().changeAppLanguage(
-                    Locale('en', 'US'),
+                    Locale('kk', 'KZ'),
                     // context.locale
                   );
 
