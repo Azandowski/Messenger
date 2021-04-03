@@ -30,7 +30,7 @@ class OffertTextWidget extends StatelessWidget {
       ),
       onTap: () {
         Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => OffertView()));
+            .push(MaterialPageRoute(builder: (context) => OffertView(type: OffertType.personalData,)));
       },
     );
   }
