@@ -94,19 +94,24 @@ class _ProfilePageState extends State<ProfilePage> {
                         cubit.setWallpaperFile(file);
                       }
                     ),
-                    DropdownButton<ApplicationLanguage>(
-                      value: sl<Application>().appLanguage,
-                      items: ApplicationLanguage.values.map(
-                        (e) => DropdownMenuItem(
-                          value: e,
-                          child: Text(e.name)
-                        )
-                      ).toList(),
-                      onChanged: (newLang) {
-                        EasyLocalization.of(context).setLocale(newLang.localeCode);
-                        // context.locale = newLang.localeCode;
-                        sl<Application>().changeAppLanguage(newLang.localeCode);
-                      },
+                    ListTile(
+                      tileColor: Colors.white,
+                      leading: Icon(Icons.language),
+                      title: DropdownButton<ApplicationLanguage>(
+                        underline: Container(),
+                        value: sl<Application>().appLanguage,
+                        items: ApplicationLanguage.values.map(
+                          (e) => DropdownMenuItem(
+                            value: e,
+                            child: Text(e.name)
+                          )
+                        ).toList(),
+                        onChanged: (newLang) {
+                          EasyLocalization.of(context).setLocale(newLang.localeCode);
+                          // context.locale = newLang.localeCode;
+                          sl<Application>().changeAppLanguage(newLang.localeCode);
+                        },
+                      ),
                     ),
                     buildSeparator(),
                     ProfileItem(
