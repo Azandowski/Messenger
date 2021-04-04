@@ -37,7 +37,7 @@ class CategoryItem extends StatelessWidget {
                   width: 80,
                   height: 80,
                 ),
-                if (entity.noReadCount != 0) 
+                if (entity.noReadCount != 0 && entity.noReadCount != null) 
                   Positioned(
                     top: 8,
                     right: 8,
