@@ -1,5 +1,8 @@
 import 'package:flutter_search_bar/flutter_search_bar.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:messenger_mobile/modules/creation_module/presentation/bloc/open_chat_cubit/open_chat_cubit.dart';
+import 'package:messenger_mobile/modules/creation_module/presentation/bloc/open_chat_cubit/open_chat_listener.dart';
+import 'package:messenger_mobile/modules/groupChat/domain/usecases/create_chat_group.dart';
 import '../../../../../core/utils/paginated_scroll_controller.dart';
 import '../../../../../core/utils/search_engine.dart';
 import '../../../../../core/utils/snackbar_util.dart';
@@ -109,25 +112,37 @@ class _SearchContactPageState extends State<SearchContactPage> implements Search
             }
           },
           builder: (context, SearchContactState state) {
-            return ListView.separated(
-              controller: scrollController,
-              itemBuilder: (context, int index) {
-                if (index >= state.contacts.data.length) {
-                  return CellShimmerItem(circleSize: 35);
-                }
-
-                return ContactCell(
-                  contactItem: state.contacts.data[index],
-                  onTrilinIconTapped: () async {
-                    print("HERE START CHAT");
-                  },
-                  onTap: widget.delegate != null ? () {
-                    widget.delegate.didSelectContact(state.contacts.data[index]);
-                  } : null,
-                );
-              }, 
-              separatorBuilder: (_, int index) => Divider(), 
-              itemCount: state.contacts.data.length + (state is SearchContactsLoading ? 3 : 0)
+            return BlocProvider<OpenChatCubit>(
+              create: (context) => OpenChatCubit(
+                createChatGruopUseCase: sl<CreateChatGruopUseCase>()
+              ),
+              child: BlocConsumer<OpenChatCubit, OpenChatState>(
+                listener: (context, openChatState) {
+                  OpenChatListener().handleStateUpdate(context, openChatState);
+                },
+                builder: (context, openChatState) {
+                  return ListView.separated(
+                    controller: scrollController,
+                    itemBuilder: (context, int index) {
+                      if (index >= state.contacts.data.length) {
+                        return CellShimmerItem(circleSize: 35);
+                      }
+      
+                      return ContactCell(
+                        contactItem: state.contacts.data[index],
+                        onTrilinIconTapped: () async {
+                          context.read<OpenChatCubit>().createChatWithUser(state.contacts.data[index].id);
+                        },
+                        onTap: widget.delegate != null ? () {
+                          widget.delegate.didSelectContact(state.contacts.data[index]);
+                        } : null,
+                      );
+                    }, 
+                    separatorBuilder: (_, int index) => Divider(), 
+                    itemCount: state.contacts.data.length + (state is SearchContactsLoading ? 3 : 0)
+                  );
+                },
+              ),
             );
           }, 
         )

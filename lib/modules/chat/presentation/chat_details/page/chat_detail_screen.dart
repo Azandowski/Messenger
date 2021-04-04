@@ -182,7 +182,8 @@ class _ChatDetailScreenState extends State<ChatDetailScreen>
                             return ChatMembersBlock(
                               members: state.chatDetailed.members, 
                               membersCount: state.chatDetailed.membersCount, 
-                              memberRole: state.chatDetailed.chatMemberRole,
+                              memberRole: state.chatDetailed.chatMemberRole == ChatMember.admin && !(state.chatDetailed.chat.isPrivate ?? false)
+                                ? ChatMember.admin : ChatMember.member,
                               onShowMoreClick: () {
                                 _navigator.push(ChatMembersScreen.route(
                                   state.chatDetailed.chat.chatId, widget.getChatDetails
