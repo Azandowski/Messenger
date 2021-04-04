@@ -20,7 +20,7 @@ class PhotoPicker {
           return AlertDialog(
               backgroundColor: Theme.of(context).backgroundColor,
               title: Text(
-                "select_one_option",
+                "select_one_option".tr(),
                 style: AppFontStyles.headerMediumStyle,
               ),
               content: SingleChildScrollView(

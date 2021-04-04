@@ -90,7 +90,8 @@ class _ChatsSearchScreenState extends State<ChatsSearchScreen> implements Search
       onChanged: (String newStr) {
         _searchChatsCubit.showLoading(isPagination: false);
         searchEngine.onTextChanged(newStr);
-      }
+      },
+      hintText: 'search'.tr()
     );
 
     searchBar.isSearching.value = true;

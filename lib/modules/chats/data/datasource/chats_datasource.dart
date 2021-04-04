@@ -159,7 +159,7 @@ class ChatsDataSourceImpl implements ChatsDataSource {
 
   @override
   Future<File> getLocalWallpaper() async {
-    Directory appDocumentsDirectory = await getApplicationDocumentsDirectory(); 
+    Directory appDocumentsDirectory = await getTemporaryDirectory(); 
     String appDocumentsPath = appDocumentsDirectory.path; 
     String filePath = '$appDocumentsPath/wallpaper.png';
     File output;
@@ -173,7 +173,7 @@ class ChatsDataSourceImpl implements ChatsDataSource {
 
   @override
   Future<void> setLocalWallpaper(File file) async {
-    Directory appDocumentsDirectory = await getApplicationDocumentsDirectory(); 
+    Directory appDocumentsDirectory = await getTemporaryDirectory(); 
     String appDocumentsPath = appDocumentsDirectory.path; 
     String filePath = '$appDocumentsPath/wallpaper.png';
     file.copy(filePath);

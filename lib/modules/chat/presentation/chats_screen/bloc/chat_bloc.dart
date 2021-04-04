@@ -304,7 +304,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
           hasReachBottomMax: state.hasReachBottomMax,
           messages: state.messages,
           hasReachedMax: state.hasReachedMax,
-          wallpaperPath: state.wallpaperPath,
+          wallpaperFile: state.wallpaperFile,
           unreadCount: state.unreadCount,
           showBottomPin: state.showBottomPin,
           chatEntity: state.chatEntity,
@@ -320,7 +320,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     File wallpaperFile = await chatsRepository.getLocalWallpaper();
     if (wallpaperFile != null) {
       yield getNewState<ChatInitial>(
-        wallpaperPath: wallpaperFile.path,
+        wallpaperFile: wallpaperFile,
       );
     }
   }

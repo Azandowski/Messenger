@@ -3,9 +3,16 @@ import 'package:easy_localization/easy_localization.dart';
 
 class UnavailableScreen extends StatelessWidget {
   
+  Widget _buildSeparator (BuildContext context) {
+    return SizedBox(height: 8);
+  } 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('profile').tr(),
+      ),
       body: Container(
         child: Center(
           child: Container(
@@ -18,13 +25,13 @@ class UnavailableScreen extends StatelessWidget {
                   'assets/images/unavailable_banner.png',
                   fit: BoxFit.cover,
                 ),
-                SizedBox(height: 16),
+                _buildSeparator(context),
                 Text(
                   'dear_users'.tr(),
                   style: AppFontStyles.headingBlackStyle,
                   textAlign: TextAlign.center,
                 ),
-                SizedBox(height: 8),
+                _buildSeparator(context),
                 Text(
                   'unavailable_function_hint'.tr(),
                   style: AppFontStyles.grey14w400,

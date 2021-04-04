@@ -49,8 +49,8 @@ extension ChatScreenStateHelper on ChatScreenState {
 
   DecorationImage getBackground (ChatState state) {
     return DecorationImage(
-      image: state.wallpaperPath != null ? 
-        FileImage(File(state.wallpaperPath)) : 
+      image: state.wallpaperFile != null ? 
+        FileImage(state.wallpaperFile) : 
           AssetImage('assets/images/bg-home.png'),
       fit: BoxFit.cover
     );
@@ -249,7 +249,9 @@ extension ChatScreenStateHelper on ChatScreenState {
     } else if (state is ChatLoadingSilently) {
       SnackUtil.showLoading(context: context);
     } else if (state is ChatInitial) {
+      
       // Update Notification Badge
+      
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
 
       var chatGlobalCubit = context.read<main_chat_cubit.ChatGlobalCubit>();

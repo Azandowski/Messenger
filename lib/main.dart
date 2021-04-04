@@ -80,11 +80,8 @@ class MainApp extends StatelessWidget {
               child: Builder(
                 builder: (BuildContext context) {
                   serviceLocator.sl<Application>().changeAppLanguage(
-                    Locale('kk', 'KZ'),
-                    // context.locale
+                    context.locale
                   );
-
-                  context.setLocale(Locale('kk', 'KZ'));
 
                   return MaterialApp(
                     debugShowCheckedModeBanner: false,
@@ -93,7 +90,7 @@ class MainApp extends StatelessWidget {
                     navigatorKey: serviceLocator.sl<Application>().navKey,
                     localizationsDelegates: context.localizationDelegates,
                     supportedLocales: context.supportedLocales,
-                    locale: context.deviceLocale,
+                    locale: context.locale,
                     routes: routes,
                   );
                 },

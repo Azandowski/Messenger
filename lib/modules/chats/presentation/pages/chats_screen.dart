@@ -56,6 +56,7 @@ class _ChatsScreenState extends State<ChatsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print(context.locale);
     return BlocConsumer<ChatGlobalCubit, ChatState>(
       listener: (context, chatState) {
         _handleChatsUpdates(chatState);
