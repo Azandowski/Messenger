@@ -23,6 +23,8 @@ abstract class AuthenticationRemoteDataSource {
   Future<TokenEntity> login(String number, String code);
   Future<User> getCurrentUser(String token);
   Future<bool> sendContacts(File contacts);
+  Future<bool> sendPlayerID(String playerID);
+  Future<bool> deletePlayerID(String playerID, token);
 }
 
 class AuthenticationRemoteDataSourceImpl
@@ -103,6 +105,42 @@ class AuthenticationRemoteDataSourceImpl
       return true;
     } else {
       return false;
+    }
+  }
+
+  @override
+  Future<bool> sendPlayerID(String playerID) async{
+    var url = Endpoints.sendTokenOneSignal.buildURL();
+    var headers = Endpoints.sendTokenOneSignal.getHeaders();
+    final response = await client.post(url,
+      body: {
+        "application_id": APP_ID,
+        "player_id": playerID,
+      },
+      headers: headers
+    );
+    if (response.statusCode >= 200 && response.statusCode <= 299) {
+      return true;
+    }else{
+      throw ServerFailure(message: 'Not able to send player id');
+    }
+  }
+
+  @override
+  Future<bool> deletePlayerID(String playerID, token) async {
+    var url = Endpoints.deleteTokenOneSignal.buildURL();
+    var headers = Endpoints.getCurrentUser.getHeaders(token: token);
+    final response = await client.post(url,
+      body: {
+        "application_id": APP_ID,
+        "player_id": playerID,
+      },
+      headers: headers
+    );
+    if (response.statusCode >= 200 && response.statusCode <= 299) {
+      return true;
+    }else{
+      throw ServerFailure(message: 'Not able to delete player id');
     }
   }
 }
