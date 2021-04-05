@@ -266,6 +266,7 @@ class ChatScreenState extends State<ChatScreen> implements ChatChooseDelegate{
   }
 
   bool canSendMedia (ChatState state) {
+    print((state.chatEntity.permissions?.isMediaSendOn ?? true) || isAdmin(state));
     return (state.chatEntity.permissions?.isMediaSendOn ?? true) || isAdmin(state);
   }
 

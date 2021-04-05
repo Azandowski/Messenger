@@ -95,11 +95,12 @@ class AuthenticationRemoteDataSourceImpl
   @override
   Future<bool> sendContacts(File contacts) async {
     http.StreamedResponse response = await MultipartRequestHelper.postData(
-        token: sl<AuthConfig>().token,
-        request: request,
-        data: {},
-        files: contacts != null ? [contacts] : [],
-        keyName: ['contacts']);
+      token: sl<AuthConfig>().token,
+      request: request,
+      data: {},
+      files: contacts != null ? [contacts] : [],
+      keyName: ['contacts']
+    );
 
     if (response.statusCode >= 200 && response.statusCode <= 299) {
       return true;
@@ -113,10 +114,10 @@ class AuthenticationRemoteDataSourceImpl
     var url = Endpoints.sendTokenOneSignal.buildURL();
     var headers = Endpoints.sendTokenOneSignal.getHeaders();
     final response = await client.post(url,
-      body: {
+      body: json.encode({
         "application_id": APP_ID,
         "player_id": playerID,
-      },
+      }),
       headers: headers
     );
     if (response.statusCode >= 200 && response.statusCode <= 299) {

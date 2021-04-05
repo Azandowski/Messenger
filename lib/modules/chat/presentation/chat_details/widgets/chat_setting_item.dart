@@ -54,7 +54,7 @@ extension ChatSettingsUIExtension on ChatSettings {
       case ChatSettings.noSound:
         return permissions?.isSoundOn ?? false;
       case ChatSettings.noMedia:
-        return permissions?.isMediaSendOn ?? false;
+        return !(permissions?.isMediaSendOn ?? true);
       case ChatSettings.adminSendMessage:
         return permissions?.adminMessageSend ?? false;
       case ChatSettings.forwardMessages:

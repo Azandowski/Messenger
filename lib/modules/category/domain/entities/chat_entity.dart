@@ -94,10 +94,7 @@ class ChatEntity extends Equatable {
         'total_chats': chatCategory.totalChats,
       },
       'created_at': date == null ? null : date.toIso8601String(),
-      'settings': {
-        'sound': permissions.isSoundOn ? 1 : 0,
-        'admin_media_send': permissions.isSoundOn ? 1 : 0
-      },
+      'settings': permissions.toJson(),
       'last_message': lastMessage?.toJson(),
       'no_read_message': unreadCount,
       'description': description,
