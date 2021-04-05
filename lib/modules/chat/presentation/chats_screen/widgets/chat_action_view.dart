@@ -74,11 +74,14 @@ class ChatActionView extends StatelessWidget {
   }
 
   List<Widget> _buildTimeAction (TimeAction action) {
-    return [
-      Text(
-        sl<DateHelper>().getChatDay(action.dateTime),
-        style: AppFontStyles.black14w400
-      )
-    ];
+    if (action.dateTime != null)
+      return [
+        Text(
+          sl<DateHelper>().getChatDay(action.dateTime),
+          style: AppFontStyles.black14w400
+        )
+      ];
+
+    return [];
   }
 }

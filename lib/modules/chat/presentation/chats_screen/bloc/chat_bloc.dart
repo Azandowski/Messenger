@@ -352,6 +352,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         event.contact
       ] : [],
       uploadController: controller,
+      dateTime: DateTime.now()
     );
     
     list.insert(0, newMessage);    
