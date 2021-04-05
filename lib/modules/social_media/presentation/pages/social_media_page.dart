@@ -116,7 +116,7 @@ class _SocialMediaScreenState extends State<SocialMediaScreen> {
       websiteLink: textControllers[SocialMediaType.website].text,
       facebookLink: textControllers[SocialMediaType.facebook].text,
       instagramLink: textControllers[SocialMediaType.instagram].text,
-      youtubeLink: textControllers[SocialMediaType.website].text,
+      youtubeLink: textControllers[SocialMediaType.youtube].text,
       whatsappNumber: textControllers[SocialMediaType.whatsapp].text
     );
   }
