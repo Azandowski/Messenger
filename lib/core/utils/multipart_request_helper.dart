@@ -25,8 +25,10 @@ class MultipartRequestHelper {
         var stream = new http.ByteStream((files[i].openRead()));
         var length = await files[i].length();
         var date = DateTime.now().millisecondsSinceEpoch.toString();
+        var filename = date + files[i].path;
+
         var multipartFile = new http.MultipartFile(keyName[i], stream, length,
-            filename: basename(files[i].path + date));
+            filename: basename(filename));
         _files.add(multipartFile);
       }
     }

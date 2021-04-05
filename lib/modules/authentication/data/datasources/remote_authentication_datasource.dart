@@ -102,6 +102,8 @@ class AuthenticationRemoteDataSourceImpl
       keyName: ['contacts']
     );
 
+    final httpResponse = await http.Response.fromStream(response);
+    print(httpResponse);
     if (response.statusCode >= 200 && response.statusCode <= 299) {
       return true;
     } else {
