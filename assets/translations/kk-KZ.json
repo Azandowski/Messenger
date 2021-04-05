@@ -160,7 +160,7 @@
     "do_u_want_unset_message": "Хабарламаны түсіргіңіз келеді ме ?",
     "unattach": "Түсіру",
     "copied": "Буферге көшірілді",
-    "file_should_not_more_than_100mb": "Файл өлшемі 100 МБ аспауы керек",
+    "file_should_not_more_than_100mb": "Файл өлшемі 50 МБ аспауы керек",
     "file_is_not_selected": "Файл таңдалмады",
     "you_agree_by_continuing": "Жалғастыру арқылы сіз",
     "handle_personal_info": "жеке деректерді өңдеумен келісесіз",

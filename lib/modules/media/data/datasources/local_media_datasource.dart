@@ -28,7 +28,7 @@ class MediaLocalDataSourceImpl implements MediaLocalDataSource {
     );
     if(videos != null) {
       var video = videos.files[0];
-      if(video.size < 94371840){
+      if(video.size < 52428800){
         return File(video.path);
       }else{
         throw StorageFailure(message: 'file_should_not_more_than_100mb'.tr());
