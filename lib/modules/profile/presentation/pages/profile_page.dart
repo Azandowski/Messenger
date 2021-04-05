@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:messenger_mobile/app/application.dart';
 import 'package:messenger_mobile/core/config/language.dart';
+import 'package:messenger_mobile/core/screens/offert_screen.dart';
 import '../../../../core/blocs/authorization/bloc/auth_bloc.dart';
 import '../../../../core/blocs/category/bloc/category_bloc.dart';
 import '../../../../core/blocs/chat/bloc/bloc/chat_cubit.dart';
@@ -75,9 +76,13 @@ class _ProfilePageState extends State<ProfilePage> {
                     buildSeparator(),
                     ProfileItem(
                       profileItemData: ProfileItemData(
-                          icon: Icons.info,
-                          title: 'privacy_policy'.tr(),
-                          isRed: false),
+                        icon: Icons.info,
+                        title: 'privacy_policy'.tr(),
+                        isRed: false,
+                      ),
+                      onTap: (){
+                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => OffertView(type: OffertType.personalData,)));
+                      },
                     ),
                     ProfileItem(
                       profileItemData: ProfileItemData(
