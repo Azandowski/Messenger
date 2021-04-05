@@ -24,7 +24,7 @@ class SocialMediaModel extends SocialMedia {
   factory SocialMediaModel.fromJson (Map<String, dynamic> json) {
     return SocialMediaModel(
       facebookLink: json['facebook'],
-      websiteLink: json['website'],
+      websiteLink: json['site'],
       youtubeLink: json['youtube'],
       whatsappNumber: json['whatsapp'],
       instagramLink: json['instagram']

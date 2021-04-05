@@ -28,7 +28,7 @@ class SocialMedia extends Equatable {
   Map<String, dynamic> toJson () {
     return {
       'facebook': facebookLink,
-      'website': websiteLink,
+      'site': websiteLink,
       'youtube': youtubeLink,
       'instagram': instagramLink,
       'whatsapp': whatsappNumber
