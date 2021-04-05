@@ -69,7 +69,9 @@ class ChatEntity extends Equatable {
       permissions: permissions ?? ChatPermissions(
         isSoundOn: this.permissions.isSoundOn,
         isMediaSendOn: this.permissions.isMediaSendOn,
-        isForwardOn: this.permissions.isForwardOn
+        isForwardOn: this.permissions.isForwardOn,
+        adminMessageSend: this.permissions.adminMessageSend,
+        isSecret: this.permissions.isSecret,
       ),
       lastMessage: lastMessage ?? this.lastMessage,
       unreadCount: unreadCount ?? this.unreadCount,

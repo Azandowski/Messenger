@@ -91,9 +91,13 @@ class _ChooseContactsScreenState extends State<ChooseContactsScreen> implements 
                     child: ListView.separated(
                       controller: _scrollController,
                       itemBuilder: (context, int index) {
-                        var isSelected = contacts[index].isSelected;
+                        var isSelected = false; 
                         var _blocChoose = context.read<ChooseContactCubit>();
-                        
+
+                        if (index < contacts.length) {
+                          isSelected = contacts[index].isSelected;
+                        }
+
                         return (
                           index >= contacts.length 
                             && state.status == ContactStatus.loading ) ? 
