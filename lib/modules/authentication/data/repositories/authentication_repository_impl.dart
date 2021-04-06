@@ -95,7 +95,7 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
       localDataSource.saveToken(token.token);
       var status = await OneSignal.shared.getPermissionSubscriptionState();
       String playerID = status.subscriptionStatus.userId;
-      remoteDataSource.sendPlayerID(playerID);
+      remoteDataSource.sendPlayerID(playerID, token.token);
       getCategories(GetCategoriesParams(token: token.token));
       return Right(token);
     } on ServerFailure {

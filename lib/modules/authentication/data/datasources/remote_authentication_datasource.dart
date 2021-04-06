@@ -23,7 +23,7 @@ abstract class AuthenticationRemoteDataSource {
   Future<TokenEntity> login(String number, String code);
   Future<User> getCurrentUser(String token);
   Future<bool> sendContacts(File contacts);
-  Future<bool> sendPlayerID(String playerID);
+  Future<bool> sendPlayerID(String playerID, String token);
   Future<bool> deletePlayerID(String playerID, token);
 }
 
@@ -112,9 +112,9 @@ class AuthenticationRemoteDataSourceImpl
   }
 
   @override
-  Future<bool> sendPlayerID(String playerID) async{
+  Future<bool> sendPlayerID(String playerID, String token) async{
     var url = Endpoints.sendTokenOneSignal.buildURL();
-    var headers = Endpoints.sendTokenOneSignal.getHeaders(token: sl<AuthConfig>().token);
+    var headers = Endpoints.sendTokenOneSignal.getHeaders(token: token);
     final response = await client.post(url,
       body: json.encode({
         "application_id": APP_ID,
@@ -137,10 +137,10 @@ class AuthenticationRemoteDataSourceImpl
     var url = Endpoints.deleteTokenOneSignal.buildURL();
     var headers = Endpoints.getCurrentUser.getHeaders(token: token);
     final response = await client.post(url,
-      body: {
+      body: json.encode({
         "application_id": APP_ID,
         "player_id": playerID,
-      },
+      }),
       headers: headers
     );
     if (response.statusCode >= 200 && response.statusCode <= 299) {
