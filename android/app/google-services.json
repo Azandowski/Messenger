@@ -82,6 +82,43 @@
     },
     {
       "client_info": {
+        "mobilesdk_app_id": "1:1003132045337:android:6ce18a3b165803a68b4288",
+        "android_client_info": {
+          "package_name": "kz.aio.messenger"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1003132045337-fbpf8kb75325ihtctg1fap2vbqo9pj6p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAY5s8VXo20lKZYbcF2J7U9hrt0ctvHp7w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1003132045337-fbpf8kb75325ihtctg1fap2vbqo9pj6p.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1003132045337-7qio9ovqna44ptu2pbvcr7ia4cetr76v.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "kz.aio.messenger",
+                "app_store_id": "89988988"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:1003132045337:android:c742d37df53a0bfd8b4288",
         "android_client_info": {
           "package_name": "kz.messenger_aio.app"
