@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../../app/appTheme.dart';
 
 enum MessageCellActions {
@@ -7,22 +7,30 @@ enum MessageCellActions {
   attachMessage, 
   replyMessage,
   replyMore,
-  deleteMessage
+  openProfile,
+  deleteMessage,
+  translateMessage
 }
 
 extension MessageCellActionsUiExtensin on MessageCellActions {
   String get title {
     switch (this) {
       case MessageCellActions.copyMessage:
-        return 'Копировать';
+        return 'copy'.tr();
       case MessageCellActions.attachMessage:
-        return 'Закрепить';
+        return 'attach'.tr();
       case MessageCellActions.replyMessage:
-         return 'Ответить';
+        return 'reply'.tr();
       case MessageCellActions.replyMore:
-         return 'Переслать';
+        return 'forward'.tr();
       case MessageCellActions.deleteMessage:
-         return 'Удалить';
+        return 'delete'.tr();
+      case MessageCellActions.openProfile:
+        return 'profile'.tr();
+      case MessageCellActions.translateMessage:
+        return 'translate'.tr();
+      default:
+        return '';
     }
   }
 
@@ -38,6 +46,10 @@ extension MessageCellActionsUiExtensin on MessageCellActions {
         return Icon(Icons.reply_all_sharp);
       case MessageCellActions.deleteMessage:
         return Icon(Icons.delete, color: AppColors.redDeleteColor,);
+      case MessageCellActions.openProfile:
+        return Icon(Icons.person);
+      case MessageCellActions.translateMessage:
+        return Icon(Icons.translate);
     }
   }
 }

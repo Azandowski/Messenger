@@ -1,3 +1,5 @@
+import 'package:easy_localization/easy_localization.dart';
+
 enum CreateCategoryScreenMode {
   create, edit
 }
@@ -6,9 +8,9 @@ extension CreateCategoryScreenModeUIExtension on CreateCategoryScreenMode {
   String get title {
     switch (this) {
       case CreateCategoryScreenMode.create:
-        return 'Создать категорию';
+        return 'create_category'.tr();
       case CreateCategoryScreenMode.edit:
-        return 'Редактировать';
+        return 'edit'.tr();
     }
   }
 }

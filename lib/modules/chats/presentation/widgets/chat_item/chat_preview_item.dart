@@ -22,11 +22,26 @@ class ChatPreviewItem extends StatelessWidget {
       ),
       child: Row(
         children: [
-          AvatarImage(
-            isFromAsset: false,
-            path: viewModel.imageURL,
-            width: 55,
-            height: 55,
+          Stack(
+            children: [
+              AvatarImage(
+                isFromAsset: false,
+                path: viewModel.imageURL,
+                width: 55,
+                height: 55,
+                borderRadius: BorderRadius.circular(28),
+              ),
+              if (viewModel.isSecretModeOn)
+                Positioned(
+                  bottom: -8,
+                  right: -8,
+                  child: Image.asset(
+                    viewModel.avatarBottomIconPath,
+                    width: 40,
+                    height: 40,
+                  ),
+                )
+            ]
           ),
           SizedBox(
             width: 10,
@@ -41,7 +56,7 @@ class ChatPreviewItem extends StatelessWidget {
                   children: [
                     Text(
                       viewModel.title,
-                      style: AppFontStyles.headerMediumStyle,
+                      style: viewModel.titleStyle,
                       overflow: TextOverflow.ellipsis, 
                     ),
                     ChatPreviewSettings(
@@ -54,6 +69,15 @@ class ChatPreviewItem extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    if (viewModel.attachmentPath != null)
+                      ...[
+                        Image.asset(
+                          viewModel.attachmentPath,
+                          width: 12,
+                          height: 12,
+                        ),
+                        SizedBox(width: 8)
+                      ],
                     Expanded(
                       child: Text(
                         viewModel.description,

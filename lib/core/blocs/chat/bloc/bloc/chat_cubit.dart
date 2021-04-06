@@ -4,11 +4,14 @@ import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
+import 'package:messenger_mobile/modules/chat/domain/entities/message.dart';
+import 'package:messenger_mobile/modules/chats/data/model/chat_update_type.dart';
 import 'package:messenger_mobile/modules/chats/domain/entities/category.dart';
 
 import '../../../../../locator.dart';
 import '../../../../../modules/category/domain/entities/chat_entity.dart';
 import '../../../../../modules/category/domain/entities/chat_permissions.dart';
+import '../../../../../modules/chats/domain/entities/category.dart';
 import '../../../../../modules/chats/domain/repositories/chats_repository.dart';
 import '../../../../../modules/chats/domain/usecase/get_category_chats.dart';
 import '../../../../../modules/chats/domain/usecase/get_chats.dart';
@@ -38,6 +41,7 @@ class ChatGlobalCubit extends Cubit<ChatState> {
       isPagination: false,
       currentCategory: 0
     )) {
+    getChatsFromCache();
 
     _chatsSubscription = chatsRepository.chats.listen((chat) {
       chatsRepository.saveNewChatLocally(chat);
@@ -45,16 +49,23 @@ class ChatGlobalCubit extends Cubit<ChatState> {
       var chatIndex = this.state.chats.indexWhere((e) => e.chatId == chat.chatId);
       if (lastCategoryID == null || lastCategoryID == chat.chatCategory?.id)  {
         if (chatIndex == -1) {
-          List<ChatEntity> newChats = [...this.state.chats, chat];
-          emit(ChatsLoaded(
-            currentCategory: this.state.currentCategory,
-            hasReachedMax: this.state.hasReachedMax,
-            chats: newChats
-          ));
+          if (chat.chatUpdateType == ChatUpdateType.newLastMessage) {
+            List<ChatEntity> newChats = [chat, ...this.state.chats];
+            emit(ChatsLoaded(
+              currentCategory: this.state.currentCategory,
+              hasReachedMax: this.state.hasReachedMax,
+              chats: newChats
+            ));
+          }
         } else {
           var newChats = this.state.chats.map((e) => e.clone()).toList();
-          newChats.removeAt(chatIndex);
-          newChats.insert(0, chat);
+          
+          if (chat.chatUpdateType == ChatUpdateType.newLastMessage) {
+            newChats.removeAt(chatIndex);
+            newChats.insert(0, chat);
+          } else {
+            newChats[chatIndex] = chat;
+          }
           
           emit(ChatsLoaded(
             currentCategory: this.state.currentCategory,
@@ -235,5 +246,53 @@ class ChatGlobalCubit extends Cubit<ChatState> {
         currentCategory: this.state.currentCategory
       ));
     }
+  }
+
+  void updateLastMessage (int chatId, Message newLastMessage) {
+    int index = this.state.chats.indexWhere((element) => element.chatId == chatId);
+    if (index != -1) {  
+      var newChatModel = this.state.chats[index].clone();
+      newChatModel.clone(lastMessage: newLastMessage);
+      chatsRepository.saveNewChatLocally(newChatModel);
+      var newChats = this.state.chats.map((e) => e.chatId == chatId ? newChatModel : e.clone()).toList();
+      emit(ChatsLoaded(
+        hasReachedMax: this.state.hasReachedMax ?? false,
+        chats: newChats,
+        currentCategory: this.state.currentCategory
+      ));
+    }
+  }
+
+  Future<void> getChatsFromCache () async {
+    emit(ChatLoading(
+      chats: [], 
+      isPagination: false,
+      hasReachedMax: false,
+      currentCategory: null
+    ));
+
+    Either<Failure, PaginatedResultViaLastItem<ChatEntity>> response = await getChats(
+      GetChatsParams(
+        lastChatID: null,
+        token: sl<AuthConfig>().token,
+        fromCache: true
+      )
+    );
+
+    response.fold(
+      (failure) => emit(ChatsError(
+        chats: this.state.chats, 
+        errorMessage: failure.message, 
+        hasReachedMax: this.state.hasReachedMax,
+        currentCategory: this.state.currentCategory
+      )),
+      (chatsResponse) {
+        emit(ChatsLoaded( 
+          chats: chatsResponse.data,
+          hasReachedMax: chatsResponse.hasReachMax ?? false,
+          currentCategory: this.state.currentCategory)
+        );
+      }
+    );
   }
 }

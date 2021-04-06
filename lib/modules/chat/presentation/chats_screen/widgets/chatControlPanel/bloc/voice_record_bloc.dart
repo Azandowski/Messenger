@@ -1,12 +1,12 @@
 import 'dart:async';
-import 'dart:math';
-
 import 'package:bloc/bloc.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_sound/flutter_sound.dart';
-import 'package:messenger_mobile/core/utils/feedbac_taptic_helper.dart';
-
+import 'package:messenger_mobile/core/blocs/audioplayer/bloc/audio_player_bloc.dart';
+import '../../../../../../../core/utils/feedbac_taptic_helper.dart';
+import '../../../../../domain/usecases/params.dart';
+import '../../../../chat_details/widgets/chat_media_block.dart';
+import 'package:flutter_sound_platform_interface/flutter_sound_recorder_platform_interface.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:vibrate/vibrate.dart';
@@ -16,30 +16,26 @@ part 'voice_record_event.dart';
 part 'voice_record_state.dart';
 
 class VoiceRecordBloc extends Bloc<VoiceRecordEvent, VoiceRecordState> {
-  VoiceRecordBloc() : super(VoiceRecordEmpty()){
+  final ChatBloc chatBloc;
+  final AudioPlayerBloc audioPlayerBloc;
+
+  VoiceRecordBloc({
+    @required this.chatBloc,
+    @required this.audioPlayerBloc,
+  }) : super(VoiceRecordEmpty(path: 'empty')){
     myRecorder = FlutterSoundRecorder();
-    playerModule = FlutterSoundPlayer();
     askPermission();
     init();
   }
   
-  Codec _codec = Codec.aacMP4;
+  Codec _codec = Codec.aacADTS;
 
   FlutterSoundRecorder myRecorder;
 
-  FlutterSoundPlayer playerModule;
-
-  var _path = '';
-
   StreamSubscription<RecordingDisposition> _recorderSubscription;
-  StreamSubscription<PlaybackDisposition> _playerSubscription;
 
   var _recoderController = StreamController<RecordingDisposition>.broadcast();
   Stream<RecordingDisposition> get recordStream =>_recoderController.stream;
-
-  var _playerController = StreamController<PlaybackDisposition>.broadcast();
-  Stream<PlaybackDisposition> get playerStream => _playerController.stream;
-
 
   clear(){
     _recoderController.add(null);
@@ -47,7 +43,6 @@ class VoiceRecordBloc extends Bloc<VoiceRecordEvent, VoiceRecordState> {
 
   dispose() {
     _recoderController.close();
-    _playerController.close();
   }
 
   @override
@@ -56,27 +51,30 @@ class VoiceRecordBloc extends Bloc<VoiceRecordEvent, VoiceRecordState> {
   ) async* {
     if(event is VoiceStartRecording){
       startRecorder();
-      yield VoiceRecording(isHold: false);
+      yield VoiceRecording(isHold: false, path: this.state.path);
     }else if(event is VoiceHoldRecoriding){
-      yield VoiceRecording(isHold: true);
+      yield VoiceRecording(isHold: true, path: this.state.path);
     }else if(event is VoiceStopRecording){
-      FeedbackEngine.showFeedback(FeedbackType.error);
       stopRecorder();
       stopPlayer();
-      yield VoiceRecordEmpty();
+      yield VoiceRecordEmpty(path: this.state.path);
     }else if(event is VoiceStopHolding){
       FeedbackEngine.showFeedback(FeedbackType.success);
       stopRecorder();
-      yield VoiceRecordingEndWillSend(
-        playerState: VoicePlayerState.empty,
-      );
-    }else if(event is VoiceStartResumeStop){
-      yield* _mapPlayerStateToPlayerAction(event);
-    }else if(event is VoicePlayerFinished){
-      yield VoiceRecordingEndWillSend(playerState: VoicePlayerState.empty);
+      yield VoiceRecordingEndWillSend(path: this.state.path);
+    }else if(event is VoiceSendAudio){
+      chatBloc.add(MessageSend(
+        fieldFiles: FieldFiles(
+          fieldKey: TypeMedia.audio,
+          files: [File(this.state.path)]
+        ),
+      ));
+      FeedbackEngine.showFeedback(FeedbackType.success);
     }else if(event is VoiceBlocDispose){
       disposeBloc();
       this.close();
+    }else if(event is VoiceChangePath){
+      yield VoiceRecording(isHold: false, path: event.path);
     }
   }
 
@@ -85,20 +83,6 @@ class VoiceRecordBloc extends Bloc<VoiceRecordEvent, VoiceRecordState> {
         category: SessionCategory.playAndRecord,
         mode: SessionMode.modeVoiceChat,
         device: AudioDevice.speaker);
-    await _initializeExample(false);
-  }
-
-  Future<void> _initializeExample(bool withUI) async {
-
-    await playerModule.closeAudioSession();
-
-    await playerModule.openAudioSession(
-        withUI: withUI,
-        focus: AudioFocus.requestFocusAndStopOthers,
-        category: SessionCategory.playAndRecord,
-        mode: SessionMode.modeDefault,
-        device: AudioDevice.speaker);
-    await playerModule.setSubscriptionDuration(Duration(milliseconds: 10));
     await myRecorder.setSubscriptionDuration(Duration(milliseconds: 10));
   }
 
@@ -122,13 +106,14 @@ class VoiceRecordBloc extends Bloc<VoiceRecordEvent, VoiceRecordState> {
           bitRate: 32000,
           numChannels: 1,
           sampleRate: 32000,
+          audioSource: AudioSource.microphone
         );
 
       _recorderSubscription = myRecorder.onProgress.listen((e) {
         _recoderController.sink.add(e);
       });
 
-      _path = path;
+      this.add(VoiceChangePath(path));
         
     } on Exception catch (err) {
       print('startRecorder error: $err');
@@ -146,41 +131,8 @@ class VoiceRecordBloc extends Bloc<VoiceRecordEvent, VoiceRecordState> {
     }
   }
 
-  Future<void> startPlayer() async {
-    try {
-      String audioFilePath;
-      var codec = _codec;
-      audioFilePath = _path;
-      //Duration toto  = await flutterSoundHelper.duration(audioFilePath);
-      //print(toto.inMilliseconds);
-
-      // Check whether the user wants to use the audio player features
-        if (audioFilePath != null) {
-          await playerModule.startPlayer(
-              fromURI: audioFilePath,
-              codec: codec,
-              sampleRate: 32000,
-              whenFinished: () {
-                this.add(VoicePlayerFinished());
-              });
-        }
-      _addListeners();
-    } on Exception catch (err) {
-      print('error: $err');
-    }
-  }
-
-   Future<void> stopPlayer() async {
-    try {
-      await playerModule.stopPlayer();
-      print('stopPlayer');
-      if (_playerSubscription != null) {
-        await _playerSubscription.cancel();
-        _playerSubscription = null;
-      }
-    } on Exception catch (err) {
-      print('error: $err');
-    }
+  stopPlayer() async {
+    audioPlayerBloc.add(StopPlayer());
   }
 
   void cancelRecorderSubscriptions() {
@@ -190,50 +142,11 @@ class VoiceRecordBloc extends Bloc<VoiceRecordEvent, VoiceRecordState> {
     }
   }
 
-  void _addListeners() {
-    cancelPlayerSubscriptions();
-    _playerSubscription = playerModule.onProgress.listen((e) {
-      _playerController.sink.add(e);
-    });
-  }
-
-  void cancelPlayerSubscriptions() {
-    if (_playerSubscription != null) {
-      _playerSubscription.cancel();
-      _playerSubscription = null;
-    }
-  }
-
   void askPermission() async {
     var status = await Permission.microphone.request();
     if (status != PermissionStatus.granted) {
       throw RecordingPermissionException(
           'Microphone permission not granted');
-    }
-  }
-
-  Stream<VoiceRecordState> _pauseResumePlayer() async* {
-    try {
-      if (playerModule.isPlaying) {
-        await playerModule.pausePlayer();
-        yield (VoiceRecordingEndWillSend(playerState: VoicePlayerState.paused));
-      } else {
-        await playerModule.resumePlayer();
-        yield (VoiceRecordingEndWillSend(playerState: VoicePlayerState.playing));
-      }
-    } on Exception catch (err) {
-      print('error: $err');
-    }
-  }
-
-  Stream<VoiceRecordState> _mapPlayerStateToPlayerAction(VoiceStartResumeStop event) async*{
-    switch (event.playerState){
-      case VoicePlayerState.empty:
-        startPlayer();
-        yield (VoiceRecordingEndWillSend(playerState: VoicePlayerState.playing));
-        break;
-      default: 
-      yield* _pauseResumePlayer();
     }
   }
 }

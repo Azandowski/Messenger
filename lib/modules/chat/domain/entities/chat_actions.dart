@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-
+import 'package:easy_localization/easy_localization.dart';
 import 'message.dart';
 
 enum ChatActions {
@@ -41,20 +41,16 @@ extension ChatActionsExtension on ChatActions {
     }
   }
 
-  String getHintText (bool isMe) {
+  String getHintText () {
     switch (this) {
       case ChatActions.addUser:
-        return isMe ? 'добавили участника' : 
-          'добавил(а) участника';
+        return 'added_user'.tr();
       case ChatActions.kickUser:
-        return isMe ? 'удалили участника' : 
-          'удалил(а) участника';
+        return 'deleted_user'.tr();
       case ChatActions.setSecret:
-        return isMe ? 'включили таймер сгорания' : 
-          'включил(a) таймер сгорания';
+        return 'secret_mode_turned_on'.tr();
       case ChatActions.unsetSecret:
-        return isMe? 'выключил таймер сгроания' : 
-          'выключил(а) таймер сгорания';
+        return 'secret_mode_turned_off'.tr();
       default:
         return null;
     }
@@ -63,13 +59,17 @@ extension ChatActionsExtension on ChatActions {
   String getDescription (String userName) {
     switch (this) {
       case ChatActions.addUser:
-        return '$userName добавлен(а)';
+        return 'user_added_v2'.tr(namedArgs: {
+          'username': userName
+        });
       case ChatActions.kickUser:
-        return '$userName исключен(а)';
+        return 'user_deleted_v2'.tr(namedArgs: {
+          'username': userName
+        });
       case ChatActions.setSecret:
-        return 'Включен таймер сгорания';
+        return 'secret_mode_turned_on'.tr();
       case ChatActions.unsetSecret:
-        return 'Выключен таймер сгорания';
+        return 'secret_mode_turned_off'.tr();
       default:
         return null;
     }
@@ -77,7 +77,7 @@ extension ChatActionsExtension on ChatActions {
 
   String get imagePath {
     switch (this) {
-      case ChatActions.setSecret:
+      case ChatActions.setSecret: case ChatActions.unsetSecret:
         return 'assets/icons/hot.png';
       default:
         return null;

@@ -1,5 +1,8 @@
 import 'package:intl/intl.dart';
-
+import 'package:easy_localization/easy_localization.dart';
+import 'package:messenger_mobile/app/application.dart';
+import 'package:messenger_mobile/core/config/language.dart';
+import '../../locator.dart';
 
 extension DateExtension on DateTime {
   bool isToday() {
@@ -25,22 +28,32 @@ extension DateExtension on DateTime {
 
 class DateHelper {
   String getLastOnlineDate (DateTime dateTime) {
+    var locale = sl<Application>().appLanguage.localeKey;
+
     if (dateTime.isToday()) {
-      return 'Был(а) в ' + DateFormat.Hm('ru-RU').format(dateTime);
+      return 'was_at'.tr(namedArgs: {
+        'date': DateFormat.Hm(locale).format(dateTime)
+      });
     } else if (dateTime.isYesterday()) {
-      return 'Был(а) Вчера в ' + DateFormat.Hm('ru-RU').format(dateTime);
+      return 'was_yesterday_at'.tr(namedArgs: {
+        'date': DateFormat.Hm(locale).format(dateTime)
+      });
     } else if (dateTime.isThisYear()) {
-      return 'Был(а) ' + DateFormat.MMMMd('ru-RU').format(dateTime);
+      return 'was_at'.tr(namedArgs: {
+        'date': DateFormat.MMMMd(locale).format(dateTime)
+      });
     } else {
-      return 'Был(а) ' + DateFormat.yMMMMd('ru-RU').format(dateTime);
+      return 'was_at'.tr(namedArgs: {
+        'date': DateFormat.yMMMMd(locale).format(dateTime)
+      });
     }
   }
 
   String getChatDay (DateTime dateTime) {
     if (dateTime.isToday()) { 
-      return 'Сегодня';
+      return 'today'.tr();
     } else if (dateTime.isYesterday()) {
-      return 'Вчера';
+      return 'yesterday'.tr();
     } else if (dateTime.isThisYear()) { 
       return DateFormat.MMMMd('ru-RU').format(dateTime);
     } else {

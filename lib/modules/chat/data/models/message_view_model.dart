@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:latlong/latlong.dart';
 
 import '../../../../app/appTheme.dart';
 import '../../../../core/config/auth_config.dart';
@@ -7,13 +8,15 @@ import '../../../../locator.dart';
 import '../../domain/entities/message.dart';
 import '../../presentation/chats_screen/helpers/messageCellAction.dart';
 
+enum MessageCellPresentationType { contact, textAndMedia, location }
+
 class MessageViewModel {
   final Message message;
   final bool isSelected;
   final int timeLeftToBeDeleted;
 
   MessageViewModel(this.message,
-      {this.isSelected = false, this.timeLeftToBeDeleted = null});
+      {this.isSelected = false, this.timeLeftToBeDeleted});
 
   // MARK: - For UI
 
@@ -30,6 +33,15 @@ class MessageViewModel {
       return '$timeLeftToBeDeleted';
     } else if (message.dateTime != null) {
       return new DateFormat("Hm").format(message.dateTime);
+    } else {
+      return '';
+    }
+  }
+
+  String get fullTime {
+    print(message.dateTime);
+    if (message.dateTime != null) {
+      return new DateFormat.yMMMMEEEEd().add_Hm().format(message.dateTime);
     } else {
       return '';
     }
@@ -89,7 +101,8 @@ class MessageViewModel {
           MessageCellActions.replyMessage,
           MessageCellActions.replyMore
         ],
-        MessageCellActions.deleteMessage
+        MessageCellActions.openProfile,
+        MessageCellActions.deleteMessage,
       ];
     }
   }
@@ -125,5 +138,58 @@ class MessageViewModel {
 
   MessageStatus get messageStatus {
     return message.messageStatus;
+  }
+
+  bool get hasToShowMap {
+    return message.location != null;
+  }
+
+  LatLng get mapLocation {
+    return message.location.position;
+  }
+
+  String get mapLocationAddress {
+    return message.location.description;
+  }
+
+  String get forwardDescription {
+    if (message.text != null) {
+      return this.messageText;
+    } else {
+      return 'Вложение';
+    }
+  }
+
+  TextStyle get forwardTextStyle {
+    if (message.text != null) {
+      return AppFontStyles.black14w400.copyWith(
+        height: 1.4,
+      );
+    } else {
+      return AppFontStyles.black14w400
+          .copyWith(height: 1.4, color: AppColors.indicatorColor);
+    }
+  }
+
+  bool get hasMedia {
+    if (message.files != null) {
+      return message.files.length > 0;
+    } else {
+      return false;
+    }
+  }
+
+  MessageCellPresentationType get presentationType {
+    if ((message.contacts ?? []).length != 0) {
+      return MessageCellPresentationType.contact;
+    } else if (this.hasToShowMap) {
+      return MessageCellPresentationType.location;
+    } else {
+      return MessageCellPresentationType.textAndMedia;
+    }
+  }
+
+  MessageUser get contactItem {
+    return message.contacts[0];
   }
 }

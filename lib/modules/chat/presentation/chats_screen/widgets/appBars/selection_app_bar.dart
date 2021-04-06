@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../../../app/appTheme.dart';
 import '../../../../../category/data/models/chat_view_model.dart';
 import '../../cubit/chat_todo_cubit.dart';
 import '../../pages/chat_screen.dart';
+
 class SelectionAppBar extends StatelessWidget implements PreferredSizeWidget{
   const SelectionAppBar({
     Key key,
@@ -24,10 +25,13 @@ class SelectionAppBar extends StatelessWidget implements PreferredSizeWidget{
       titleSpacing: 0.0,
       title:RichText(
         text: TextSpan(
-          text: 'Выбрано: ',
+          text: 'selected'.tr() + ": ",
           style: AppFontStyles.black16.copyWith(height: 0.6),
           children: <TextSpan>[
-            TextSpan(text: chatTodoCubit.state.selectedMessages.length.toString(), style: AppFontStyles.purple15),
+            TextSpan(
+              text: chatTodoCubit.state.selectedMessages.length.toString(), 
+              style: AppFontStyles.purple15
+            ),
           ],
         ),
       ),
@@ -37,7 +41,7 @@ class SelectionAppBar extends StatelessWidget implements PreferredSizeWidget{
           child: TextButton(onPressed: (){
             chatTodoCubit.disableSelectionMode();
           }, 
-          child: Text('Отменить',
+          child: Text('cancel'.tr(),
             style: AppFontStyles.purple15,
           ),
           
@@ -49,5 +53,4 @@ class SelectionAppBar extends StatelessWidget implements PreferredSizeWidget{
 
   @override
   Size get preferredSize => new Size.fromHeight(appBar.preferredSize.height);
-
 }

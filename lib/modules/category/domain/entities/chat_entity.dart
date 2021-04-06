@@ -1,24 +1,26 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-
-import '../../../chat/data/models/message_model.dart';
+import 'package:messenger_mobile/modules/chat/domain/entities/message.dart';
+import 'package:messenger_mobile/modules/chats/data/model/chat_update_type.dart';
 import '../../../chats/domain/entities/category.dart';
-import '../../data/models/chat_permission_model.dart';
 import 'chat_permissions.dart';
 
 // ignore: must_be_immutable
 class ChatEntity extends Equatable {
+  
   final int chatId;
   final String title;
   final String imageUrl;
   final DateTime date;
   final ChatPermissions permissions;
-  final MessageModel lastMessage;
+  final Message lastMessage;
   final int unreadCount;
   final String description;
   final bool isPrivate;
   final bool isRead;
+  final int adminID;
   CategoryEntity chatCategory;
+  ChatUpdateType chatUpdateType;
 
   ChatEntity({
     this.chatCategory,
@@ -31,7 +33,9 @@ class ChatEntity extends Equatable {
     this.description,
     this.lastMessage,
     this.isPrivate = false,
-    this.isRead
+    this.isRead,
+    this.chatUpdateType,
+    this.adminID
   });
 
   @override
@@ -46,12 +50,15 @@ class ChatEntity extends Equatable {
     unreadCount,
     description,
     isPrivate,
-    isRead
+    isRead,
+    chatUpdateType,
+    adminID
   ];
 
   ChatEntity clone({
     ChatPermissions permissions,
-    int unreadCount
+    int unreadCount,
+    Message lastMessage
   }) {
     return ChatEntity(
       chatId: this.chatId,
@@ -62,11 +69,17 @@ class ChatEntity extends Equatable {
       permissions: permissions ?? ChatPermissions(
         isSoundOn: this.permissions.isSoundOn,
         isMediaSendOn: this.permissions.isMediaSendOn,
-        isForwardOn: this.permissions.isForwardOn
+        isForwardOn: this.permissions.isForwardOn,
+        adminMessageSend: this.permissions.adminMessageSend,
+        isSecret: this.permissions.isSecret,
       ),
-      lastMessage: this.lastMessage,
+      lastMessage: lastMessage ?? this.lastMessage,
       unreadCount: unreadCount ?? this.unreadCount,
-      description: description
+      description: this.description,
+      isPrivate: this.isPrivate,
+      isRead: this.isRead,
+      chatUpdateType: this.chatUpdateType,
+      adminID: this.adminID
     );
   }
 
@@ -83,14 +96,12 @@ class ChatEntity extends Equatable {
         'total_chats': chatCategory.totalChats,
       },
       'created_at': date == null ? null : date.toIso8601String(),
-      'settings': {
-        'sound': permissions.isSoundOn ? 1 : 0,
-        'admin_media_send': permissions.isSoundOn ? 1 : 0
-      },
+      'settings': permissions.toJson(),
       'last_message': lastMessage?.toJson(),
       'no_read_message': unreadCount,
       'description': description,
-      'is_private': isPrivate ? 1 : 0
+      'is_private': isPrivate ? 1 : 0,
+      'admin_id': adminID
     };
   }
 }

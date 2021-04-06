@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../../app/appTheme.dart';
 import '../../../../category/domain/entities/chat_permissions.dart';
 
@@ -37,13 +37,13 @@ extension ChatSettingsUIExtension on ChatSettings {
   String get title {
     switch (this) {
       case ChatSettings.noSound:
-        return 'Без звука';
+        return 'no_sound'.tr();
       case ChatSettings.noMedia:
-        return 'Без фото и видео';
+        return 'no_media'.tr();
       case ChatSettings.adminSendMessage:
-        return 'Отправка сообщений';
+        return 'send_message'.tr();
       case ChatSettings.forwardMessages:
-        return 'Запрет на перессылки';
+        return 'forward_restriction'.tr();
       default:
         return '';
     }
@@ -54,7 +54,7 @@ extension ChatSettingsUIExtension on ChatSettings {
       case ChatSettings.noSound:
         return permissions?.isSoundOn ?? false;
       case ChatSettings.noMedia:
-        return permissions?.isMediaSendOn ?? false;
+        return !(permissions?.isMediaSendOn ?? true);
       case ChatSettings.adminSendMessage:
         return permissions?.adminMessageSend ?? false;
       case ChatSettings.forwardMessages:
@@ -68,18 +68,18 @@ extension ChatSettingsUIExtension on ChatSettings {
     switch (this) {
       case ChatSettings.adminSendMessage:        
         return [
-          'Только Админы',
-          'Все участники'
+          'only_admins'.tr(),
+          'all_members'.tr()
         ];
       case ChatSettings.noMedia:
         return [
-          'Только Админы',
-          'Все участники'
+          'only_admins'.tr(),
+          'all_members'.tr()
         ];
       case ChatSettings.forwardMessages:
         return [
-          'Да',
-          'Нет'
+          'yes'.tr(),
+          'no'.tr()
         ];
       default:
         return null;
@@ -90,11 +90,11 @@ extension ChatSettingsUIExtension on ChatSettings {
   String getValueText (ChatPermissions permissions) {
     switch (this) {
       case ChatSettings.adminSendMessage:        
-        return (permissions?.adminMessageSend ?? false) ? 'Только админы' : 'Все участники';
+        return (permissions?.adminMessageSend ?? false) ? 'only_admins'.tr() : 'all_members'.tr();
       case ChatSettings.noMedia:
-        return (permissions?.isMediaSendOn ?? true) ? 'Все участники' : 'Только админы';
+        return (permissions?.isMediaSendOn ?? true) ? 'all_members'.tr() : 'only_admins'.tr();
       case ChatSettings.forwardMessages:
-        return (permissions?.isForwardOn ?? true) ? 'Нет' : 'Да';
+        return (permissions?.isForwardOn ?? true) ? 'no'.tr() : 'yes'.tr();
       default:
         return null;
     }
@@ -103,11 +103,11 @@ extension ChatSettingsUIExtension on ChatSettings {
   String get hintText {
     switch (this) {
       case ChatSettings.adminSendMessage:        
-        return 'Выберите, кто может отправлять сообщения в группе';
+        return 'send_message_permission_hint'.tr();
       case ChatSettings.noMedia:
-        return 'Выберите, кто может отправлять фото, видео и документы в группе';
+        return 'send_media_permission_hint'.tr();
       case ChatSettings.forwardMessages:
-        return 'Выберите можно ли переслать сообщения';
+        return 'forward_permission_hint'.tr();
       default:
         return null;
     }

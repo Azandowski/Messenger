@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../app/appTheme.dart';
 
 class PhotoPicker {
@@ -20,7 +20,7 @@ class PhotoPicker {
           return AlertDialog(
               backgroundColor: Theme.of(context).backgroundColor,
               title: Text(
-                "select_one_option",
+                "select_one_option".tr(),
                 style: AppFontStyles.headerMediumStyle,
               ),
               content: SingleChildScrollView(
@@ -30,7 +30,7 @@ class PhotoPicker {
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 4.0),
                         child: Text(
-                          "gallery",
+                          "gallery".tr(),
                           style:
                               TextStyle(color: Theme.of(context).accentColor),
                         ),
@@ -44,7 +44,7 @@ class PhotoPicker {
                     InkWell(
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 4.0),
-                        child: Text("camera",
+                        child: Text("camera".tr(),
                             style: TextStyle(
                                 color: Theme.of(context).accentColor)),
                       ),

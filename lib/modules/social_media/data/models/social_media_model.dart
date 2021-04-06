@@ -1,4 +1,4 @@
-import 'package:messenger_mobile/modules/social_media/domain/entities/social_media.dart';
+import '../../domain/entities/social_media.dart';
 
 class SocialMediaModel extends SocialMedia {
   final String facebookLink;
@@ -24,7 +24,7 @@ class SocialMediaModel extends SocialMedia {
   factory SocialMediaModel.fromJson (Map<String, dynamic> json) {
     return SocialMediaModel(
       facebookLink: json['facebook'],
-      websiteLink: json['website'],
+      websiteLink: json['site'],
       youtubeLink: json['youtube'],
       whatsappNumber: json['whatsapp'],
       instagramLink: json['instagram']

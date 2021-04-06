@@ -1,5 +1,5 @@
 import 'dart:ui';
-
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 class SwipeLeftText extends StatelessWidget {
@@ -28,7 +28,7 @@ class SwipeLeftText extends StatelessWidget {
         duration: Duration(milliseconds: 100),
         opacity: lerpOpacity(0.0, 1.0),
         child: MaterialButton(
-        child: Text('Swipe left to delete'),
+        child: Text('swipe_left_to_delete'.tr()),
         onPressed: (){
 
         },

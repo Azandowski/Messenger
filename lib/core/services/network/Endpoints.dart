@@ -4,6 +4,8 @@ enum Endpoints {
   // Authentication
   createCode,
   login,
+  sendTokenOneSignal,
+  deleteTokenOneSignal,
 
   // Profile
   getCurrentUser,
@@ -42,7 +44,8 @@ enum Endpoints {
   searchChats,
   getUserProfile,
   blockUser,
-  unblockUser
+  unblockUser,
+  markAsRead
 }
 
 extension EndpointsExtension on Endpoints {
@@ -140,6 +143,12 @@ extension EndpointsExtension on Endpoints {
         return '${Config.baseAPIpath.value}/messenger/block-user';
       case Endpoints.unblockUser:
         return '${Config.baseAPIpath.value}/messenger/unblock-user';
+      case Endpoints.markAsRead:
+        return '${Config.baseAPIpath.value}/messenger/message-read';
+      case Endpoints.sendTokenOneSignal:
+        return '${Config.baseAPIpath.value}/playerId/store';
+      case Endpoints.deleteTokenOneSignal:
+        return '${Config.baseAPIpath.value}/playerId/destroy';
     }
   }
 

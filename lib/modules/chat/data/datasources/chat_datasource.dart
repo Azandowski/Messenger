@@ -3,12 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
-import 'package:messenger_mobile/core/usecases/usecase.dart';
-import 'package:messenger_mobile/core/utils/multipart_request_helper.dart';
-import 'package:messenger_mobile/modules/chat/data/models/chat_message_response.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chat_details/page/chat_detail_screen.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen_import.dart';
-
+import 'package:messenger_mobile/modules/chat/data/models/translation_response.dart';
 import '../../../../core/config/auth_config.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/services/network/Endpoints.dart';
@@ -17,6 +12,7 @@ import '../../../../core/services/network/socket_service.dart';
 import '../../../../core/usecases/usecase.dart';
 import '../../../../core/utils/error_handler.dart';
 import '../../../../core/utils/http_response_extension.dart';
+import '../../../../core/utils/multipart_request_helper.dart';
 import '../../../../core/utils/pagination.dart';
 import '../../../../locator.dart';
 import '../../../category/data/models/chat_permission_model.dart';
@@ -26,6 +22,7 @@ import '../../../creation_module/domain/entities/contact.dart';
 import '../../domain/entities/chat_detailed.dart';
 import '../../domain/entities/message.dart';
 import '../../domain/usecases/params.dart';
+import '../../presentation/chat_details/page/chat_detail_screen.dart';
 import '../../presentation/chats_screen/pages/chat_screen_import.dart';
 import '../models/chat_detailed_model.dart';
 import '../models/chat_message_response.dart';
@@ -65,6 +62,9 @@ abstract class ChatDataSource {
   Future<bool> blockUser(int id);
   Future<bool> unblockUser(int id);
   Future<void> disposeChat();
+  Future<void> markAsRead(int id, int messageID);
+  Future<TranslationResponse> translateText(
+      {@required String originalText, @required String langCode});
 }
 
 class ChatDataSourceImpl implements ChatDataSource {
@@ -113,6 +113,8 @@ class ChatDataSourceImpl implements ChatDataSource {
         return MessageHandleType.setTopMessage;
       case 'unSetTopMessage':
         return MessageHandleType.unSetTopMessage;
+      case 'StartTimerSecretMessage':
+        return MessageHandleType.userReadSecretMessage;
     }
   }
 
@@ -176,22 +178,30 @@ class ChatDataSourceImpl implements ChatDataSource {
 
   @override
   Future<Message> sendMessage(SendMessageParams params) async {
-    var forward = params.forwardIds.map((e) => e.toString()).join(',');
-    var body = {
-      'text': params.text ?? '',
-      'forward': forward,
-      if (params.timeLeft != null) ...{'time_deleted': params.timeLeft}
-    };
+    String type;
+    List<String> keyNames = [];
+    _handleFilesForSendMessages(
+        params: params,
+        callback: (String newType, List<String> keyName) {
+          type = newType;
+          keyNames = keyName;
+        });
+
+    var data = _generateBodyForSendMessage(params: params, type: type);
 
     http.StreamedResponse streamedResponse =
         await MultipartRequestHelper.postData(
-            token: authConfig.token,
+            token: sl<AuthConfig>().token,
+            uploadStreamCtrl: params?.uploadController,
             request: multipartRequest,
-            data: body,
+            data: data,
+            assets: params.fieldAssets?.assets != null
+                ? params.fieldAssets.assets
+                : [],
             files: params.fieldFiles?.files != null
                 ? params.fieldFiles?.files
-                : [],
-            keyName: params.fieldFiles?.fieldKey?.filedKey ?? null);
+                : null,
+            keyName: keyNames);
 
     final response = await http.Response.fromStream(streamedResponse);
 
@@ -428,6 +438,96 @@ class ChatDataSourceImpl implements ChatDataSource {
     } else {
       throw ServerFailure(
           message: ErrorHandler.getErrorMessage(response.body.toString()));
+    }
+  }
+
+  @override
+  Future<void> markAsRead(int id, int messageID) async {
+    print(Endpoints.markAsRead.buildURL());
+    http.Response response = await client.post(
+      Endpoints.markAsRead.buildURL(),
+      body: json.encode({'message_id': '$messageID'}),
+      headers: Endpoints.markAsRead.getHeaders(token: sl<AuthConfig>().token),
+    );
+
+    if (!response.isSuccess) {
+      throw ServerFailure(
+          message: ErrorHandler.getErrorMessage(response.body.toString()));
+    }
+  }
+
+  // MARK: - Utils
+
+  void _handleFilesForSendMessages(
+      {SendMessageParams params, Function(String, List<String>) callback}) {
+    if (params.fieldFiles?.files != null) {
+      callback(
+          params.fieldFiles?.fieldKey?.filedKey,
+          List.generate(
+              params.fieldFiles?.files?.length, (index) => 'file[$index]'));
+    } else if (params.fieldAssets?.assets != null) {
+      callback(
+          params.fieldAssets?.fieldKey?.filedKey,
+          List.generate(
+              params.fieldAssets.assets.length, (index) => 'file[$index]'));
+    }
+  }
+
+  Map<String, dynamic> _generateBodyForSendMessage(
+      {@required SendMessageParams params, @required String type}) {
+    var forward = params.forwardIds.map((e) => e.toString()).join(',');
+
+    return {
+      'text': params.text ?? '',
+      'forward': forward,
+      'type': type,
+      if (params.timeLeft != null) ...{'time_deleted': params.timeLeft},
+      if (params.location != null) ...{
+        'latitude': params.location.latitude,
+        'longitude': params.location.longitude,
+        'address': params.locationAddress
+      },
+      if (params.contactID != null) ...{'contact_id': '${params.contactID}'}
+    };
+  }
+
+  Future<TranslationResponse> translateText(
+      {@required String originalText, @required String langCode}) async {
+    // return Future.delayed(Duration(seconds: 1), () {
+    //   return TranslationResponse(
+    //     detectedLanguage: 'en',
+    //     text: 'Привет',
+    //     detectedLanguageUnformatted: 'en'
+    //   );
+    // });
+
+    http.Response response = await client.post(
+        Uri.parse(
+            "https://translate.api.cloud.yandex.net/translate/v2/translate"),
+        body: json.encode({
+          "folder_id": "b1gkq1ghkfika97l9en2",
+          'texts': [originalText],
+          'targetLanguageCode': langCode
+        }),
+        headers: {
+          'Authorization': 'Api-Key AQVN1vzRDlStWsG4chCPOYI3cZAwXBIIJBS2warl',
+          'Content-type': 'application/json'
+        });
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      List translations = json.decode(
+              Utf8Decoder().convert(response.bodyBytes))['translations'] ??
+          [];
+
+      if (translations.length != 0) {
+        var jsonModel = translations[0];
+        jsonModel['translated_to'] = langCode;
+        return TranslationResponse.fromJson(jsonModel);
+      } else {
+        throw ServerFailure(message: 'Not Found');
+      }
+    } else {
+      throw ServerFailure(message: response.body);
     }
   }
 }

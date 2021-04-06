@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../../../../app/appTheme.dart';
 import '../../../data/models/message_view_model.dart';
+
+
 class NameTimeBloc extends StatelessWidget {
   final MessageViewModel messageViewModel;
 
@@ -30,6 +32,9 @@ class NameTimeBloc extends StatelessWidget {
               messageViewModel.readImageName, width: 20, height: 8
             )
           ),
+          
+        if (!messageViewModel.isMine)
+          Spacer(),
 
         Text(
           messageViewModel.time,

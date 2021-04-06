@@ -1,7 +1,8 @@
-import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen_import.dart';
-import 'package:messenger_mobile/modules/social_media/domain/entities/social_media.dart';
-import 'package:messenger_mobile/modules/social_media/presentation/helpers/ui_helper.dart';
+import '../../chats_screen/pages/chat_screen_import.dart';
+import '../../../../social_media/domain/entities/social_media.dart';
+import '../../../../social_media/presentation/helpers/ui_helper.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class SocialMediaBlock extends StatelessWidget {
   final bool canEdit;
@@ -26,13 +27,13 @@ class SocialMediaBlock extends StatelessWidget {
             child: Column(
               children: [
                 Text(
-                  'Соцсети и сайт',
+                  'social_media'.tr(),
                   style: AppFontStyles.black16,
                 ),
                 SizedBox(height: 4),
                 if (canEdit)
                   Text(
-                    'Вы можете добавить ссылки на соцсети и сайт',
+                    'social_media_hint'.tr(),
                     style: AppFontStyles.grey14w400,
                   ),
               ],
@@ -46,7 +47,7 @@ class SocialMediaBlock extends StatelessWidget {
             InkWell(
               onTap: onAddPressed,
               child: ListTile(
-                title: Text('Добавление и управление'),
+                title: Text('add_and_control'.tr()),
                 trailing: Icon(Icons.arrow_forward_ios),
               ),
             )

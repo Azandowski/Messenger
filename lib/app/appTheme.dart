@@ -8,6 +8,7 @@ abstract class AppColors {
   static get paleIndicatorColor => Color(0xff9357CD).withOpacity(0.4);
   static get accentBlueColor => Color(0xff396FB4);
   static get greyColor => Color(0xff898989);
+  static get gray6 => Color(0xff2F2F2);
   static get successGreenColor => Color(0xff3BE388);
   static get lightPinkColor => Color(0xff9357CD).withAlpha(15);
   static get pinkBackgroundColor => Color(0xffECE9F8);
@@ -35,6 +36,12 @@ abstract class AppFontStyles {
   // Normal Text Style
   static get headerMediumStyle => TextStyle(
     color: Colors.black,
+    fontWeight: FontWeight.w500,
+    fontSize: 15,
+  );
+
+  static get headerIndicatorMediumStyle => TextStyle(
+    color: AppColors.indicatorColor,
     fontWeight: FontWeight.w500,
     fontSize: 15,
   );
@@ -92,7 +99,6 @@ abstract class AppFontStyles {
   static get white14w400 => TextStyle(
     color: Colors.white,
     fontWeight: FontWeight.w400,
-    height: 1.4,
     fontSize: 14,
   );
 
@@ -108,6 +114,12 @@ abstract class AppFontStyles {
     fontSize: 12,
   );
 
+  static get ligthGrey12w400 => TextStyle(
+    color: Colors.grey[400],
+    fontWeight: FontWeight.w400,
+    fontSize: 12,
+  );
+
   static get grey14w400 => TextStyle(
     color: Color(0xff828282),
     fontWeight: FontWeight.w400,
@@ -117,7 +129,6 @@ abstract class AppFontStyles {
   static get white12w400 => TextStyle(
     color: Colors.white,
     fontWeight: FontWeight.w400,
-    height: 0.75,
     fontSize: 12,
   );
 

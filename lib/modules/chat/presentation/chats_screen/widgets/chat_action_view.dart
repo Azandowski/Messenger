@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/app/appTheme.dart';
-import 'package:messenger_mobile/core/config/auth_config.dart';
-import 'package:messenger_mobile/core/utils/date_helper.dart';
-import 'package:messenger_mobile/modules/chat/domain/entities/chat_actions.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chats_screen/helpers/message_user_viewmodel.dart';
-
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../../app/appTheme.dart';
+import '../../../../../core/config/auth_config.dart';
 import '../../../../../core/utils/date_helper.dart';
 import '../../../../../locator.dart';
 import '../../../domain/entities/chat_actions.dart';
@@ -56,34 +52,36 @@ class ChatActionView extends StatelessWidget {
           ),
           SizedBox(width: 8)
         ],
-      Text(
-        firstUser.name,
-        style: AppFontStyles.black14w400
-      ),
+      if (groupAction.secondUser != null)
+        Text(
+          secondUser.name,
+          style: AppFontStyles.black14w400
+        ),
       SizedBox(width: 4),
       Text(
-        groupAction.action.getHintText(
-          firstUser?.user?.id == sl<AuthConfig>().user?.id
-        ),
+        groupAction.action.getHintText(),
         style: AppFontStyles.grey12w400.copyWith(
           fontSize: 13.0
         )
       ),
       SizedBox(width: 4),
-      if (groupAction.secondUser != null)
+      if (groupAction.firstUser != null)
         Text(
-          secondUser.name,
+          '(${firstUser?.user?.id == sl<AuthConfig>().user?.id ? "you".tr() : firstUser.name})',
           style: AppFontStyles.black14w400
         ),
     ];
   }
 
   List<Widget> _buildTimeAction (TimeAction action) {
-    return [
-      Text(
-        sl<DateHelper>().getChatDay(action.dateTime),
-        style: AppFontStyles.black14w400
-      )
-    ];
+    if (action.dateTime != null)
+      return [
+        Text(
+          sl<DateHelper>().getChatDay(action.dateTime),
+          style: AppFontStyles.black14w400
+        )
+      ];
+
+    return [];
   }
 }

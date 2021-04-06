@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:messenger_mobile/modules/unavailable_screens/presentation/unavailable_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../app/application.dart';
@@ -38,7 +39,7 @@ class _AppScreenState extends State<AppScreen> {
         permission != PermissionStatus.denied) {
       Map<Permission, PermissionStatus> statuses =
           await [Permission.contacts].request();
-      return statuses[Permission.contacts] ?? PermissionStatus.restricted;
+      return statuses[Permission.contacts] ?? PermissionStatus.denied;
     } else {
       return permission;
     }
@@ -64,8 +65,8 @@ class _AppScreenState extends State<AppScreen> {
 
   final pages = [
     ChatsScreen(),
-    ProfilePage(),
-    SplashPage(),
+    UnavailableScreen(),
+    UnavailableScreen(),
     ProfilePage(),
   ];
 

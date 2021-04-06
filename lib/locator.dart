@@ -1,6 +1,9 @@
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
+import 'package:messenger_mobile/modules/media/domain/usecases/get_audios.dart';
+import 'package:messenger_mobile/modules/media/domain/usecases/get_video.dart';
+import 'package:messenger_mobile/modules/profile/domain/usecases/set_wallpaper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app/application.dart';
@@ -50,6 +53,7 @@ import 'modules/media/data/datasources/local_media_datasource.dart';
 import 'modules/media/data/repositories/media_repository_impl.dart';
 import 'modules/media/domain/repositories/media_repository.dart';
 import 'modules/media/domain/usecases/get_image.dart';
+import 'modules/media/domain/usecases/get_images_from_gallery.dart';
 import 'modules/profile/data/datasources/profile_datasource.dart';
 import 'modules/profile/data/repositories/profile_repository.dart';
 import 'modules/profile/domain/repositories/profile_respository.dart';
@@ -72,9 +76,9 @@ Future<void> init() async {
     ),
   );
 
-  sl.registerFactory(() => ChatGlobalCubit(sl(), sl(), sl()));
+  sl.registerFactory(
+      () => ProfileCubit(getUser: sl(), setWallpaper: SetWallpaper(sl())));
 
-  sl.registerFactory(() => ProfileCubit(getUser: sl(), authConfig: sl()));
   sl.registerFactory(() => ChatsCubit(sl()));
 
   // Use cases
@@ -163,6 +167,9 @@ Future<void> init() async {
   //Use Cases
   sl.registerLazySingleton(() => CreateCategoryUseCase(sl()));
   sl.registerLazySingleton(() => GetImage(sl()));
+  sl.registerLazySingleton(() => GetAudios(sl()));
+  sl.registerLazySingleton(() => GetVideo(sl()));
+  sl.registerLazySingleton(() => GetImagesFromGallery(sl()));
   sl.registerLazySingleton(() => TransferChats(repository: sl()));
   sl.registerLazySingleton(() => GetCategoryChats(sl()));
   sl.registerLazySingleton(() => ReorderCategories(repository: sl()));

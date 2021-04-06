@@ -1,1 +1,0 @@
-enum AniProps {offset, size}

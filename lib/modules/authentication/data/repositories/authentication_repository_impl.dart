@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:dartz/dartz.dart';
 import 'package:meta/meta.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sembast/sembast.dart';
 
@@ -91,6 +92,9 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
       final token =
           await remoteDataSource.login(params.phoneNumber, params.code);
       localDataSource.saveToken(token.token);
+      var status = await OneSignal.shared.getPermissionSubscriptionState();
+      String playerID = status.subscriptionStatus.userId;
+      remoteDataSource.sendPlayerID(playerID);
       getCategories(GetCategoriesParams(token: token.token));
       return Right(token);
     } on ServerFailure {
@@ -138,6 +142,9 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
       await localDataSource.deleteToken();
       await localDataSource.deleteContacts();
       initToken();
+      var status = await OneSignal.shared.getPermissionSubscriptionState();
+      String playerID = status.subscriptionStatus.userId;
+      remoteDataSource.deletePlayerID(playerID, token);
       return Right(true);
     } on StorageFailure {
       return Left(StorageFailure());

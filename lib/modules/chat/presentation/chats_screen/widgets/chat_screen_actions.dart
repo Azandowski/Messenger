@@ -1,9 +1,7 @@
 
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/app/application.dart';
-import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chat_details/page/chat_detail_screen.dart';
-import 'package:messenger_mobile/modules/chats/presentation/pages/chats_search_screen.dart';
+import 'package:messenger_mobile/core/utils/unavailable_dialog.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../../app/appTheme.dart';
 import '../../../../../app/application.dart';
 import '../../../../../core/widgets/independent/dialogs/dialog_action_button.dart';
@@ -13,6 +11,7 @@ import '../../../../../locator.dart';
 import '../../../../category/domain/entities/chat_entity.dart';
 import '../../../../chats/presentation/pages/chats_search_screen.dart';
 import '../../chat_details/page/chat_detail_page.dart';
+import '../../chat_details/page/chat_detail_screen.dart';
 import '../../time_picker/time_picker_screen.dart';
 import 'appBars/chat_app_bar.dart';
 
@@ -43,7 +42,9 @@ class ChatScreenActions extends StatelessWidget {
             Icons.video_call, 
             color: AppColors.indicatorColor,
           ), 
-          onPressed: () {},
+          onPressed: () {
+            UnavailableFeatureDialog.show(context);
+          },
         ),
         IconButton(
           icon: Icon(
@@ -51,7 +52,7 @@ class ChatScreenActions extends StatelessWidget {
             color: AppColors.indicatorColor,
           ),
           onPressed: () {
-          
+            UnavailableFeatureDialog.show(context);
           },
         ),
         IconButton(
@@ -65,7 +66,7 @@ class ChatScreenActions extends StatelessWidget {
                 dialogViewType: DialogViewType.actionSheet,
                 actionButton: [
                   DialogActionButton(
-                    title: 'Данные профиля', 
+                    title: chatEntity.isPrivate ? 'profile_info'.tr() : 'more_info'.tr(), 
                     iconData: Icons.person,
                     buttonStyle: DialogActionButtonStyle.black,
                     onPress: () {
@@ -76,7 +77,7 @@ class ChatScreenActions extends StatelessWidget {
                     }
                   ),
                   DialogActionButton(
-                    title: 'Поиск', 
+                    title: 'search'.tr(), 
                     iconData: Icons.search,
                     buttonStyle: DialogActionButtonStyle.black,
                     onPress: () {
@@ -84,7 +85,7 @@ class ChatScreenActions extends StatelessWidget {
                     }
                   ),
                   DialogActionButton(
-                    title: (isSecretModeOn ?? false) ? 'Выключить таймер сгорания' : 'Включить таймер сгорания', 
+                    title: (isSecretModeOn ?? false) ? 'turn_off_secret_mode'.tr() : 'turn_on_secret_mode'.tr(), 
                     iconData: Icons.timer,
                     buttonStyle: DialogActionButtonStyle.dangerous,
                     onPress: () {

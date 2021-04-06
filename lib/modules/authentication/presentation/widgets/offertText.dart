@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../app/appTheme.dart';
 import '../../../../core/screens/offert_screen.dart';
 
@@ -17,12 +17,12 @@ class OffertTextWidget extends StatelessWidget {
           width: MediaQuery.of(context).size.width,
           child: RichText(
             text: TextSpan(
-                text: "you_agree_by_continuing",
+                text: "you_agree_by_continuing".tr(),
                 style: AppFontStyles.placeholderStyle,
                 children: [
                   TextSpan(
-                      text: " ${'handle_personal_info'}",
-                      style: AppFontStyles.indicatorSmallStyle),
+                    text: " ${'handle_personal_info'.tr()}",
+                    style: AppFontStyles.indicatorSmallStyle),
                 ]),
             textAlign: TextAlign.start,
           ),
@@ -30,7 +30,7 @@ class OffertTextWidget extends StatelessWidget {
       ),
       onTap: () {
         Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => OffertView()));
+            .push(MaterialPageRoute(builder: (context) => OffertView(type: OffertType.personalData,)));
       },
     );
   }

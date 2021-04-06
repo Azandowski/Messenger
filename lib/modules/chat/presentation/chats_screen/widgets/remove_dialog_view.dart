@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../../core/widgets/independent/dialogs/dialog_action_button.dart';
 import '../../../../../core/widgets/independent/dialogs/dialog_params.dart';
 import '../../../../../core/widgets/independent/dialogs/dialogs.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class DeleteDialogView extends StatelessWidget {
   final Function(bool) onDelete;
@@ -17,9 +18,12 @@ class DeleteDialogView extends StatelessWidget {
     int currentIndex;
     return DialogsView(
       dialogViewType: DialogViewType.optionSelector,
-      title: 'Удалить выбранные сообщения?',
+      title: 'remove_selected_messages'.tr() + " ?",
       optionsContainer: DialogOptionsContainer(
-        options: ['Только для меня', 'Для всех'], 
+        options: [
+          'only_for_me'.tr(), 
+          'for_all'.tr()
+        ], 
         currentOptionIndex: null, 
         onPress: (newIndex) {
           currentIndex = newIndex;
@@ -28,14 +32,14 @@ class DeleteDialogView extends StatelessWidget {
       actionButton: [
         DialogActionButton(
           buttonStyle: DialogActionButtonStyle.cancel,
-          title: 'Отмена',
+          title: 'cancel'.tr(),
           onPress: () {
             Navigator.of(context).pop();
           }
         ),
         DialogActionButton(
           buttonStyle: DialogActionButtonStyle.dangerous,
-          title: 'Удалить',
+          title: 'delete'.tr(),
           onPress: () {
             if(currentIndex != null){
               Navigator.pop(context);

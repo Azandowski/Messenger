@@ -7,7 +7,6 @@ import 'package:flutter/foundation.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/services/network/network_info.dart';
 import '../../../../core/services/network/paginatedResult.dart';
-import '../../../category/data/models/chat_entity_model.dart';
 import '../../../category/domain/entities/chat_entity.dart';
 import '../../domain/entities/chat_search_response.dart';
 import '../../domain/repositories/chats_repository.dart';
@@ -50,17 +49,17 @@ class ChatsRepositoryImpl extends ChatsRepository {
         hasReachMax: false
       ));
     } else if (await networkInfo.isConnected) {
-      if (params.lastChatID == null) {
-        hasInitialized = true;
-        await localChatsDataSource.resetAll();
-      }
-
       try {
         final response = await chatsDataSource.getUserChats(
           token: params.token, 
           lastChatId: params.lastChatID
         );
-
+        
+        if (params.lastChatID == null) {
+          hasInitialized = true;
+          await localChatsDataSource.resetAll();
+        }
+        
         await localChatsDataSource.setCategoryChats(response.data);
         return Right(response);
       } catch (e) {

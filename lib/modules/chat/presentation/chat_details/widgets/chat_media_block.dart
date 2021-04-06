@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:easy_localization/easy_localization.dart';
 import '../../../domain/entities/chat_detailed.dart';
 import 'divider_wrapper.dart';
 
@@ -14,7 +14,7 @@ class ChatMediaBlock extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DividerWrapper(
-      children: MediaType.values.map(
+      children: [TypeMedia.media, TypeMedia.documents, TypeMedia.audio].map(
         (e) => ListTile(
           leading: Image(
             image: AssetImage(e.imageAssetPath),
@@ -30,7 +30,7 @@ class ChatMediaBlock extends StatelessWidget {
                 style: TextStyle(color: Colors.grey[400]),
               ),
               SizedBox(width: 8),
-              Icon(Icons.chevron_right, color: Colors.grey[400])
+              // Icon(Icons.chevron_right, color: Colors.grey[400])
             ],
           ),
         )
@@ -39,17 +39,30 @@ class ChatMediaBlock extends StatelessWidget {
   }
 }
 
-enum MediaType { media, documents, audio }
+enum TypeMedia { media, documents, audio, undefined, image, video }
 
-extension MediaTypeUIExtension on MediaType {
+extension MediaTypeUIExtension on TypeMedia {
   String get title {
     switch (this) {
-      case MediaType.media:
-        return 'Медиа';
-      case MediaType.documents:
-        return 'Документы';
-      case MediaType.audio:
-        return 'Аудио';
+      case TypeMedia.media:
+        return 'media'.tr();
+      case TypeMedia.documents:
+        return 'files'.tr();
+      case TypeMedia.audio:
+        return 'audio'.tr();
+      default:
+        return '';
+    }
+  }
+
+  String get string {
+    switch (this) {
+      case TypeMedia.audio:
+        return 'audio';
+      case TypeMedia.documents:
+        return 'documents';
+      case TypeMedia.image:
+        return 'image';
       default:
         return '';
     }
@@ -57,11 +70,11 @@ extension MediaTypeUIExtension on MediaType {
 
   String get imageAssetPath {
     switch (this) {
-      case MediaType.media:
+      case TypeMedia.media:
         return 'assets/icons/media.png';
-      case MediaType.documents:
+      case TypeMedia.documents:
         return 'assets/icons/documents.png';
-      case MediaType.audio:
+      case TypeMedia.audio:
         return 'assets/icons/audio.png';
       default:
         return '';
@@ -70,11 +83,11 @@ extension MediaTypeUIExtension on MediaType {
 
   int getCountFrom (MediaStats stats) {
     switch (this) {
-      case MediaType.media:
+      case TypeMedia.media:
         return stats.mediaCount;
-      case MediaType.documents:
+      case TypeMedia.documents:
         return stats.documentCount;
-      case MediaType.audio:
+      case TypeMedia.audio:
         return stats.audioCount;
       default:
         return 0;

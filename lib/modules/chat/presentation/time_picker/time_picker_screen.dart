@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../core/widgets/independent/buttons/bottom_action_button.dart';
 import '../chat_details/widgets/divider_wrapper.dart';
 import 'widgets/option_view.dart';
@@ -32,7 +32,7 @@ class _TimePickerScreenState extends State<TimePickerScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Таймер сгорания'),
+        title: Text('deletion_timer'.tr()),
       ),
       body: Container(
         height: MediaQuery.of(context).size.height,
@@ -57,7 +57,7 @@ class _TimePickerScreenState extends State<TimePickerScreen> {
               ),
             ),
             BottomActionButtonContainer(
-              title: 'Сохранить',
+              title: 'save'.tr(),
               onTap: () {
                 widget.delegate.didSelectTimeOption(currentOption);
                 Navigator.of(context).pop();
@@ -79,19 +79,19 @@ extension TimeRangesUIExtension on TimeOptions {
   String get title {
     switch (this) {
       case TimeOptions.off:
-        return 'Выкл';
+        return 'off'.tr();
       case TimeOptions.oneMinute:
-        return '1 минуту';
+        return 'one_minute'.tr();
       case TimeOptions.tenMinutes:
-        return '10 минут';
+        return '10_minutes'.tr();
       case TimeOptions.thirtyMinutes:
-        return '30 минут';
+        return '30_minutes'.tr();
       case TimeOptions.oneHour:
-        return '1 час';
+        return '1_hour'.tr();
       case TimeOptions.oneDay:
-        return '1 день';
+        return '1_day'.tr();
       case TimeOptions.oneWeek:
-        return '1 неделя';
+        return '1_week'.tr();
     }
   }
 

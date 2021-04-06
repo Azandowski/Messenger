@@ -1,7 +1,11 @@
 import 'package:flutter/foundation.dart';
-
+import 'package:latlong/latlong.dart';
+import 'package:messenger_mobile/modules/chats/domain/entities/chat_attachment_type.dart';
+import 'package:messenger_mobile/modules/maps/presentation/pages/map_screen.dart';
 import '../../domain/entities/chat_actions.dart';
+import '../../domain/entities/file_media.dart';
 import '../../domain/entities/message.dart';
+import 'file_media_model.dart';
 import 'message_user_model.dart';
 
 // ignore: must_be_immutable
@@ -16,11 +20,15 @@ class MessageModel extends Message {
   final int colorId;
   final int deletionSeconds;
   final DateTime willBeDeletedAt;
-  List<Message> transfer;
   final MessageStatus messageStatus;
   final MessageChat chat;
-  MessageHandleType messageHandleType;
   final int timeDeleted;
+  final PositionAddress location;
+  final List<FileMedia> files;
+  final List<MessageUser> contacts;
+  final ChatAttachmentType type;
+  List<Message> transfer;
+  MessageHandleType messageHandleType;
 
   MessageModel(
       {this.id,
@@ -35,9 +43,13 @@ class MessageModel extends Message {
       this.willBeDeletedAt,
       this.messageStatus = MessageStatus.sent,
       this.toUser,
+      this.files,
       this.chat,
       this.messageHandleType = MessageHandleType.newMessage,
-      this.timeDeleted})
+      this.timeDeleted,
+      this.location,
+      this.type,
+      this.contacts})
       : super(
             id: id,
             isRead: isRead,
@@ -53,7 +65,11 @@ class MessageModel extends Message {
             toUser: toUser,
             chat: chat,
             messageHandleType: messageHandleType,
-            timeDeleted: timeDeleted);
+            timeDeleted: timeDeleted,
+            location: location,
+            files: files,
+            contacts: contacts,
+            type: type);
 
   factory MessageModel.fromJson(Map json) {
     return MessageModel(
@@ -84,7 +100,25 @@ class MessageModel extends Message {
         chat: json['chat'] == null
             ? null
             : MessageChatModel.fromJson(json['chat']),
-        timeDeleted: json['time_deleted']);
+        timeDeleted: json['time_deleted'],
+        location: json['map'] != null
+            ? PositionAddress(
+                position: LatLng(json['map']['latitude'].toDouble(),
+                    json['map']['longitude'].toDouble()),
+                description: json['map']['address'])
+            : null,
+        files: json['file'] != null
+            ? (json['file'] as List)
+                .map((v) => FileMediaModel.fromJson(v))
+                .toList()
+            : [],
+        contacts: ((json['contact'] ?? []) as List)
+            .map((e) => MessageUserModel.fromJson(e))
+            .toList(),
+        type: json['type'] != null
+            ? ChatAttachmentType.values.firstWhere((e) => e.key == json['type'],
+                orElse: () => ChatAttachmentType.none)
+            : ChatAttachmentType.none);
   }
 
   Map toJson() {
@@ -96,7 +130,16 @@ class MessageModel extends Message {
       'is_read': isRead ? 1 : 0,
       'created_at': dateTime.toIso8601String(),
       'action': chatActions?.key,
-      'to_contact': toUser?.toJson()
+      'to_contact': toUser?.toJson(),
+      'map': location != null
+          ? {
+              'latitude': location.position.latitude,
+              'longitude': location.position.longitude,
+              'address': location.description
+            }
+          : null,
+      'contact': contacts.map((e) => e.toJson()).toList(),
+      'type': type.key
     };
   }
 

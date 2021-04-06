@@ -5,7 +5,7 @@ abstract class ChatState extends Equatable {
   final List<Message> messages;
   final bool hasReachedMax;
   final bool hasReachBottomMax;
-  final String wallpaperPath;
+  final File wallpaperFile;
   final int unreadCount;
   final bool showBottomPin;
   final bool isSecretModeOn;
@@ -16,7 +16,7 @@ abstract class ChatState extends Equatable {
     @required this.hasReachedMax,
     this.chatEntity,
     this.hasReachBottomMax = true,
-    this.wallpaperPath,
+    this.wallpaperFile,
     this.unreadCount,
     this.showBottomPin,
     this.topMessage,
@@ -25,20 +25,10 @@ abstract class ChatState extends Equatable {
 
   @override
   List<Object> get props => [
-    messages, hasReachedMax, wallpaperPath, hasReachBottomMax,
+    messages, hasReachedMax, wallpaperFile, hasReachBottomMax,
     unreadCount, showBottomPin, showBottomPin, topMessage,
     isSecretModeOn, chatEntity
   ];
-
-  ChatState copyWith ({
-    List<Message> messages,
-    bool hasReachedMax,
-    bool hasReachBottomMax,
-    String wallpaperPath,
-    int unreadCount,
-    bool showBottomPin,
-    ChatEntity chatEntity
-  });
 }
 
 class ChatInitial extends ChatState {
@@ -46,7 +36,7 @@ class ChatInitial extends ChatState {
   final bool hasReachBottomMax;
   final List<Message> messages;
   final bool hasReachedMax;
-  final String wallpaperPath;
+  final File wallpaperFile;
   final int focusMessageID;
   final int unreadCount;
   final bool showBottomPin;
@@ -57,7 +47,7 @@ class ChatInitial extends ChatState {
     @required this.messages,
     @required this.hasReachedMax,
     this.chatEntity,
-    this.wallpaperPath,
+    this.wallpaperFile,
     this.hasReachBottomMax = true,
     this.focusMessageID,
     this.unreadCount,
@@ -67,7 +57,7 @@ class ChatInitial extends ChatState {
   }) : super(
     messages: messages, 
     hasReachedMax: hasReachedMax,
-    wallpaperPath: wallpaperPath,
+    wallpaperFile: wallpaperFile,
     hasReachBottomMax: hasReachBottomMax,
     unreadCount: unreadCount,
     topMessage: topMessage,
@@ -76,33 +66,10 @@ class ChatInitial extends ChatState {
   );
 
   @override
-  ChatInitial copyWith ({
-    bool hasReachBottomMax,
-    List<Message> messages,
-    bool hasReachedMax,
-    String wallpaperPath,
-    int focusMessageID,
-    int unreadCount,
-    bool showBottomPin,
-    ChatEntity chatEntity
-  }) {
-    return ChatInitial(
-      hasReachBottomMax: hasReachBottomMax ?? this.hasReachBottomMax,
-      messages: messages ?? this.messages,
-      hasReachedMax: hasReachedMax ?? this.hasReachedMax,
-      wallpaperPath: wallpaperPath ?? this.wallpaperPath,
-      focusMessageID: focusMessageID ?? this.focusMessageID,
-      unreadCount: unreadCount ?? this.unreadCount,
-      showBottomPin: showBottomPin ?? this.showBottomPin,
-      chatEntity: chatEntity ?? this.chatEntity
-    );
-  }
-
-  @override
   List<Object> get props => [
     messages, 
     hasReachedMax, 
-    wallpaperPath, 
+    wallpaperFile, 
     hasReachBottomMax, 
     focusMessageID,
     unreadCount,
@@ -121,7 +88,7 @@ class ChatLoading extends ChatState {
   final bool hasReachedMax;
   final bool hasReachBottomMax;
   final Message topMessage;
-  final String wallpaperPath;
+  final File wallpaperFile;
   final RequestDirection direction;
   final int unreadCount;
   final bool showBottomPin;
@@ -132,7 +99,7 @@ class ChatLoading extends ChatState {
     @required this.messages,
     @required this.hasReachedMax,
     this.topMessage,
-    this.wallpaperPath,
+    this.wallpaperFile,
     this.hasReachBottomMax = true ,
     this.direction,
     this.unreadCount,
@@ -142,44 +109,20 @@ class ChatLoading extends ChatState {
   }) : super(
     messages: messages, 
     hasReachedMax: hasReachedMax,
-    wallpaperPath: wallpaperPath,
+    wallpaperFile: wallpaperFile,
     hasReachBottomMax: hasReachBottomMax,
     unreadCount: unreadCount,
     topMessage: topMessage,
     isSecretModeOn: isSecretModeOn,
     chatEntity: chatEntity
   );
-
-  @override 
-  ChatLoading copyWith ({
-    bool hasReachBottomMax,
-    List<Message> messages,
-    bool hasReachedMax,
-    String wallpaperPath,
-    int focusMessageID,
-    int unreadCount,
-    bool showBottomPin,
-    bool isPagination,
-    ChatEntity chatEntity
-  }) {
-    return ChatLoading(
-      hasReachBottomMax: hasReachBottomMax ?? this.hasReachBottomMax,
-      messages: messages ?? this.messages,
-      hasReachedMax: hasReachedMax ?? this.hasReachedMax,
-      wallpaperPath: wallpaperPath ?? this.wallpaperPath,
-      unreadCount: unreadCount ?? this.unreadCount,
-      showBottomPin: showBottomPin ?? this.showBottomPin,
-      isPagination: isPagination ?? this.isPagination,
-      chatEntity: chatEntity ?? this.chatEntity
-    );
-  }
  
   @override
   List<Object> get props => [
     isPagination,
     hasReachedMax,
     messages,
-    wallpaperPath,
+    wallpaperFile,
     hasReachBottomMax,
     direction,
     unreadCount,
@@ -197,7 +140,7 @@ class ChatLoadingSilently extends ChatState {
   final ChatEntity chatEntity;
   final List<Message> messages;
   final bool hasReachedMax;
-  final String wallpaperPath;
+  final File wallpaperFile;
   final bool hasReachBottomMax;
   final int unreadCount;
   final bool showBottomPin;
@@ -207,7 +150,7 @@ class ChatLoadingSilently extends ChatState {
   ChatLoadingSilently({
     @required this.messages,
     @required this.hasReachedMax,
-    @required this.wallpaperPath,
+    @required this.wallpaperFile,
     this.hasReachBottomMax = true,
     this.unreadCount,
     this.showBottomPin,
@@ -219,41 +162,18 @@ class ChatLoadingSilently extends ChatState {
     hasReachBottomMax: hasReachBottomMax,
     hasReachedMax: hasReachedMax,
     unreadCount: unreadCount,
-    wallpaperPath: wallpaperPath,
+    wallpaperFile: wallpaperFile,
     topMessage: topMessage,
     isSecretModeOn: isSecretModeOn,
     chatEntity: chatEntity
   );
-
-  @override 
-  ChatLoadingSilently copyWith ({
-    bool hasReachBottomMax,
-    List<Message> messages,
-    bool hasReachedMax,
-    String wallpaperPath,
-    int focusMessageID,
-    int unreadCount,
-    bool showBottomPin,
-    bool isPagination,
-    ChatEntity chatEntity
-  }) {
-    return ChatLoadingSilently(
-      hasReachBottomMax: hasReachBottomMax ?? this.hasReachBottomMax,
-      messages: messages ?? this.messages,
-      hasReachedMax: hasReachedMax ?? this.hasReachedMax,
-      wallpaperPath: wallpaperPath ?? this.wallpaperPath,
-      unreadCount: unreadCount ?? this.unreadCount,
-      showBottomPin: showBottomPin ?? this.showBottomPin,
-      chatEntity: chatEntity ?? this.chatEntity
-    );
-  }
 
   @override
   List<Object> get props => [
     messages, 
     hasReachedMax,
     topMessage,
-    wallpaperPath,
+    wallpaperFile,
     hasReachBottomMax,
     unreadCount,
     showBottomPin,
@@ -270,7 +190,7 @@ class ChatError extends ChatState {
   final List<Message> messages;
   final String message;
   final bool hasReachedMax;
-  final String wallpaperPath;
+  final File wallpaperFile;
   final int unreadCount;
   final bool showBottomPin;
   final Message topMessage;
@@ -281,7 +201,7 @@ class ChatError extends ChatState {
     @required this.message,
     @required this.hasReachedMax,
     this.topMessage,
-    this.wallpaperPath,
+    this.wallpaperFile,
     this.hasReachBottomMax = true,
     this.unreadCount,
     this.showBottomPin,
@@ -290,7 +210,7 @@ class ChatError extends ChatState {
   }) : super(
     messages: messages, 
     hasReachedMax: hasReachedMax,
-    wallpaperPath: wallpaperPath,
+    wallpaperFile: wallpaperFile,
     hasReachBottomMax: hasReachBottomMax,
     unreadCount: unreadCount,
     topMessage: topMessage,
@@ -298,37 +218,12 @@ class ChatError extends ChatState {
     chatEntity: chatEntity
   );
 
-  @override 
-  ChatError copyWith ({
-    bool hasReachBottomMax,
-    List<Message> messages,
-    bool hasReachedMax,
-    String wallpaperPath,
-    int focusMessageID,
-    int unreadCount,
-    bool showBottomPin,
-    bool isPagination,
-    String message,
-    ChatEntity chatEntity
-  }) {
-    return ChatError(
-      hasReachBottomMax: hasReachBottomMax ?? this.hasReachBottomMax,
-      messages: messages ?? this.messages,
-      hasReachedMax: hasReachedMax ?? this.hasReachedMax,
-      wallpaperPath: wallpaperPath ?? this.wallpaperPath,
-      unreadCount: unreadCount ?? this.unreadCount,
-      showBottomPin: showBottomPin ?? this.showBottomPin,
-      message: message ?? this.message,
-      chatEntity: chatEntity ?? this.chatEntity
-    );
-  }
-
   @override
   List<Object> get props => [
     messages, 
     message, 
     hasReachedMax,
-    wallpaperPath,
+    wallpaperFile,
     hasReachBottomMax,
     unreadCount,
     showBottomPin,

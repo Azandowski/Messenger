@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
-import 'package:messenger_mobile/core/utils/snackbar_util.dart';
-
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../core/config/auth_config.dart';
 import '../../../../core/services/network/Endpoints.dart';
 import '../../../../core/services/network/network_info.dart';
+import '../../../../core/utils/snackbar_util.dart';
 import '../../../../core/widgets/independent/buttons/gradient_main_button.dart';
 import '../../../../core/widgets/independent/pickers/photo_picker.dart';
 import '../../../../core/widgets/independent/small_widgets/photo_picker_view.dart';
@@ -49,7 +49,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     return Scaffold(
         appBar: AppBar(
             title: Text(
-              "Редактировать",
+              "edit".tr(),
               style: TextStyle(color: Colors.black),
             ),
             backgroundColor: Color.fromRGBO(250, 249, 255, 1)),
@@ -90,7 +90,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                               child: CustomTextField(
                                 customPadding:
                                     const EdgeInsets.only(left: 16, right: 16),
-                                labelText: "Фамилия",
+                                labelText: "surname".tr(),
                                 textCtr: cubit.nameTextController,
                               ),
                             ),
@@ -99,7 +99,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                               child: CustomTextField(
                                 customPadding:
                                     const EdgeInsets.only(left: 16, right: 16),
-                                labelText: "Имя",
+                                labelText: "name".tr(),
                                 textCtr: cubit.surnameTextController,
                               ),
                             ),
@@ -108,8 +108,20 @@ class _EditProfilePageState extends State<EditProfilePage> {
                               child: CustomTextField(
                                 customPadding:
                                     const EdgeInsets.only(left: 16, right: 16),
-                                labelText: "Отчество",
+                                labelText: "patronym".tr(),
                                 textCtr: cubit.patronymTextController,
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 12,
+                            ),
+                            IgnorePointer(
+                              ignoring: state is EditProfileLoading,
+                              child: CustomTextField(
+                                customPadding:
+                                    const EdgeInsets.only(left: 16, right: 16),
+                                labelText: "status".tr(),
+                                textCtr: cubit.statusTextController,
                               ),
                             ),
                             const SizedBox(
@@ -117,7 +129,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                             ),
                             ActionButton(
                               isLoading: state is EditProfileLoading,
-                              text: 'Сохранить',
+                              text: 'save'.tr(),
                               onTap: () {
                                 if (!(state is EditProfileLoading)) {
                                   cubit.updateProfile(EditProfileUpdateUser(
@@ -125,7 +137,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                     image: cubit.imageFile,
                                     name: cubit.nameTextController.text,
                                     surname: cubit.surnameTextController.text,
-                                    patronym: cubit.patronymTextController.text));
+                                    patronym: cubit.patronymTextController.text,
+                                    status: cubit.statusTextController.text
+                                  ));
                                 }
                               },
                             )

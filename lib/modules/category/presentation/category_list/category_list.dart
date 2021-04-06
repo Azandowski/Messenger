@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:messenger_mobile/core/utils/snackbar_util.dart';
+import '../../../../core/utils/snackbar_util.dart';
 import '../../../../app/application.dart';
-
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../app/appTheme.dart';
 import '../../../../core/blocs/category/bloc/category_bloc.dart';
 import '../../../../core/widgets/independent/buttons/bottom_action_button.dart';
@@ -46,7 +46,7 @@ class _CategoryListState extends State<CategoryList> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          widget.isMoveChat ? 'Переместить чат' : 'Категории чатов'
+          widget.isMoveChat ? 'move_chat'.tr() : 'chat_categories'.tr()
         ),
         actions: [
           IconButton(
@@ -78,8 +78,8 @@ class _CategoryListState extends State<CategoryList> {
                     padding: EdgeInsets.symmetric(horizontal: 16, vertical: 15),
                     color: Colors.white,
                     child: Text(
-                      widget.isMoveChat ? 'Выберите категорию для переноса' :
-                        'Вы можете создавать свои категории с нужными чатами, для быстрого переключения между ними.',
+                      widget.isMoveChat ? 'select_category_to_move'.tr() :
+                        "category_screen_hint".tr(),
                       style: AppFontStyles.placeholderStyle,
                       textAlign: TextAlign.center,
                     ),
@@ -90,7 +90,7 @@ class _CategoryListState extends State<CategoryList> {
               ),
               if (_didReorderItems)
                 BottomActionButtonContainer(
-                  title: 'Сохранить',
+                  title: 'save'.tr(),
                   onTap: () { 
                     var updates = this.getCategoriesDifferences(
                       oldIDS: state.categoryList.map((e) => e.id).toList(), 
@@ -131,26 +131,29 @@ class _CategoryListState extends State<CategoryList> {
         cellType: widget.isMoveChat ? CategoryCellType.empty : CategoryCellType.withOptions,
         onSelectedOption: (CategoryCellActionType action, CategoryEntity entity) {
           if (action == CategoryCellActionType.delete) {
-           showDialog(context: context,builder: (_){
-             return DialogsView( 
-                title: 'Убрать чат из категории?',
-                description: 'Чаты внутри категории не будут удалены.',
+            showDialog(context: context,builder: (_){
+              return DialogsView( 
+                title: 'remove_chat_from_category'.tr(),
+                description: 'remove_chat_from_category_hint'.tr(),
                 actionButton: [
                   DialogActionButton(
-                  title: 'Отмена', 
-                  buttonStyle: DialogActionButtonStyle.cancel,
-                  onPress: () {
-                    Navigator.pop(context);
-                  }),
-                 DialogActionButton(
-                  title: 'Удалить', 
-                  buttonStyle: DialogActionButtonStyle.dangerous,
-                  onPress: () {
-                    Navigator.pop(context);
-                    BlocProvider.of<CategoryBloc>(context).add(CategoryRemoving(categoryId: entity.id));                    
-                  }),
-               ],);
-           }); 
+                    title: 'cancel'.tr(), 
+                    buttonStyle: DialogActionButtonStyle.cancel,
+                    onPress: () {
+                      Navigator.pop(context);
+                    }
+                  ),
+                  DialogActionButton(
+                    title: 'delete'.tr(), 
+                    buttonStyle: DialogActionButtonStyle.dangerous,
+                    onPress: () {
+                      Navigator.pop(context);
+                      BlocProvider.of<CategoryBloc>(context).add(CategoryRemoving(categoryId: entity.id));                    
+                    }
+                  ),
+               ]
+              );
+            }); 
           } else {
             _navigator.push(CreateCategoryScreen.route(
               mode: CreateCategoryScreenMode.edit,

@@ -4,16 +4,18 @@ import 'package:shimmer/shimmer.dart';
 class CellShimmerItem extends StatelessWidget {
   
   final double circleSize;
+  final bool hasPadding;
 
   const CellShimmerItem({
     this.circleSize = 60,
+    this.hasPadding = true,
     Key key, 
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: hasPadding ? const EdgeInsets.all(16) : null,
       child: Shimmer.fromColors(
         child: Row(
           children: [

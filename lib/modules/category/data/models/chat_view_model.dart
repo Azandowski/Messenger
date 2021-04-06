@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:messenger_mobile/modules/chats/domain/entities/chat_attachment_type.dart';
 
 import '../../../../app/appTheme.dart';
 import '../../../../core/services/network/config.dart';
@@ -29,6 +30,39 @@ class ChatViewModel {
     return entity.chatCategory != null || entity.lastMessage != null;
   }
 
+  bool get hasAttachment {
+    return entity.lastMessage?.type != null 
+      && entity.lastMessage.type != ChatAttachmentType.none;
+  }
+
+  bool get isSecretModeOn {
+    bool lastMessageIsSecret = entity.lastMessage?.timeDeleted != null;
+    bool secretModeSet = entity.lastMessage?.chatActions == ChatActions.setSecret;
+    return lastMessageIsSecret || secretModeSet;
+  }
+
+  String get avatarBottomIconPath {
+    if (isSecretModeOn) {
+      return 'assets/icons/secret.png';
+    }
+
+    return null;
+  }
+
+  String get attachmentPath {
+    if (hasAttachment) {
+      return entity.lastMessage?.type.iconPath;
+    } else if (isSecretModeOn) {
+      return 'assets/icons/hot.png';
+    }
+
+    return null;
+  }
+
+  String get chatDesription {
+    return entity?.description ?? '';
+  }
+
   String get description {
     if (isInLive) {
       return 'Сейчас в прямом эфире'.toUpperCase();
@@ -40,6 +74,15 @@ class ChatViewModel {
           userViewModel.name
         );
       }
+
+      if (entity.lastMessage.timeDeleted != null) {
+        return 'Секретное сообщение';
+      } 
+
+      if (hasAttachment) {
+        return entity.lastMessage.type.title;
+      }
+
       return entity.lastMessage.text ?? '';
     } else if (entity?.chatCategory != null){
       return entity.chatCategory.name ?? '';
@@ -56,8 +99,20 @@ class ChatViewModel {
     } else if (entity.lastMessage?.chatActions != null) {
       return AppFontStyles.placeholderStyle;
     } else {
+      if (entity.lastMessage?.timeDeleted != null) {
+        return AppFontStyles.mediumStyle.copyWith(color: Colors.red);
+      }
+      
       return AppFontStyles.mediumStyle;
     }
+  }
+
+  TextStyle get titleStyle {
+    if (isSecretModeOn) {
+      return AppFontStyles.headerIndicatorMediumStyle;
+    } 
+
+    return AppFontStyles.headerMediumStyle;
   }
 
   bool get isInLive {
@@ -133,3 +188,4 @@ class ChatViewModel {
 enum ChatBottomPin { unread, read, badge, none }
 
 enum ChatSettingType { muted, hideImages, pinned }
+

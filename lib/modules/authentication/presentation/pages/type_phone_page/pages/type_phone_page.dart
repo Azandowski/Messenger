@@ -1,9 +1,9 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:messenger_mobile/core/utils/snackbar_util.dart';
 
 import '../../../../../../app/appTheme.dart';
+import '../../../../../../core/utils/snackbar_util.dart';
 import '../../../../../../core/widgets/independent/buttons/gradient_main_button.dart';
 import '../../../../../../core/widgets/independent/textfields/outlineTextField.dart';
 import '../../../bloc/authentication_bloc.dart';
@@ -54,6 +54,7 @@ class _TypePhonePageState extends State<TypePhonePage> {
               Text(
                 'enterPhone'.tr(),
                 style: AppFontStyles.headingBlackStyle,
+                textAlign: TextAlign.center,
               ),
               SizedBox(
                 height: height * 0.05,

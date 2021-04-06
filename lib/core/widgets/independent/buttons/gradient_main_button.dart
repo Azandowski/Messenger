@@ -79,7 +79,10 @@ class ActionButton extends StatelessWidget {
               ) : Center(
                 child: Text(text,
                   textAlign: TextAlign.center,
-                  style: AppFontStyles.actionButtonStyle),
+                  style: AppFontStyles.actionButtonStyle.copyWith(
+                    color: textColor ?? Colors.white
+                  )
+                ),
               ),
           ),
         ),

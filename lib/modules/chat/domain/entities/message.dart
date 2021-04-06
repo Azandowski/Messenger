@@ -1,6 +1,12 @@
+import 'dart:async';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:latlong/latlong.dart';
+import 'package:messenger_mobile/modules/chat/domain/entities/file_media.dart';
+import 'package:messenger_mobile/modules/chats/domain/entities/chat_attachment_type.dart';
+import 'package:messenger_mobile/modules/maps/presentation/pages/map_screen.dart';
 
 import 'chat_actions.dart';
 
@@ -16,6 +22,7 @@ enum MessageHandleType {
   userReadSecretMessage
 }
 
+// ignore: must_be_immutable
 class Message extends Equatable {
   final int id;
   final bool isRead;
@@ -33,6 +40,11 @@ class Message extends Equatable {
   final MessageChat chat;
   final MessageHandleType messageHandleType;
   final int timeDeleted;
+  final PositionAddress location;
+  final List<FileMedia> files;
+  final List<MessageUser> contacts;
+  final StreamController<double> uploadController;
+  final ChatAttachmentType type;
 
   Message(
       {this.text,
@@ -50,7 +62,12 @@ class Message extends Equatable {
       this.toUser,
       this.chat,
       this.messageHandleType = MessageHandleType.newMessage,
-      this.timeDeleted});
+      this.timeDeleted,
+      this.location,
+      this.files,
+      this.contacts,
+      this.uploadController,
+      this.type});
 
   @override
   List<Object> get props => [
@@ -69,7 +86,11 @@ class Message extends Equatable {
         toUser,
         chat,
         messageHandleType,
-        timeDeleted
+        timeDeleted,
+        location,
+        files,
+        contacts,
+        type
       ];
 
   Message copyWith(
@@ -86,7 +107,11 @@ class Message extends Equatable {
       int deletionSeconds,
       DateTime willBeDeletedAt,
       MessageUser toUser,
-      MessageChat chat}) {
+      MessageChat chat,
+      PositionAddress location,
+      List<FileMedia> files,
+      List<MessageUser> contacts,
+      ChatAttachmentType type}) {
     return Message(
         id: id ?? this.id,
         isRead: isRead ?? this.isRead,
@@ -99,7 +124,12 @@ class Message extends Equatable {
         identificator: identificator ?? this.identificator,
         transfer: transfer ?? this.transfer,
         toUser: toUser ?? this.toUser,
-        chat: chat ?? this.chat);
+        chat: chat ?? this.chat,
+        timeDeleted: timeDeleted ?? this.timeDeleted,
+        location: location ?? this.location,
+        files: files ?? this.files,
+        contacts: contacts ?? this.contacts,
+        type: type ?? this.type);
   }
 
   Map toJson() {
@@ -112,7 +142,16 @@ class Message extends Equatable {
       'created_at': dateTime.toIso8601String(),
       'action': chatActions?.key,
       'to_contact': toUser?.toJson(),
-      'chat': chat?.toJson()
+      'chat': chat?.toJson(),
+      'map': location != null
+          ? {
+              'latitude': location.position.latitude,
+              'longitude': location.position.longitude,
+              'address': location.description
+            }
+          : null,
+      'contact': contacts.map((e) => e.toJson()).toList(),
+      'type': type.key
     };
   }
 }

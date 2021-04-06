@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../../core/widgets/independent/buttons/icon_text_button.dart';
 import '../../../../../core/widgets/independent/small_widgets/photo_picker_view.dart';
 import '../../../../../core/widgets/independent/textfields/customTextField.dart';
@@ -33,12 +33,12 @@ class CreateCategoryHeader extends StatelessWidget {
         ),
         CustomTextField(
           textCtr: nameController,
-          labelText: 'Название категории',
+          labelText: 'category_name'.tr(),
         ),
         IconTextButton(
           imageAssetPath: 'assets/images/chat_gradient_icon.png',
           onPress: onAddChats,
-          title: 'Добавить чаты',
+          title: 'add_chats'.tr(),
         )
       ],
     );

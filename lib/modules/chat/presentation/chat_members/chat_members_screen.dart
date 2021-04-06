@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen.dart';
-import 'package:messenger_mobile/modules/creation_module/presentation/bloc/creation_module_cubit/creation_module_cubit.dart';
-import 'package:messenger_mobile/modules/creation_module/presentation/bloc/open_chat_cubit/open_chat_cubit.dart';
-import 'package:messenger_mobile/modules/creation_module/presentation/bloc/open_chat_cubit/open_chat_listener.dart';
-import 'package:messenger_mobile/modules/groupChat/domain/usecases/create_chat_group.dart';
-
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../locator.dart';
 import '../../../creation_module/presentation/bloc/contact_bloc/contact_bloc.dart';
+import '../../../creation_module/presentation/bloc/open_chat_cubit/open_chat_cubit.dart';
+import '../../../creation_module/presentation/bloc/open_chat_cubit/open_chat_listener.dart';
 import '../../../creation_module/presentation/widgets/contcats_list.dart';
+import '../../../groupChat/domain/usecases/create_chat_group.dart';
 import '../../domain/usecases/get_chat_details.dart';
 import '../../domain/usecases/get_chat_members.dart';
 
@@ -31,7 +29,7 @@ class ChatMembersScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Участники'),
+        title: Text('members'.tr()),
       ),
       body: BlocProvider(
         create: (context) => ContactBloc(

@@ -1,24 +1,35 @@
 import 'package:flutter_search_bar/flutter_search_bar.dart';
-import 'package:messenger_mobile/core/utils/paginated_scroll_controller.dart';
-import 'package:messenger_mobile/core/utils/search_engine.dart';
-import 'package:messenger_mobile/core/utils/snackbar_util.dart';
-import 'package:messenger_mobile/core/widgets/independent/small_widgets/cell_skeleton_item.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen_import.dart';
-import 'package:messenger_mobile/modules/creation_module/data/datasources/creation_module_datasource.dart';
-import 'package:messenger_mobile/modules/creation_module/data/repositories/creation_module_repository.dart';
-import 'package:messenger_mobile/modules/creation_module/domain/entities/contact.dart';
-import 'package:messenger_mobile/modules/creation_module/domain/usecases/search_contacts.dart';
-import 'package:messenger_mobile/modules/creation_module/presentation/bloc/search_contact_cubit/search_contact_cubit.dart';
-import 'package:messenger_mobile/modules/creation_module/presentation/widgets/contact_cell.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:messenger_mobile/modules/creation_module/presentation/bloc/open_chat_cubit/open_chat_cubit.dart';
+import 'package:messenger_mobile/modules/creation_module/presentation/bloc/open_chat_cubit/open_chat_listener.dart';
+import 'package:messenger_mobile/modules/groupChat/domain/usecases/create_chat_group.dart';
+import '../../../../../core/utils/paginated_scroll_controller.dart';
+import '../../../../../core/utils/search_engine.dart';
+import '../../../../../core/utils/snackbar_util.dart';
+import '../../../../../core/widgets/independent/small_widgets/cell_skeleton_item.dart';
+import '../../../../chat/presentation/chats_screen/pages/chat_screen_import.dart';
+import '../../../data/datasources/creation_module_datasource.dart';
+import '../../../data/repositories/creation_module_repository.dart';
+import '../../../domain/entities/contact.dart';
+import '../../../domain/usecases/search_contacts.dart';
+import '../../bloc/search_contact_cubit/search_contact_cubit.dart';
+import '../../widgets/contact_cell.dart';
+
+abstract class SearchContactDelegate {
+  void didSelectContact(ContactEntity contact);
+}
 
 class SearchContactPage extends StatefulWidget {
   final List<ContactEntity> initialContacts;
+  final SearchContactDelegate delegate;
 
-  SearchContactPage({@required this.initialContacts});
+  SearchContactPage({@required this.initialContacts, this.delegate});
 
-  static Route route({List<ContactEntity> initialContacts}) {
+  static Route route(
+      {List<ContactEntity> initialContacts, SearchContactDelegate delegate}) {
     return MaterialPageRoute<void>(
-        builder: (_) => SearchContactPage(initialContacts: initialContacts));
+        builder: (_) => SearchContactPage(
+            initialContacts: initialContacts, delegate: delegate));
   }
 
   @override
@@ -90,22 +101,42 @@ class _SearchContactPageState extends State<SearchContactPage>
               }
             },
             builder: (context, SearchContactState state) {
-              return ListView.separated(
-                  controller: scrollController,
-                  itemBuilder: (context, int index) {
-                    if (index >= state.contacts.data.length) {
-                      return CellShimmerItem(circleSize: 35);
-                    }
-
-                    return ContactCell(
-                        contactItem: state.contacts.data[index],
-                        onTrilinIconTapped: () async {
-                          print("HERE START CHAT");
-                        });
+              return BlocProvider<OpenChatCubit>(
+                create: (context) => OpenChatCubit(
+                    createChatGruopUseCase: sl<CreateChatGruopUseCase>()),
+                child: BlocConsumer<OpenChatCubit, OpenChatState>(
+                  listener: (context, openChatState) {
+                    OpenChatListener()
+                        .handleStateUpdate(context, openChatState);
                   },
-                  separatorBuilder: (_, int index) => Divider(),
-                  itemCount: state.contacts.data.length +
-                      (state is SearchContactsLoading ? 3 : 0));
+                  builder: (context, openChatState) {
+                    return ListView.separated(
+                        controller: scrollController,
+                        itemBuilder: (context, int index) {
+                          if (index >= state.contacts.data.length) {
+                            return CellShimmerItem(circleSize: 35);
+                          }
+
+                          return ContactCell(
+                            contactItem: state.contacts.data[index],
+                            onTrilinIconTapped: () async {
+                              context.read<OpenChatCubit>().createChatWithUser(
+                                  state.contacts.data[index].id);
+                            },
+                            onTap: widget.delegate != null
+                                ? () {
+                                    widget.delegate.didSelectContact(
+                                        state.contacts.data[index]);
+                                  }
+                                : null,
+                          );
+                        },
+                        separatorBuilder: (_, int index) => Divider(),
+                        itemCount: state.contacts.data.length +
+                            (state is SearchContactsLoading ? 3 : 0));
+                  },
+                ),
+              );
             },
           )),
     );
@@ -115,7 +146,7 @@ class _SearchContactPageState extends State<SearchContactPage>
 
   AppBar buildAppBar(BuildContext context) {
     return new AppBar(
-        title: new Text('Пользователи'),
+        title: new Text('users'.tr()),
         actions: [searchBar.getSearchAction(context)]);
   }
 

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:multi_image_picker/multi_image_picker.dart';
 
 import '../../../../core/error/failures.dart';
 import '../../domain/repositories/media_repository.dart';
@@ -10,7 +11,7 @@ import '../datasources/local_media_datasource.dart';
 
 class MediaRepositoryImpl implements MediaRepository {
   final MediaLocalDataSource mediaLocalDataSource;
-
+  
   MediaRepositoryImpl({@required this.mediaLocalDataSource});
 
   @override
@@ -20,6 +21,36 @@ class MediaRepositoryImpl implements MediaRepository {
       return Right(image);
     } on StorageFailure {
       return Left(StorageFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<Asset>>> getImagesFromGallery() async {
+    try {
+      var images = await mediaLocalDataSource.getImagesFromGallery();
+      return Right(images);
+    } on StorageFailure {
+      return Left(StorageFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<File>>> getAudio() async{
+    try {
+      var audios = await mediaLocalDataSource.getAudio();
+      return Right(audios);
+    } on StorageFailure catch (e) {
+      return Left(e);
+    } 
+  }
+
+  @override
+  Future<Either<Failure, File>> getVideo() async {
+    try {
+      var video = await mediaLocalDataSource.getVideo();
+      return Right(video);
+    } on StorageFailure catch(e) {
+      return Left(e);
     }
   }
 }

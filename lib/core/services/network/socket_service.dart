@@ -33,12 +33,6 @@ class SocketService {
     });
 
     echo.connect();
-
-    echo.join('online.2').here((d) {
-      print(d);
-    }).joining((d) {
-      print(d);
-    });
   }
 }
 

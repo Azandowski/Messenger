@@ -30,8 +30,8 @@ void main() {
 
     mockGetCurrentUser = MockGetCurrentUser();
     mockAuthConfig = MockAuthConfig();
-    cubit =
-        ProfileCubit(getUser: mockGetCurrentUser, authConfig: mockAuthConfig);
+    cubit = ProfileCubit(
+        getUser: mockGetCurrentUser); //, authConfig: mockAuthConfig);
   });
 
   test('initial state should be ProfileLoaded', () {

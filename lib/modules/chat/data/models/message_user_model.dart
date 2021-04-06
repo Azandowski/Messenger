@@ -24,12 +24,12 @@ class MessageUserModel extends MessageUser {
         id: json['id'],
         name: json['name'],
         surname: json['surname'],
-        phone: json['phone'],
         avatarURL: json['avatar'] != null
             ? (json['avatar'] as String).contains('://')
                 ? json['avatar']
                 : ConfigExtension.buildURLHead() + json['avatar']
-            : null);
+            : null,
+        phone: json['phone']);
   }
 
   Map toJson() {

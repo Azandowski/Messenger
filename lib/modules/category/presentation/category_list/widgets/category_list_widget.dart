@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../chats/domain/entities/category.dart';
 import 'category_cell.dart';
 
@@ -29,7 +29,11 @@ class CategoriesList extends StatelessWidget {
           color: Colors.white,
           padding: EdgeInsets.symmetric(vertical: 12),
           child: Text(
-            'Категории: ${items.length}',
+            'category_count'.tr(
+              namedArgs: {
+                'count': '${items.length}'
+              }
+            ),
             textAlign: TextAlign.center,
           )
         ),

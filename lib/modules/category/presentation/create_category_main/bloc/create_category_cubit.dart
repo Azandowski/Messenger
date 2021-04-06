@@ -5,8 +5,9 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:messenger_mobile/core/utils/list_helper.dart';
+
 import '../../../../../core/config/auth_config.dart';
+import '../../../../../core/utils/list_helper.dart';
 import '../../../../../locator.dart';
 import '../../../../chats/domain/entities/category.dart';
 import '../../../../chats/domain/usecase/get_category_chats.dart';
@@ -17,7 +18,7 @@ import '../../../domain/entities/create_category_screen_params.dart';
 import '../../../domain/usecases/create_category.dart';
 import '../../../domain/usecases/params.dart';
 import '../../../domain/usecases/transfer_chat.dart';
-import 'package:messenger_mobile/core/utils/list_helper.dart';
+
 part 'create_category_state.dart';
 
 class CreateCategoryCubit extends Cubit<CreateCategoryState> {

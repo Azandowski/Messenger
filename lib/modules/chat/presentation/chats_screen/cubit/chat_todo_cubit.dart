@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../../core/usecases/usecase.dart';
 import '../../../../../core/widgets/independent/dialogs/achievment_view.dart';
 import '../../../../category/domain/entities/chat_entity.dart';
@@ -58,12 +58,14 @@ class ChatTodoCubit extends Cubit<ChatTodoState> {
       selectedMessages: this.state.selectedMessages,
       isDelete: true,
     ));
+
     var ids = this.state.selectedMessages.map((e) => e.id.toString()).join(',');
     final result = await deleteMessageUseCase(DeleteMessageParams(
       ids: ids,
       chatID: chatID,
       forMe: forMe ? 1 : 0,
     ));
+
     result.fold((l) => emit(ChatToDoError(errorMessage: l.message)),
         (r) => emit(ChatToDoDisabled()));
   }
@@ -83,8 +85,8 @@ class ChatTodoCubit extends Cubit<ChatTodoState> {
       AchievementService().showAchievmentView(
           context: context,
           isError: false,
-          mainText: 'Успешно',
-          subTitle: 'Все сообщения пересланы');
+          mainText: 'success'.tr(),
+          subTitle: 'all_messages_replied'.tr());
     });
   }
 

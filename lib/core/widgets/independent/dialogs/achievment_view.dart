@@ -1,5 +1,5 @@
 import 'package:achievement_view/achievement_view.dart';
-
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../modules/chat/presentation/chats_screen/pages/chat_screen_import.dart';
 
 class AchievementService {
@@ -26,7 +26,7 @@ class AchievementService {
    }
    AchievementView(
     context,
-    title: mainText ?? 'Success',
+    title: mainText ?? 'success'.tr(),
     subTitle: subTitle ?? '',
     isCircle: true,
     icon: iconSign,

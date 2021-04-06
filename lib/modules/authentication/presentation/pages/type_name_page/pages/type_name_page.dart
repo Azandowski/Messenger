@@ -1,13 +1,13 @@
 import 'dart:io';
-
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
-import 'package:messenger_mobile/core/utils/snackbar_util.dart';
 
 import '../../../../../../app/appTheme.dart';
 import '../../../../../../core/services/network/Endpoints.dart';
+import '../../../../../../core/utils/snackbar_util.dart';
 import '../../../../../../core/widgets/independent/buttons/gradient_main_button.dart';
 import '../../../../../../core/widgets/independent/small_widgets/photo_picker_view.dart';
 import '../../../../../../core/widgets/independent/textfields/outlineTextField.dart';
@@ -74,7 +74,7 @@ class _TypeNamePageState extends State<TypeNamePage> {
       child: BlocConsumer<TypeNameCubit, TypeNameState>(
         listener: (context, state) {
           if (state is ErrorUploading) {
-            SnackUtil.showError(context: context, message: 'Ошибка');
+            SnackUtil.showError(context: context, message: 'error'.tr());
           }
         },
         builder: (context, state) {
@@ -83,13 +83,13 @@ class _TypeNamePageState extends State<TypeNamePage> {
             child: Column(
               children: [
                 Text(
-                  'Почти готово!',
+                  'almost_done'.tr(),
                   style: AppFontStyles.headingBlackStyle,
                 ),
                 SizedBox(
                   height: 24,
                 ),
-                Text('Добавьте фото и укажите свое имя',
+                Text('add_photo_and_name'.tr(),
                     style: AppFontStyles.placeholderMedium),
                 SizedBox(
                   height: 24,
@@ -113,7 +113,7 @@ class _TypeNamePageState extends State<TypeNamePage> {
                   height: height * 0.05,
                 ),
                 OutlineTextField(
-                    labelText: 'Ваше имя',
+                    labelText: 'your_name'.tr(),
                     focusNode: focusNode,
                     textEditingController: cubit.nameCtrl,
                     width: width,
@@ -123,7 +123,7 @@ class _TypeNamePageState extends State<TypeNamePage> {
                 ),
                 ActionButton(
                   isLoading: state is UpdatingUser,
-                  text: 'Продолжить',
+                  text: 'continue'.tr(),
                   onTap: () {
                     if (!(state is UpdatingUser)) {
                       cubit.updateProfile(_image);

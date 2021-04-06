@@ -23,6 +23,8 @@ abstract class AuthenticationRemoteDataSource {
   Future<TokenEntity> login(String number, String code);
   Future<User> getCurrentUser(String token);
   Future<bool> sendContacts(File contacts);
+  Future<bool> sendPlayerID(String playerID);
+  Future<bool> deletePlayerID(String playerID, token);
 }
 
 class AuthenticationRemoteDataSourceImpl
@@ -76,33 +78,72 @@ class AuthenticationRemoteDataSourceImpl
     var url = Endpoints.getCurrentUser.buildURL();
     var headers = Endpoints.getCurrentUser.getHeaders(token: token);
     final response = await client.post(url,
-        body: json.encode({
-          'application_id': APP_ID,
-        }),
-        headers: headers);
+      body: json.encode({
+        'application_id': APP_ID,
+      }),
+      headers: headers
+    );
 
     if (response.statusCode >= 200 && response.statusCode <= 299) {
       var jsonMap = json.decode(response.body);
       return UserModel.fromJson(jsonMap);
     } else {
-      throw ServerFailure(
-          message: ErrorHandler.getErrorMessage(response.body.toString()));
+      throw ServerFailure(message: ErrorHandler.getErrorMessage(response.body.toString()));
     }
   }
 
   @override
   Future<bool> sendContacts(File contacts) async {
     http.StreamedResponse response = await MultipartRequestHelper.postData(
-        token: sl<AuthConfig>().token,
-        request: request,
-        data: {},
-        files: contacts != null ? [contacts] : [],
-        keyName: 'contacts');
+      token: sl<AuthConfig>().token,
+      request: request,
+      data: {},
+      files: contacts != null ? [contacts] : [],
+      keyName: ['contacts']
+    );
 
+    final httpResponse = await http.Response.fromStream(response);
+    print(httpResponse);
     if (response.statusCode >= 200 && response.statusCode <= 299) {
       return true;
     } else {
       return false;
+    }
+  }
+
+  @override
+  Future<bool> sendPlayerID(String playerID) async{
+    var url = Endpoints.sendTokenOneSignal.buildURL();
+    var headers = Endpoints.sendTokenOneSignal.getHeaders();
+    final response = await client.post(url,
+      body: json.encode({
+        "application_id": APP_ID,
+        "player_id": playerID,
+      }),
+      headers: headers
+    );
+    if (response.statusCode >= 200 && response.statusCode <= 299) {
+      return true;
+    }else{
+      throw ServerFailure(message: 'Not able to send player id');
+    }
+  }
+
+  @override
+  Future<bool> deletePlayerID(String playerID, token) async {
+    var url = Endpoints.deleteTokenOneSignal.buildURL();
+    var headers = Endpoints.getCurrentUser.getHeaders(token: token);
+    final response = await client.post(url,
+      body: {
+        "application_id": APP_ID,
+        "player_id": playerID,
+      },
+      headers: headers
+    );
+    if (response.statusCode >= 200 && response.statusCode <= 299) {
+      return true;
+    }else{
+      throw ServerFailure(message: 'Not able to delete player id');
     }
   }
 }

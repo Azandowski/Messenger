@@ -1,5 +1,5 @@
-import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen_import.dart';
-import 'package:messenger_mobile/modules/social_media/domain/entities/social_media.dart';
+import '../../domain/entities/social_media.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 extension SocialMediaTypeUIExtension on SocialMediaType {
   String get assetImagePath {
@@ -20,30 +20,46 @@ extension SocialMediaTypeUIExtension on SocialMediaType {
   String get helperText {
     switch (this) {
       case SocialMediaType.youtube:
-        return 'Ссылка на YouTube';
+        return 'link_to'.tr(namedArgs: {
+          'service': 'YouTube'
+        });
       case SocialMediaType.facebook:
-        return 'Ссылка на Facebook';
+        return 'link_to'.tr(namedArgs: {
+          'service': 'Facebook'
+        });
       case SocialMediaType.instagram:
-        return 'Ссылка на Instagram';
+        return 'link_to'.tr(namedArgs: {
+          'service': 'Instagram'
+        });
       case SocialMediaType.website:
-        return 'Ссылка на Веб-сайт';
+        return 'link_to'.tr(namedArgs: {
+          'service': 'website'.tr()
+        });
       case SocialMediaType.whatsapp:
-        return 'Номер WhatsApp';
+        return 'whatsapp_number'.tr();
     }
   }
 
   String get errorText {
     switch (this) {
       case SocialMediaType.youtube:
-        return 'Нужна прямая сылка на YouTube';
+        return 'link_error'.tr(namedArgs: {
+          'service': 'YouTube'
+        });
       case SocialMediaType.facebook:
-        return 'Нужна прямая сылка на Facebook';
+        return 'link_error'.tr(namedArgs: {
+          'service': 'Facebook'
+        });
       case SocialMediaType.instagram:
-        return 'Нужна прямая сылка на Instagram';
+        return 'link_error'.tr(namedArgs: {
+          'service': 'Instagram'
+        });
       case SocialMediaType.website:
-        return 'Нужна прямая сылка на Веб-сайт';
+        return 'link_error'.tr(namedArgs: {
+          'service': 'website'.tr()
+        });
       case SocialMediaType.whatsapp:
-        return 'Нужен прямой номер от WhatsApp';
+        return 'whatsapp_number_error'.tr();
     }
   }
 }

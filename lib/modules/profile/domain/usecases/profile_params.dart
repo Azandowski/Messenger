@@ -21,6 +21,7 @@ class EditUserParams extends Equatable {
   final String surname;
   final String patronym;
   final String phoneNumber;
+  final String status;
 
   EditUserParams ({
     @required this.token, 
@@ -28,7 +29,8 @@ class EditUserParams extends Equatable {
     this.name,
     this.surname,
     this.patronym,
-    this.phoneNumber
+    this.phoneNumber,
+    this.status
   });
 
   Map<String, String> get jsonBody {
@@ -37,11 +39,12 @@ class EditUserParams extends Equatable {
       if (surname != null) ...{'surname': surname},
       if (patronym != null) ...{'patronym': patronym},
       if (phoneNumber != null) ...{'phone': phoneNumber},
+      if (status != null) ...{'status': status}
     };
   }
 
   @override
   List<Object> get props => [
-    token, image, name, phoneNumber, patronym, surname
+    token, image, name, phoneNumber, patronym, surname, status
   ];
 }

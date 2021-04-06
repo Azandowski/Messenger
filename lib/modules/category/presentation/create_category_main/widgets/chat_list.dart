@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
-
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../../app/appTheme.dart';
 import '../../../../../core/widgets/independent/images/ImageWithCorner.dart';
 import '../../../../../core/widgets/independent/placeholders/load_widget.dart';
@@ -162,9 +162,9 @@ extension ChatItemActionUIExtension on ChatCellActionType {
   String get title {
     switch (this) {
       case ChatCellActionType.delete:
-        return 'Удалить';
+        return 'delete'.tr();
       case ChatCellActionType.move:
-        return 'Переместить';
+        return 'move'.tr();
       default:
         return null;
     }

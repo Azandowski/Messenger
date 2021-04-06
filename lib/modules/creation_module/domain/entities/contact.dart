@@ -1,10 +1,10 @@
 import 'package:equatable/equatable.dart';
 
 class ContactEntity extends Equatable{
- final int id;
+  final int id;
   final String name;
   final String surname;
-   final String patronym;
+  final String patronym;
   final String avatar;
   final DateTime lastVisit;
 

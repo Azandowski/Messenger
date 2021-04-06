@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-
+import 'package:messenger_mobile/app/application.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chat_details/page/chat_detail_page.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chat_details/page/chat_detail_screen.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../app/appTheme.dart';
 import '../../../../core/utils/date_helper.dart';
 import '../../../../core/widgets/independent/images/ImageWithCorner.dart';
@@ -41,19 +44,29 @@ class ContactCell extends StatelessWidget {
     @required this.contactItem
   });
   
+  NavigatorState get _navigator => sl<Application>().navKey.currentState;
+
   @override 
   Widget build(BuildContext context) {
     return Container(
       color: isSelected ? AppColors.pinkBackgroundColor : Colors.transparent,
       child: ListTile(
-        onTap: onTap,
+        onTap: () {
+          if (onTap != null) {
+            onTap();
+          } else {
+            _navigator.push(ChatDetailPage.route(
+              contactItem.id, ProfileMode.user
+            ));
+          }
+        },
         leading: AvatarImage(
           isFromAsset: false,
           path: contactItem.avatar,
           width: 35, height: 35,
         ),
         title: Text(
-          contactItem.name ?? 'Anonymous',
+          contactItem.name ?? 'anonymous'.tr(),
           style: AppFontStyles.mediumStyle,
         ),
         subtitle: Text(

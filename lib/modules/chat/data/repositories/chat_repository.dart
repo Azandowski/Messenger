@@ -2,10 +2,9 @@ import 'dart:io';
 
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
-import 'package:messenger_mobile/modules/chat/data/models/chat_message_response.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chat_details/page/chat_detail_screen.dart';
-import 'package:messenger_mobile/modules/social_media/domain/entities/social_media.dart';
-
+import 'package:messenger_mobile/core/config/language.dart';
+import 'package:messenger_mobile/modules/chat/data/datasources/local_chat_datasource.dart';
+import 'package:messenger_mobile/modules/chat/data/models/translation_response.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/services/network/network_info.dart';
 import '../../../../core/services/network/paginatedResult.dart';
@@ -14,19 +13,24 @@ import '../../../../core/utils/pagination.dart';
 import '../../../category/data/models/chat_permission_model.dart';
 import '../../../category/domain/entities/chat_permissions.dart';
 import '../../../creation_module/domain/entities/contact.dart';
+import '../../../social_media/domain/entities/social_media.dart';
 import '../../domain/entities/chat_detailed.dart';
 import '../../domain/entities/message.dart';
 import '../../domain/repositories/chat_repository.dart';
 import '../../domain/usecases/params.dart';
+import '../../presentation/chat_details/page/chat_detail_screen.dart';
 import '../datasources/chat_datasource.dart';
 import '../models/chat_message_response.dart';
 
 class ChatRepositoryImpl extends ChatRepository {
   final ChatDataSource chatDataSource;
+  final LocalChatDataSource localChatDataSource;
   final NetworkInfo networkInfo;
 
   ChatRepositoryImpl(
-      {@required this.chatDataSource, @required this.networkInfo});
+      {@required this.chatDataSource,
+      @required this.networkInfo,
+      @required this.localChatDataSource});
 
   @override
   Future<Either<Failure, ChatDetailed>> getChatDetails(
@@ -343,6 +347,47 @@ class ChatRepositoryImpl extends ChatRepository {
       }
     } else {
       return Left(ConnectionFailure());
+    }
+  }
+
+  @override
+  Future<void> markMessageAsRead(MarkAsReadParams params) {
+    return chatDataSource.markAsRead(params.id, params.messageID);
+  }
+
+  @override
+  Future<Either<Failure, TranslationResponse>> translateMessage(
+      int messageID, String message, ApplicationLanguage language) async {
+    if (await networkInfo.isConnected) {
+      try {
+        var response = await chatDataSource.translateText(
+            originalText: message, langCode: language.yandexTrKey);
+
+        await localChatDataSource.saveMessageTranslation(
+            messageID, response, language);
+
+        return Right(response);
+      } catch (e) {
+        if (e is Failure) {
+          return Left(e);
+        } else {
+          return Left(ServerFailure(message: e.toString()));
+        }
+      }
+    } else {
+      return Left(ConnectionFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, TranslationResponse>> getOldTranslation(
+      int messageID, ApplicationLanguage language) async {
+    try {
+      var messageTranslation =
+          await localChatDataSource.getMessageTranslation(messageID, language);
+      return Right(messageTranslation);
+    } catch (e) {
+      return Right(null);
     }
   }
 }

@@ -1,17 +1,22 @@
 import 'package:flutter/rendering.dart';
+import 'package:messenger_mobile/core/config/auth_config.dart';
 import 'package:messenger_mobile/core/utils/snackbar_util.dart';
 import 'package:messenger_mobile/modules/category/presentation/chooseChats/presentation/chat_choose_page.dart';
 import 'package:messenger_mobile/modules/chat/domain/entities/chat_actions.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chat_details/page/chat_detail_page.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chat_details/page/chat_detail_screen.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/cubit/time_cubit/timer_cubit.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen_import.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/widgets/remove_dialog_view.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
-
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../../core/blocs/chat/bloc/bloc/chat_cubit.dart' as main_chat_cubit;
+import '../../../../../core/utils/snackbar_util.dart';
 import '../../../../category/presentation/chooseChats/presentation/chat_choose_page.dart';
 import '../../../domain/entities/chat_actions.dart';
-import '../widgets/chatControlPanel/chatControlPanel.dart';
+import '../cubit/time_cubit/timer_cubit.dart';
+import '../widgets/chatControlPanel/presentation/chatControlPanel.dart';
 import '../widgets/remove_dialog_view.dart';
 import 'chat_screen.dart';
 import 'chat_screen_import.dart';
@@ -44,16 +49,19 @@ extension ChatScreenStateHelper on ChatScreenState {
 
   DecorationImage getBackground (ChatState state) {
     return DecorationImage(
-      image: state.wallpaperPath != null ? 
-        FileImage(File(state.wallpaperPath)) : 
+      image: state.wallpaperFile != null ? 
+        FileImage(state.wallpaperFile) : 
           AssetImage('assets/images/bg-home.png'),
       fit: BoxFit.cover
     );
   }
 
   Widget buildChatBottom (
-    ChatTodoState state, ChatTodoCubit chatTodoCubit,
-    double width, double height
+    ChatTodoState state, 
+    ChatTodoCubit chatTodoCubit,
+    double width, 
+    double height,
+    { bool canSendMedia }
   ) {
     if (state is ChatTodoSelection || state is ChatToDoLoading) {
       return Container(
@@ -61,7 +69,7 @@ extension ChatScreenStateHelper on ChatScreenState {
         padding: EdgeInsets.fromLTRB(16,8,16,8),
         child: ActionButton(
           isLoading: state is ChatToDoLoading,
-          text: state.isDelete ? 'Удалить' : 'Переслать',
+          text: state.isDelete ? 'delete'.tr() : 'forward'.tr(),
           onTap: () {
             if (state.isDelete) {
               showDialog(context: context, builder: (ctx) {
@@ -73,7 +81,7 @@ extension ChatScreenStateHelper on ChatScreenState {
                 });
               });
             } else {
-              Navigator.push(context, ChooseChatsPage.route(this, actionText: 'Переслать'));
+              Navigator.push(context, ChooseChatsPage.route(this, actionText: 'forward'.tr()));
             }
           }
         ),
@@ -82,7 +90,8 @@ extension ChatScreenStateHelper on ChatScreenState {
       return ChatControlPanel(
         messageTextController: messageTextController, 
         width: width,
-        height: height
+        height: height,
+        canSendMedia: canSendMedia
       );
     }
   }
@@ -113,7 +122,7 @@ extension ChatScreenStateHelper on ChatScreenState {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'Закрепленное сообщение',
+                  'attached_message'.tr(),
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
@@ -137,17 +146,17 @@ extension ChatScreenStateHelper on ChatScreenState {
           IconButton(icon: Icon(Icons.close), onPressed: (){
             showDialog(context: context, builder: (ctx){
               return DialogsView( 
-                title: 'Вы хотите открепить сообщение?',
+                title: 'do_u_want_unset_message'.tr(),
                 actionButton: [
                   DialogActionButton(
-                    title: 'Отмена', 
+                    title: 'cancel'.tr(), 
                     buttonStyle: DialogActionButtonStyle.cancel,
                     onPress: () {
                       Navigator.pop(context);
                     }
                   ),
                   DialogActionButton(
-                    title: 'Открепить', 
+                    title: 'unattach'.tr(), 
                     buttonStyle: DialogActionButtonStyle.submit,
                     onPress: () {
                       cubit.disattachMessage();
@@ -198,7 +207,7 @@ extension ChatScreenStateHelper on ChatScreenState {
         Clipboard.setData(ClipboardData(text: messageViewModel.messageText))
         ..then((result) {
           final snackBar = SnackBar(
-            content: Text('Скопировано в буфер обмена'),
+            content: Text('copied'.tr()),
           );
           
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -215,6 +224,13 @@ extension ChatScreenStateHelper on ChatScreenState {
         break;
       case MessageCellActions.deleteMessage:
         chatTodoCubit.enableSelectionMode(messageViewModel.message, true);
+        break;
+      case MessageCellActions.openProfile:
+        navigator.push(ChatDetailPage.route(
+          messageViewModel.message.user.id, ProfileMode.user
+        ));
+        break;
+      default:
         break;
     }
   }
@@ -233,7 +249,9 @@ extension ChatScreenStateHelper on ChatScreenState {
     } else if (state is ChatLoadingSilently) {
       SnackUtil.showLoading(context: context);
     } else if (state is ChatInitial) {
+      
       // Update Notification Badge
+      
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
 
       var chatGlobalCubit = context.read<main_chat_cubit.ChatGlobalCubit>();
@@ -246,7 +264,6 @@ extension ChatScreenStateHelper on ChatScreenState {
         if (chatGlobalCubit.state.chats[globalIndexOfChat].unreadCount != 0) {
           context.read<main_chat_cubit.ChatGlobalCubit>().resetChatNoReadCounts(chatId: widget.chatEntity.chatId);
           if (widget.chatEntity.chatCategory?.id != null) {
-
             int index = categoryBloc.state.categoryList.indexWhere((e) => e.id == widget.chatEntity.chatCategory?.id);
             int noReadCount = categoryBloc.state.categoryList[index].noReadCount;
             categoryBloc.add(CategoryReadCountChanged(
@@ -326,7 +343,8 @@ extension ChatScreenStateHelper on ChatScreenState {
     @required ChatTodoState cubit,
     @required PanelBlocCubit panelBlocCubit,
     @required ChatTodoCubit chatTodoCubit,
-    @required ChatBloc chatBloc
+    @required ChatBloc chatBloc,
+    ChatRepository chatRepository
   }) {
     var spinnerIndex;
     if (state is ChatLoading) {
@@ -369,9 +387,10 @@ extension ChatScreenStateHelper on ChatScreenState {
         isSelected = cubit.selectedMessages
           .where((element) => element.id == currentMessage.id)
           .toList().length > 0;
-      }
+      } 
 
-      bool isTimeDeletionEnabled = currentMessage.isRead && 
+      int myUserID = sl<AuthConfig>().user?.id;
+      bool isTimeDeletionEnabled = (currentMessage.isRead || currentMessage.user?.id != myUserID) && 
         currentMessage.timeDeleted != null && 
           currentMessage.chatActions == null;
 
@@ -384,7 +403,8 @@ extension ChatScreenStateHelper on ChatScreenState {
         cubit: cubit,
         panelBlocCubit: panelBlocCubit, 
         isSelected: isSelected,
-        timeDeleted: timeLeft
+        timeDeleted: timeLeft,
+        chatRepository: chatRepository
       );
 
       return AutoScrollTag(
@@ -398,28 +418,37 @@ extension ChatScreenStateHelper on ChatScreenState {
               listener: (context, timerState) {
                 if (timerState.timeLeft == null || timerState.timeLeft == 0) {
                   chatBloc.add(MessageDelete(ids: [currentMessage.id]));
+                  context.read<main_chat_cubit.ChatGlobalCubit>().updateLastMessage(
+                    widget.chatEntity.chatId, 
+                    state.messages.getItemAt(currentIndex + 1)
+                  );
                 }
               },
               builder: (context, timerState) {
-                return this._buildCellOfMessage(params: messageCellParams(
-                  timeLeft: timerState.timeLeft
-                ));
+                return this._buildCellOfMessage(
+                  params: messageCellParams(
+                    timeLeft: timerState.timeLeft
+                  ),
+                  chatBloc: chatBloc
+                );
               }, 
             )
           ) : currentMessage.chatActions == null ? 
-            this._buildCellOfMessage(params: messageCellParams()) :
+            this._buildCellOfMessage(params: messageCellParams(), chatBloc: chatBloc) :
               ChatActionView(
-              chatAction: buildChatAction(currentMessage)
-            )
+                chatAction: buildChatAction(currentMessage)
+              )
       );
     }
   }
 
 
   Widget _buildCellOfMessage ({
-    @required MessageCellParams params
+    @required MessageCellParams params,
+    @required ChatBloc chatBloc
   }) {
     return MessageCell(
+      chatRepository: params.chatRepository,
       isSwipeEnabled: params.state.chatEntity.permissions?.isForwardOn ?? true,
       nextMessageUserID: params.nextMessageUserID,
       prevMessageUserID: params.prevMessageUserID,
@@ -446,6 +475,13 @@ extension ChatScreenStateHelper on ChatScreenState {
             params.chatTodoCubit.selectMessage(params.currentMessage);
           }
         }
+      },
+      onClickForwardMessage: (int id) {
+        chatBloc.add(LoadMessages(
+          isPagination: false,
+          direction: RequestDirection.bottom,
+          messageID: id
+        ));
       },
     );
   }
@@ -476,6 +512,7 @@ class MessageCellParams {
   final PanelBlocCubit panelBlocCubit;
   final bool isSelected;
   final int timeDeleted;
+  final ChatRepository chatRepository;
 
   MessageCellParams({
     @required this.state,
@@ -486,6 +523,7 @@ class MessageCellParams {
     @required this.cubit,
     @required this.panelBlocCubit,
     @required this.isSelected,
-    @required this.timeDeleted
+    @required this.timeDeleted,
+    @required this.chatRepository
   });
 }

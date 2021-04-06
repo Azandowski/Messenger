@@ -26,7 +26,7 @@ class ChatPermissionModel extends ChatPermissions {
     } else {
       return ChatPermissionModel(
           isSoundOn: json['sound'] == 1,
-          isMediaSendOn: json['admin_media_send'] == 1,
+          isMediaSendOn: json['admin_media_send'] == 0,
           adminMessageSend: json['admin_message_send'] == 1,
           isForwardOn: json['transfer_chat_message'] == 1,
           isSecret: json['is_secret'] == 1);
@@ -36,7 +36,7 @@ class ChatPermissionModel extends ChatPermissions {
   Map toJson() {
     return {
       'sound': isSoundOn ? 1 : 0,
-      'admin_media_send': isMediaSendOn ? 1 : 0,
+      'admin_media_send': isMediaSendOn ? 0 : 1,
       'admin_message_send': adminMessageSend ? 1 : 0,
       'transfer_chat_message': isForwardOn ? 1 : 0,
       'is_secret': isSecret ? 1 : 0

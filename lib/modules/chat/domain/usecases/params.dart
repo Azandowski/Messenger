@@ -1,13 +1,20 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:messenger_mobile/core/config/language.dart';
 import 'package:messenger_mobile/modules/chat/data/datasources/chat_datasource.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chat_details/page/chat_detail_screen.dart';
 import 'package:messenger_mobile/modules/social_media/domain/entities/social_media.dart';
+import 'package:latlong/latlong.dart';
+import 'package:multi_image_picker/multi_image_picker.dart';
 
 import '../../../../core/utils/pagination.dart';
 import '../../../category/data/models/chat_permission_model.dart';
+import '../../../social_media/domain/entities/social_media.dart';
 import '../../data/datasources/chat_datasource.dart';
+import '../../presentation/chat_details/page/chat_detail_screen.dart';
+import '../../presentation/chat_details/widgets/chat_media_block.dart';
 
 class GetChatMembersParams {
   final int id;
@@ -26,35 +33,60 @@ class SendMessageParams {
   final int identificator;
   final int timeLeft;
   final FieldFiles fieldFiles;
-
+  final FieldAssets fieldAssets;
+  final LatLng location;
+  final String locationAddress;
+  final int contactID;
+  final StreamController uploadController;
 
   SendMessageParams({
     @required this.identificator,
     @required this.chatID,
     this.forwardIds,
     this.fieldFiles,
+    this.fieldAssets,
+    this.uploadController,
     this.text,
-    this.timeLeft
+    this.timeLeft,
+    this.location,
+    this.locationAddress,
+    this.contactID
   });
 }
-enum FileKey {audio,}
 
-extension FileKeysExtension on FileKey {
+extension FileKeysExtension on TypeMedia {
   String get filedKey {
     switch (this) {
-      case FileKey.audio:
+      case TypeMedia.audio:
       return 'audio';
+      case TypeMedia.image:
+      return 'image';
+      case TypeMedia.video:
+      return 'video';
+      default:
+      return 'photo';
     }
   }
 }
 
 class FieldFiles {
-  final FileKey fieldKey;
+  final TypeMedia fieldKey;
   final List<File> files;
 
   FieldFiles({
     @required this.fieldKey,
     @required this.files
+  });
+
+}
+
+class FieldAssets {
+  final TypeMedia fieldKey;
+  final List<Asset> assets;
+
+  FieldAssets({
+    @required this.fieldKey,
+    @required this.assets
   });
 
 }
@@ -180,5 +212,28 @@ class SetSocialMediaParams {
   SetSocialMediaParams({
     @required this.id,
     @required this.socialMedia
+  });
+}
+
+class MarkAsReadParams {
+  final int id;
+  final int messageID;
+
+  MarkAsReadParams({
+    @required this.id,
+    @required this.messageID
+  });
+}
+
+
+class TranslateMessageParams {
+  final int messageID;
+  final String originalText;
+  final ApplicationLanguage applicationLanguage;
+
+  TranslateMessageParams({
+    @required this.messageID, 
+    @required this.originalText, 
+    @required this.applicationLanguage
   });
 }

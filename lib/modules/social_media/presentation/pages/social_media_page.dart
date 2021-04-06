@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:messenger_mobile/core/widgets/independent/buttons/gradient_main_button.dart';
-import 'package:messenger_mobile/modules/social_media/domain/entities/social_media.dart';
-import 'package:messenger_mobile/modules/social_media/presentation/widgets/social_media_item.dart';
+import 'package:easy_localization/easy_localization.dart';
+import '../../../../core/widgets/independent/buttons/gradient_main_button.dart';
+import '../../domain/entities/social_media.dart';
+import '../widgets/social_media_item.dart';
 
 abstract class SocialMediaPickerDelegate {
   void didFillSocialMedia (SocialMedia socialMedia);
@@ -54,7 +55,7 @@ class _SocialMediaScreenState extends State<SocialMediaScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Сайт и соцсети"),
+        title: Text("social_media".tr()),
       ),
       body: Container(
         child: Form(
@@ -86,7 +87,7 @@ class _SocialMediaScreenState extends State<SocialMediaScreen> {
       color: Color.fromRGBO(236, 233, 248, 1),
       padding: const EdgeInsets.only(top: 30, bottom: 60, left: 16, right: 16),
       child: ActionButton(
-        text: 'Сохранить',
+        text: 'save'.tr(),
         onTap: () {
           if (_formKey.currentState.validate()) {
             widget.delegate.didFillSocialMedia(_buildSocialMedia());
@@ -115,7 +116,7 @@ class _SocialMediaScreenState extends State<SocialMediaScreen> {
       websiteLink: textControllers[SocialMediaType.website].text,
       facebookLink: textControllers[SocialMediaType.facebook].text,
       instagramLink: textControllers[SocialMediaType.instagram].text,
-      youtubeLink: textControllers[SocialMediaType.website].text,
+      youtubeLink: textControllers[SocialMediaType.youtube].text,
       whatsappNumber: textControllers[SocialMediaType.whatsapp].text
     );
   }

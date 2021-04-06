@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+
 import '../../../../data/models/chat_view_model.dart';
 import '../../../../domain/entities/chat_entity.dart';
 

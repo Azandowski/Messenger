@@ -27,7 +27,8 @@ class EditProfileCubit extends Cubit<EditProfileState> {
       name: event.name,
       surname: event.surname,
       phoneNumber: event.phoneNumber,
-      patronym: event.patronym
+      patronym: event.patronym,
+      status: event.status
     ));
 
     response.fold(
@@ -44,6 +45,7 @@ class EditProfileCubit extends Cubit<EditProfileState> {
     nameTextController.text = event.user.name ?? '';
     patronymTextController.text = event.user.patronym ?? '';
     surnameTextController.text = event.user.surname ?? '';
+    statusTextController.text = event.user.status ?? '';
     emit(EditProfileNormal(imageFile: imageFile));
   }
 
@@ -63,4 +65,5 @@ class EditProfileCubit extends Cubit<EditProfileState> {
   TextEditingController nameTextController = TextEditingController();
   TextEditingController patronymTextController = TextEditingController();
   TextEditingController surnameTextController = TextEditingController();
+  TextEditingController statusTextController = TextEditingController();
 }

@@ -40,4 +40,15 @@ class ChatPermissions extends Equatable {
     isForwardOn,
     isSecret
   ];
+
+
+  Map toJson () {
+    return {
+      'sound': isSoundOn ? 1 : 0,
+      'admin_media_send': isMediaSendOn ? 0 : 1,
+      'admin_message_send': adminMessageSend ? 1 : 0 ,
+      'transfer_chat_message': isForwardOn ? 1 : 0,
+      'is_secret': isSecret? 1 : 0
+    };
+  }
 }

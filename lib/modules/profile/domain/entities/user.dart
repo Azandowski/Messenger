@@ -8,6 +8,7 @@ class User extends Equatable {
   final String profileImage;
   final int id;
   final bool isBlocked;
+  final String status;
 
   User(
       {this.name,
@@ -16,11 +17,20 @@ class User extends Equatable {
       this.id,
       this.phoneNumber,
       this.profileImage,
-      this.isBlocked});
+      this.isBlocked,
+      this.status});
 
   @override
-  List<Object> get props =>
-      [name, surname, patronym, phoneNumber, profileImage, id, isBlocked];
+  List<Object> get props => [
+        name,
+        surname,
+        patronym,
+        phoneNumber,
+        profileImage,
+        id,
+        isBlocked,
+        status
+      ];
 
   static const empty = null;
 
@@ -37,7 +47,8 @@ class User extends Equatable {
       String phoneNumber,
       String profileImage,
       int id,
-      bool isBlocked}) {
+      bool isBlocked,
+      String status}) {
     return User(
         name: name ?? this.name,
         surname: surname ?? this.surname,
@@ -45,6 +56,7 @@ class User extends Equatable {
         phoneNumber: phoneNumber ?? this.phoneNumber,
         id: id ?? this.id,
         profileImage: profileImage ?? this.profileImage,
-        isBlocked: isBlocked ?? this.isBlocked);
+        isBlocked: isBlocked ?? this.isBlocked,
+        status: status ?? this.status);
   }
 }

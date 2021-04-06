@@ -2,22 +2,11 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_search_bar/flutter_search_bar.dart';
-import 'package:messenger_mobile/core/utils/paginated_scroll_controller.dart';
-import 'package:messenger_mobile/core/utils/search_engine.dart';
-import 'package:messenger_mobile/core/utils/snackbar_util.dart';
-import 'package:messenger_mobile/core/widgets/independent/small_widgets/cell_skeleton_item.dart';
-import 'package:messenger_mobile/core/widgets/independent/small_widgets/chat_count_view.dart';
-import 'package:messenger_mobile/modules/category/data/models/chat_view_model.dart';
-import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.dart';
-import 'package:messenger_mobile/modules/chat/domain/entities/message.dart';
-import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen.dart';
-import 'package:messenger_mobile/modules/chats/domain/repositories/chats_repository.dart';
-import 'package:messenger_mobile/modules/chats/presentation/bloc/search_chats/search_chats_cubit.dart';
-import 'package:messenger_mobile/modules/chats/presentation/widgets/chat_item/chat_preview_item.dart';
-import 'package:messenger_mobile/modules/chats/presentation/widgets/chat_item/chat_search_result_item.dart';
+import 'package:messenger_mobile/core/widgets/independent/small_widgets/image_text_view.dart';
 
 import '../../../../core/utils/paginated_scroll_controller.dart';
 import '../../../../core/utils/search_engine.dart';
+import '../../../../core/utils/snackbar_util.dart';
 import '../../../../core/widgets/independent/small_widgets/cell_skeleton_item.dart';
 import '../../../../core/widgets/independent/small_widgets/chat_count_view.dart';
 import '../../../../locator.dart';
@@ -101,7 +90,8 @@ class _ChatsSearchScreenState extends State<ChatsSearchScreen> implements Search
       onChanged: (String newStr) {
         _searchChatsCubit.showLoading(isPagination: false);
         searchEngine.onTextChanged(newStr);
-      }
+      },
+      hintText: 'search'.tr()
     );
 
     searchBar.isSearching.value = true;
@@ -143,16 +133,27 @@ class _ChatsSearchScreenState extends State<ChatsSearchScreen> implements Search
             return ListView.separated(
               controller: scrollController,
               itemBuilder: (context, int index) {
-                if (
-                  state is SearchChatsLoading && 
-                  (!state.isPagination || 
-                    index >= getChatsLength(state) + 1
-                  )) {
-                    return CellShimmerItem();
+                bool isShimmerItem = (state is SearchChatsLoading && (!state.isPagination || index >= getChatsLength(state) + 1));
+                bool isEmptyScreen = !(state is SearchChatsLoading) && state.data.messages.data.length == 0;
+
+                if (isEmptyScreen && index == getItemsCount(state) - 1) {
+                  return EmptyView(text: 'nothing_found'.tr());
+                } else if (isShimmerItem) {
+                  // Показать загрузку
+                  return CellShimmerItem();
                 } else if (index + 1 <= state.data.chats.length) {
+                  // Показать cell чата
                   return InkWell(
                     onTap: () {
-                      widget.delegate?.didSelectChatItem(state.data.chats[index]);
+                      if (widget.delegate == null) {
+                        Navigator.push(
+                          context, MaterialPageRoute(builder: (context) => ChatScreen(
+                            chatEntity: state.data.chats[index]
+                          )),
+                        );
+                      } else {
+                        widget.delegate.didSelectChatItem(state.data.chats[index]);
+                      }
                     },
                     child: ChatPreviewItem(
                       ChatViewModel(
@@ -161,13 +162,15 @@ class _ChatsSearchScreenState extends State<ChatsSearchScreen> implements Search
                     ),
                   );
                 } else if (
+                  // Показать шапку
                   index == state.data.chats.length 
                     && widget.designStyle == ChatDesignStyle.chatsMessages) {
                   return CellHeaderView(
-                    title: 'Сообщения'
+                    title: 'messages'.tr()
                   );
                 } else {
                   // Show Messages
+                  
                   int newIndex = index - state.data.chats.length - 1;
                   var currentItem = state.data.messages.data[newIndex];
   
@@ -212,7 +215,10 @@ class _ChatsSearchScreenState extends State<ChatsSearchScreen> implements Search
     if (state is SearchChatsLoading) {
       return itemsCount + 11;
     } else {
-      return itemsCount + (widget.designStyle == ChatDesignStyle.onlyChats ? 0 : 1);
+      var totalItemsCount = itemsCount + (widget.designStyle == ChatDesignStyle.onlyChats ? 0 : 1);
+      // return totalItemsCount;
+      return state.data.messages.data.length == 0 ? 
+        totalItemsCount + 1 : totalItemsCount;
     }
   }
 
@@ -223,7 +229,7 @@ class _ChatsSearchScreenState extends State<ChatsSearchScreen> implements Search
 
   AppBar buildAppBar(BuildContext context) {
     return new AppBar(
-      title: new Text('Chats'),
+      title: new Text('chats'.tr()),
       actions: [
         searchBar.getSearchAction(context)
       ]
