@@ -114,7 +114,7 @@ class AuthenticationRemoteDataSourceImpl
   @override
   Future<bool> sendPlayerID(String playerID) async{
     var url = Endpoints.sendTokenOneSignal.buildURL();
-    var headers = Endpoints.sendTokenOneSignal.getHeaders();
+    var headers = Endpoints.sendTokenOneSignal.getHeaders(token: sl<AuthConfig>().token);
     final response = await client.post(url,
       body: json.encode({
         "application_id": APP_ID,
@@ -122,9 +122,12 @@ class AuthenticationRemoteDataSourceImpl
       }),
       headers: headers
     );
+    
+    print(json.decode(response.body));
+
     if (response.statusCode >= 200 && response.statusCode <= 299) {
       return true;
-    }else{
+    } else {
       throw ServerFailure(message: 'Not able to send player id');
     }
   }
