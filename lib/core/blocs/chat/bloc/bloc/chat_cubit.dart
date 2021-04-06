@@ -83,13 +83,16 @@ class ChatGlobalCubit extends Cubit<ChatState> {
         /// [CategoryBloc]
 
         if (this.state.chats[_chatIndex].unreadCount == 0) {
-          emit(ChatCategoryReadCountChanged(
-            chats: this.state.chats,
-            currentCategory: this.state.currentCategory,
-            hasReachedMax: this.state.hasReachedMax,
-            categoryID: this.state.chats[_chatIndex].chatCategory?.id, 
-            newReadCount: (this.state.chats[_chatIndex].chatCategory?.noReadCount ?? 0) + 1)
-          );
+          var userID = this.state.chats[_chatIndex]?.lastMessage?.user?.id;
+          if (userID == null || userID != sl<AuthConfig>().user.id) {
+            emit(ChatCategoryReadCountChanged(
+              chats: this.state.chats,
+              currentCategory: this.state.currentCategory,
+              hasReachedMax: this.state.hasReachedMax,
+              categoryID: this.state.chats[_chatIndex].chatCategory?.id, 
+              newReadCount: (this.state.chats[_chatIndex].chatCategory?.noReadCount ?? 0) + 1)
+            );
+          }
         }
       }
     });

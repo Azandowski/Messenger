@@ -19,7 +19,7 @@ class SocketService {
   void init () {
     Map headers = { 'Authorization': 'Bearer ${authConfig.token}' };
 
-    socket = IO.io('https://aio-test-vps.kulenkov-group.kz:6002',
+    socket = IO.io('https://api.aiocorp.kz:6001',
       IO.OptionBuilder().setExtraHeaders(new Map<String, dynamic>.from(headers))
         .setTransports(['websocket']).build());
 
