@@ -371,14 +371,14 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> implements TimePickerDelegate 
         event.contact
       ] : [],
       uploadController: controller,
-      dateTime: DateTime.now()
+      dateTime: DateTime.now(),
     );
     
     list.insert(0, newMessage);    
 
     yield getNewState<ChatInitial>(
       messages: list,
-      currentTimerOption: event.timeOption
+      currentTimerOption: event.timeOption ?? state.currentTimerOption
     );
     
     List<int> forwardArray = [];
@@ -391,15 +391,15 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> implements TimePickerDelegate 
       text: event.message,
       identificator: randomID,
       forwardIds: forwardArray,
-      timeLeft: event.timeOption.seconds,
+      timeLeft: (event.timeOption ?? state.currentTimerOption)?.seconds,
       fieldFiles: event.fieldFiles,
       uploadController: controller,
       location: event.location,
       locationAddress: event.address,
       contactID: event.contact?.id,
-      fieldAssets: event.fieldAssets
+      fieldAssets: event.fieldAssets,
     ));
-
+    print("sent with timer ${(event.timeOption ?? state.currentTimerOption)?.seconds}");
     controller.close();
 
     yield* _eitherSentOrErrorState(response, randomID);
@@ -431,7 +431,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> implements TimePickerDelegate 
         return getNewState<ChatInitial>(
           isSecretModeOn: response.isSecret,
           currentTimerOption: response.isSecret ? 
-            state.currentTimerOption : null
+            state.currentTimerOption : null,
+          isTimerDeleted: true
         );
       }
     );

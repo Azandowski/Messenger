@@ -17,7 +17,8 @@ extension ChatBlocExtension on ChatBloc {
     Message topMessage,
     T oldState,
     bool isSecretModeOn,
-    TimeOptions currentTimerOption
+    TimeOptions currentTimerOption,
+    bool isTimerDeleted = false
   }) {
     if (T == ChatInitial || oldState is ChatInitial) {
       return ChatInitial(
@@ -31,7 +32,7 @@ extension ChatBlocExtension on ChatBloc {
         chatEntity: chatEntity ?? state.chatEntity,
         isSecretModeOn: isSecretModeOn ?? state.isSecretModeOn,
         topMessage: topMessage ?? state.topMessage,
-        currentTimerOption: currentTimerOption ?? state.currentTimerOption
+        currentTimerOption: isTimerDeleted ? null : currentTimerOption ?? state.currentTimerOption
       );
     } else if (T == ChatLoading || oldState is ChatLoading) {
       return ChatLoading(
@@ -46,7 +47,7 @@ extension ChatBlocExtension on ChatBloc {
         isSecretModeOn: state.isSecretModeOn,
         direction: direction,
         topMessage: topMessage ?? state.topMessage,
-        currentTimerOption: currentTimerOption ?? state.currentTimerOption
+        currentTimerOption: isTimerDeleted ? null : currentTimerOption ?? state.currentTimerOption
       );
     } else if (T == ChatLoadingSilently || oldState is ChatLoadingSilently) {
       return ChatLoadingSilently(
@@ -59,7 +60,7 @@ extension ChatBlocExtension on ChatBloc {
         chatEntity: chatEntity ?? state.chatEntity,
         isSecretModeOn: state.isSecretModeOn,
         topMessage: topMessage ?? state.topMessage,
-        currentTimerOption: currentTimerOption ?? state.currentTimerOption
+        currentTimerOption: isTimerDeleted ? null : currentTimerOption ?? state.currentTimerOption
       );
     } else if (T == ChatError || oldState is ChatError) {
       return ChatError(
@@ -73,7 +74,7 @@ extension ChatBlocExtension on ChatBloc {
         chatEntity: chatEntity ?? state.chatEntity,
         isSecretModeOn: state.isSecretModeOn,
         topMessage: topMessage ?? state.topMessage,
-        currentTimerOption: currentTimerOption ?? state.currentTimerOption
+        currentTimerOption: isTimerDeleted ? null : currentTimerOption ?? state.currentTimerOption
       );
     } 
 

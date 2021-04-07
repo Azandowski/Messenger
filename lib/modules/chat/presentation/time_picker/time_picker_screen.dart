@@ -119,7 +119,7 @@ extension TimeRangesUIExtension on TimeOptions {
   String get hint {
     switch (this) {
       case TimeOptions.off:
-        return '';
+        return '0s';
       case TimeOptions.oneMinute:
         return '1m';
       case TimeOptions.tenMinutes:
