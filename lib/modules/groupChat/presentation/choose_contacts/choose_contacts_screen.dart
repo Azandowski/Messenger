@@ -83,56 +83,58 @@ class _ChooseContactsScreenState extends State<ChooseContactsScreen> implements 
                   )
                 ],
               ),
-              body: Stack(
-                alignment: Alignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 80.0),
-                    child: ListView.separated(
-                      controller: _scrollController,
-                      itemBuilder: (context, int index) {
-                        var isSelected = false; 
-                        var _blocChoose = context.read<ChooseContactCubit>();
+              body: SafeArea(
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 80.0),
+                      child: ListView.separated(
+                        controller: _scrollController,
+                        itemBuilder: (context, int index) {
+                          var isSelected = false; 
+                          var _blocChoose = context.read<ChooseContactCubit>();
 
-                        if (index < contacts.length) {
-                          isSelected = contacts[index].isSelected;
-                        }
+                          if (index < contacts.length) {
+                            isSelected = contacts[index].isSelected;
+                          }
 
-                        return (
-                          index >= contacts.length 
-                            && state.status == ContactStatus.loading ) ? 
-                          CellShimmerItem(circleSize: 35) : 
-                            ContactCell(
-                              contactItem: contacts[index].contactEntity,
-                              cellType: ContactCellType.add,
-                              isSelected: isSelected,
-                              onTap:() {
-                                if (isSelected) {
-                                  _blocChoose.removeContact(state.contacts[index]);
-                                } else {
-                                  _blocChoose.addContact(state.contacts[index], widget.isSingleSelect);
-                                }
-                              },
-                            );
-                      }, 
-                      separatorBuilder: (context, int index) {
-                        return Divider();
-                      }, 
-                      itemCount: state.hasReachedMax ? 
-                        contacts.length : contacts.length + 4
+                          return (
+                            index >= contacts.length 
+                              && state.status == ContactStatus.loading ) ? 
+                            CellShimmerItem(circleSize: 35) : 
+                              ContactCell(
+                                contactItem: contacts[index].contactEntity,
+                                cellType: ContactCellType.add,
+                                isSelected: isSelected,
+                                onTap:() {
+                                  if (isSelected) {
+                                    _blocChoose.removeContact(state.contacts[index]);
+                                  } else {
+                                    _blocChoose.addContact(state.contacts[index], widget.isSingleSelect);
+                                  }
+                                },
+                              );
+                        }, 
+                        separatorBuilder: (context, int index) {
+                          return Divider();
+                        }, 
+                        itemCount: state.hasReachedMax ? 
+                          contacts.length : contacts.length + 4
+                      ),
                     ),
-                  ),
-                  if (state.status == ContactStatus.success)  
-                    BottomActionButtonContainer(
-                      onTap: () {
-                        Navigator.pop(context);
-                        widget.delegate.didSaveContacts(
-                          contacts.where((e) => e.isSelected).map((e) => e.contactEntity)
-                        .toList());
-                      }, 
-                      title: 'ready'.tr()
-                    )
-                ],
+                    if (state.status == ContactStatus.success)  
+                      BottomActionButtonContainer(
+                        onTap: () {
+                          Navigator.pop(context);
+                          widget.delegate.didSaveContacts(
+                            contacts.where((e) => e.isSelected).map((e) => e.contactEntity)
+                          .toList());
+                        }, 
+                        title: 'ready'.tr()
+                      )
+                  ],
+                ),
               )
             );
           }

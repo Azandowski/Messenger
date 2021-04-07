@@ -58,53 +58,55 @@ class _CategoryListState extends State<CategoryList> {
         ],
       ),
       backgroundColor: AppColors.pinkBackgroundColor,
-      body: BlocConsumer<CategoryBloc, CategoryState>(
-        listener: (context, state) {
-          if (state is CategoriesUpdating) {
-            SnackUtil.showLoading(context: context);
-          } else if (state is CategoriesErrorHappened) {
-            SnackUtil.showError(context: context, message: state.message);
-          } else if (state is CategoryLoaded){
-            ScaffoldMessenger.of(context).hideCurrentSnackBar();
-          }
-        },
-        builder: (context, state) {
-          return Stack(
-            children: [
-              Column(
-                children: [
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 15),
-                    color: Colors.white,
-                    child: Text(
-                      widget.isMoveChat ? 'select_category_to_move'.tr() :
-                        "category_screen_hint".tr(),
-                      style: AppFontStyles.placeholderStyle,
-                      textAlign: TextAlign.center,
+      body: SafeArea(
+        child: BlocConsumer<CategoryBloc, CategoryState>(
+          listener: (context, state) {
+            if (state is CategoriesUpdating) {
+              SnackUtil.showLoading(context: context);
+            } else if (state is CategoriesErrorHappened) {
+              SnackUtil.showError(context: context, message: state.message);
+            } else if (state is CategoryLoaded){
+              ScaffoldMessenger.of(context).hideCurrentSnackBar();
+            }
+          },
+          builder: (context, state) {
+            return Stack(
+              children: [
+                Column(
+                  children: [
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 15),
+                      color: Colors.white,
+                      child: Text(
+                        widget.isMoveChat ? 'select_category_to_move'.tr() :
+                          "category_screen_hint".tr(),
+                        style: AppFontStyles.placeholderStyle,
+                        textAlign: TextAlign.center,
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 15,),
-                  returnStateWidget(state, context),
-                ],
-              ),
-              if (_didReorderItems)
-                BottomActionButtonContainer(
-                  title: 'save'.tr(),
-                  onTap: () { 
-                    var updates = this.getCategoriesDifferences(
-                      oldIDS: state.categoryList.map((e) => e.id).toList(), 
-                      newIDS: reorderedCategories.map((e) => e.id).toList()
-                    );
+                    SizedBox(height: 15,),
+                    returnStateWidget(state, context),
+                  ],
+                ),
+                if (_didReorderItems)
+                  BottomActionButtonContainer(
+                    title: 'save'.tr(),
+                    onTap: () { 
+                      var updates = this.getCategoriesDifferences(
+                        oldIDS: state.categoryList.map((e) => e.id).toList(), 
+                        newIDS: reorderedCategories.map((e) => e.id).toList()
+                      );
 
-                    context.read<CategoryBloc>().add(CategoriesReordered(
-                      categoryUpdated: updates
-                    ));
-                  }
-                )
-            ],
-          );
-        },
+                      context.read<CategoryBloc>().add(CategoriesReordered(
+                        categoryUpdated: updates
+                      ));
+                    }
+                  )
+              ],
+            );
+          },
+        ),
       ),
     );
   }

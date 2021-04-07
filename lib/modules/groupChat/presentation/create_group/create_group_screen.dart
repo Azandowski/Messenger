@@ -79,72 +79,76 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> implements Contac
         }
       },
       builder: (_, state) {
-        return Container(
-          height: MediaQuery.of(context).size.height,
-          child: Stack(
-            children: [
-              SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    SizedBox(height: 30),
-                    CreateGroupHeader(
-                      descriptionController: _descriptionController,
-                      nameController: _nameController,
-                      imageProvider: state.imageFile != null ? 
-                        FileImage(state.imageFile) : _groupCubit.defaultImageUrl != null ? 
-                          NetworkImage(_groupCubit.defaultImageUrl) : null,
-                      selectImage: (file) {
-                        PhotoPicker().showImageSourceSelectionDialog(context,
-                          (imageSource) {
-                            _groupCubit.selectPhoto(imageSource);
-                          });
-                      },
-                      onAddContacts: () {
-                        Navigator.of(context).push(ChooseContactsPage.route(this));
-                      },
-                    ),
-
-                    if (widget.mode == CreateGroupScreenMode.create)
-                      ...[
-                        CellHeaderView(
-                          title: (state is CreateGroupContactsLoading) ? 'loading'.tr() : 
-                            'members_count'.tr(namedArgs: {
-                              'count': '${(contacts ?? []).length}'
-                            })
+        return Scaffold(
+          body: SafeArea(
+            child: Container(
+              height: MediaQuery.of(context).size.height,
+              child: Stack(
+                children: [
+                  SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(height: 30),
+                        CreateGroupHeader(
+                          descriptionController: _descriptionController,
+                          nameController: _nameController,
+                          imageProvider: state.imageFile != null ? 
+                            FileImage(state.imageFile) : _groupCubit.defaultImageUrl != null ? 
+                              NetworkImage(_groupCubit.defaultImageUrl) : null,
+                          selectImage: (file) {
+                            PhotoPicker().showImageSourceSelectionDialog(context,
+                              (imageSource) {
+                                _groupCubit.selectPhoto(imageSource);
+                              });
+                          },
+                          onAddContacts: () {
+                            Navigator.of(context).push(ChooseContactsPage.route(this));
+                          },
                         ),
-                        Flexible(
-                          child: ListView.builder(
-                            shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
-                            itemBuilder: (context, i){
-                              var contact = contacts[i].entity;
-                              return ContactCell(contactItem: contact, cellType: ContactCellType.delete,onTrilinIconTapped: (){
-                                _groupCubit.deleteContact(contact);
-                              },);
-                            },
-                            itemCount: contacts.length,
-                          ),
-                        )
+
+                        if (widget.mode == CreateGroupScreenMode.create)
+                          ...[
+                            CellHeaderView(
+                              title: (state is CreateGroupContactsLoading) ? 'loading'.tr() : 
+                                'members_count'.tr(namedArgs: {
+                                  'count': '${(contacts ?? []).length}'
+                                })
+                            ),
+                            Flexible(
+                              child: ListView.builder(
+                                shrinkWrap: true,
+                                physics: NeverScrollableScrollPhysics(),
+                                itemBuilder: (context, i){
+                                  var contact = contacts[i].entity;
+                                  return ContactCell(contactItem: contact, cellType: ContactCellType.delete,onTrilinIconTapped: (){
+                                    _groupCubit.deleteContact(contact);
+                                  },);
+                                },
+                                itemCount: contacts.length,
+                              ),
+                            )
+                          ],
+                        SizedBox(height: 80),
                       ],
-                    SizedBox(height: 80),
-                  ],
-                ),
+                    ),
+                  ),
+                  BottomActionButtonContainer(
+                    title: 'ready'.tr(),
+                    isLoading: state is CreateGroupLoading,
+                    onTap: () {
+                      _groupCubit.createChat(
+                        _nameController.text, 
+                        _descriptionController.text,
+                        isCreate: widget.mode == CreateGroupScreenMode.create,
+                        chatID: widget.mode == CreateGroupScreenMode.edit ? 
+                          widget.entity.chatId : null
+                      );
+                    },
+                  )
+                ],
               ),
-              BottomActionButtonContainer(
-                title: 'ready'.tr(),
-                isLoading: state is CreateGroupLoading,
-                onTap: () {
-                  _groupCubit.createChat(
-                    _nameController.text, 
-                    _descriptionController.text,
-                    isCreate: widget.mode == CreateGroupScreenMode.create,
-                    chatID: widget.mode == CreateGroupScreenMode.edit ? 
-                      widget.entity.chatId : null
-                  );
-                },
-              )
-            ],
+            ),
           ),
         );
       },

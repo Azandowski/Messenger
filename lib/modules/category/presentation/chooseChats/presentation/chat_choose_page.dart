@@ -115,32 +115,34 @@ class _ChooseChatsPageState extends State<ChooseChatsPage> implements ChatsSearc
                     )
                   ],
                 ),
-                body: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                          child: Container(
-                            child: Text(
-                              'select_chats_hint'.tr(),
-                              style: AppFontStyles.placeholderStyle,
+                body: SafeArea(
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                            child: Container(
+                              child: Text(
+                                'select_chats_hint'.tr(),
+                                style: AppFontStyles.placeholderStyle,
+                              ),
                             ),
                           ),
-                        ),
-                        returnStateWidget(state, context, selectState),
-                        SizedBox(height: 40,)
-                      ],
-                    ),
-                    BottomActionButtonContainer(
-                      onTap: () {
-                        Navigator.pop(context);
-                        widget.delegate.didSaveChats(selectState.selectedChats);
-                      }, 
-                      title: widget.actionText ?? 'add_chats'.tr()
-                    )
-                  ],
+                          returnStateWidget(state, context, selectState),
+                          SizedBox(height: 40,)
+                        ],
+                      ),
+                      BottomActionButtonContainer(
+                        onTap: () {
+                          Navigator.pop(context);
+                          widget.delegate.didSaveChats(selectState.selectedChats);
+                        }, 
+                        title: widget.actionText ?? 'add_chats'.tr()
+                      )
+                    ],
+                  ),
                 )
               );
             },

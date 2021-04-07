@@ -76,102 +76,104 @@ class _CreateCategoryScreenState extends State<CreateCategoryScreen> implements 
       appBar: AppBar(
         title: Text('create_category'.tr()),
       ),
-      body: BlocConsumer<CreateCategoryCubit, CreateCategoryState>(
-        bloc: cubit,
-        listener: (context, state) {
-          if (state is CreateCategoryError) {
-            SnackUtil.showError(context: context, message: state.message);
-          } else if (state is CreateCategorySuccess) {
-            ScaffoldMessenger.of(context).hideCurrentSnackBar();
-            Navigator.of(context).pop(state.updatedCategories);
-          } else if (state is CreateCategoryNormal) {
-            ScaffoldMessenger.of(context).hideCurrentSnackBar();
-            chats = (state.chats ?? []).map((e) => ChatViewModel(e)).toList();
-          } else {
-            ScaffoldMessenger.of(context).hideCurrentSnackBar();
-          }
-
-          if (state is CreateCategoryFinishedTransfer) {
-            var categoryBloc = context.read<CategoryBloc>();
-            var index = categoryBloc.state.categoryList.indexWhere((e) => e.id == state.categoryID);
-            if (index != -1) {
-              context.read<ChatGlobalCubit>().updateCategoryForChat(state.chatID, categoryBloc.state.categoryList[index]);
+      body: SafeArea(
+        child: BlocConsumer<CreateCategoryCubit, CreateCategoryState>(
+          bloc: cubit,
+          listener: (context, state) {
+            if (state is CreateCategoryError) {
+              SnackUtil.showError(context: context, message: state.message);
+            } else if (state is CreateCategorySuccess) {
+              ScaffoldMessenger.of(context).hideCurrentSnackBar();
+              Navigator.of(context).pop(state.updatedCategories);
+            } else if (state is CreateCategoryNormal) {
+              ScaffoldMessenger.of(context).hideCurrentSnackBar();
+              chats = (state.chats ?? []).map((e) => ChatViewModel(e)).toList();
+            } else {
+              ScaffoldMessenger.of(context).hideCurrentSnackBar();
             }
-          }
-        },
-        builder: (context, state) {
-          return Container(
-            height: MediaQuery.of(context).size.height,
-            child: Stack(
-              children: [
-                Container(
-                  padding: const EdgeInsets.only(bottom: 80),
-                  child: SingleChildScrollView(
-                    controller: scrollController,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        SizedBox(height: 30),
-                        CreateCategoryHeader(
-                          nameController: cubit.nameController,
-                          imageProvider: state.imageFile != null ? 
-                            FileImage(state.imageFile) : cubit.defaultImageUrl != null ? 
-                              NetworkImage(cubit.defaultImageUrl) : null,
-                          selectImage: (file) {
-                            PhotoPicker().showImageSourceSelectionDialog(context,
-                              (imageSource) {
-                                cubit.selectPhoto(imageSource);
-                              });
-                          },
-                          onAddChats: () {
-                            _navigator.push(ChooseChatsPage.route(
-                              this, excludeChats: state.chats
-                            ));
-                          } 
-                        ),
-                        CellHeaderView(
-                          title: (state is CreateCategoryChatsLoading) ? 'loading'.tr() : 'chats_count'.tr(
-                            namedArgs: {
-                              'count': '${(chats ?? []).length}'
-                            }
-                          )
-                        ),
-                        ChatsList(
-                          itemsCount: (state is CreateCategoryChatsLoading ? 4 : 0) + (chats ?? []).length,
-                          isScrollable: false,
-                          items: chats ?? [],
-                          loadingItemsIDS: state is CreateCategoryTransferLoading ? 
-                            state.chatsIDs : [],
-                          cellType: ChatCellType.optionsWithChat,
-                          onSelectedOption: (ChatCellActionType action, ChatEntity entity) async {
-                            if (action == ChatCellActionType.delete) {
-                              cubit.movingChats = [entity.chatId];
-                              cubit.doTransferChats(0);
-                            } else {
-                              var response = await _navigator.push(CategoryList.route(isMoveChat: true));
 
-                              if (response is CategoryEntity) {
-                                cubit.movingChats = [entity.chatId];
-                                cubit.doTransferChats(response.id);
+            if (state is CreateCategoryFinishedTransfer) {
+              var categoryBloc = context.read<CategoryBloc>();
+              var index = categoryBloc.state.categoryList.indexWhere((e) => e.id == state.categoryID);
+              if (index != -1) {
+                context.read<ChatGlobalCubit>().updateCategoryForChat(state.chatID, categoryBloc.state.categoryList[index]);
+              }
+            }
+          },
+          builder: (context, state) {
+            return Container(
+              height: MediaQuery.of(context).size.height,
+              child: Stack(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.only(bottom: 80),
+                    child: SingleChildScrollView(
+                      controller: scrollController,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SizedBox(height: 30),
+                          CreateCategoryHeader(
+                            nameController: cubit.nameController,
+                            imageProvider: state.imageFile != null ? 
+                              FileImage(state.imageFile) : cubit.defaultImageUrl != null ? 
+                                NetworkImage(cubit.defaultImageUrl) : null,
+                            selectImage: (file) {
+                              PhotoPicker().showImageSourceSelectionDialog(context,
+                                (imageSource) {
+                                  cubit.selectPhoto(imageSource);
+                                });
+                            },
+                            onAddChats: () {
+                              _navigator.push(ChooseChatsPage.route(
+                                this, excludeChats: state.chats
+                              ));
+                            } 
+                          ),
+                          CellHeaderView(
+                            title: (state is CreateCategoryChatsLoading) ? 'loading'.tr() : 'chats_count'.tr(
+                              namedArgs: {
+                                'count': '${(chats ?? []).length}'
                               }
-                            }
-                          },
-                        )
-                      ],
+                            )
+                          ),
+                          ChatsList(
+                            itemsCount: (state is CreateCategoryChatsLoading ? 4 : 0) + (chats ?? []).length,
+                            isScrollable: false,
+                            items: chats ?? [],
+                            loadingItemsIDS: state is CreateCategoryTransferLoading ? 
+                              state.chatsIDs : [],
+                            cellType: ChatCellType.optionsWithChat,
+                            onSelectedOption: (ChatCellActionType action, ChatEntity entity) async {
+                              if (action == ChatCellActionType.delete) {
+                                cubit.movingChats = [entity.chatId];
+                                cubit.doTransferChats(0);
+                              } else {
+                                var response = await _navigator.push(CategoryList.route(isMoveChat: true));
+
+                                if (response is CategoryEntity) {
+                                  cubit.movingChats = [entity.chatId];
+                                  cubit.doTransferChats(response.id);
+                                }
+                              }
+                            },
+                          )
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                BottomActionButtonContainer(
-                  title: 'save'.tr(),
-                  isLoading: state is CreateCategoryLoading,
-                  onTap: () {
-                    cubit.sendData(widget.mode, widget.entity?.id ?? null);
-                  },
-                )
-              ],
-            ),
-          );
-        },
+                  BottomActionButtonContainer(
+                    title: 'save'.tr(),
+                    isLoading: state is CreateCategoryLoading,
+                    onTap: () {
+                      cubit.sendData(widget.mode, widget.entity?.id ?? null);
+                    },
+                  )
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }
