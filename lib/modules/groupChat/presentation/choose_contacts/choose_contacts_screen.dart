@@ -68,7 +68,7 @@ class _ChooseContactsScreenState extends State<ChooseContactsScreen> implements 
               appBar: AppBar(
                 title: Text(
                   'selected_count'.tr(namedArgs: {
-                    'count': '${contacts.length}'
+                    'count': '${contacts.where((e) => e.isSelected).length}'
                   })
                 ),
                 actions: [

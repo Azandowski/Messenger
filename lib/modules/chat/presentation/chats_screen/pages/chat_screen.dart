@@ -227,7 +227,13 @@ class ChatScreenState extends State<ChatScreen> implements ChatChooseDelegate{
                                 this.buildChatBottom(
                                   cubit, _chatTodoCubit, 
                                   width, height,
-                                  canSendMedia: canSendMedia(state)
+                                  canSendMedia: canSendMedia(state),
+                                  currentTimeOption: state.currentTimerOption,
+                                  onLeadingIconTap: () {
+                                    if (state.currentTimerOption != null) {
+                                      _chatBloc.add(UpdateTimerOption(newTimerOption: null));
+                                    }
+                                  }
                                 )
                             ],
                           );

@@ -6,6 +6,7 @@ import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:messenger_mobile/app/application.dart';
 import 'package:messenger_mobile/modules/chat/domain/entities/file_media.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chat_details/widgets/chat_media_block.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
@@ -32,7 +33,7 @@ part 'chat_event.dart';
 part 'chat_state.dart';
 part 'chat_bloc_extension.dart';
 
-class ChatBloc extends Bloc<ChatEvent, ChatState> {
+class ChatBloc extends Bloc<ChatEvent, ChatState> implements TimePickerDelegate {
   
   // MARK: - Props
 
@@ -46,6 +47,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   var _random = Random();
   AutoScrollController scrollController = AutoScrollController();
+
+  MessageSend _messageNeededToBeSentEvent;
 
   // MARK: - Constructor
 
@@ -102,7 +105,13 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     } else if (event is MessageAdded) {
       yield* _messageAddedToState(event);
     } else if (event is MessageSend) {
-      yield* _messageSendToState(event);
+      if (state.isSecretModeOn && state.currentTimerOption == null) {
+        _messageNeededToBeSentEvent = event;
+        BuildContext context = sl<Application>().navKey.currentContext;
+        Navigator.push(context, TimePickerScreen.route(this));
+      } else {
+        yield* _messageSendToState(event);
+      }
     } else if (event is MessageDelete) {
       yield* _messageDeleteToState(event);
     } else if (event is LoadMessages) {
@@ -175,6 +184,16 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         oldState: state,
         chatEntity: state.chatEntity.clone(permissions: event.newPermissions)
       );
+    } else if (event is UpdateTimerOption) {
+      if (event.newTimerOption == null) {
+        BuildContext context = sl<Application>().navKey.currentContext;
+        Navigator.push(context, TimePickerScreen.route(this));
+      } else {
+        yield getNewState(
+          oldState: state,
+          currentTimerOption: event.newTimerOption
+        );
+      }
     }
   }
 
@@ -359,6 +378,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
     yield getNewState<ChatInitial>(
       messages: list,
+      currentTimerOption: event.timeOption
     );
     
     List<int> forwardArray = [];
@@ -371,7 +391,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       text: event.message,
       identificator: randomID,
       forwardIds: forwardArray,
-      timeLeft: event.timeDeleted,
+      timeLeft: event.timeOption.seconds,
       fieldFiles: event.fieldFiles,
       uploadController: controller,
       location: event.location,
@@ -410,6 +430,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       (response) {
         return getNewState<ChatInitial>(
           isSecretModeOn: response.isSecret,
+          currentTimerOption: response.isSecret ? 
+            state.currentTimerOption : null
         );
       }
     );
@@ -445,4 +467,21 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
 
   List<Message> getCopyMessages() => state.messages.map((e) => e.copyWith()).toList();
+
+  @override
+  void didSelectTimeOption(TimeOptions option) {
+    if (state.isSecretModeOn && state.currentTimerOption == null) { 
+      if (_messageNeededToBeSentEvent != null) {
+        var newEvent = _messageNeededToBeSentEvent.copyWith(
+          timeOption: option,
+          selectedTimer: true
+        );
+
+        this.add(UpdateTimerOption(newTimerOption: option));
+        this.add(newEvent);
+      }
+    } else {
+      this.add(UpdateTimerOption(newTimerOption: option));
+    }
+  }
 }

@@ -9,8 +9,9 @@ abstract class ChatState extends Equatable {
   final int unreadCount;
   final bool showBottomPin;
   final bool isSecretModeOn;
-
+  final TimeOptions currentTimerOption;
   final Message topMessage;
+  
   const ChatState({
     @required this.messages,
     @required this.hasReachedMax,
@@ -20,14 +21,15 @@ abstract class ChatState extends Equatable {
     this.unreadCount,
     this.showBottomPin,
     this.topMessage,
-    this.isSecretModeOn
+    this.isSecretModeOn,
+    this.currentTimerOption
   });
 
   @override
   List<Object> get props => [
     messages, hasReachedMax, wallpaperFile, hasReachBottomMax,
     unreadCount, showBottomPin, showBottomPin, topMessage,
-    isSecretModeOn, chatEntity
+    isSecretModeOn, chatEntity, currentTimerOption
   ];
 }
 
@@ -42,6 +44,7 @@ class ChatInitial extends ChatState {
   final bool showBottomPin;
   final Message topMessage;
   final bool isSecretModeOn;
+  final TimeOptions currentTimerOption;
 
   ChatInitial({
     @required this.messages,
@@ -53,7 +56,8 @@ class ChatInitial extends ChatState {
     this.unreadCount,
     this.showBottomPin,
     this.topMessage,
-    this.isSecretModeOn
+    this.isSecretModeOn,
+    this.currentTimerOption
   }) : super(
     messages: messages, 
     hasReachedMax: hasReachedMax,
@@ -62,7 +66,8 @@ class ChatInitial extends ChatState {
     unreadCount: unreadCount,
     topMessage: topMessage,
     isSecretModeOn: isSecretModeOn,
-    chatEntity: chatEntity
+    chatEntity: chatEntity,
+    currentTimerOption: currentTimerOption
   );
 
   @override
@@ -76,7 +81,8 @@ class ChatInitial extends ChatState {
     showBottomPin,
     topMessage,
     isSecretModeOn,
-    chatEntity
+    chatEntity,
+    currentTimerOption
   ];
 }
 
@@ -93,6 +99,7 @@ class ChatLoading extends ChatState {
   final int unreadCount;
   final bool showBottomPin;
   final bool isSecretModeOn;
+  final TimeOptions currentTimerOption;
 
   ChatLoading({
     @required this.isPagination,
@@ -105,7 +112,8 @@ class ChatLoading extends ChatState {
     this.unreadCount,
     this.showBottomPin,
     this.isSecretModeOn,
-    this.chatEntity
+    this.chatEntity,
+    this.currentTimerOption
   }) : super(
     messages: messages, 
     hasReachedMax: hasReachedMax,
@@ -114,7 +122,8 @@ class ChatLoading extends ChatState {
     unreadCount: unreadCount,
     topMessage: topMessage,
     isSecretModeOn: isSecretModeOn,
-    chatEntity: chatEntity
+    chatEntity: chatEntity,
+    currentTimerOption: currentTimerOption
   );
  
   @override
@@ -129,7 +138,8 @@ class ChatLoading extends ChatState {
     showBottomPin,
     topMessage,
     isSecretModeOn,
-    chatEntity
+    chatEntity,
+    currentTimerOption
   ];  
 }
 
@@ -146,6 +156,7 @@ class ChatLoadingSilently extends ChatState {
   final bool showBottomPin;
   final Message topMessage;
   final bool isSecretModeOn;
+  final TimeOptions currentTimerOption;
 
   ChatLoadingSilently({
     @required this.messages,
@@ -156,7 +167,8 @@ class ChatLoadingSilently extends ChatState {
     this.showBottomPin,
     this.topMessage,
     this.isSecretModeOn,
-    this.chatEntity
+    this.chatEntity,
+    this.currentTimerOption
   }) : super(
     messages: messages,
     hasReachBottomMax: hasReachBottomMax,
@@ -165,7 +177,8 @@ class ChatLoadingSilently extends ChatState {
     wallpaperFile: wallpaperFile,
     topMessage: topMessage,
     isSecretModeOn: isSecretModeOn,
-    chatEntity: chatEntity
+    chatEntity: chatEntity,
+    currentTimerOption: currentTimerOption
   );
 
   @override
@@ -179,7 +192,8 @@ class ChatLoadingSilently extends ChatState {
     showBottomPin,
     topMessage,
     isSecretModeOn,
-    chatEntity
+    chatEntity,
+    currentTimerOption
   ];
 }
 
@@ -194,6 +208,7 @@ class ChatError extends ChatState {
   final int unreadCount;
   final bool showBottomPin;
   final Message topMessage;
+  final TimeOptions currentTimerOption;
   final bool isSecretModeOn;
 
   ChatError({
@@ -206,7 +221,8 @@ class ChatError extends ChatState {
     this.unreadCount,
     this.showBottomPin,
     this.isSecretModeOn,
-    this.chatEntity
+    this.chatEntity,
+    this.currentTimerOption
   }) : super(
     messages: messages, 
     hasReachedMax: hasReachedMax,
@@ -215,7 +231,8 @@ class ChatError extends ChatState {
     unreadCount: unreadCount,
     topMessage: topMessage,
     isSecretModeOn: isSecretModeOn,
-    chatEntity: chatEntity
+    chatEntity: chatEntity,
+    currentTimerOption: currentTimerOption
   );
 
   @override
@@ -229,6 +246,7 @@ class ChatError extends ChatState {
     showBottomPin,
     topMessage,
     isSecretModeOn,
-    chatEntity
+    chatEntity,
+    currentTimerOption
   ];
 }

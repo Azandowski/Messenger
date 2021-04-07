@@ -28,6 +28,7 @@ class PanelBlocCubit extends Cubit<PanelBlocState> {
   final GetVideo getVideoUseCase;
   final GetAudios getAudios;
   final GetImage getImage;
+  
   PanelBlocCubit({
     @required this.getImagesFromGallery,
     @required this.chatBloc,
@@ -66,7 +67,7 @@ class PanelBlocCubit extends Cubit<PanelBlocState> {
       : _textController.sink.add(text);
   }
 
-  clear(){
+  clear() {
     _textController.add(null);
     _textController.sink.addError("Invalid value entered!");
   }
@@ -88,12 +89,14 @@ class PanelBlocCubit extends Cubit<PanelBlocState> {
       }
     });
   }
+
   Future<List<Uint8List>> getUIint8List(List<Asset> assets) async {
     return Future.wait(assets.map( (e) async {
       var byteData = await e.getByteData();
       return byteData.buffer.asUint8List(byteData.offsetInBytes, byteData.lengthInBytes);
     }).toList());
   }
+
   getCameraPhoto() async {
     final result =  await getImage(ImageSource.camera);
     result.fold((l) => print('error'), (file){
@@ -106,7 +109,7 @@ class PanelBlocCubit extends Cubit<PanelBlocState> {
     });
   }
 
-   getAudio() async {
+  getAudio() async {
     final result =  await getAudios(NoParams());
     result.fold((l) => print('error'), (audios){
       if(audios != null){
@@ -122,7 +125,7 @@ class PanelBlocCubit extends Cubit<PanelBlocState> {
     result.fold((error) {
       emit(PanelBlocError(showBottomPanel: this.state.showBottomPanel, errorMessage: error.message));
     }, (video){
-      if(video != null){
+      if (video != null) {
         chatBloc.add(MessageSend(
           fieldFiles: FieldFiles(files: [video], fieldKey: TypeMedia.video)
         ));

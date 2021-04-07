@@ -31,13 +31,17 @@ class ChatControlPanel extends StatefulWidget {
     @required this.messageTextController,
     @required this.width,
     @required this.height,
-    @required this.canSendMedia
+    @required this.canSendMedia,
+    @required this.currentTimeOption,
+    @required this.onTapLeftIcon
   }) : super(key: key);
 
   final TextEditingController messageTextController;
   final double width;
   final double height;
   final bool canSendMedia;
+  final TimeOptions currentTimeOption;
+  final Function onTapLeftIcon;
 
   @override
   ChatControlPanelState createState() => ChatControlPanelState();
@@ -45,7 +49,7 @@ class ChatControlPanel extends StatefulWidget {
 
 class ChatControlPanelState extends State<ChatControlPanel> 
   with TickerProviderStateMixin 
-    implements TimePickerDelegate, MapScreenDelegate, ContactChooseDelegate {
+    implements MapScreenDelegate, ContactChooseDelegate {
 
   NavigatorState get _navigator => sl<Application>().navKey.currentState;
 
@@ -159,7 +163,7 @@ class ChatControlPanelState extends State<ChatControlPanel>
               child: SafeArea(
                 child: BlocConsumer<PanelBlocCubit, PanelBlocState>(
                   listener: (context, panelState) {
-                    if(panelState is PanelBlocError){
+                    if (panelState is PanelBlocError) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text(panelState.errorMessage)),
                       );
@@ -171,7 +175,8 @@ class ChatControlPanelState extends State<ChatControlPanel>
                       mainAxisSize: MainAxisSize.max,
                       children: [
                         state is PanelBlocReplyMessage ?
-                        ReplyContainer(cubit: _panelBloc) : SizedBox(height: 4),
+                        ReplyContainer
+                          (cubit: _panelBloc) : SizedBox(height: 4),
                         Padding(
                           padding: const EdgeInsets.only(right: 16, left: 16, bottom: 8),
                           child: Row(
@@ -188,7 +193,12 @@ class ChatControlPanelState extends State<ChatControlPanel>
                                       borderRadius: BorderRadius.circular(50)
                                     ),
                                     child: voiceState is VoiceRecordEmpty ? 
-                                      SendMessageRow(widget: widget, panelBloc: _panelBloc) 
+                                      SendMessageRow(
+                                        widget: widget, 
+                                        panelBloc: _panelBloc,
+                                        currentTimeOptions: widget.currentTimeOption,
+                                        onTapLeadingIcon: widget.onTapLeftIcon,
+                                      ) 
                                         : VoiceRecordingRow(
                                           voiceRecordBloc: recordBloc,
                                           audioPlayerBloc: _audioPlayerBloc,
@@ -241,11 +251,7 @@ class ChatControlPanelState extends State<ChatControlPanel>
                                                   message: textStream.data
                                                 );
 
-                                                if (chatBloc.state.isSecretModeOn) {
-                                                  _navigator.push(TimePickerScreen.route(this));
-                                                } else {
-                                                  _sendMessage(state);
-                                                }
+                                                _sendMessage(state);
                                               } else if(!canWrite && (voiceState is VoiceRecordingEndWillSend)) {
                                                 recordBloc.add(VoiceStopRecording());
                                                 recordBloc.add(VoiceSendAudio());
@@ -281,8 +287,7 @@ class ChatControlPanelState extends State<ChatControlPanel>
   } 
 
   void _sendMessage (
-    PanelBlocState state,
-    {int timeDeleted}
+    PanelBlocState state
   ) {
     _panelBloc.clear();
     _panelBloc.detachMessage();
@@ -294,7 +299,6 @@ class ChatControlPanelState extends State<ChatControlPanel>
     }
 
     var newMessageEvent = _messageNeededToBeSent.copyWith(
-      timeDeleted: timeDeleted,
       forwardMessage: forwardMessage
     );
 
@@ -337,20 +341,9 @@ class ChatControlPanelState extends State<ChatControlPanel>
       address: positionAddress.description
     );
 
-    if (chatBloc.state.isSecretModeOn) {
-      _navigator.push(TimePickerScreen.route(this));
-    } else {
-      _sendMessage(_panelBloc.state);
-    }
+    _sendMessage(_panelBloc.state);
   } 
 
-  @override
-  void didSelectTimeOption(TimeOptions option) {
-    _sendMessage( 
-      _panelBloc.state, 
-      timeDeleted: option.seconds
-    );
-  }
 
   @override
   void didSaveContacts(List<ContactEntity> contacts) {
@@ -366,11 +359,7 @@ class ChatControlPanelState extends State<ChatControlPanel>
       )
     );
 
-    if (chatBloc.state.isSecretModeOn) {
-      _navigator.push(TimePickerScreen.route(this));
-    } else {
-      _sendMessage(_panelBloc.state);
-    }
+    _sendMessage(_panelBloc.state);
   }
 }
 

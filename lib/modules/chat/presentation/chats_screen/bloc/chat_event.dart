@@ -58,7 +58,8 @@ class MessageSend extends ChatEvent {
   final String message;
   final FieldFiles fieldFiles;
   final FieldAssets fieldAssets;
-  final int timeDeleted;
+  final TimeOptions timeOption;
+  final bool selectedTimer;
   final LatLng location;
   final String address;
   final MessageUser contact;
@@ -69,34 +70,41 @@ class MessageSend extends ChatEvent {
     this.fieldAssets,
     this.fieldFiles,
     this.forwardMessage,
-    this.timeDeleted,
+    this.timeOption,
     this.location,
     this.address,
     this.contact,
     this.memoryPhotos,
+    this.selectedTimer = false
   });
 
   MessageSend copyWith ({
-    int timeDeleted,
-    Message forwardMessage
+    TimeOptions timeOption,
+    Message forwardMessage,
+    bool selectedTimer
   }) => MessageSend(
     message: message,
     location: location,
     forwardMessage: forwardMessage ?? this.forwardMessage,
-    timeDeleted: timeDeleted ?? this.timeDeleted,
+    timeOption: timeOption ?? this.timeOption,
     address: this.address,
-    contact: contact
+    contact: contact,
+    selectedTimer: selectedTimer ?? this.selectedTimer,
+    fieldAssets: fieldAssets,
+    fieldFiles: fieldFiles,
+    memoryPhotos: memoryPhotos
   );
 
   @override
   List<Object> get props => [
     message, 
     forwardMessage,
-    timeDeleted,
+    timeOption,
     location,
     fieldFiles,
     address,
-    contact
+    contact,
+    selectedTimer
   ];
 }
 
@@ -143,4 +151,18 @@ class PermissionsUpdated extends ChatEvent {
   List<Object> get props => [
     newPermissions
   ];
+}
+
+
+class UpdateTimerOption extends ChatEvent {
+  final TimeOptions newTimerOption;
+
+  UpdateTimerOption({
+    @required this.newTimerOption
+  });
+
+  @override
+  List<Object> get props => [
+    newTimerOption
+  ];  
 }

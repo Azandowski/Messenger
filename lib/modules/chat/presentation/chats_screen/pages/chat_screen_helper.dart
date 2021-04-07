@@ -61,7 +61,11 @@ extension ChatScreenStateHelper on ChatScreenState {
     ChatTodoCubit chatTodoCubit,
     double width, 
     double height,
-    { bool canSendMedia }
+    { 
+      bool canSendMedia,
+      TimeOptions currentTimeOption,
+      Function onLeadingIconTap
+    }
   ) {
     if (state is ChatTodoSelection || state is ChatToDoLoading) {
       return Container(
@@ -91,7 +95,9 @@ extension ChatScreenStateHelper on ChatScreenState {
         messageTextController: messageTextController, 
         width: width,
         height: height,
-        canSendMedia: canSendMedia
+        canSendMedia: canSendMedia,
+        currentTimeOption: currentTimeOption,
+        onTapLeftIcon: onLeadingIconTap,
       );
     }
   }

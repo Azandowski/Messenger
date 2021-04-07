@@ -115,4 +115,23 @@ extension TimeRangesUIExtension on TimeOptions {
         return 604800;
     }
   }
+
+  String get hint {
+    switch (this) {
+      case TimeOptions.off:
+        return '';
+      case TimeOptions.oneMinute:
+        return '1m';
+      case TimeOptions.tenMinutes:
+        return '10m';
+      case TimeOptions.thirtyMinutes:
+        return '30m';
+      case TimeOptions.oneHour:
+        return '1h';
+      case TimeOptions.oneDay:
+        return '1d';
+      case TimeOptions.oneWeek:
+        return '1w';
+    }
+  }
 }
