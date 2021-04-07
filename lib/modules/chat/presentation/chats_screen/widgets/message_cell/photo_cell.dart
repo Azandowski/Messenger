@@ -103,7 +103,7 @@ class PreviewMorePhoto extends StatefulWidget {
     @required this.moreCount,
     @required this.a,
     @required this.onMore,
-    this.isLocal,
+    this.isLocal = false,
   }) : super(key: key);
 
   final url;

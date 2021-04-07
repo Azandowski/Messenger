@@ -135,6 +135,7 @@ List<Widget> returnPhotoRow(files, width, Function onMore){
             files.length > 3 ? PreviewMorePhoto(
               url: files[2].url ?? placeholderLink,
               a: a,
+              isLocal: false,
               moreCount: files.length - 3,
               onMore: onMore,
             ) : 
