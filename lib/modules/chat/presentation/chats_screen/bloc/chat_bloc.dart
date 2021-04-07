@@ -281,7 +281,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
         break;
       case MessageHandleType.userReadSecretMessage:
-        if (state.hasReachBottomMax && event.message.user?.id != sl<AuthConfig>().user?.id) { 
+        if (state.hasReachBottomMax) { 
           var list = getCopyMessages();
           var i = list.indexWhere((e) => e.id == event.message.id);
           if (i != -1) {

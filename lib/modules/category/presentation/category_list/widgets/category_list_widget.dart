@@ -53,7 +53,7 @@ class CategoriesList extends StatelessWidget {
               },
               child: CategoryCell(
                 item: item,
-                cellType: cellType,
+                cellType: item.isSystemGroup ? CategoryCellType.empty : cellType,
                 onSelectedOption: onSelectedOption,
               ),
             )

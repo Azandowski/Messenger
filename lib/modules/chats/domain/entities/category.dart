@@ -7,13 +7,15 @@ class CategoryEntity extends Equatable {
   final String avatar;
   final int totalChats;
   final int noReadCount;
+  final int appChatID;
 
   CategoryEntity({
     @required this.id, 
     @required this.name, 
     @required this.avatar, 
     @required this.totalChats,
-    @required this.noReadCount
+    @required this.noReadCount,
+    @required this.appChatID
   });
 
   CategoryEntity clone() {
@@ -22,12 +24,17 @@ class CategoryEntity extends Equatable {
       name: this.name,
       avatar: this.avatar,
       totalChats: this.totalChats,
-      noReadCount: this.noReadCount
+      noReadCount: this.noReadCount,
+      appChatID: this.appChatID
     );
+  }
+
+  bool get isSystemGroup {
+    return appChatID == 1;
   }
 
   @override
   List<Object> get props => [
-    id, name, avatar, totalChats, noReadCount
+    id, name, avatar, totalChats, noReadCount, appChatID
   ];
 } 

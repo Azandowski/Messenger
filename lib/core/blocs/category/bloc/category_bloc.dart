@@ -94,7 +94,8 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
         name: this.state.categoryList[index].name, 
         avatar: this.state.categoryList[index].avatar, 
         totalChats: this.state.categoryList[index].totalChats, 
-        noReadCount: event.newReadCount
+        noReadCount: event.newReadCount,
+        appChatID: this.state.categoryList[index].appChatID
       );
 
       final newCategories = this.state.categoryList.map(

@@ -128,7 +128,8 @@ class _CategoryListState extends State<CategoryList> {
       );
     } else return CategoriesList(
         items: reorderedCategories,
-        cellType: widget.isMoveChat ? CategoryCellType.empty : CategoryCellType.withOptions,
+        cellType: widget.isMoveChat ? 
+          CategoryCellType.empty : CategoryCellType.withOptions,
         onSelectedOption: (CategoryCellActionType action, CategoryEntity entity) {
           if (action == CategoryCellActionType.delete) {
             showDialog(context: context,builder: (_){
