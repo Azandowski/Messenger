@@ -35,27 +35,30 @@ class PanelBlocCubit extends Cubit<PanelBlocState> {
     @required this.getVideoUseCase,
     @required this.getAudios,
     @required this.getImage,
-  }) : super(PanelBlocInitial(showBottomPanel: false)) {
+  }) : super(PanelBlocInitial(
+    showBottomPanel: false,
+    showEmojies: false
+  )) {
     _textController.sink.addError("Invalid value entered!");
   }
 
   addMessage(MessageViewModel message){
     emit(PanelBlocReplyMessage(
       messageViewModel: message,
-      showBottomPanel: state.showBottomPanel
+      showBottomPanel: state.showBottomPanel,
+      showEmojies: state.showEmojies
     ));
   }
   
   detachMessage(){
     emit(PanelBlocInitial(
-      showBottomPanel: state.showBottomPanel
+      showBottomPanel: state.showBottomPanel,
+      showEmojies: state.showEmojies
     ));
   }
 
   toggleBottomPanel () {
-    emit(PanelBlocInitial(
-      showBottomPanel: !state.showBottomPanel
-    ));
+    emit(state.copyWith(showBottomPanel: !state.showBottomPanel));
   }
 
   var _textController = StreamController<String>.broadcast();
@@ -123,7 +126,11 @@ class PanelBlocCubit extends Cubit<PanelBlocState> {
   getVideo()async{
     final result =  await getVideoUseCase(NoParams());
     result.fold((error) {
-      emit(PanelBlocError(showBottomPanel: this.state.showBottomPanel, errorMessage: error.message));
+      emit(PanelBlocError(
+        showBottomPanel: this.state.showBottomPanel, 
+        errorMessage: error.message,
+        showEmojies: state.showEmojies
+      ));
     }, (video){
       if (video != null) {
         chatBloc.add(MessageSend(
@@ -131,5 +138,11 @@ class PanelBlocCubit extends Cubit<PanelBlocState> {
         ));
       }
     });
+  }
+  
+  void toggleEmojies () {
+    emit(state.copyWith(
+      showEmojies: !state.showEmojies
+    ));
   }
 }

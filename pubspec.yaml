@@ -93,6 +93,8 @@ dependencies:
 
   onesignal_flutter: ^2.6.2
 
+  emoji_picker:
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

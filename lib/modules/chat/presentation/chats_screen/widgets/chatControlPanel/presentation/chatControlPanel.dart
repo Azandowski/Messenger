@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:emoji_picker/emoji_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:messenger_mobile/core/utils/list_helper.dart';
@@ -197,7 +198,13 @@ class ChatControlPanelState extends State<ChatControlPanel>
                                         widget: widget, 
                                         panelBloc: _panelBloc,
                                         currentTimeOptions: widget.currentTimeOption,
-                                        onTapLeadingIcon: widget.onTapLeftIcon,
+                                        onTapLeadingIcon: () {
+                                          if (widget.currentTimeOption != null) {
+                                            widget.onTapLeftIcon();
+                                          } else {
+                                            _panelBloc.toggleEmojies();
+                                          }
+                                        },
                                       ) 
                                         : VoiceRecordingRow(
                                           voiceRecordBloc: recordBloc,
@@ -273,6 +280,18 @@ class ChatControlPanelState extends State<ChatControlPanel>
                           ChatBottomPanel(
                             didPressOnItem: _didSelectMediaOption,
                             canSendMedia: widget.canSendMedia
+                          ),
+                        if (state.showEmojies)
+                          EmojiPicker(
+                            rows: 3,
+                            columns: 7,
+                            numRecommended: 10,
+                            onEmojiSelected: (emoji, category) {
+                              widget.messageTextController.text += emoji.emoji;
+                              widget.messageTextController.selection = TextSelection.fromPosition(
+                                TextPosition(offset: widget.messageTextController.text.length),
+                              );
+                            },
                           )
                       ]
                     );
