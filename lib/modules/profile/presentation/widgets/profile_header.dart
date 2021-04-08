@@ -27,7 +27,7 @@ class ProfileHeader extends StatelessWidget {
           CircleAvatar(
             radius: 37.5,
             backgroundImage: imageURL == null ? 
-              AssetImage('default_user.jpg') : NetworkImage(imageURL),
+              AssetImage('assets/images/logo.png') : NetworkImage(imageURL),
           ),
           SizedBox(width: 10,),
           InkWell(

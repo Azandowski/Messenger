@@ -66,7 +66,7 @@ class ContactCell extends StatelessWidget {
           width: 35, height: 35,
         ),
         title: Text(
-          contactItem.name ?? 'anonymous'.tr(),
+          contactItem.fullName ?? 'anonymous'.tr(),
           style: AppFontStyles.mediumStyle,
         ),
         subtitle: Text(

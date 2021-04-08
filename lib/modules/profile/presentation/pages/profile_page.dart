@@ -67,7 +67,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   children: [
                     ProfileHeader(
                       imageURL: profileState.user.profileImage,
-                      name: profileState.user.name,
+                      name: profileState.user.fullName,
                       phoneNumber: profileState.user.phoneNumber,
                       onPress: () {
                         _handleEditScreenNavigation(context);

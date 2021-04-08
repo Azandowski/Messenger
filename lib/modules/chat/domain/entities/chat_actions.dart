@@ -105,6 +105,12 @@ class GroupAction extends ChatAction {
   final MessageUser firstUser;
   final MessageUser secondUser;
 
+  bool get needsSecondUser {
+    return (action != ChatActions.setSecret && action != ChatActions.unsetSecret) 
+      && secondUser != null;
+  }
+
+
   GroupAction({
     @required this.action,
     @required this.firstUser,
