@@ -92,7 +92,7 @@ class _ChooseContactsScreenState extends State<ChooseContactsScreen> implements 
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(bottom: 80.0),
-                      child: state.hasReachedMax && contacts.length != 0 ? 
+                      child: state.hasReachedMax && contacts.length == 0 ? 
                         _buildEmptyScreen() : 
                         ListView.separated(
                           controller: _scrollController,
