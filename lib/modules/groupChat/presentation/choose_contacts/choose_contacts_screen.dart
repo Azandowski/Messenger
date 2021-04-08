@@ -92,7 +92,7 @@ class _ChooseContactsScreenState extends State<ChooseContactsScreen> implements 
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(bottom: 80.0),
-                      child: state.hasReachedMax && contacts.length == 0 ? 
+                      child: state.hasReachedMax && contacts.length != 0 ? 
                         _buildEmptyScreen() : 
                         ListView.separated(
                           controller: _scrollController,
@@ -149,23 +149,27 @@ class _ChooseContactsScreenState extends State<ChooseContactsScreen> implements 
   }
 
   Widget _buildEmptyScreen () {
-    return Column(
-      children: [
-        EmptyView(
-          text: 'У вас нет контактов в приложении еще'
-        ),
-        SizedBox(height: 20),
-        ActionButton(
-          text: 'Пригласить', 
-          onTap: () async {
-            await FlutterShare.share(
-              title: 'AIO Messenger',
-              text: 'invite_friends_hint'.tr(),
-              linkUrl: 'https://messengeraio.page.link/invite'
-            );
-          }
-        )
-      ],
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          EmptyView(
+            text: 'no_contacts'.tr()
+          ),
+          SizedBox(height: 20),
+          ActionButton(
+            text: 'invite_friends'.tr(), 
+            onTap: () async {
+              await FlutterShare.share(
+                title: 'AIO Messenger',
+                text: 'invite_friends_hint'.tr(),
+                linkUrl: 'https://messengeraio.page.link/invite'
+              );
+            }
+          )
+        ],
+      ),
     );
   }
 

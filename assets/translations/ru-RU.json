@@ -169,5 +169,6 @@
     "website": "Веб-сайт",
     "link_error": "Нужна прямая сылка на {service}",
     "whatsapp_number_error": "Нужен прямой номер от WhatsApp",
-    "chatCreated": "Чат создан"
+    "chatCreated": "Чат создан",
+    "no_contacts": "У вас еще нет контактов в AIO Messenger"
 }

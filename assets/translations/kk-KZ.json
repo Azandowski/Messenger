@@ -169,5 +169,6 @@
     "website": "Веб-сайт",
     "link_error": "{service} - аккаунтының тура сілтемесі қажет",
     "whatsapp_number_error": "WhatsApp нөмір дұрыс болуы қажет",
-    "chatCreated": "Чат жасалынды"
+    "chatCreated": "Чат жасалынды",
+    "no_contacts": "Сізде AIO Messenger-де контактілер жоқ"
 }
