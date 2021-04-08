@@ -168,5 +168,6 @@
     "link_to": "{service} - аккаунтының сілтемесі",
     "website": "Веб-сайт",
     "link_error": "{service} - аккаунтының тура сілтемесі қажет",
-    "whatsapp_number_error": "WhatsApp нөмір дұрыс болуы қажет"
+    "whatsapp_number_error": "WhatsApp нөмір дұрыс болуы қажет",
+    "chatCreated": "Чат жасалынды"
 }

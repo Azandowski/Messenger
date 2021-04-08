@@ -7,7 +7,8 @@ enum ChatActions {
   kickUser,
   newDay,
   setSecret,
-  unsetSecret
+  unsetSecret,
+  chatCreated
 }
 
 extension ChatActionsLogicExtension on ChatActions {
@@ -16,7 +17,8 @@ extension ChatActionsLogicExtension on ChatActions {
       this == ChatActions.addUser 
         || this == ChatActions.kickUser 
           || this == ChatActions.setSecret
-            || this == ChatActions.unsetSecret
+            || this == ChatActions.unsetSecret 
+              || this == ChatActions.chatCreated
     ) {
       return ChatActionTypes.group;
     } else {
@@ -36,6 +38,8 @@ extension ChatActionsExtension on ChatActions {
         return 'SetSecretChat';
       case ChatActions.unsetSecret:
         return 'UnsetSecretChat';
+      case ChatActions.chatCreated:
+        return 'chatCreated';
       default: 
         return null;
     }
@@ -51,6 +55,8 @@ extension ChatActionsExtension on ChatActions {
         return 'secret_mode_turned_on'.tr();
       case ChatActions.unsetSecret:
         return 'secret_mode_turned_off'.tr();
+      case ChatActions.chatCreated:
+        return 'chatCreated'.tr();
       default:
         return null;
     }
@@ -70,6 +76,8 @@ extension ChatActionsExtension on ChatActions {
         return 'secret_mode_turned_on'.tr();
       case ChatActions.unsetSecret:
         return 'secret_mode_turned_off'.tr();
+      case ChatActions.chatCreated:
+        return 'chatCreated'.tr();
       default:
         return null;
     }
