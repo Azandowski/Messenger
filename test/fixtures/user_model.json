@@ -5,5 +5,6 @@
     "patronym":"Patronym",
     "phone":"+77777777777",
     "avatar":"avatar",
-    "isBlocked":0
+    "isBlocked":0,
+    "status":"status"
 } 

@@ -5,6 +5,7 @@ import 'package:messenger_mobile/core/config/auth_config.dart';
 import 'package:messenger_mobile/core/error/failures.dart';
 import 'package:messenger_mobile/modules/authentication/domain/usecases/get_current_user.dart';
 import 'package:messenger_mobile/modules/profile/domain/entities/user.dart';
+import 'package:messenger_mobile/modules/profile/domain/usecases/set_wallpaper.dart';
 import 'package:messenger_mobile/modules/profile/presentation/bloc/index.dart';
 import 'package:mockito/mockito.dart';
 
@@ -12,11 +13,14 @@ class MockGetCurrentUser extends Mock implements GetCurrentUser {}
 
 class MockAuthConfig extends Mock implements AuthConfig {}
 
+class MockSetWallpaper extends Mock implements SetWallpaper {}
+
 void main() {
   User tUser;
   ProfileCubit cubit;
   MockGetCurrentUser mockGetCurrentUser;
   MockAuthConfig mockAuthConfig;
+  MockSetWallpaper mockSetWallpaper;
 
   setUp(() {
     tUser = User(
@@ -28,10 +32,14 @@ void main() {
       profileImage: 'image',
     );
 
+    mockSetWallpaper = MockSetWallpaper();
     mockGetCurrentUser = MockGetCurrentUser();
     mockAuthConfig = MockAuthConfig();
     cubit = ProfileCubit(
-        getUser: mockGetCurrentUser); //, authConfig: mockAuthConfig);
+      getUser: mockGetCurrentUser,
+      setWallpaper: mockSetWallpaper,
+      authConfig: mockAuthConfig,
+    );
   });
 
   test('initial state should be ProfileLoaded', () {

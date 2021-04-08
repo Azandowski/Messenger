@@ -43,6 +43,7 @@ void main() {
 
   test('should return expected json when called toJson method', () {
     final actual = contacts.toJson();
+    final date = DateTime.parse("2021-03-15 17:08:04.860545");
     final expected = {
       "current_page": 1,
       "first_page_url": "first_page_url",
@@ -61,7 +62,7 @@ void main() {
           "name": "name",
           "patronym": "patronym",
           "surname": "surname",
-          "last_visit": DateTime.parse("2021-03-15 17:08:04.860545"),
+          "last_visit": date.toLocal().add(date.timeZoneOffset),
           "avatar": "avatar"
         },
       ],

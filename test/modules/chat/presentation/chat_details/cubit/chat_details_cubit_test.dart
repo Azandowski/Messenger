@@ -9,7 +9,6 @@ import 'package:messenger_mobile/modules/chat/domain/usecases/block_user.dart';
 import 'package:messenger_mobile/modules/chat/domain/usecases/get_chat_details.dart';
 import 'package:messenger_mobile/modules/chat/domain/usecases/kick_member.dart';
 import 'package:messenger_mobile/modules/chat/domain/usecases/leave_chat.dart';
-import 'package:messenger_mobile/modules/chat/domain/usecases/params.dart';
 import 'package:messenger_mobile/modules/chat/domain/usecases/set_social_media.dart';
 import 'package:messenger_mobile/modules/chat/domain/usecases/update_chat_settings.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chat_details/cubit/chat_details_cubit.dart';

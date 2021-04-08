@@ -13,7 +13,9 @@ void main() {
         MessageCellActions.attachMessage,
         MessageCellActions.replyMessage,
         MessageCellActions.replyMore,
+        MessageCellActions.openProfile,
         MessageCellActions.deleteMessage,
+        MessageCellActions.translateMessage,
       ];
       final actual = tMessageViewModel.getActionsList(isReplyEnabled: true);
       expect(actual, equals(expected));
@@ -22,7 +24,9 @@ void main() {
       final List<MessageCellActions> expected = [
         MessageCellActions.copyMessage,
         MessageCellActions.attachMessage,
+        MessageCellActions.openProfile,
         MessageCellActions.deleteMessage,
+        MessageCellActions.translateMessage,
       ];
       final actual = tMessageViewModel.getActionsList(isReplyEnabled: false);
       expect(actual, equals(expected));
@@ -36,6 +40,7 @@ void main() {
         MessageCellActions.attachMessage,
         MessageCellActions.replyMessage,
         MessageCellActions.replyMore,
+        MessageCellActions.openProfile,
         MessageCellActions.deleteMessage,
       ];
       final actual = tMessageViewModel.getActionsList(isReplyEnabled: true);
@@ -44,6 +49,7 @@ void main() {
     test('should return expected list when replyMode is disabled', () {
       final List<MessageCellActions> expected = [
         MessageCellActions.attachMessage,
+        MessageCellActions.openProfile,
         MessageCellActions.deleteMessage,
       ];
       final actual = tMessageViewModel.getActionsList(isReplyEnabled: false);

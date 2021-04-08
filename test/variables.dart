@@ -8,13 +8,16 @@ import 'package:messenger_mobile/modules/category/domain/entities/chat_entity.da
 import 'package:messenger_mobile/modules/category/domain/entities/chat_permissions.dart';
 import 'package:messenger_mobile/modules/chat/data/models/chat_detailed_model.dart';
 import 'package:messenger_mobile/modules/chat/data/models/chat_message_response.dart';
+import 'package:messenger_mobile/modules/chat/data/models/file_media_model.dart';
 import 'package:messenger_mobile/modules/chat/data/models/message_model.dart';
 import 'package:messenger_mobile/modules/chat/data/models/message_user_model.dart';
 import 'package:messenger_mobile/modules/chat/domain/entities/chat_actions.dart';
 import 'package:messenger_mobile/modules/chat/domain/entities/chat_detailed.dart';
 import 'package:messenger_mobile/modules/chat/domain/entities/message.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chat_details/widgets/chat_media_block.dart';
 import 'package:messenger_mobile/modules/chats/data/model/category_model.dart';
 import 'package:messenger_mobile/modules/chats/domain/entities/category.dart';
+import 'package:messenger_mobile/modules/chats/domain/entities/chat_attachment_type.dart';
 import 'package:messenger_mobile/modules/creation_module/data/models/contact_model.dart';
 import 'package:messenger_mobile/modules/creation_module/domain/entities/contact.dart';
 import 'package:messenger_mobile/modules/profile/data/models/user_model.dart';
@@ -54,7 +57,7 @@ final tMessageUser2 = MessageUser(
 // +
 final tMessageUserModel = MessageUserModel(
   id: 1,
-  avatarURL: ConfigExtension.buildURLHead() + 'avatarURL',
+  // avatarURL: ConfigExtension.buildURLHead() + 'avatarURL',
   name: 'name',
   phone: '+77777777777',
   surname: 'surname',
@@ -63,7 +66,7 @@ final tMessageUserModel = MessageUserModel(
 // +
 final tMessageUserModel2 = MessageUserModel(
   id: 2,
-  avatarURL: ConfigExtension.buildURLHead() + 'avatarURL2',
+  // avatarURL: ConfigExtension.buildURLHead() + 'avatarURL2',
   name: 'name2',
   phone: '+77777777777',
   surname: 'surname2',
@@ -89,7 +92,10 @@ final tMessageModel = MessageModel(
   deletionSeconds: 777,
   timeDeleted: 777,
   chat: tMessageChatModel,
+  contacts: [tMessageUserModel, tMessageUserModel2],
   transfer: [],
+  files: [tFileMediaModel],
+  type: ChatAttachmentType.file,
   // following two parameters not listed on model's fromjson factory
   messageHandleType: MessageHandleType.newMessage,
   messageStatus: MessageStatus.sent,
@@ -242,7 +248,7 @@ final tPaginatedResultContactEntity = PaginatedResult<ContactEntity>(
   paginationData: tPaginationData,
 );
 final tPaginatedResultContactModel = PaginatedResult<ContactEntity>(
-  data: [tContactModel],
+  data: [tContactModelLocal],
   paginationData: tPaginationData2,
 );
 
@@ -303,6 +309,25 @@ final tContactModel2 = ContactModel(
   avatar: 'avatar2',
 );
 
+final tContactModelLocal = ContactModel(
+  id: 1,
+  name: 'name',
+  patronym: 'patronym',
+  surname: 'surname',
+  lastVisit: date1.toLocal().add(date1.timeZoneOffset),
+  avatar: 'avatar',
+);
+
+// +
+final tContactModel2Local = ContactModel(
+  id: 2,
+  name: 'name2',
+  patronym: 'patronym2',
+  surname: 'surname2',
+  lastVisit: date1.toLocal().add(date1.timeZoneOffset),
+  avatar: 'avatar2',
+);
+
 // +
 final tUserModel = UserModel(
   id: 1,
@@ -327,6 +352,18 @@ final tChatDetailedModel = ChatDetailedModel(
   // socialMedia: tSocialMedia,
 );
 
+final tChatDetailedModelLocalMembers = ChatDetailedModel(
+  chat: tChatEntityModel,
+  media: tMediaStatsModel,
+  membersCount: 2,
+  members: [tContactModelLocal, tContactModel2Local],
+  settings: tChatPermissionModel,
+  chatMemberRole: ChatMember.member,
+  user: tUserModel,
+  groups: [tChatEntityModel],
+  // socialMedia: tSocialMedia,
+);
+
 // +
 final tTransfer = Transfer(
   id: 1,
@@ -339,4 +376,12 @@ final tTransfer = Transfer(
   dateTime: date1,
   updatedAt: "2021-03-15 17:08:04.860545", // type should be DateTime
   user: tMessageUserModel,
+);
+
+final tFileMediaModel = FileMediaModel(
+  id: 1,
+  url: 'url',
+  type: TypeMedia.audio,
+  userId: 1,
+  maxDuration: Duration(seconds: 1),
 );

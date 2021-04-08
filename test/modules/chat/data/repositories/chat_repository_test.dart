@@ -5,6 +5,7 @@ import 'package:messenger_mobile/core/services/network/network_info.dart';
 import 'package:messenger_mobile/core/usecases/usecase.dart';
 import 'package:messenger_mobile/core/utils/pagination.dart';
 import 'package:messenger_mobile/modules/chat/data/datasources/chat_datasource.dart';
+import 'package:messenger_mobile/modules/chat/data/datasources/local_chat_datasource.dart';
 import 'package:messenger_mobile/modules/chat/data/models/chat_message_response.dart';
 import 'package:messenger_mobile/modules/chat/data/repositories/chat_repository.dart';
 import 'package:messenger_mobile/modules/chat/domain/usecases/params.dart';
@@ -18,17 +19,23 @@ class MockChatDataSource extends Mock implements ChatDataSource {}
 
 class MockNetworkInfo extends Mock implements NetworkInfo {}
 
+class MockLocalChatDataSource extends Mock implements LocalChatDataSource {}
+
 void main() {
   ChatRepositoryImpl chatRepository;
   MockNetworkInfo mockNetworkInfo;
   MockChatDataSource mockChatDataSource;
+  MockLocalChatDataSource mockLocalChatDataSource;
 
   setUp(() {
     mockNetworkInfo = MockNetworkInfo();
     mockChatDataSource = MockChatDataSource();
+    mockLocalChatDataSource = MockLocalChatDataSource();
+
     chatRepository = ChatRepositoryImpl(
       chatDataSource: mockChatDataSource,
       networkInfo: mockNetworkInfo,
+      localChatDataSource: mockLocalChatDataSource,
     );
   });
 
@@ -150,24 +157,6 @@ void main() {
 
   group('sendMessage', () {
     final params = SendMessageParams(identificator: 1, chatID: 1);
-
-    // test('should check network connection', () {
-    //   when(mockNetworkInfo.isConnected).thenAnswer((_) async => Future.value(true));
-
-    //   chatRepository.sendMessage(params);
-
-    //   verify(mockNetworkInfo.isConnected);
-    // });
-
-    // test('should return Left(ConnectionFailure()) when no internet connection',
-    //     () async {
-    //   when(mockNetworkInfo.isConnected).thenAnswer((_) async => false);
-
-    //   final actual = await chatRepository.sendMessage(params);
-
-    //   expect(actual, equals(Left(ConnectionFailure())));
-    //   verifyZeroInteractions(mockChatDataSource);
-    // });
 
     test(
         'should return Left(ServerFailure()) when ServerFailure thrown from datasource',

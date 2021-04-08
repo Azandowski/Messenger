@@ -20,6 +20,7 @@ void main() {
       phoneNumber: "+77777777777",
       profileImage: ConfigExtension.buildURLHead() + "avatar",
       isBlocked: false,
+      status: 'status',
     );
   });
 

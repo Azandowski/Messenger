@@ -14,7 +14,7 @@
         "created_at": "2021-01-01 00:00:01.860545",
         "settings":{
             "sound":1,
-            "admin_media_send":1,
+            "admin_media_send":0,
             "admin_message_send":1,
             "transfer_chat_message":1,
             "is_secret":0
@@ -26,27 +26,49 @@
                 "id": 1,
                 "name": "name",
                 "surname": "surname",
-                "avatar": "avatarURL",
                 "phone": "+77777777777"
             },
             "to_contact":{
                 "id": 2,
                 "name": "name2",
                 "surname": "surname2",
-                "avatar": "avatarURL2",
                 "phone": "+77777777777"
             },
             "text": "text",
             "is_read": 0,
             "created_at": "2021-01-01 00:00:01.860545",
-            "action": "Ad User",
+            "action":"Ad User",
             "deleted_at": "2021-03-15 17:08:04.860545",
             "time_deleted": 777,
             "transfer":null,
             "chat":{
                 "id": 1,
                 "name": "name"
-            }
+            },
+            "contact":[
+                {
+                    "id": 1,
+                    "name": "name",
+                    "surname": "surname",
+                    "phone": "+77777777777"
+                },
+                {
+                    "id": 2,
+                    "name": "name2",
+                    "surname": "surname2",
+                    "phone": "+77777777777"
+                }
+            ],
+            "file": [
+                {
+                    "id": 1,
+                    "full_link": "url",
+                    "type": "audio",
+                    "user_id": 1,
+                    "duration": 1
+                }
+            ],
+            "type": "file"
         },
         "no_read_message":1,
         "description":"description",
@@ -79,7 +101,7 @@
     ],
     "settings":{
         "sound": 1,
-        "admin_media_send": 1,
+        "admin_media_send": 0,
         "admin_message_send": 1,
         "transfer_chat_message": 1,
         "is_secret": 0
@@ -110,7 +132,7 @@
             "created_at": "2021-01-01 00:00:01.860545",
             "settings":{
                 "sound":1,
-                "admin_media_send":1,
+                "admin_media_send":0,
                 "admin_message_send":1,
                 "transfer_chat_message":1,
                 "is_secret":0
@@ -122,27 +144,49 @@
                     "id": 1,
                     "name": "name",
                     "surname": "surname",
-                    "avatar": "avatarURL",
                     "phone": "+77777777777"
                 },
                 "to_contact":{
                     "id": 2,
                     "name": "name2",
                     "surname": "surname2",
-                    "avatar": "avatarURL2",
                     "phone": "+77777777777"
                 },
                 "text": "text",
                 "is_read": 0,
                 "created_at": "2021-01-01 00:00:01.860545",
-                "action": "Ad User",
+                "action":"Ad User",
                 "deleted_at": "2021-03-15 17:08:04.860545",
                 "time_deleted": 777,
                 "transfer":null,
                 "chat":{
                     "id": 1,
                     "name": "name"
-                }
+                },
+                "contact":[
+                    {
+                        "id": 1,
+                        "name": "name",
+                        "surname": "surname",
+                        "phone": "+77777777777"
+                    },
+                    {
+                        "id": 2,
+                        "name": "name2",
+                        "surname": "surname2",
+                        "phone": "+77777777777"
+                    }
+                ],
+                "file": [
+                    {
+                        "id": 1,
+                        "full_link": "url",
+                        "type": "audio",
+                        "user_id": 1,
+                        "duration": 1
+                    }
+                ],
+                "type": "file"
             },
             "no_read_message":1,
             "description":"description",

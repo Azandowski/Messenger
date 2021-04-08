@@ -12,14 +12,18 @@ import 'index.dart';
 class ProfileCubit extends Cubit<ProfileState> {
   final GetCurrentUser getUser;
   final SetWallpaper setWallpaper;
+  final AuthConfig authConfig;
 
-  ProfileCubit({@required this.getUser, @required this.setWallpaper})
-      : super(ProfileLoaded(user: sl<AuthConfig>().user));
+  ProfileCubit({
+    @required this.getUser,
+    @required this.setWallpaper,
+    @required this.authConfig,
+  }) : super(ProfileLoaded(user: authConfig.user));
 
   Future<void> updateProfile() async {
     emit(ProfileLoading(user: this.state.user));
 
-    var response = await getUser(sl<AuthConfig>().token);
+    var response = await getUser(authConfig.token);
 
     response.fold(
         (failure) => emit(ProfileError(

@@ -6,14 +6,12 @@
             "id": 1,
             "name": "name",
             "surname": "surname",
-            "avatar": "avatarURL",
             "phone": "+77777777777"
         },
         "to_contact":{
             "id": 2,
             "name": "name2",
             "surname": "surname2",
-            "avatar": "avatarURL2",
             "phone": "+77777777777"
         },
         "text": "text",
@@ -26,7 +24,31 @@
         "chat":{
             "id": 1,
             "name": "name"
-        }
+        },
+        "contact":[
+            {
+                "id": 1,
+                "name": "name",
+                "surname": "surname",
+                "phone": "+77777777777"
+            },
+            {
+                "id": 2,
+                "name": "name2",
+                "surname": "surname2",
+                "phone": "+77777777777"
+            }
+        ],
+        "file": [
+            {
+                "id": 1,
+                "full_link": "url",
+                "type": "audio",
+                "user_id": 1,
+                "duration": 1
+            }
+        ],
+        "type": "file"
     },
     "hasMoreResults":false,
     "has_more_results_top":false,
@@ -39,14 +61,12 @@
                 "id": 1,
                 "name": "name",
                 "surname": "surname",
-                "avatar": "avatarURL",
                 "phone": "+77777777777"
             },
             "to_contact":{
                 "id": 2,
                 "name": "name2",
                 "surname": "surname2",
-                "avatar": "avatarURL2",
                 "phone": "+77777777777"
             },
             "text": "text",
@@ -59,7 +79,31 @@
             "chat":{
                 "id": 1,
                 "name": "name"
-            }
+            },
+            "contact":[
+                {
+                    "id": 1,
+                    "name": "name",
+                    "surname": "surname",
+                    "phone": "+77777777777"
+                },
+                {
+                    "id": 2,
+                    "name": "name2",
+                    "surname": "surname2",
+                    "phone": "+77777777777"
+                }
+            ],
+            "file": [
+                {
+                    "id": 1,
+                    "full_link": "url",
+                    "type": "audio",
+                    "user_id": 1,
+                    "duration": 1
+                }
+            ],
+            "type": "file"
         }
     ]
 }

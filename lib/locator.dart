@@ -76,8 +76,8 @@ Future<void> init() async {
     ),
   );
 
-  sl.registerFactory(
-      () => ProfileCubit(getUser: sl(), setWallpaper: SetWallpaper(sl())));
+  sl.registerFactory(() => ProfileCubit(
+      getUser: sl(), setWallpaper: SetWallpaper(sl()), authConfig: sl()));
 
   sl.registerFactory(() => ChatsCubit(sl()));
 

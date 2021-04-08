@@ -50,6 +50,7 @@ void main() {
       networkInfo: mockNetworkInfo,
       getCategories: mockGetCategories,
       authConfig: mockAuthConfig,
+      isTestMode: true,
     );
     tUser = User(
       name: 'Name',

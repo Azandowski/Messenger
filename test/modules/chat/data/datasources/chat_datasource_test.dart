@@ -1,4 +1,3 @@
-import 'package:dartz/dartz_streaming.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:laravel_echo/laravel_echo.dart';
@@ -66,7 +65,8 @@ void main() {
         (_) async => http.Response(fixture('chat_detailed_model.json'), 200),
       );
       final actual = await chatDataSource.getChatDetails(1, ProfileMode.user);
-      expect(actual, equals(tChatDetailedModel));
+
+      expect(actual, equals(tChatDetailedModelLocalMembers));
     });
 
     test('should throw ServerFailure when response is unsuccessful', () async {
@@ -116,7 +116,7 @@ void main() {
         (_) async => http.Response(fixture('chat_detailed_model.json'), 200),
       );
       final actual = await chatDataSource.addMembers(1, [1]);
-      expect(actual, equals(tChatDetailedModel));
+      expect(actual, equals(tChatDetailedModelLocalMembers));
     });
 
     test('should throw ServerFailure when response is unsuccessful', () async {
@@ -146,7 +146,7 @@ void main() {
         (_) async => http.Response(fixture('chat_detailed_model.json'), 200),
       );
       final actual = await chatDataSource.kickMember(1, 1);
-      expect(actual, equals(tChatDetailedModel));
+      expect(actual, equals(tChatDetailedModelLocalMembers));
     });
 
     test('should throw ServerFailure when response is unsuccessful', () async {
@@ -223,6 +223,9 @@ void main() {
       );
       final actual =
           await chatDataSource.getChatMessages(1, RequestDirection.top);
+
+      print(actual.result == tChatMessageResponseModel.result);
+      print(actual.topMessage == tChatMessageResponseModel.topMessage);
 
       expect(actual, equals(tChatMessageResponseModel));
     });
@@ -445,15 +448,6 @@ void main() {
         chatDataSource.unblockUser(1),
         throwsA(ServerFailure(message: 'message')),
       );
-    });
-  });
-
-  group('sendMessage', () {
-    final params =
-        SendMessageParams(identificator: 1, chatID: 1, forwardIds: [1]);
-
-    test('should return true when response is successfull', () async {
-      final actual = await chatDataSource.sendMessage(params);
     });
   });
 }

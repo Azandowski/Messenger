@@ -13,7 +13,7 @@ void main() {
       final actual = ChatDetailedModel.fromJson(
           jsonDecode(fixture('chat_detailed_model.json')));
 
-      expect(actual, equals(tChatDetailedModel));
+      expect(actual, equals(tChatDetailedModelLocalMembers));
     },
   );
 }

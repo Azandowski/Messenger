@@ -162,6 +162,11 @@ class Transfer extends Message {
   int chatId;
   String updatedAt;
 
+  @override
+  String toString() {
+    return "\nTransfer [ id=$id  action=$action  isRead=$isRead  dateTime=$dateTime  user=$user]  fromId=$fromId  toId=$toId  text=$text  chatId=$chatId  updatedAt=$updatedAt ] ";
+  }
+
   Transfer({
     this.id,
     this.fromId,

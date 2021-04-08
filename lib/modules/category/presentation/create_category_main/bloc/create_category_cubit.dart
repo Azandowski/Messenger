@@ -67,7 +67,7 @@ class CreateCategoryCubit extends Cubit<CreateCategoryState> {
         hasReachMax: state.hasReachMax));
 
     var response = await createCategory(CreateCategoryParams(
-        token: sl<AuthConfig>().token,
+        token: authConfig.token,
         avatarFile: this.state.imageFile,
         name: nameController.text,
         chatIds: (this.state.chats ?? []).map((e) => e.chatId).toList(),
@@ -136,7 +136,7 @@ class CreateCategoryCubit extends Cubit<CreateCategoryState> {
         imageFile: null, chats: [], hasReachMax: state.hasReachMax));
 
     var response = await getCategoryChats(GetCategoryChatsParams(
-      token: sl<AuthConfig>().token,
+      token: authConfig.token,
       categoryID: entity.id,
     ));
 
@@ -158,7 +158,7 @@ class CreateCategoryCubit extends Cubit<CreateCategoryState> {
         hasReachMax: state.hasReachMax));
 
     var response = await getCategoryChats(GetCategoryChatsParams(
-        token: sl<AuthConfig>().token,
+        token: authConfig.token,
         categoryID: entityID,
         lastChatID: state.chats.lastItem?.chatId));
 

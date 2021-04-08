@@ -31,6 +31,7 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
   final NetworkInfo networkInfo;
   final GetCategories getCategories;
   final AuthConfig authConfig;
+  final bool isTestMode;
 
   AuthenticationRepositiryImpl({
     @required this.remoteDataSource,
@@ -38,6 +39,7 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
     @required this.localDataSource,
     @required this.getCategories,
     @required this.authConfig,
+    this.isTestMode = false,
   }) {
     initToken();
   }
@@ -47,7 +49,7 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
       final token = await localDataSource.getToken();
 
       authConfig.token = token;
-      if (token != null && token != '') {
+      if (token != null && token != '' && !isTestMode) {
         sl<SocketService>().init();
       }
       print(token);
@@ -106,7 +108,7 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
   Future<Either<Failure, String>> saveToken(String token) async {
     await localDataSource.saveToken(token);
     authConfig.token = token;
-    if (token != null && token != '') {
+    if (token != null && token != '' && !isTestMode) {
       sl<SocketService>().init();
     }
 

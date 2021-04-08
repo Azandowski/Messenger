@@ -1,5 +1,4 @@
 import 'package:bloc_test/bloc_test.dart';
-import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:messenger_mobile/modules/chat/domain/repositories/chat_repository.dart';
 import 'package:messenger_mobile/modules/chat/domain/usecases/get_messages.dart';
@@ -70,7 +69,7 @@ void main() {
       getMessages: mockGetMessages,
       setTimeDeleted: mockSetTimeDeleted,
       getMessagesContext: mockGetMessagesContext,
-      scrollController: mockAutoScrollController,
+      // scrollController: mockAutoScrollController,
     );
   });
 
