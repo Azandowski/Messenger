@@ -25,10 +25,12 @@ class CreateCategoryScreen extends StatefulWidget {
 
   final CreateCategoryScreenMode mode;
   final CategoryEntity entity;
+  final bool isReorderingEnabled;
 
   CreateCategoryScreen({
     this.mode = CreateCategoryScreenMode.create, 
     this.entity,
+    this.isReorderingEnabled,
     Key key, 
   }) : super(key: key) {
     if (mode == CreateCategoryScreenMode.edit) {
@@ -149,7 +151,10 @@ class _CreateCategoryScreenState extends State<CreateCategoryScreen> implements 
                                 cubit.movingChats = [entity.chatId];
                                 cubit.doTransferChats(0);
                               } else {
-                                var response = await _navigator.push(CategoryList.route(isMoveChat: true));
+                                var response = await _navigator.push(CategoryList.route(
+                                  isMoveChat: true,
+                                  isReorderingEnabled: false
+                                ));
 
                                 if (response is CategoryEntity) {
                                   cubit.movingChats = [entity.chatId];

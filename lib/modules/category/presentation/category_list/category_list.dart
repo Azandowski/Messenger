@@ -21,14 +21,19 @@ class CategoryList extends StatefulWidget {
 
   static var id = 'categorylist';
 
-  static Route route({ isMoveChat = false }) {
-    return MaterialPageRoute<void>(builder: (_) => CategoryList(isMoveChat: isMoveChat,));
+  static Route route({ isMoveChat = false, isReorderingEnabled = true  }) {
+    return MaterialPageRoute<void>(builder: (_) => CategoryList(
+      isMoveChat: isMoveChat,
+      isReorderingEnabled: isReorderingEnabled
+    ));
   }
 
   final bool isMoveChat;
+  final bool isReorderingEnabled;
 
   CategoryList({
-    this.isMoveChat = false
+    this.isMoveChat = false,
+    this.isReorderingEnabled = true
   });
 
   @override
@@ -117,6 +122,10 @@ class _CategoryListState extends State<CategoryList> {
     if (reorderedCategories.length == 0) {
       var categories = (state.categoryList ?? []) as List<CategoryEntity>;
       reorderedCategories = categories.map((e) => e.clone()).toList();
+
+      if (widget.isMoveChat) {
+        reorderedCategories = reorderedCategories.where((e) => !e.isSystemGroup).toList();
+      }
     }
 
     if (state is CategoryEmpty) {
@@ -129,6 +138,7 @@ class _CategoryListState extends State<CategoryList> {
         )
       );
     } else return CategoriesList(
+        reorderingEnabled: widget.isReorderingEnabled,
         items: reorderedCategories,
         cellType: widget.isMoveChat ? 
           CategoryCellType.empty : CategoryCellType.withOptions,
