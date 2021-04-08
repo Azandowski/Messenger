@@ -160,23 +160,27 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
     var contactsShouldBeUpdated = [];
 
     deviceContacts.forEach((e) {
-      var foundContact = dbContacts.firstWhere((d) {
-        var allPhonesMatch = true;
+      if ((e['phones'] ?? []).length != 0) {
+        e['displayName'] = e['displayName'] ?? '';
+        
+        var foundContact = dbContacts.firstWhere((d) {
+          var allPhonesMatch = true;
 
-        ((d.value['phones'] ?? []) as List).forEach((phoneMap) {
-          var result = ((e['phones'] ?? []) as List).firstWhere(
-              (k) => k['mobile'] == phoneMap['mobile'],
-              orElse: () => null);
-          if (result == null) {
-            allPhonesMatch = false;
-          }
-        });
+          ((d.value['phones'] ?? []) as List).forEach((phoneMap) {
+            var result = ((e['phones'] ?? []) as List).firstWhere(
+                (k) => k['mobile'] == phoneMap['mobile'],
+                orElse: () => null);
+            if (result == null) {
+              allPhonesMatch = false;
+            }
+          });
 
-        return allPhonesMatch;
-      }, orElse: () => null);
+          return allPhonesMatch;
+        }, orElse: () => null);
 
-      if (foundContact == null) {
-        contactsShouldBeUpdated.add(_updatedContactToSendToBackend(e));
+        if (foundContact == null) {
+          contactsShouldBeUpdated.add(_updatedContactToSendToBackend(e));
+        }
       }
     });
 
