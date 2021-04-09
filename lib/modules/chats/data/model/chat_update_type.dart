@@ -1,7 +1,8 @@
 enum ChatUpdateType {
   newLastMessage,
   updateChatSettings,
-  chatEdit
+  chatEdit,
+  readMessage
 }
 
 extension ChatUpdateTypeExtension on ChatUpdateType {
@@ -13,6 +14,8 @@ extension ChatUpdateTypeExtension on ChatUpdateType {
         return 'UpdateSettingsChat';
       case ChatUpdateType.chatEdit:
         return 'chatedit';
+      case ChatUpdateType.readMessage:
+        return 'MessageRead';
     }
   }
 }
