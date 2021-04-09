@@ -15,7 +15,7 @@ class ChatEntityModel extends ChatEntity {
   final String title;
   final String imageUrl;
   final DateTime date;
-  final ChatPermissions permissions;
+  final ChatPermissionModel permissions;
   final MessageModel lastMessage;
   final int unreadCount;
   final String description;

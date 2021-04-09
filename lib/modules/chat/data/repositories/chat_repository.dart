@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:messenger_mobile/core/config/language.dart';
 import 'package:messenger_mobile/modules/chat/data/datasources/local_chat_datasource.dart';
 import 'package:messenger_mobile/modules/chat/data/models/translation_response.dart';
+import 'package:messenger_mobile/modules/social_media/data/models/social_media_model.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/services/network/network_info.dart';
 import '../../../../core/services/network/paginatedResult.dart';
@@ -340,7 +341,12 @@ class ChatRepositoryImpl extends ChatRepository {
       try {
         var response = await chatDataSource.updateChatSettings(
           id: id,
-          chatUpdates: socialMedia.toJson()
+          chatUpdates: SocialMediaModel(
+            facebookLink: socialMedia.facebookLink,
+            websiteLink: socialMedia.websiteLink,
+            youtubeLink: socialMedia.youtubeLink,
+            whatsappNumber: socialMedia.whatsappNumber
+          ).toJson(),
         );
 
         return Right(response);

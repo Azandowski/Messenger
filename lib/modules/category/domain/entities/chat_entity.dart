@@ -82,27 +82,5 @@ class ChatEntity extends Equatable {
       adminID: this.adminID
     );
   }
-
-  Map toJson () {
-    return {
-      'id': chatId,
-      'name': title,
-      'avatar': imageUrl,
-      'category_chat': chatCategory == null ? null : {
-        'id': chatCategory.id,
-        'name': chatCategory.name,
-        'avatar': chatCategory.avatar,
-        'full_link': chatCategory.avatar,
-        'total_chats': chatCategory.totalChats,
-      },
-      'created_at': date == null ? null : date.toIso8601String(),
-      'settings': permissions.toJson(),
-      'last_message': lastMessage?.toJson(),
-      'no_read_message': unreadCount,
-      'description': description,
-      'is_private': isPrivate ? 1 : 0,
-      'admin_id': adminID
-    };
-  }
 }
 

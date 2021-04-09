@@ -24,16 +24,6 @@ class SocialMedia extends Equatable {
     youtubeLink,
     whatsappNumber
   ];
-
-  Map<String, dynamic> toJson () {
-    return {
-      'facebook': facebookLink,
-      'site': websiteLink,
-      'youtube': youtubeLink,
-      'instagram': instagramLink,
-      'whatsapp': whatsappNumber
-    };
-  }
 }
 
 enum SocialMediaType {
