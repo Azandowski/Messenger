@@ -62,7 +62,7 @@ class _SearchContactPageState extends State<SearchContactPage> implements Search
       inBar: true,
       closeOnSubmit: false,
       clearOnSubmit: false,
-      setState: print,
+      setState: setState,
       onSubmitted: (String text) {
         _searchContactCubit.showLoading(isPagination: false);
         searchEngine.onTextChanged(text);

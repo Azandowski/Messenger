@@ -52,9 +52,8 @@ class DateHelper {
 
   String getTimerLeft (int timeInSeconds) {
     var locale = sl<Application>().appLanguage.localeKey;
-    var date = DateTime.fromMicrosecondsSinceEpoch(timeInSeconds * 1000);
     if (timeInSeconds <= 24 * 60 * 60) {
-      return DateFormat.Hm(locale).format(date);
+      return _formatDuration(Duration(seconds: timeInSeconds));
     } else {
       return (timeInSeconds / (24 * 60 * 60)).toStringAsFixed(0) + 'd';
     }
@@ -71,4 +70,29 @@ class DateHelper {
       return DateFormat.yMMMMd('ru-RU').format(dateTime);
     }
   } 
+
+
+  String _formatDuration(Duration d) {
+    var seconds = d.inSeconds;
+    final days = seconds~/Duration.secondsPerDay;
+    seconds -= days*Duration.secondsPerDay;
+    final hours = seconds~/Duration.secondsPerHour;
+    seconds -= hours*Duration.secondsPerHour;
+    final minutes = seconds~/Duration.secondsPerMinute;
+    seconds -= minutes*Duration.secondsPerMinute;
+
+    final List<String> tokens = [];
+    if (days != 0) {
+      tokens.add('${days}d');
+    }
+    if (tokens.isNotEmpty || hours != 0){
+      tokens.add('${hours}h');
+    }
+    if (tokens.isNotEmpty || minutes != 0) {
+      tokens.add('${minutes}m');
+    }
+    tokens.add('${seconds}s');
+
+    return tokens.join(':');
+  }
 }

@@ -412,43 +412,40 @@ extension ChatScreenStateHelper on ChatScreenState {
         timeDeleted: timeLeft,
         chatRepository: chatRepository
       );
-
+      
+      var timerCubit = new TimerCubit(currentMessage);
+      
+      var timerBody = () { 
+        return isTimeDeletionEnabled ? BlocBuilder<TimerCubit, TimerState>(
+          bloc: timerCubit,
+          buildWhen: (oldState, newState) {
+            return oldState.timeLeft != newState.timeLeft;
+          },
+          builder: (context, timerState) {
+            return this._buildCellOfMessage(
+              params: messageCellParams(
+                timeLeft: timerState.timeLeft
+              ),
+              chatBloc: chatBloc
+            );
+          }
+        ) : currentMessage.chatActions == null ? 
+          this._buildCellOfMessage(params: messageCellParams(), chatBloc: chatBloc) :
+            ChatActionView(
+              chatAction: buildChatAction(currentMessage)
+            );
+      };
+      
+      
       return AutoScrollTag(
         key: ValueKey(index),
         controller: chatBloc.scrollController,
         index: index,
-        child: isTimeDeletionEnabled ?
-          BlocProvider(
-            create: (context) => TimerCubit(currentMessage),
-            child: BlocConsumer<TimerCubit, TimerState> (
-              listener: (context, timerState) {
-                if (timerState.timeLeft == null || timerState.timeLeft == 0) {
-                  chatBloc.add(MessageDelete(ids: [currentMessage.id]));
-                  context.read<main_chat_cubit.ChatGlobalCubit>().updateLastMessage(
-                    widget.chatEntity.chatId, 
-                    state.messages.getItemAt(currentIndex + 1)
-                  );
-                }
-              },
-              builder: (context, timerState) {
-                return this._buildCellOfMessage(
-                  params: messageCellParams(
-                    timeLeft: timerState.timeLeft
-                  ),
-                  chatBloc: chatBloc
-                );
-              }, 
-            )
-          ) : currentMessage.chatActions == null ? 
-            this._buildCellOfMessage(params: messageCellParams(), chatBloc: chatBloc) :
-              ChatActionView(
-                chatAction: buildChatAction(currentMessage)
-              )
+        child: timerBody()
       );
     }
   }
-
-
+  
   Widget _buildCellOfMessage ({
     @required MessageCellParams params,
     @required ChatBloc chatBloc

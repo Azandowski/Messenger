@@ -16,12 +16,17 @@ class TimerCubit extends Cubit<TimerState> {
 
   Timer _timer;
   int timeLeftInSeconds;
-
+  Message message;
 
   TimerCubit(Message message) : super(TimerNormal(timeLeft: null)) {
+    this.message = message;
     int myUserID = sl<AuthConfig>().user?.id;
     if ((message.isRead || message.user?.id != myUserID) && message.timeDeleted != null) {
       timeLeftInSeconds = message.timeDeleted - DateTime.now().difference(message.dateTime).inSeconds;
+      emit(TimerNormal(
+        timeLeft: timeLeftInSeconds
+      ));
+
 
       _timer = Timer.periodic(Duration(seconds: 1), (timer) { 
         if (timeLeftInSeconds >= 0) {
