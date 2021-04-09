@@ -354,7 +354,8 @@ class _ChatDetailScreenState extends State<ChatDetailScreen>
   }
 
   bool get canEdit {
-    return isMe || isAdmin;
+    var isPrivate = _chatDetailsCubit.state.chatDetailed.chat?.isPrivate ?? false;
+    return !isPrivate;
   }
 
   // bool get isJustUser {

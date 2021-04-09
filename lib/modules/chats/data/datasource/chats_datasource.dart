@@ -108,8 +108,14 @@ class ChatsDataSourceImpl implements ChatsDataSource {
     String queryText,
     int chatID
   }) async {
+    String nextPageLink;
+    if (nextPageURL != null) { 
+      nextPageLink = nextPageURL.toString() + "&search=${queryText}" + 
+        (chatID != null ? '&chat_id=${chatID}' : '');
+    }
+
     http.Response response = await client.get(
-      nextPageURL ?? Endpoints.searchChats.buildURL(
+      nextPageURL != null ? nextPageLink : Endpoints.searchChats.buildURL(
         queryParameters: {
           'search': queryText,
           if (chatID != null) 
