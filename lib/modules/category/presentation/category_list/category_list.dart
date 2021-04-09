@@ -70,7 +70,8 @@ class _CategoryListState extends State<CategoryList> {
               SnackUtil.showLoading(context: context);
             } else if (state is CategoriesErrorHappened) {
               SnackUtil.showError(context: context, message: state.message);
-            } else if (state is CategoryLoaded){
+            } else if (state is CategoryLoaded) {
+              updateReorderedCategories(state);
               ScaffoldMessenger.of(context).hideCurrentSnackBar();
             }
           },
@@ -116,16 +117,19 @@ class _CategoryListState extends State<CategoryList> {
     );
   }
 
+  void updateReorderedCategories (CategoryState categoryState) {
+    var categories = (categoryState.categoryList ?? []) as List<CategoryEntity>;
+    reorderedCategories = categories.map((e) => e.clone()).toList();
+
+    if (widget.isMoveChat) {
+      reorderedCategories = reorderedCategories.where((e) => !e.isSystemGroup).toList();
+    }
+  }
 
   /// Body of Categories List
   Widget returnStateWidget(state, context) {
     if (reorderedCategories.length == 0) {
-      var categories = (state.categoryList ?? []) as List<CategoryEntity>;
-      reorderedCategories = categories.map((e) => e.clone()).toList();
-
-      if (widget.isMoveChat) {
-        reorderedCategories = reorderedCategories.where((e) => !e.isSystemGroup).toList();
-      }
+      updateReorderedCategories(state);
     }
 
     if (state is CategoryEmpty) {
