@@ -14,6 +14,7 @@ class LoadMessages extends ChatEvent {
   final bool isPagination;
   final RequestDirection direction;
   final bool resetAll;
+  final bool isInitial;
 
   /// Non-Null if chat should load message's region
   final int messageID;
@@ -22,12 +23,13 @@ class LoadMessages extends ChatEvent {
     @required this.isPagination,
     this.direction,
     this.messageID,
-    this.resetAll = false
+    this.resetAll = false,
+    this.isInitial = false
   });
 
   @override
   List<Object> get props => [
-    isPagination, messageID, direction, resetAll
+    isPagination, messageID, direction, resetAll, isInitial
   ];
 }
 

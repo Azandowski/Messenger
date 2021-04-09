@@ -28,7 +28,7 @@ import '../../../domain/usecases/send_message.dart';
 import '../../../domain/usecases/set_time_deleted.dart';
 import '../pages/chat_screen_import.dart';
 import 'package:latlong/latlong.dart';
-
+import '../../../../../core/utils/list_helper.dart';
 part 'chat_event.dart';
 part 'chat_state.dart';
 part 'chat_bloc_extension.dart';
@@ -115,7 +115,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> implements TimePickerDelegate 
     } else if (event is MessageDelete) {
       yield* _messageDeleteToState(event);
     } else if (event is LoadMessages) {
-      
       if (this.state.hasReachBottomMax && event.resetAll) {
         scrollController.animateTo(0, duration: Duration(seconds: 1), curve: Curves.bounceInOut);
       } else {
@@ -159,7 +158,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> implements TimePickerDelegate 
             event.isPagination, 
             event.resetAll,
             event.direction,
-            event.messageID
+            event.messageID,
+            event.isInitial
           );
         }
       }
@@ -231,7 +231,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> implements TimePickerDelegate 
     bool isPagination,
     bool isReset,
     RequestDirection direction,
-    int focusMessageID
+    int focusMessageID,
+    bool isInitial
   ) async* {
     yield failureOrMessage.fold(
       (failure) => getNewState(
@@ -255,6 +256,14 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> implements TimePickerDelegate 
             state.hasReachBottomMax : result.result.hasReachMax;
         }
 
+        Message myLastMessage;
+        
+        if (isInitial) {
+          myLastMessage = newMessages.firstWhere((e) => 
+            e.user?.id == sl<AuthConfig>().user.id, orElse: () => null
+          );
+        }
+
         return getNewState<ChatInitial>(
           topMessage: result.topMessage,
           messages: newMessages,
@@ -263,6 +272,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> implements TimePickerDelegate 
           hasReachBottomMax: hasReachBottom,
           hasReachedMax: isPagination && direction != RequestDirection.top ? 
             state.hasReachedMax : result.result.hasReachMax,
+          currentTimerOption: isInitial ? 
+            TimeRangesUIExtension.getTimeOption(myLastMessage?.timeDeleted) : state.currentTimerOption
         );
       }
     );
@@ -301,12 +312,21 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> implements TimePickerDelegate 
         break;
       case MessageHandleType.userReadSecretMessage:
         if (state.hasReachBottomMax) { 
-          var list = getCopyMessages();
-          var i = list.indexWhere((e) => e.id == event.message.id);
-          if (i != -1) {
-            list[i] = list[i].copyWith(isRead: true);
-          }
+          var list = state.messages.map(
+            (e) => e.copyWith(isRead: true)).toList();
+          
 
+          yield getNewState<ChatInitial>(
+            messages: list,
+          );
+        }
+
+        break;
+      case MessageHandleType.readMessage:
+        if (state.hasReachBottomMax) { 
+          var list = state.messages.map(
+            (e) => e.copyWith(isRead: true)).toList();
+          
           yield getNewState<ChatInitial>(
             messages: list,
           );

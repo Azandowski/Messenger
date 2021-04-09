@@ -134,4 +134,12 @@ extension TimeRangesUIExtension on TimeOptions {
         return '1w';
     }
   }
+
+  static TimeOptions getTimeOption (int seconds) {
+    if (seconds == null) {
+      return null;
+    } else {
+      return TimeOptions.values.firstWhere((e) => e.seconds == seconds, orElse: () => null);
+    }
+  }
 }

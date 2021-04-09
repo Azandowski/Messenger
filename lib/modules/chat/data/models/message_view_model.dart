@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:latlong/latlong.dart';
+import 'package:messenger_mobile/core/utils/date_helper.dart';
 
 import '../../../../app/appTheme.dart';
 import '../../../../core/config/auth_config.dart';
@@ -37,7 +38,7 @@ class MessageViewModel {
 
   String get time {
     if (timeLeftToBeDeleted != null) {
-      return '$timeLeftToBeDeleted';
+      return sl<DateHelper>().getTimerLeft(timeLeftToBeDeleted);
     } else if (message.dateTime != null) {
       return new DateFormat("Hm").format(message.dateTime); 
     } else {

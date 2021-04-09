@@ -49,6 +49,17 @@ class DateHelper {
     }
   }
 
+
+  String getTimerLeft (int timeInSeconds) {
+    var locale = sl<Application>().appLanguage.localeKey;
+    var date = DateTime.fromMicrosecondsSinceEpoch(timeInSeconds * 1000);
+    if (timeInSeconds <= 24 * 60 * 60) {
+      return DateFormat.Hm(locale).format(date);
+    } else {
+      return (timeInSeconds / (24 * 60 * 60)).toStringAsFixed(0) + 'd';
+    }
+  }
+
   String getChatDay (DateTime dateTime) {
     if (dateTime.isToday()) { 
       return 'today'.tr();

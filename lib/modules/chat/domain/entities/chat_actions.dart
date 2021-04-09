@@ -8,7 +8,8 @@ enum ChatActions {
   newDay,
   setSecret,
   unsetSecret,
-  chatCreated
+  chatCreated,
+  leaveChat
 }
 
 extension ChatActionsLogicExtension on ChatActions {
@@ -19,6 +20,7 @@ extension ChatActionsLogicExtension on ChatActions {
           || this == ChatActions.setSecret
             || this == ChatActions.unsetSecret 
               || this == ChatActions.chatCreated
+               || this == ChatActions.leaveChat
     ) {
       return ChatActionTypes.group;
     } else {
@@ -40,9 +42,21 @@ extension ChatActionsExtension on ChatActions {
         return 'UnsetSecretChat';
       case ChatActions.chatCreated:
         return 'chatCreated';
+      case ChatActions.leaveChat:
+        return 'LeaveUserChat';
       default: 
         return null;
     }
+  }
+
+  bool get needsSecondUser {
+    if (this == ChatActions.setSecret || this == ChatActions.unsetSecret) {
+      return false;
+    } else if (this == ChatActions.chatCreated || this == ChatActions.leaveChat) {
+      return false;
+    }
+
+    return true;
   }
 
   String getHintText () {
@@ -57,6 +71,8 @@ extension ChatActionsExtension on ChatActions {
         return 'secret_mode_turned_off'.tr();
       case ChatActions.chatCreated:
         return 'chatCreated'.tr();
+      case ChatActions.leaveChat:
+        return 'deleted_user'.tr();
       default:
         return null;
     }
@@ -69,6 +85,10 @@ extension ChatActionsExtension on ChatActions {
           'username': userName
         });
       case ChatActions.kickUser:
+        return 'user_deleted_v2'.tr(namedArgs: {
+          'username': userName
+        });
+      case ChatActions.leaveChat:
         return 'user_deleted_v2'.tr(namedArgs: {
           'username': userName
         });
@@ -105,11 +125,9 @@ class GroupAction extends ChatAction {
   final MessageUser firstUser;
   final MessageUser secondUser;
 
-  bool get needsSecondUser {
-    return (action != ChatActions.setSecret && action != ChatActions.unsetSecret) 
-      && secondUser != null;
-  }
+  bool get needsSecondUser => action.needsSecondUser;
 
+  bool get isAtLeft => action == ChatActions.leaveChat;
 
   GroupAction({
     @required this.action,

@@ -126,6 +126,8 @@ class ChatDataSourceImpl implements ChatDataSource {
         return MessageHandleType.unSetTopMessage;
       case 'StartTimerSecretMessage':
         return MessageHandleType.userReadSecretMessage;
+      case 'MessageRead':
+        return MessageHandleType.readMessage;
     }
   }
    

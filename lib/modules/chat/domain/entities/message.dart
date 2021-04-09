@@ -13,7 +13,7 @@ import 'chat_actions.dart';
 enum MessageStatus {sending, sent,}
 
 enum MessageHandleType {
-  newMessage, setTopMessage, unSetTopMessage, userReadSecretMessage
+  newMessage, setTopMessage, unSetTopMessage, userReadSecretMessage, readMessage
 }
 
 // ignore: must_be_immutable

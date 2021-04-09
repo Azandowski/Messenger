@@ -199,14 +199,12 @@ class ChatControlPanelState extends State<ChatControlPanel>
                                         panelBloc: _panelBloc,
                                         currentTimeOptions: widget.currentTimeOption,
                                         onTapLeadingIcon: () {
-                                          if (widget.currentTimeOption != null) {
-                                            widget.onTapLeftIcon();
-                                          } else {
-                                            _panelBloc.toggleEmojies();
-                                          }
+                                          widget.onTapLeftIcon();
                                         },
-                                      ) 
-                                        : VoiceRecordingRow(
+                                        onTapEmojiIcon: () {
+                                          _panelBloc.toggleEmojies();
+                                        },
+                                      ) : VoiceRecordingRow(
                                           voiceRecordBloc: recordBloc,
                                           audioPlayerBloc: _audioPlayerBloc,
                                           onCancel: (){
@@ -291,6 +289,7 @@ class ChatControlPanelState extends State<ChatControlPanel>
                               widget.messageTextController.selection = TextSelection.fromPosition(
                                 TextPosition(offset: widget.messageTextController.text.length),
                               );
+                              _panelBloc.updateText(widget.messageTextController.text);
                             },
                           )
                       ]

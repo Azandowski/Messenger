@@ -99,8 +99,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen>
                     _buildHeaders(state),
                     if (isAdmin || state.chatDetailed.socialMedia != null)
                       SocialMediaBlock(
-                        canEdit: state.chatDetailed?.chatMemberRole == ChatMember.admin && 
-                          state.chatDetailed.chat != null,
+                        canEdit: canEdit && state.chatDetailed.chat != null,
                         socialMedia: state.chatDetailed.socialMedia,
                         onAddPressed: () {
                           _navigator.push(SocialMediaScreen.route(
@@ -232,7 +231,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen>
                 ),
               ),
               ChildDetailAppBar(
-                canEdit: state.chatDetailed.chatMemberRole == ChatMember.admin && state.chatDetailed.chat != null,
+                canEdit: canEdit && state.chatDetailed.chat != null,
                 onPressRightIcon: () {
                   _navigator.push(CreateGroupPage.route(
                     mode: CreateGroupScreenMode.edit,
@@ -354,21 +353,36 @@ class _ChatDetailScreenState extends State<ChatDetailScreen>
     ));
   }
 
+  bool get canEdit {
+    return isMe || isAdmin;
+  }
+
+  // bool get isJustUser {
+  //   var isPrivate = _chatDetailsCubit.state.chatDetailed.chat?.isPrivate ?? false;
+  //   var membersCount = _chatDetailsCubit.state.chatDetailed.membersCount;
+
+  //   return membersCount <= 2 && isPrivate
+  // }
+
   bool get isMe {
-    return widget.mode == ProfileMode.user && 
+    return _chatDetailsCubit.state.chatDetailed.user != null && 
       _chatDetailsCubit.state.chatDetailed?.user?.id == sl<AuthConfig>().user.id;
   }
 
   bool get isAdmin {
+    if (_chatDetailsCubit.state.chatDetailed.user != null) {
+      return isMe;
+    }
+
     return _chatDetailsCubit.state.chatDetailed?.chatMemberRole == ChatMember.admin && 
       _chatDetailsCubit.state.chatDetailed.chat != null;
   }
 
   String _getSocialMediaURL (SocialMediaType type, String value) {
     if (type == SocialMediaType.whatsapp) {
-      return 'wa.me/$value';
+      return 'https://wa.me/$value';
     } else {
-      return value;
+      return value.contains('http') ? value : 'https://' + value;
     }
   }
 

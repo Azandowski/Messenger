@@ -52,9 +52,9 @@ class ChatActionView extends StatelessWidget {
           ),
           SizedBox(width: 8)
         ],
-      if (groupAction.needsSecondUser && groupAction.secondUser != null)
+      if (groupAction.needsSecondUser || (groupAction.isAtLeft && !groupAction.needsSecondUser))
         Text(
-          secondUser.name,
+          (secondUser ?? firstUser).name,
           style: AppFontStyles.black14w400,
           overflow: TextOverflow.ellipsis,
           textAlign: TextAlign.start,
@@ -69,7 +69,9 @@ class ChatActionView extends StatelessWidget {
         textAlign: TextAlign.start,
       ),
       SizedBox(width: 4),
-      if (groupAction.firstUser != null)
+      if (
+        groupAction.firstUser != null && groupAction.needsSecondUser && !groupAction.isAtLeft
+      )
         Flexible(
           child: Text(
             '(${firstUser?.user?.id == sl<AuthConfig>().user?.id ? "you".tr() : firstUser.name})',

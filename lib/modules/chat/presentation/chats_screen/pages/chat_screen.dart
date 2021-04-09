@@ -88,8 +88,10 @@ class ChatScreenState extends State<ChatScreen> implements ChatChooseDelegate{
     )..add(LoadMessages(
       isPagination: false,
       messageID: widget.messageID,
+      isInitial: true
     ));
-     _panelBlocCubit = PanelBlocCubit(
+
+    _panelBlocCubit = PanelBlocCubit(
       getVideoUseCase: sl(),
       getImagesFromGallery: sl(),
       getAudios: sl(),

@@ -91,7 +91,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                 customPadding:
                                     const EdgeInsets.only(left: 16, right: 16),
                                 labelText: "surname".tr(),
-                                textCtr: cubit.nameTextController,
+                                textCtr: cubit.surnameTextController,
                               ),
                             ),
                             IgnorePointer(
@@ -100,7 +100,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                 customPadding:
                                     const EdgeInsets.only(left: 16, right: 16),
                                 labelText: "name".tr(),
-                                textCtr: cubit.surnameTextController,
+                                textCtr: cubit.nameTextController,
                               ),
                             ),
                             IgnorePointer(

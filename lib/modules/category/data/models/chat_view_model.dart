@@ -15,7 +15,7 @@ class ChatViewModel {
   // * * Getters
 
   String get title {
-    return entity.title;
+    return entity?.title;
   }
 
   String get imageURL {
