@@ -5,11 +5,13 @@ class PreviewPhotoWidget extends StatefulWidget {
   const PreviewPhotoWidget({
     Key key,
     @required this.a,
+    @required this.onTap,
     this.isLocal = false,
     @required this.url,
   }) : super(key: key);
   final bool isLocal;
   final double a;
+  final Function onTap;
   final url;
 
   @override
@@ -19,28 +21,31 @@ class PreviewPhotoWidget extends StatefulWidget {
 class _PreviewPhotoWidgetState extends State<PreviewPhotoWidget> with AutomaticKeepAliveClientMixin{
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(10),
-      child: widget.isLocal ? Image.memory(
-        widget.url,
-        fit: BoxFit.cover,
-        width: widget.a,
-        height: widget.a,
-      ) : CachedNetworkImage(
-        fadeInDuration: const Duration(milliseconds: 400),
-        filterQuality: FilterQuality.low,
-        imageUrl: widget.url,
-        width: widget.a,
-        height: widget.a,
-        fit: BoxFit.cover,
-        placeholder: (context, url) => Icon(
-          Icons.image,
-          color: Colors.white,
-        ),
-        errorWidget: (context, url, error) => Icon(
-            Icons.error,
+    return GestureDetector(
+      onTap: widget.onTap,
+        child: ClipRRect(
+        borderRadius: BorderRadius.circular(10),
+        child: widget.isLocal ? Image.memory(
+          widget.url,
+          fit: BoxFit.cover,
+          width: widget.a,
+          height: widget.a,
+        ) : CachedNetworkImage(
+          fadeInDuration: const Duration(milliseconds: 400),
+          filterQuality: FilterQuality.low,
+          imageUrl: widget.url,
+          width: widget.a,
+          height: widget.a,
+          fit: BoxFit.cover,
+          placeholder: (context, url) => Icon(
+            Icons.image,
             color: Colors.white,
           ),
+          errorWidget: (context, url, error) => Icon(
+              Icons.error,
+              color: Colors.white,
+            ),
+        ),
       ),
     );
   }
@@ -54,10 +59,12 @@ class PreviewPhotoLarge extends StatefulWidget  {
   const PreviewPhotoLarge({
     Key key,
     @required this.url,
+    @required this.onTap,
     this.isLocal = false,
   }) : super(key: key);
 
   final url;
+  final Function onTap;
   final isLocal;
 
   @override
@@ -69,24 +76,27 @@ class _PreviewPhotoLargeState extends State<PreviewPhotoLarge> with AutomaticKee
   Widget build(BuildContext context) {
     return Flexible(
       fit: FlexFit.loose,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(10),
-          child: widget.isLocal ? Image.memory(
-            widget.url,
-            fit: BoxFit.cover,
-          ) : CachedNetworkImage(
-            fadeInDuration: const Duration(milliseconds: 400),
-            filterQuality: FilterQuality.low,
-            imageUrl: widget.url,
-            fit: BoxFit.cover,
-            placeholder: (context, url) => Icon(
-              Icons.image,
-              color: Colors.white,
-            ),
-            errorWidget: (context, url, error) => Icon(
-                Icons.error,
+        child: GestureDetector(
+          onTap: widget.onTap,
+            child: ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: widget.isLocal ? Image.memory(
+              widget.url,
+              fit: BoxFit.cover,
+            ) : CachedNetworkImage(
+              fadeInDuration: const Duration(milliseconds: 400),
+              filterQuality: FilterQuality.low,
+              imageUrl: widget.url,
+              fit: BoxFit.cover,
+              placeholder: (context, url) => Icon(
+                Icons.image,
                 color: Colors.white,
               ),
+              errorWidget: (context, url, error) => Icon(
+                  Icons.error,
+                  color: Colors.white,
+                ),
+            ),
           ),
         ),
     );
