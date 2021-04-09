@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:messenger_mobile/core/error/failures.dart';
+import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen_import.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:easy_localization/easy_localization.dart';
 
@@ -13,27 +14,35 @@ abstract class MediaLocalDataSource {
 }
 
 class MediaLocalDataSourceImpl implements MediaLocalDataSource {
+  final ImagePicker imagePicker;
+
+  MediaLocalDataSourceImpl({
+    @required this.imagePicker,
+  });
+
   @override
   Future<File> getImage(source) async {
-    var pickedFile = await ImagePicker().getImage(source: source,imageQuality: 10);
+    var pickedFile =
+        await imagePicker.getImage(source: source, imageQuality: 10);
     return File(pickedFile.path);
   }
+
   @override
-   Future<File> getVideo() async {
+  Future<File> getVideo() async {
     var videos = await FilePicker.platform.pickFiles(
       type: FileType.video,
       withData: true,
       allowMultiple: false,
       allowCompression: true,
     );
-    if(videos != null) {
+    if (videos != null) {
       var video = videos.files[0];
-      if(video.size < 52428800){
+      if (video.size < 52428800) {
         return File(video.path);
-      }else{
+      } else {
         throw StorageFailure(message: 'file_should_not_more_than_100mb'.tr());
       }
-    }else{
+    } else {
       //File was not selected
     }
   }
@@ -46,7 +55,6 @@ class MediaLocalDataSourceImpl implements MediaLocalDataSource {
         enableCamera: false,
         cupertinoOptions: CupertinoOptions(
           takePhotoIcon: "chat",
-          
         ),
         materialOptions: MaterialOptions(
           actionBarColor: "#abcdef",
@@ -57,22 +65,21 @@ class MediaLocalDataSourceImpl implements MediaLocalDataSource {
         ),
       );
       return images;
-    } on Exception catch (e) {
-    }
+    } on Exception catch (e) {}
   }
 
   @override
   Future<List<File>> getAudio() async {
     FilePickerResult result = await FilePicker.platform.pickFiles(
-      allowMultiple: false, 
+      allowMultiple: false,
       allowedExtensions: ['wav', 'mp3', 'aac', 'wma'],
       type: FileType.custom,
     );
-    if(result != null) {
+    if (result != null) {
       List<File> files = result.paths.map((path) => File(path)).toList();
       return files;
     } else {
-      throw StorageFailure(message: 'file_is_not_selected'.tr()); 
+      throw StorageFailure(message: 'file_is_not_selected'.tr());
     }
   }
 }

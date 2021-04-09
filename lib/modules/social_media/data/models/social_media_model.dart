@@ -7,27 +7,25 @@ class SocialMediaModel extends SocialMedia {
   final String youtubeLink;
   final String whatsappNumber;
 
-  SocialMediaModel({
-    this.facebookLink,
-    this.instagramLink,
-    this.websiteLink,
-    this.youtubeLink,
-    this.whatsappNumber
-  }) : super(
-    facebookLink: facebookLink,
-    instagramLink: instagramLink,
-    websiteLink: websiteLink,
-    youtubeLink: youtubeLink,
-    whatsappNumber: whatsappNumber
-  );  
+  SocialMediaModel(
+      {this.facebookLink,
+      this.instagramLink,
+      this.websiteLink,
+      this.youtubeLink,
+      this.whatsappNumber})
+      : super(
+            facebookLink: facebookLink,
+            instagramLink: instagramLink,
+            websiteLink: websiteLink,
+            youtubeLink: youtubeLink,
+            whatsappNumber: whatsappNumber);
 
-  factory SocialMediaModel.fromJson (Map<String, dynamic> json) {
+  factory SocialMediaModel.fromJson(Map<String, dynamic> json) {
     return SocialMediaModel(
-      facebookLink: json['facebook'],
-      websiteLink: json['site'],
-      youtubeLink: json['youtube'],
-      whatsappNumber: json['whatsapp'],
-      instagramLink: json['instagram']
-    );
+        facebookLink: json['facebook'],
+        websiteLink: json['site'],
+        youtubeLink: json['youtube'],
+        whatsappNumber: json['whatsapp'],
+        instagramLink: json['instagram']);
   }
 }

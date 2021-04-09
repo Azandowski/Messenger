@@ -8,24 +8,18 @@ class SocialMedia extends Equatable {
   final String youtubeLink;
   final String whatsappNumber;
 
-  SocialMedia({
-    @required this.facebookLink,
-    @required this.instagramLink,
-    @required this.websiteLink,
-    @required this.youtubeLink,
-    @required this.whatsappNumber
-  });
+  SocialMedia(
+      {@required this.facebookLink,
+      @required this.instagramLink,
+      @required this.websiteLink,
+      @required this.youtubeLink,
+      @required this.whatsappNumber});
 
   @override
-  List<Object> get props => [
-    facebookLink, 
-    instagramLink,
-    websiteLink,
-    youtubeLink,
-    whatsappNumber
-  ];
+  List<Object> get props =>
+      [facebookLink, instagramLink, websiteLink, youtubeLink, whatsappNumber];
 
-  Map<String, dynamic> toJson () {
+  Map<String, dynamic> toJson() {
     return {
       'facebook': facebookLink,
       'site': websiteLink,
@@ -36,12 +30,10 @@ class SocialMedia extends Equatable {
   }
 }
 
-enum SocialMediaType {
-  website, instagram, facebook, youtube, whatsapp
-}
+enum SocialMediaType { website, instagram, facebook, youtube, whatsapp }
 
 extension SocialMediaTypeExtension on SocialMediaType {
-  String getValue (SocialMedia socialMedia) {
+  String getValue(SocialMedia socialMedia) {
     switch (this) {
       case SocialMediaType.website:
         return socialMedia?.websiteLink ?? '';

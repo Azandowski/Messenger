@@ -1,6 +1,7 @@
 import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 import 'package:messenger_mobile/modules/media/domain/usecases/get_audios.dart';
 import 'package:messenger_mobile/modules/media/domain/usecases/get_video.dart';
 import 'package:messenger_mobile/modules/profile/domain/usecases/set_wallpaper.dart';
@@ -225,6 +226,6 @@ Future<void> init() async {
   // Data sources
 
   sl.registerLazySingleton<MediaLocalDataSource>(
-    () => MediaLocalDataSourceImpl(),
+    () => MediaLocalDataSourceImpl(imagePicker: ImagePicker()),
   );
 }

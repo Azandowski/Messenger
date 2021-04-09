@@ -22,6 +22,7 @@ import 'package:messenger_mobile/modules/creation_module/data/models/contact_mod
 import 'package:messenger_mobile/modules/creation_module/domain/entities/contact.dart';
 import 'package:messenger_mobile/modules/profile/data/models/user_model.dart';
 import 'package:messenger_mobile/modules/profile/domain/entities/user.dart';
+import 'package:messenger_mobile/modules/social_media/data/models/social_media_model.dart';
 import 'package:messenger_mobile/modules/social_media/domain/entities/social_media.dart';
 
 final date1 = DateTime.parse('2021-01-01 00:00:01.860545');
@@ -281,6 +282,13 @@ final tSocialMedia = SocialMedia(
   youtubeLink: 'youtubeLink',
   whatsappNumber: 'whatsappNumber',
 );
+final tSocialMediaModel = SocialMediaModel(
+  facebookLink: 'facebookLink',
+  instagramLink: 'instagramLink',
+  websiteLink: 'websiteLink',
+  youtubeLink: 'youtubeLink',
+  whatsappNumber: 'whatsappNumber',
+);
 
 // +
 final mediaStatsModel = MediaStatsModel(
@@ -337,6 +345,7 @@ final tUserModel = UserModel(
   phoneNumber: '+77777777777',
   profileImage: ConfigExtension.buildURLHead() + 'avatar',
   isBlocked: false,
+  status: 'status',
 );
 
 // +
