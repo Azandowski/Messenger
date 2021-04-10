@@ -170,5 +170,7 @@
     "link_error": "Need a direct link to {service}",
     "whatsapp_number_error": "Need a direct number from WhatsApp",
     "chatCreated": "Chat was created",
-    "no_contacts": "You don't have contacts in AIO Messenger yet"
+    "no_contacts": "You don't have contacts in AIO Messenger yet",
+    "smart_bot": "Smart bot",
+    "calls": "Calls"
 }

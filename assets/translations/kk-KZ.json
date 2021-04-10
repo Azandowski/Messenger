@@ -170,5 +170,7 @@
     "link_error": "{service} - аккаунтының тура сілтемесі қажет",
     "whatsapp_number_error": "WhatsApp нөмір дұрыс болуы қажет",
     "chatCreated": "Чат жасалынды",
-    "no_contacts": "Сізде AIO Messenger-де контактілер жоқ"
+    "no_contacts": "Сізде AIO Messenger-де контактілер жоқ",
+    "smart_bot": "Ақылды бот",
+    "calls": "Қоңыраулар"
 }

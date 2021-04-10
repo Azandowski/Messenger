@@ -54,6 +54,8 @@ extension ChatActionsExtension on ChatActions {
       return false;
     } else if (this == ChatActions.chatCreated || this == ChatActions.leaveChat) {
       return false;
+    } else if (this == ChatActions.addUser) {
+      return false;
     }
 
     return true;
@@ -127,7 +129,7 @@ class GroupAction extends ChatAction {
 
   bool get needsSecondUser => action.needsSecondUser;
 
-  bool get isAtLeft => action == ChatActions.leaveChat;
+  bool get isAtLeft => action == ChatActions.leaveChat || action == ChatActions.addUser;
 
   GroupAction({
     @required this.action,
