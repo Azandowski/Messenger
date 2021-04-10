@@ -27,34 +27,36 @@ class ProfileHeader extends StatelessWidget {
           CircleAvatar(
             radius: 37.5,
             backgroundImage: imageURL == null ? 
-              AssetImage('assets/images/logo.png') : NetworkImage(imageURL),
+              AssetImage('assets/images/default_user.jpg') : NetworkImage(imageURL),
           ),
           SizedBox(width: 10,),
-          InkWell(
-            onTap: () {
-              if (onPress != null) { onPress(); }   
-            },
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  name ?? 'no_name'.tr(),
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold
-                  ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                name ?? 'no_name'.tr(),
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold
                 ),
-                SizedBox(height: 5,),
-                Text(
-                  phoneNumber,
-                  style: TextStyle(
-                    fontSize: 16
-                  )
+              ),
+              SizedBox(height: 5,),
+              Text(
+                phoneNumber ?? '',
+                style: TextStyle(
+                  fontSize: 16
                 )
-              ],
-            ),
+              )
+            ],
+          ),
+          Spacer(),
+          IconButton(
+            icon: Icon(Icons.edit), 
+            onPressed: () {
+              if (onPress != null) { onPress(); }  
+            }
           )
         ],
       ),

@@ -11,6 +11,7 @@ import '../../modules/creation_module/presentation/pages/creation_module_screen.
 import '../../modules/profile/presentation/pages/profile_page.dart';
 import '../widgets/independent/bottomBar/appBottomBar.dart';
 import 'splash_screen.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class AppScreen extends StatefulWidget {
   @override
@@ -63,10 +64,10 @@ class _AppScreenState extends State<AppScreen> {
 
   NavigatorState get _navigator => sl<Application>().navKey.currentState;
 
-  final pages = [
+  get pages => [
     ChatsScreen(),
-    UnavailableScreen(),
-    UnavailableScreen(),
+    UnavailableScreen('smart_bot'.tr()),
+    UnavailableScreen('calls'.tr()),
     ProfilePage(),
   ];
 

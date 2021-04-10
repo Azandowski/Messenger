@@ -71,7 +71,7 @@ class ChatViewModel {
         var userViewModel = MessageUserViewModel(entity.lastMessage.toUser);
         
         return entity.lastMessage.chatActions.getDescription(
-          userViewModel.name
+          userViewModel.username
         );
       }
 

@@ -70,7 +70,9 @@ class ChatActionView extends StatelessWidget {
       ),
       SizedBox(width: 4),
       if (
-        groupAction.firstUser != null && groupAction.needsSecondUser && !groupAction.isAtLeft
+        groupAction.firstUser != null && 
+          groupAction.needsSecondUser && 
+            !groupAction.isAtLeft
       )
         Flexible(
           child: Text(

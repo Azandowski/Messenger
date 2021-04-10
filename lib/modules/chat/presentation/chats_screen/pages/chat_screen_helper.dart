@@ -137,7 +137,7 @@ extension ChatScreenStateHelper on ChatScreenState {
                   ),
                 ),
                 Container(
-                  child: Text(state.topMessage.text,
+                  child: Text(state.topMessage.text ?? '',
                     style: AppFontStyles.black14w400.copyWith(
                       height: 1.4,
                     ),
