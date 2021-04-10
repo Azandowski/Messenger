@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../../../app/appTheme.dart';
 import '../../../../category/data/models/chat_view_model.dart';
 import '../../../domain/entities/chat_detailed.dart';
-
+import 'package:easy_localization/easy_localization.dart';
 enum CommunicationType { chat, audio, video,  }
 
 extension CommunicationTypeUIExtension on CommunicationType {
@@ -93,7 +93,7 @@ class ChatDetailHeader extends StatelessWidget {
                           ),
                           if (chatDetailed?.user != null)
                             Text(
-                              chatDetailed?.user?.phoneNumber ?? 'no_number',
+                              chatDetailed?.user?.phoneNumber ?? 'no_number'.tr(),
                               style: TextStyle(
                                 color: Colors.black,
                                 fontWeight: FontWeight.w500,
