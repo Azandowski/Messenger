@@ -64,17 +64,13 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
 
   @override
   Future<Either<Failure, CodeEntity>> createCode(PhoneParams params) async {
-    if (await networkInfo.isConnected) {
       try {
         final codeEntity =
             await remoteDataSource.createCode(params.phoneNumber);
         return Right(codeEntity);
-      } on ServerFailure {
-        return Left(ServerFailure(message: FailureMessages.invalidPhone));
+      } on ServerFailure catch(e) {
+        return Left(e);
       }
-    } else {
-      return Left(ServerFailure(message: FailureMessages.noConnection));
-    }
   }
 
   @override

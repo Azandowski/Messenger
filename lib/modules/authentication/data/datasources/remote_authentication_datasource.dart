@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
-
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../core/config/auth_config.dart';
 import '../../../../core/config/settings.dart';
 import '../../../../core/error/failures.dart';
@@ -37,38 +37,49 @@ class AuthenticationRemoteDataSourceImpl
 
   @override
   Future<CodeModel> createCode(String number) async {
-    http.Response response = await client.post(
-      Endpoints.createCode.buildURL(),
-      body: jsonEncode({'phone': number}),
-      headers: Endpoints.createCode.getHeaders(),
-    );
-    if (response.statusCode >= 200 && response.statusCode <= 299) {
-      var jsonMap = json.decode(response.body);
-      return CodeModel.fromJson(jsonMap);
-    } else {
+    try {
+      http.Response response = await client.post(
+        Endpoints.createCode.buildURL(),
+        body: jsonEncode({'phone': number}),
+        headers: Endpoints.createCode.getHeaders(),
+      );
+      if (response.statusCode >= 200 && response.statusCode <= 299) {
+        var jsonMap = json.decode(response.body);
+        return CodeModel.fromJson(jsonMap);
+      } else {
+        throw ServerFailure(
+            message: ErrorHandler.getErrorMessage(response.body.toString()));
+      }
+    }catch(e){
+      print(e);
       throw ServerFailure(
-          message: ErrorHandler.getErrorMessage(response.body.toString()));
+          message: ErrorHandler.getErrorMessage('no_connection'.tr()));
     }
   }
 
   @override
   Future<TokenEntity> login(String number, String code) async {
-    var url = Endpoints.login.buildURL();
-    var headers = Endpoints.login.getHeaders();
-    final response = await client.post(url,
-        body: json.encode({
-          'phone': number,
-          'code': code,
-          'application_id': APP_ID,
-        }),
-        headers: headers);
+    try {
+      var url = Endpoints.login.buildURL();
+      var headers = Endpoints.login.getHeaders();
+      final response = await client.post(url,
+          body: json.encode({
+            'phone': number,
+            'code': code,
+            'application_id': APP_ID,
+          }),
+          headers: headers);
 
-    if (response.statusCode >= 200 && response.statusCode <= 299) {
-      var jsonMap = json.decode(response.body);
-      return TokenModel.fromJson(jsonMap);
-    } else {
-      throw ServerFailure(message: 'invalid code');
+      if (response.statusCode >= 200 && response.statusCode <= 299) {
+        var jsonMap = json.decode(response.body);
+        return TokenModel.fromJson(jsonMap);
+      } else {
+        throw ServerFailure(message: 'invalid code');
+      }
+    }catch (e){
+        throw ServerFailure(message: 'no_connection'.tr());
     }
+    
   }
 
   void returnUrlBodyHeaders(Endpoints endpoint) {}
