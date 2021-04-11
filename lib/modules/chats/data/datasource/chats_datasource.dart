@@ -169,7 +169,6 @@ class ChatsDataSourceImpl implements ChatsDataSource {
     String appDocumentsPath = appDocumentsDirectory.path; 
     String filePath = '$appDocumentsPath/wallpaper.png';
     File output;
-    
     try {
       output = File(filePath);
     } catch (e) {}
@@ -182,6 +181,7 @@ class ChatsDataSourceImpl implements ChatsDataSource {
     Directory appDocumentsDirectory = await getTemporaryDirectory(); 
     String appDocumentsPath = appDocumentsDirectory.path; 
     String filePath = '$appDocumentsPath/wallpaper.png';
+    print(filePath);
     file.copy(filePath);
   }
 

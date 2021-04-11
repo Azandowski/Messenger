@@ -30,7 +30,7 @@ extension ChatBlocExtension on ChatBloc {
         unreadCount: unreadCount ?? state.unreadCount,
         showBottomPin: showBottomPin ?? state.showBottomPin,
         chatEntity: chatEntity ?? state.chatEntity,
-        isSecretModeOn: isSecretModeOn ?? state.isSecretModeOn,
+        isSecretModeOn: isSecretModeOn ?? state?.isSecretModeOn ?? false,
         topMessage: topMessage ?? state.topMessage,
         currentTimerOption: isTimerDeleted ? null : currentTimerOption ?? state.currentTimerOption
       );
@@ -44,7 +44,7 @@ extension ChatBlocExtension on ChatBloc {
         showBottomPin: showBottomPin ?? state.showBottomPin,
         isPagination: isPagination ?? false,
         chatEntity: chatEntity ?? state.chatEntity,
-        isSecretModeOn: state.isSecretModeOn,
+        isSecretModeOn: state?.isSecretModeOn ?? false,
         direction: direction,
         topMessage: topMessage ?? state.topMessage,
         currentTimerOption: isTimerDeleted ? null : currentTimerOption ?? state.currentTimerOption
@@ -58,7 +58,7 @@ extension ChatBlocExtension on ChatBloc {
         unreadCount: unreadCount ?? state.unreadCount,
         showBottomPin: showBottomPin ?? state.showBottomPin,
         chatEntity: chatEntity ?? state.chatEntity,
-        isSecretModeOn: state.isSecretModeOn,
+        isSecretModeOn: state?.isSecretModeOn ?? false,
         topMessage: topMessage ?? state.topMessage,
         currentTimerOption: isTimerDeleted ? null : currentTimerOption ?? state.currentTimerOption
       );
@@ -72,7 +72,7 @@ extension ChatBlocExtension on ChatBloc {
         showBottomPin: showBottomPin ?? state.showBottomPin,
         message: message,
         chatEntity: chatEntity ?? state.chatEntity,
-        isSecretModeOn: state.isSecretModeOn,
+        isSecretModeOn: state?.isSecretModeOn ?? false,
         topMessage: topMessage ?? state.topMessage,
         currentTimerOption: isTimerDeleted ? null : currentTimerOption ?? state.currentTimerOption
       );

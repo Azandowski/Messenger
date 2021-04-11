@@ -42,7 +42,7 @@ extension ChatScreenStateHelper on ChatScreenState {
       navigator: navigator, 
       widget: widget, 
       appBar: AppBar(),
-      isSecretModeOn: chatScreenState.isSecretModeOn,
+      isSecretModeOn: chatScreenState?.isSecretModeOn,
       onTapChatAction: onTapChatAction
     );
   }
@@ -262,7 +262,7 @@ extension ChatScreenStateHelper on ChatScreenState {
 
       var chatGlobalCubit = context.read<main_chat_cubit.ChatGlobalCubit>();
       
-      chatGlobalCubit.setSecretMode(isOn: state.isSecretModeOn, chatId: widget.chatEntity.chatId);
+      chatGlobalCubit.setSecretMode(isOn: state?.isSecretModeOn, chatId: widget.chatEntity.chatId);
       
       var globalIndexOfChat = chatGlobalCubit.state.chats.indexWhere((e) => e.chatId == widget.chatEntity.chatId);
 

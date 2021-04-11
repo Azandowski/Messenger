@@ -83,7 +83,7 @@ class ChatScreenState extends State<ChatScreen> implements ChatChooseDelegate{
       getMessagesContext: GetMessagesContext(repository: chatRepository),
       chatsRepository: sl(),
       setTimeDeleted: SetTimeDeleted(repository: chatRepository),
-      isSecretModeOn: widget.chatEntity.permissions?.isSecret ?? false,
+      isSecretModeOn: widget.chatEntity?.permissions?.isSecret ?? false,
       chatEntity: widget.chatEntity,
     )..add(LoadMessages(
       isPagination: false,
@@ -150,7 +150,7 @@ class ChatScreenState extends State<ChatScreen> implements ChatChooseDelegate{
                     cubit, state, chatViewModel, navigator,
                     (ChatAppBarActions action) {
                       if (action == ChatAppBarActions.onOffSecretMode) {
-                        _chatBloc.add(SetInitialTime(isOn: !(state.isSecretModeOn ?? false)));
+                        _chatBloc.add(SetInitialTime(isOn: !(state?.isSecretModeOn ?? false)));
                       }
                     }
                   ),
