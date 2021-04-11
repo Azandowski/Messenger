@@ -106,7 +106,7 @@ class _ChooseContactsScreenState extends State<ChooseContactsScreen> implements 
 
                             return (
                               index >= contacts.length 
-                                && state.status == ContactStatus.loading ) ? 
+                                || state.status == ContactStatus.loading ) ? 
                               CellShimmerItem(circleSize: 35) : 
                                 ContactCell(
                                   contactItem: contacts[index].contactEntity,

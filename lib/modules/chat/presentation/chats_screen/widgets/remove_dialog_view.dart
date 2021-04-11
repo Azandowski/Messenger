@@ -41,9 +41,9 @@ class DeleteDialogView extends StatelessWidget {
           buttonStyle: DialogActionButtonStyle.dangerous,
           title: 'delete'.tr(),
           onPress: () {
-            if(currentIndex != null){
+            if (currentIndex != null) {
               Navigator.pop(context);
-              onDelete(false);
+              onDelete(currentIndex == 0);
             }
           }
         )

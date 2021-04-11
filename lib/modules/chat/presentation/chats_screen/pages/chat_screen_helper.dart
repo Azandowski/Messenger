@@ -77,7 +77,7 @@ extension ChatScreenStateHelper on ChatScreenState {
           onTap: () {
             if (state.isDelete) {
               showDialog(context: context, builder: (ctx) {
-                return DeleteDialogView(onDelete: (forMe){
+                return DeleteDialogView(onDelete: (forMe) {
                   chatTodoCubit.deleteMessage(
                     chatID: widget.chatEntity.chatId,
                     forMe: forMe
