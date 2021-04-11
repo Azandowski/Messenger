@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen_import.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../../../../core/config/auth_config.dart';
@@ -181,8 +182,12 @@ class ChatsDataSourceImpl implements ChatsDataSource {
     Directory appDocumentsDirectory = await getTemporaryDirectory(); 
     String appDocumentsPath = appDocumentsDirectory.path; 
     String filePath = '$appDocumentsPath/wallpaper.png';
-    print(filePath);
-    file.copy(filePath);
+    File oldImage = File(filePath);
+    if(await oldImage.exists()) {
+      await oldImage.delete();
+    }
+    await file.copy(filePath);
+    imageCache.clear();
   }
 
   @override
