@@ -9,16 +9,19 @@ class SendMessageTextField extends StatelessWidget {
     Key key,
     @required this.widget,
     @required PanelBlocCubit panelBloc,
+    @required this.textFieldFocusNode
   }) : _panelBloc = panelBloc, super(key: key);
 
   final ChatControlPanel widget;
   final PanelBlocCubit _panelBloc;
+  final FocusNode textFieldFocusNode;
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
       child: TextFormField(
       controller: widget.messageTextController,
+      focusNode: textFieldFocusNode,
       onChanged: (String text) => _panelBloc.updateText(text),
       decoration: InputDecoration(
         border: InputBorder.none,

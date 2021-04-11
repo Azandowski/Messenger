@@ -49,7 +49,7 @@ class ChatControlPanel extends StatefulWidget {
 }
 
 class ChatControlPanelState extends State<ChatControlPanel> 
-  with TickerProviderStateMixin 
+  with TickerProviderStateMixin, WidgetsBindingObserver
     implements MapScreenDelegate, ContactChooseDelegate {
 
   NavigatorState get _navigator => sl<Application>().navKey.currentState;
@@ -90,6 +90,9 @@ class ChatControlPanelState extends State<ChatControlPanel>
 
   Size microButtonSize;
   
+  FocusNode messageFieldNode = FocusNode();
+  bool isKeyboardAlreadyVisible = false;
+
   @override
   void initState() {
     super.initState();
@@ -120,24 +123,42 @@ class ChatControlPanelState extends State<ChatControlPanel>
         pauseButton?.markNeedsBuild();
       });
     });
+
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
   void dispose() {
-    if(!(buttonMicroCubit.state is ButtonMicroInitialStable)){
-      if(!(buttonMicroCubit.state is ButtonMicroMove)){
+    if (!(buttonMicroCubit.state is ButtonMicroInitialStable)) {
+      if (!(buttonMicroCubit.state is ButtonMicroMove)) {
         deleteEveryEntry(isSwipe: false);
-      }else{
+      } else {
         deleteEveryEntry();
       }
     }
+    
     microController.dispose();
     pauseController.dispose();
+    messageFieldNode.dispose();
     buttonMicroCubit.close();
     recordBloc.add(VoiceBlocDispose());
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
   
+  @override
+  void didChangeMetrics() {
+    final bottomInset = WidgetsBinding.instance.window.viewInsets.bottom;
+    final newValue = bottomInset > 0.0;
+    if (newValue != isKeyboardAlreadyVisible) {
+      isKeyboardAlreadyVisible = newValue;
+      if (isKeyboardAlreadyVisible) {
+        _panelBloc.toggleEmojies(value: false);
+      }
+    }
+  }
+
+
   final panelDecoration = BoxDecoration(
     color: AppColors.pinkBackgroundColor,
     boxShadow: [
@@ -195,6 +216,7 @@ class ChatControlPanelState extends State<ChatControlPanel>
                                     ),
                                     child: voiceState is VoiceRecordEmpty ? 
                                       SendMessageRow(
+                                        textFieldFocusNode: messageFieldNode,
                                         widget: widget, 
                                         panelBloc: _panelBloc,
                                         currentTimeOptions: widget.currentTimeOption,
@@ -202,6 +224,7 @@ class ChatControlPanelState extends State<ChatControlPanel>
                                           widget.onTapLeftIcon();
                                         },
                                         onTapEmojiIcon: () {
+                                          this.handleKeyboard(isShow: state.showEmojies);
                                           _panelBloc.toggleEmojies();
                                         },
                                       ) : VoiceRecordingRow(

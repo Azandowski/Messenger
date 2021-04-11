@@ -13,7 +13,8 @@ class SendMessageRow extends StatelessWidget {
     @required PanelBlocCubit panelBloc,
     @required this.onTapLeadingIcon,
     @required this.currentTimeOptions,
-    @required this.onTapEmojiIcon
+    @required this.onTapEmojiIcon,
+    @required this.textFieldFocusNode
   }) : _panelBloc = panelBloc, super(key: key);
 
   final ChatControlPanel widget;
@@ -21,6 +22,7 @@ class SendMessageRow extends StatelessWidget {
   final TimeOptions currentTimeOptions;
   final Function onTapLeadingIcon;
   final Function onTapEmojiIcon;
+  final FocusNode textFieldFocusNode;
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +38,7 @@ class SendMessageRow extends StatelessWidget {
         SendMessageTextField(
           widget: widget, 
           panelBloc: _panelBloc,
+          textFieldFocusNode: textFieldFocusNode
         ),
         InkWell(
           onTap: () {

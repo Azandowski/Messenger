@@ -42,4 +42,10 @@ extension ChatBottomPanelTypesUIExtension on ChatBottomPanelTypes {
         return '';
     }
   }
+
+
+  bool get isMedia {
+    return this == ChatBottomPanelTypes.camera || 
+      this == ChatBottomPanelTypes.video || this == ChatBottomPanelTypes.image;
+  }
 }

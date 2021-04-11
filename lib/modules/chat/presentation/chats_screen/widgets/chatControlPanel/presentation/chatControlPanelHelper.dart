@@ -276,8 +276,8 @@ extension ChatControlPanelStateHelper on ChatControlPanelState {
     }
   }
 
-   void deleteEveryEntry({bool isPause = true, isSwipe = true}){
-    if(recordButton != null){
+   void deleteEveryEntry({bool isPause = true, isSwipe = true}) {
+    if (recordButton != null){
       recordButton?.remove();
       recordButton = null;
     }
@@ -291,4 +291,9 @@ extension ChatControlPanelStateHelper on ChatControlPanelState {
     }
   }
   
+  void handleKeyboard ({
+    @required bool isShow
+  }) {
+    isShow ? messageFieldNode.requestFocus() : messageFieldNode.unfocus();
+  }
 }

@@ -140,9 +140,9 @@ class PanelBlocCubit extends Cubit<PanelBlocState> {
     });
   }
   
-  void toggleEmojies () {
+  void toggleEmojies ({ bool value }) {
     emit(state.copyWith(
-      showEmojies: !state.showEmojies
+      showEmojies: value ?? !state.showEmojies
     ));
   }
 }

@@ -35,7 +35,10 @@ class ChatBottomPanel extends StatelessWidget {
   List<Widget> _getBody () {
     List<Widget> widgets = [];
     ChatBottomPanelTypes.values.forEach((type) {
-      widgets.add(_buildItem(type, isEnabled: canSendMedia || !canSendMedia && type != ChatBottomPanelTypes.image  ));
+      widgets.add(_buildItem(
+        type, isEnabled: 
+          canSendMedia || !canSendMedia && !type.isMedia 
+      ));
       widgets.add(SizedBox(width: 8));
     });
 
