@@ -73,6 +73,8 @@ class _CategoryListState extends State<CategoryList> {
             } else if (state is CategoryLoaded) {
               updateReorderedCategories(state);
               ScaffoldMessenger.of(context).hideCurrentSnackBar();
+            } else {
+              ScaffoldMessenger.of(context).hideCurrentSnackBar();
             }
           },
           builder: (context, state) {
@@ -93,6 +95,8 @@ class _CategoryListState extends State<CategoryList> {
                     ),
                     SizedBox(height: 15,),
                     returnStateWidget(state, context),
+                    if (_didReorderItems)
+                      SizedBox(height: 80)
                   ],
                 ),
                 if (_didReorderItems)
@@ -206,18 +210,26 @@ extension on _CategoryListState {
     @required List oldIDS, 
     @required List newIDS
   }) {
+    print(oldIDS);
+    print(newIDS);
     List arr2 = newIDS;
     Map<String, int> differences = {};
 
-    oldIDS.asMap().forEach((index, item) {
-      if (item != arr2[index]) {
-        var temp = arr2[index];
-          
-        arr2[index] = item;
-        arr2[arr2.lastIndexOf(item)] = temp;
-        differences['$temp'] = index + 1;
-      }
+    newIDS.asMap().forEach((index, item) {
+      differences['$item'] = index  + 1;
     });
+
+    // oldIDS.asMap().forEach((index, item) {
+    //   if (item != arr2[index]) {
+    //     var temp = arr2[index];
+    //     // arr2.removeAt(index);        
+    //     var oldIndex = oldIDS.indexOf(temp);
+    //     arr2.insert(oldIndex, temp);
+    //     // arr2[index] = item;
+    //     // arr2[arr2.lastIndexOf(item)] = temp;
+    //     differences['$temp'] = index + 1;
+    //   }
+    // });
     
     return differences;
   }

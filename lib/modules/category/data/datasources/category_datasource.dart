@@ -158,7 +158,8 @@ class CategoryDataSourceImpl implements CategoryDataSource {
     if (!response.isSuccess) {
       throw ServerFailure(message: ErrorHandler.getErrorMessage(response.body.toString()));
     } else {
-      final categories =  (json.decode(response.body)['categories'] as List)
+      var jsonBody = json.decode(response.body);
+      final categories =  (jsonBody['categories'] as List)
         .map((e) => CategoryModel.fromJson(e))
         .toList();
       return categories;

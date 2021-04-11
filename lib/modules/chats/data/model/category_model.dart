@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:messenger_mobile/core/services/network/config.dart';
 
 import '../../domain/entities/category.dart';
 
@@ -31,7 +32,8 @@ class CategoryModel extends CategoryEntity {
       id: json['id'],
       name: json['name'],
       avatar: json['avatar'] == '/' ? null : 
-        json['full_link'],
+        json['full_link'] ?? (json['avatar'] != null ?
+          ConfigExtension.buildURLHead() + json['avatar'] : null),
       totalChats: json['total_chats'],
       noReadCount: json['no_read_message'],
       appChatID: json['app_chat'],
