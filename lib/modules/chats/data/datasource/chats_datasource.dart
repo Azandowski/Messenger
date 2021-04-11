@@ -36,8 +36,6 @@ abstract class ChatsDataSource {
 
   Future<File> getLocalWallpaper ();
 
-  Future<void> setLocalWallpaper(File file); 
-
   Future<ChatMessageResponse> searchChats ({
     Uri nextPageURL,
     String queryText,

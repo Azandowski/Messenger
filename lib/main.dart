@@ -2,6 +2,9 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:messenger_mobile/core/blocs/bloc/wallpaperRepository/dataSource/localDataSource.dart';
+import 'package:messenger_mobile/core/blocs/bloc/wallpaperRepository/wallpaperRepositoryImpl.dart';
+import 'package:messenger_mobile/core/blocs/bloc/wallpaper_bloc_bloc.dart';
 import 'package:messenger_mobile/core/screens/splash_screen.dart';
 import 'app/application.dart';
 import 'core/services/notifications/notification_handler.dart';
@@ -75,6 +78,9 @@ class MainApp extends StatelessWidget {
                 ),
                 BlocProvider.value(
                   value: serviceLocator.sl<AuthBloc>(),
+                ),
+                BlocProvider(
+                  create: (_) => WallpaperBloc(repository: WallpaperRepositoryImpl(dataSource: WallpaperDataSourceImpl())),
                 ),
               ],
               child: Builder(

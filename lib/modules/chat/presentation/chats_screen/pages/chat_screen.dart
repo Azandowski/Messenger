@@ -1,4 +1,5 @@
 import 'package:flutter/rendering.dart';
+import 'package:messenger_mobile/core/blocs/bloc/wallpaper_bloc_bloc.dart';
 import 'package:messenger_mobile/core/config/auth_config.dart';
 import 'package:messenger_mobile/core/services/network/Endpoints.dart';
 import 'package:http/http.dart' as http;
@@ -128,95 +129,97 @@ class ChatScreenState extends State<ChatScreen> implements ChatChooseDelegate{
     var height = MediaQuery.of(context).size.width;
     ChatViewModel chatViewModel = ChatViewModel(widget.chatEntity);
 
-    return BlocProvider(
-      lazy: false,
-      create: (context) => _chatTodoCubit,
-      child: BlocBuilder<ChatTodoCubit, ChatTodoState>(
-        builder: (context, cubit) {
-          return BlocProvider(
-            create: (context) => _chatBloc,
-            child: BlocConsumer<ChatBloc, ChatState>(
-              listener: (context, state) {
-                handleListener(
-                  state, 
-                  scrollController: _chatBloc.scrollController, 
-                  todoCubit: _chatTodoCubit
-                );
-              },
-              builder: (context, state) {
-                return Scaffold(
-                  appBar: this.buildAppBar(
-                    _chatTodoCubit, 
-                    cubit, state, chatViewModel, navigator,
-                    (ChatAppBarActions action) {
-                      if (action == ChatAppBarActions.onOffSecretMode) {
-                        _chatBloc.add(SetInitialTime(isOn: !(state?.isSecretModeOn ?? false)));
-                      }
-                    }
-                  ),
-                  floatingActionButton: shouldShowBottomPin(state) ?
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 60.0),
-                      child: BottomPin(
-                        state: state,
-                        onPress: () {
-                          _chatBloc.add(LoadMessages(
-                            isPagination: false,
-                            resetAll: true,
-                            direction: RequestDirection.bottom
-                          ));
+    return BlocBuilder<WallpaperBloc, File>(
+      builder: (context, wallpaper) {
+        return BlocProvider(
+          lazy: false,
+          create: (context) => _chatTodoCubit,
+          child: BlocBuilder<ChatTodoCubit, ChatTodoState>(
+            builder: (context, cubit) {
+              return BlocProvider(
+                create: (context) => _chatBloc,
+                child: BlocConsumer<ChatBloc, ChatState>(
+                  listener: (context, state) {
+                    handleListener(
+                      state, 
+                      scrollController: _chatBloc.scrollController, 
+                      todoCubit: _chatTodoCubit
+                    );
+                  },
+                  builder: (context, state) {
+                    return Scaffold(
+                      appBar: this.buildAppBar(
+                        _chatTodoCubit, 
+                        cubit, state, chatViewModel, navigator,
+                        (ChatAppBarActions action) {
+                          if (action == ChatAppBarActions.onOffSecretMode) {
+                            _chatBloc.add(SetInitialTime(isOn: !(state?.isSecretModeOn ?? false)));
+                          }
                         }
                       ),
-                    ) :  null,
-                  backgroundColor: AppColors.pinkBackgroundColor,
-                  body: BlocProvider(
-                    lazy: false,
-                    create: (context) => _panelBlocCubit,
-                    child: BlocProvider<OpenChatCubit>(
-                      create: (context) => OpenChatCubit(
-                        createChatGruopUseCase: sl<CreateChatGruopUseCase>()
-                      ),
-                      child: BlocConsumer<OpenChatCubit, OpenChatState>(
-                        listener: (context, openChatState) {
-                          OpenChatListener().handleStateUpdate(context, openChatState);
-                        },
-                        builder: (context, stopenChatStateate) {
-                          return Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              if (state.topMessage != null) 
-                                InkWell(
-                                  onTap: () {
-                                    _chatBloc.add(LoadMessages(
-                                      messageID: state.topMessage.id,
-                                      isPagination: false
-                                    ));
-                                  },
-                                  child: this.buildTopMessage(state,
-                                    width, height, _chatTodoCubit,
-                                  ),
-                                ),
-                              Expanded(
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    image: this.getBackground(state),
-                                    // color: Colors.red
-                                  ),
-                                  child: ListView.separated(
-                                    key: PageStorageKey('feed'),
-                                    controller: _chatBloc.scrollController,
-                                    itemBuilder: (context, int index) => this.buildMessageCell(
-                                      index: index, 
-                                      state: state, 
-                                      cubit: cubit, 
-                                      panelBlocCubit: _panelBlocCubit, 
-                                      chatTodoCubit: _chatTodoCubit, 
-                                      chatBloc: _chatBloc,
-                                      chatRepository: chatRepository
+                      floatingActionButton: shouldShowBottomPin(state) ?
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 60.0),
+                          child: BottomPin(
+                            state: state,
+                            onPress: () {
+                              _chatBloc.add(LoadMessages(
+                                isPagination: false,
+                                resetAll: true,
+                                direction: RequestDirection.bottom
+                              ));
+                            }
+                          ),
+                        ) :  null,
+                      backgroundColor: AppColors.pinkBackgroundColor,
+                      body: BlocProvider(
+                        lazy: false,
+                        create: (context) => _panelBlocCubit,
+                        child: BlocProvider<OpenChatCubit>(
+                          create: (context) => OpenChatCubit(
+                            createChatGruopUseCase: sl<CreateChatGruopUseCase>()
+                          ),
+                          child: BlocConsumer<OpenChatCubit, OpenChatState>(
+                            listener: (context, openChatState) {
+                              OpenChatListener().handleStateUpdate(context, openChatState);
+                            },
+                            builder: (context, stopenChatStateate) {
+                              return Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  if (state.topMessage != null) 
+                                    InkWell(
+                                      onTap: () {
+                                        _chatBloc.add(LoadMessages(
+                                          messageID: state.topMessage.id,
+                                          isPagination: false
+                                        ));
+                                      },
+                                      child: this.buildTopMessage(state,
+                                        width, height, _chatTodoCubit,
+                                      ),
                                     ),
-                                    cacheExtent: 40,
-                                    scrollDirection: Axis.vertical,
+                                  Expanded(
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        image: this.getBackground(wallpaper),
+                                        // color: Colors.red
+                                      ),
+                                      child: ListView.separated(
+                                        key: PageStorageKey('feed'),
+                                        controller: _chatBloc.scrollController,
+                                        itemBuilder: (context, int index) => this.buildMessageCell(
+                                          index: index, 
+                                          state: state, 
+                                          cubit: cubit, 
+                                          panelBlocCubit: _panelBlocCubit, 
+                                          chatTodoCubit: _chatTodoCubit, 
+                                          chatBloc: _chatBloc,
+                                          chatRepository: chatRepository
+                                        ),
+                                        cacheExtent: 40,
+                                        scrollDirection: Axis.vertical,
                                     itemCount: getItemsCount(state),
                                     reverse: true,
                                     separatorBuilder: (_, int index) {
@@ -250,6 +253,7 @@ class ChatScreenState extends State<ChatScreen> implements ChatChooseDelegate{
         },
       )
     );
+  });
   }
 
 

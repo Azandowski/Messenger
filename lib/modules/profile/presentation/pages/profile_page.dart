@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:messenger_mobile/app/application.dart';
+import 'package:messenger_mobile/core/blocs/bloc/wallpaper_bloc_bloc.dart';
 import 'package:messenger_mobile/core/config/language.dart';
 import 'package:messenger_mobile/core/screens/offert_screen.dart';
 import '../../../../core/blocs/authorization/bloc/auth_bloc.dart';
@@ -27,7 +28,8 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   ProfileCubit cubit = sl<ProfileCubit>();
-
+  WallpaperBloc _wallpaperBloc;
+  
   Widget buildSeparator() {
     return SizedBox(
       height: 25,
@@ -35,6 +37,12 @@ class _ProfilePageState extends State<ProfilePage> {
         color: Colors.grey[200],
       ),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _wallpaperBloc = context.read<WallpaperBloc>();
   }
 
   @override
@@ -96,7 +104,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         );
                         
                         final file = File(image.path);
-                        cubit.setWallpaperFile(file);
+                        _wallpaperBloc.add(ChangeFile(file));
                       }
                     ),
                     ListTile(

@@ -1,4 +1,5 @@
 import 'package:flutter/rendering.dart';
+import 'package:messenger_mobile/core/blocs/bloc/wallpaper_bloc_bloc.dart';
 import 'package:messenger_mobile/core/config/auth_config.dart';
 import 'package:messenger_mobile/core/utils/snackbar_util.dart';
 import 'package:messenger_mobile/modules/category/presentation/chooseChats/presentation/chat_choose_page.dart';
@@ -47,10 +48,10 @@ extension ChatScreenStateHelper on ChatScreenState {
     );
   }
 
-  DecorationImage getBackground (ChatState state) {
+  DecorationImage getBackground (File file) {
     return DecorationImage(
-      image: state.wallpaperFile != null ? 
-        FileImage(state.wallpaperFile) : 
+      image: file != null ? 
+        FileImage(file) : 
           AssetImage('assets/images/bg-home.png'),
       fit: BoxFit.cover
     );

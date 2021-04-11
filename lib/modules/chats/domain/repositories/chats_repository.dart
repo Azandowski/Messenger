@@ -21,8 +21,6 @@ abstract class ChatsRepository {
 
   Future<File> getLocalWallpaper ();
 
-  Future<void> setLocalWallpaper(File file); 
-
   Stream<ChatEntity> chats;
 
   Future<void> saveNewChatLocally (ChatEntity model);

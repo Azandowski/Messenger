@@ -145,11 +145,6 @@ class ChatsRepositoryImpl extends ChatsRepository {
   }
 
   @override
-  Future<void> setLocalWallpaper(File file) {
-    return chatsDataSource.setLocalWallpaper(file);
-  }
-
-  @override
   Future<void> saveNewChatLocally(ChatEntity model) async {
     return localChatsDataSource.setCategoryChats([model]);
   }
