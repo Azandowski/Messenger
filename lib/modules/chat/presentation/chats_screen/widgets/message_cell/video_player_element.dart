@@ -275,6 +275,14 @@ class _PreviewVideoState extends State<PreviewVideo> with AutomaticKeepAliveClie
   Future<String> getImage;
 
   @override
+  void didUpdateWidget(covariant PreviewVideo oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if(oldWidget.url != widget.url){
+      getImage = futureMethod();
+    }
+  }
+
+  @override
   void dispose() {
     super.dispose();
   }
@@ -292,7 +300,7 @@ class _PreviewVideoState extends State<PreviewVideo> with AutomaticKeepAliveClie
       tempPath = _tempPath;
     });
   }
-  int value = 0;
+
   Future<String> futureMethod() async {
     if (widget.url != null) {
       await initThumnail();
@@ -303,10 +311,6 @@ class _PreviewVideoState extends State<PreviewVideo> with AutomaticKeepAliveClie
       maxWidth: ((screenWidth - 32) * 0.55).floor(), // specify the height of the thumbnail, let the width auto-scaled to keep the source aspect ratio
       quality: 60,
     );
-    setState(() {
-      value++;
-    });
-    print(value.toString() + ' SALAM');
     return path;
   }
 
@@ -320,20 +324,15 @@ class _PreviewVideoState extends State<PreviewVideo> with AutomaticKeepAliveClie
           FutureBuilder<String>(
             future: getImage,
             builder: (context, snapshot) {
+              File file;
               if(snapshot.hasData){
-                print(snapshot.data);
+                file = File(snapshot.data);
               }
-              if (snapshot.data != null) {
-                final file = File(snapshot.data);
-
-                return Image(
+               return file != null ?  Image(
                   image: MemoryImage(file.readAsBytesSync()),
                   fit: BoxFit.cover,
                   height: 200,
-                );
-              } else {
-                return Container();
-              }
+                ) : Container();
             }
           ),
          widget.centerWidget,

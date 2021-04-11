@@ -1,8 +1,7 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter_sound/flutter_sound.dart';
-import 'package:flutter_sound/public/flutter_sound_recorder.dart';
+import 'package:flutter_sound_lite/flutter_sound.dart';
 import 'package:messenger_mobile/core/blocs/audioplayer/bloc/audio_player_bloc.dart';
 import '../../../../../../../core/utils/feedbac_taptic_helper.dart';
 import '../../../../../domain/usecases/params.dart';

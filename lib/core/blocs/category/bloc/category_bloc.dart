@@ -29,7 +29,7 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
       .listen((categories) => add(CategoriesChanged(newCategories: categories)));
 
     if(chatGlobalCubit != null){
-      _chatCubitSubscription = chatGlobalCubit.listen((chatState) { 
+      _chatCubitSubscription = chatGlobalCubit.stream.listen((chatState) { 
         print('state changed');
         if(chatState is ChatCategoryReadCountChanged){
           add(CategoryReadCountChanged(

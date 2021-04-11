@@ -58,7 +58,7 @@ class PanelBlocCubit extends Cubit<PanelBlocState> {
   }
 
   toggleBottomPanel () {
-    emit(state.copyWith(showBottomPanel: !state.showBottomPanel));
+    emit(PanelBlocInitial(showBottomPanel: !state.showBottomPanel, showEmojies: this.state.showEmojies));
   }
 
   var _textController = StreamController<String>.broadcast();
@@ -127,7 +127,7 @@ class PanelBlocCubit extends Cubit<PanelBlocState> {
     final result =  await getVideoUseCase(NoParams());
     result.fold((error) {
       emit(PanelBlocError(
-        showBottomPanel: this.state.showBottomPanel, 
+        showBottomPanel: false, 
         errorMessage: error.message,
         showEmojies: state.showEmojies
       ));

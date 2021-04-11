@@ -49,14 +49,10 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
       authConfig.token = token;
       if (token != null && token != '') {
         sl<SocketService>().init();
+        print(token);  
+        await getCurrentUser(token);
+        getCategories(GetCategoriesParams(token: token));
       }
-      print(token);  
-      // print(sl<AuthConfig>().user.id);
-
-      await getCurrentUser(token);
-
-      getCategories(GetCategoriesParams(token: token));
-
     } on StorageFailure {
       params.add(AuthParams(null, null));
     }
@@ -88,6 +84,7 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
     try {
       final token =
           await remoteDataSource.login(params.phoneNumber, params.code);
+      // getCurrentUser(token.token);
       localDataSource.saveToken(token.token);
       var status = await OneSignal.shared.getPermissionSubscriptionState();
       String playerID = status.subscriptionStatus.userId;
