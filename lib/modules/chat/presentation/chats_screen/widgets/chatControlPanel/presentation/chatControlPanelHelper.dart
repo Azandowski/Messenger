@@ -20,7 +20,7 @@ extension ChatControlPanelStateHelper on ChatControlPanelState {
     var heightScreen = MediaQuery.of(context).size.height;
 
     final double x = getX((slideWidth + (dragOffset.dx - (maxMicroButtonSize.width/1.5))),slideWidth/1.75, details: dragOffset);
-    final double y = getYPanel(dragOffset.dy - (slideHeight - maxMicroButtonSize.height/2),-heightScreen*0.125);
+    final double y = getYPanel(dragOffset.dy - (slideHeight - maxMicroButtonSize.height/8),-heightScreen*0.125);
     return Offset(x, y);
   }
 
@@ -203,7 +203,7 @@ extension ChatControlPanelStateHelper on ChatControlPanelState {
       yCoordinate = -slideHeight + (maxMicroButtonSize.height/1.3);
       xCoordinate = size.width*0.9;
     }else{
-      yCoordinate = -slideHeight + (maxMicroButtonSize.height/2);
+      yCoordinate = -slideHeight + (maxMicroButtonSize.height/6);
       xCoordinate = size.width*0.8;
     }
      microAnimation = microController.drive(

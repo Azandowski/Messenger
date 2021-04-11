@@ -159,7 +159,7 @@ extension MessageContainerTranslationExtension on MessageContainer {
 
   Widget _buildTranslatedItem (TranslatedState state) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Wrap(
           children: [

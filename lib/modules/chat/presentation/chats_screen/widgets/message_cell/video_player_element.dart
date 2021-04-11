@@ -339,11 +339,8 @@ class _PreviewVideoState extends State<PreviewVideo> with AutomaticKeepAliveClie
         ],
       ) : 
       SizedBox(
-        width: ((screenWidth - 32) * 0.55),
-        height: 200,
-          child: Container(
-            color: Colors.blue
-          )
+        height: 1,
+        width: 1,
       )
     );
   }
