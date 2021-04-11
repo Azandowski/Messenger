@@ -15,7 +15,7 @@ abstract class MediaLocalDataSource {
 class MediaLocalDataSourceImpl implements MediaLocalDataSource {
   @override
   Future<File> getImage(source) async {
-    var pickedFile = await ImagePicker().getImage(source: source,imageQuality: 10);
+    var pickedFile = await ImagePicker().getImage(source: source,imageQuality: 40);
     return File(pickedFile.path);
   }
   @override

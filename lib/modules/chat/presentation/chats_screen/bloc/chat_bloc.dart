@@ -28,7 +28,6 @@ import '../../../domain/usecases/send_message.dart';
 import '../../../domain/usecases/set_time_deleted.dart';
 import '../pages/chat_screen_import.dart';
 import 'package:latlong/latlong.dart';
-import '../../../../../core/utils/list_helper.dart';
 part 'chat_event.dart';
 part 'chat_state.dart';
 part 'chat_bloc_extension.dart';
