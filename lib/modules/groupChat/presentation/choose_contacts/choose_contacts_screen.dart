@@ -25,10 +25,12 @@ class ChooseContactsScreen extends StatefulWidget {
 
   final ContactChooseDelegate delegate;
   final bool isSingleSelect;
+  final List<int> excludeContactsIDS;
 
   ChooseContactsScreen({
     @required this.delegate,  
-    @required this.isSingleSelect
+    @required this.isSingleSelect,
+    this.excludeContactsIDS
   });
 
   @override
@@ -49,7 +51,10 @@ class _ChooseContactsScreenState extends State<ChooseContactsScreen> implements 
     super.initState();
     _scrollController.addListener(_onScroll);
     _contactBloc = context.read<ContactBloc>();    
-    context.read<ChooseContactCubit>().injectUserContacts(_contactBloc.state.contacts);
+    context.read<ChooseContactCubit>().injectUserContacts(
+      _contactBloc.state.contacts,
+      excludeContactsIDS: widget.excludeContactsIDS
+    );
   }
 
   // * * UI
@@ -63,7 +68,10 @@ class _ChooseContactsScreenState extends State<ChooseContactsScreen> implements 
             if (state.status == ContactStatus.failure) {
               SnackUtil.showError(context: context, message: 'could_not_handle_contacts'.tr());
             } else if (state.status == ContactStatus.success) {
-              context.read<ChooseContactCubit>().injectUserContacts(state.contacts);
+              context.read<ChooseContactCubit>().injectUserContacts(
+                state.contacts,
+                excludeContactsIDS: widget.excludeContactsIDS
+              );
             }
           },
           builder: (_, state) { 

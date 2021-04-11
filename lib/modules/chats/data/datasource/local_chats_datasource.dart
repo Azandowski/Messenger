@@ -39,11 +39,26 @@ class LocalChatsDataSourceImpl implements LocalChatsDataSource {
     var chatSaveJobs = <Future>[];
     
     chats.forEach((chat) async { 
-      if (chat is ChatEntityModel) {
-        chatSaveJobs.add(_chatsFolder.record(chat.chatId).put(await _localDb, new Map<String, dynamic>.from(
-          chat .toJson()
-        )));
-      }
+      var chatBodyJSON = chat is ChatEntityModel ? chat.toJson() :
+        ChatEntityModel(
+          chatId: chat.chatId,
+          chatCategory: chat.chatCategory,
+          title: chat.title,
+          imageUrl: chat.imageUrl,
+          date: chat.date,
+          permissions: chat.permissions,
+          lastMessage: chat.lastMessage,
+          unreadCount: chat.unreadCount,
+          description: chat.description,
+          isPrivate: chat.isPrivate,
+          isRead: chat.isRead,
+          chatUpdateType: chat.chatUpdateType,
+          adminID: chat.adminID
+        ).toJson();
+      
+      chatSaveJobs.add(_chatsFolder.record(chat.chatId).put(await _localDb, new Map<String, dynamic>.from(
+        chatBodyJSON
+      )));
     });
     
     return Future.wait(chatSaveJobs);

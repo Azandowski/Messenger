@@ -167,7 +167,7 @@ class ChatScreenState extends State<ChatScreen> implements ChatChooseDelegate{
                           ));
                         }
                       ),
-                    ) : null,
+                    ) :  null,
                   backgroundColor: AppColors.pinkBackgroundColor,
                   body: BlocProvider(
                     lazy: false,

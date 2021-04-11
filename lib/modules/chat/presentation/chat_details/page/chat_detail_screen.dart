@@ -164,7 +164,12 @@ class _ChatDetailScreenState extends State<ChatDetailScreen>
                           IconTextButton(
                             imageAssetPath: 'assets/icons/create.png',
                             onPress: () {
-                              _navigator.push(ChooseContactsPage.route(this));
+                              _navigator.push(ChooseContactsPage.route(
+                                this,
+                                excludeContactsIDS: (state.chatDetailed.members ?? []).map(
+                                  (e) => e.id
+                                ).toList()
+                              ));
                             },
                             title: 'add_users'.tr(),
                           ),
