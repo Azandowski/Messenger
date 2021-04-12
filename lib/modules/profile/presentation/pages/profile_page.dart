@@ -69,6 +69,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       imageURL: profileState.user.profileImage,
                       name: profileState.user.fullName,
                       phoneNumber: profileState.user.phoneNumber,
+                      status: profileState.user.status,
                       onPress: () {
                         _handleEditScreenNavigation(context);
                       },
