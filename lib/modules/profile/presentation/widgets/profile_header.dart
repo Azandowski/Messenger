@@ -33,7 +33,7 @@ class ProfileHeader extends StatelessWidget {
               AssetImage('assets/images/default_user.jpg') : NetworkImage(imageURL),
           ),
           SizedBox(width: 10,),
-          Flexible(
+          Expanded(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -46,6 +46,7 @@ class ProfileHeader extends StatelessWidget {
                     fontWeight: FontWeight.bold
                   ),
                   overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.start
                 ),
                 SizedBox(height: 5,),
                 Text(
