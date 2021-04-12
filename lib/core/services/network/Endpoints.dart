@@ -59,6 +59,7 @@ extension EndpointsExtension on Endpoints {
 
   Map<String, String> getHeaders({String token, Map defaultHeaders}) {
     return {
+      ...{'accept': 'application/json'},
       if (defaultHeaders != null) ...defaultHeaders,
       if (token != null && token != "") ...{"Authorization": "Bearer $token"},
       if (defaultHeaders == null && this != Endpoints.updateCurrentUser) ...{

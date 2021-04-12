@@ -133,12 +133,12 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
   @override
   Future<Either<Failure, bool>> logout(NoParams params) async {
     try {
+      var status = await OneSignal.shared.getPermissionSubscriptionState();
+      String playerID = status.subscriptionStatus.userId;
+      await remoteDataSource.deletePlayerID(playerID, token);
       await localDataSource.deleteToken();
       await localDataSource.deleteContacts();
       initToken();
-      var status = await OneSignal.shared.getPermissionSubscriptionState();
-      String playerID = status.subscriptionStatus.userId;
-      remoteDataSource.deletePlayerID(playerID, token);
       return Right(true);
     } on StorageFailure {
       return Left(StorageFailure());

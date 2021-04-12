@@ -133,8 +133,6 @@ class AuthenticationRemoteDataSourceImpl
       }),
       headers: headers
     );
-    
-    print(json.decode(response.body));
 
     if (response.statusCode >= 200 && response.statusCode <= 299) {
       return true;

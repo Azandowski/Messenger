@@ -92,7 +92,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                       onTap: () async {
                         final PickedFile image = await ImagePicker().getImage(
-                          source: ImageSource.gallery
+                          source: ImageSource.gallery,imageQuality: 50
                         );
                         
                         final file = File(image.path);
