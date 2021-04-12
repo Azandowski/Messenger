@@ -37,7 +37,7 @@ class MessageViewModel {
   }
 
   String get time {
-    if (timeLeftToBeDeleted != null) {
+    if (timeLeftToBeDeleted != null && timeLeftToBeDeleted > 0) {
       return sl<DateHelper>().getTimerLeft(timeLeftToBeDeleted);
     } else if (message.dateTime != null) {
       return new DateFormat("Hm").format(message.dateTime); 
