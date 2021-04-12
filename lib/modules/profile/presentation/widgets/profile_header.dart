@@ -7,6 +7,7 @@ class ProfileHeader extends StatelessWidget {
   final String imageURL;
   final String name;
   final String phoneNumber;
+  final String status;
   final Function onPress;
   
   const ProfileHeader({
@@ -14,6 +15,7 @@ class ProfileHeader extends StatelessWidget {
     this.imageURL, 
     this.name, 
     this.phoneNumber,
+    this.status,
     this.onPress
   }) : super(key: key);
   
@@ -23,6 +25,7 @@ class ProfileHeader extends StatelessWidget {
       color: Colors.white,
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
         children: [
           CircleAvatar(
             radius: 37.5,
@@ -30,28 +33,31 @@ class ProfileHeader extends StatelessWidget {
               AssetImage('assets/images/default_user.jpg') : NetworkImage(imageURL),
           ),
           SizedBox(width: 10,),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                name ?? 'no_name'.tr(),
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold
+          Flexible(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  name ?? 'no_name'.tr(),
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold
+                  ),
+                  overflow: TextOverflow.ellipsis,
                 ),
-              ),
-              SizedBox(height: 5,),
-              Text(
-                phoneNumber ?? '',
-                style: TextStyle(
-                  fontSize: 16
+                SizedBox(height: 5,),
+                Text(
+                  phoneNumber ?? status ?? '',
+                  style: TextStyle(
+                    fontSize: 16
+                  ),
+                  overflow: TextOverflow.ellipsis,
                 )
-              )
-            ],
+              ],
+            ),
           ),
-          Spacer(),
           IconButton(
             icon: Icon(Icons.edit), 
             onPressed: () {

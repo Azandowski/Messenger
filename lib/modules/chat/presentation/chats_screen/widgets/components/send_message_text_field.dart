@@ -20,15 +20,17 @@ class SendMessageTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       child: TextFormField(
-      controller: widget.messageTextController,
-      focusNode: textFieldFocusNode,
-      onChanged: (String text) => _panelBloc.updateText(text),
-      decoration: InputDecoration(
-        border: InputBorder.none,
-        contentPadding: EdgeInsets.symmetric(
-        horizontal: widget.width / (360 / 16), vertical: widget.height / (724 / 18)),
-      hintText: 'message'.tr(),
-      labelStyle: AppFontStyles.blueSmallStyle)),
+        controller: widget.messageTextController,
+        textCapitalization: TextCapitalization.sentences,
+        focusNode: textFieldFocusNode,
+        onChanged: (String text) => _panelBloc.updateText(text),
+        decoration: InputDecoration(
+          border: InputBorder.none,
+          contentPadding: EdgeInsets.symmetric(
+          horizontal: widget.width / (360 / 16), vertical: widget.height / (724 / 18)),
+        hintText: 'message'.tr(),
+        labelStyle: AppFontStyles.blueSmallStyle)
+      ),
     );
   }
 }
