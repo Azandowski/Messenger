@@ -7,6 +7,7 @@ import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:messenger_mobile/app/application.dart';
+import 'package:messenger_mobile/modules/chat/domain/entities/delete_messages.dart';
 import 'package:messenger_mobile/modules/chat/domain/entities/file_media.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chat_details/widgets/chat_media_block.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
@@ -85,15 +86,15 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> implements TimePickerDelegate 
     );
 
     _chatDeleteSubscription = chatRepository.deleteIds.listen(
-      (ids) {
-        add(MessageDelete(ids: ids));
+      (deleteMessageEntity) {
+        add(MessageDelete(deleteMessageEntity: deleteMessageEntity));
       }
     );
   }
  
   StreamSubscription<Message> _chatSubscription;
 
-  StreamSubscription<List<int>> _chatDeleteSubscription;
+  StreamSubscription<DeleteMessageEntity> _chatDeleteSubscription;
 
   // * * Main
 
@@ -425,17 +426,28 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> implements TimePickerDelegate 
   }
 
   Stream<ChatState> _messageDeleteToState(MessageDelete event) async* {
-    var list = getCopyMessages(); 
-
-    event.ids.forEach((id) { 
-      list.removeWhere((message) => message.id == id);
-    });
-
-    yield getNewState<ChatInitial>(
-      messages: list,
-    );
+    if(event.deleteMessageEntity.userId == sl<AuthConfig>().user.id && event.deleteMessageEntity.deleteActionType == DeleteActionType.deleteSelf){
+      var list = getDeleteList(event.deleteMessageEntity);
+      yield getNewState<ChatInitial>(
+        messages: list,
+      );
+    }else if (event.deleteMessageEntity.deleteActionType == DeleteActionType.deleteAll){
+      var list = getDeleteList(event.deleteMessageEntity);
+      yield getNewState<ChatInitial>(
+        messages: list,
+      );
+    }else{
+      yield getNewState<ChatInitial>();
+    }
   }
 
+  List<Message> getDeleteList(DeleteMessageEntity entity){
+    var list = getCopyMessages();  
+    entity.messagesIds.forEach((id) { 
+      list.removeWhere((message) => message.id == id);
+    });
+    return list;
+  }
   // * * Time Deletion
 
   Stream<ChatState> _eitherSentWithTimerOrFailure(

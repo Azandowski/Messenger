@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dartz/dartz.dart';
 import 'package:messenger_mobile/core/config/language.dart';
 import 'package:messenger_mobile/modules/chat/data/models/translation_response.dart';
+import 'package:messenger_mobile/modules/chat/domain/entities/delete_messages.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/services/network/paginatedResult.dart';
 import '../../../../core/usecases/usecase.dart';
@@ -27,7 +28,7 @@ abstract class ChatRepository {
   Future<Either<Failure, ChatDetailed>> addMembers (int id, List<int> members);
   Future<Either<Failure, ChatDetailed>> kickMember (int id, int userID);
   Stream<Message> message;
-  Stream<List<int>> deleteIds;
+  Stream<DeleteMessageEntity> deleteIds;
   Future<Either<Failure, NoParams>> leaveChat (int id);
   Future<Either<Failure, ChatPermissions>> updateChatSettings({ ChatPermissionModel permissions, int id }); 
   Future<Either<Failure, ChatMessageResponse>> getChatMessages (

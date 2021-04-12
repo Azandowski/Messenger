@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:messenger_mobile/core/config/language.dart';
 import 'package:messenger_mobile/modules/chat/data/datasources/local_chat_datasource.dart';
 import 'package:messenger_mobile/modules/chat/data/models/translation_response.dart';
+import 'package:messenger_mobile/modules/chat/domain/entities/delete_messages.dart';
 import 'package:messenger_mobile/modules/social_media/data/models/social_media_model.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/services/network/network_info.dart';
@@ -79,7 +80,7 @@ class ChatRepositoryImpl extends ChatRepository {
   }
 
   @override
-  Stream<List<int>> get deleteIds async* {
+  Stream<DeleteMessageEntity> get deleteIds async* {
     yield* chatDataSource.deleteIds;
   }
 

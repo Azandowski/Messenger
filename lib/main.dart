@@ -24,14 +24,13 @@ void main() async {
   await NotificationHandler().initNotifications();
   
   // initializeDateFormatting('ru', null);
-
+  SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
   Bloc.observer = SimpleBlocObserver();
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
 
-  SystemChrome.setEnabledSystemUIOverlays([]);
   runApp(
     EasyLocalization(
       child: MainApp(),
