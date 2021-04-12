@@ -46,7 +46,6 @@ class MediaLocalDataSourceImpl implements MediaLocalDataSource {
         enableCamera: false,
         cupertinoOptions: CupertinoOptions(
           takePhotoIcon: "chat",
-          
         ),
         materialOptions: MaterialOptions(
           actionBarColor: "#abcdef",
