@@ -122,9 +122,9 @@ class _ChooseContactsScreenState extends State<ChooseContactsScreen> implements 
                                   isSelected: isSelected,
                                   onTap:() {
                                     if (isSelected) {
-                                      _blocChoose.removeContact(state.contacts[index]);
+                                      _blocChoose.removeContact(contacts[index].contactEntity);
                                     } else {
-                                      _blocChoose.addContact(state.contacts[index], widget.isSingleSelect);
+                                      _blocChoose.addContact(contacts[index].contactEntity, widget.isSingleSelect);
                                     }
                                   },
                                 );
