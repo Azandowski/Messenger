@@ -135,7 +135,7 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
     try {
       var status = await OneSignal.shared.getPermissionSubscriptionState();
       String playerID = status.subscriptionStatus.userId;
-      await remoteDataSource.deletePlayerID(playerID, token);
+      remoteDataSource.deletePlayerID(playerID, token);
       await localDataSource.deleteToken();
       await localDataSource.deleteContacts();
       initToken();

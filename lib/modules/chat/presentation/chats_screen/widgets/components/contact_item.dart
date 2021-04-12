@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:messenger_mobile/app/appTheme.dart';
 import 'package:messenger_mobile/core/widgets/independent/buttons/circular_button_outlined.dart';
-import 'package:messenger_mobile/core/widgets/independent/buttons/gradient_main_button.dart';
 import 'package:messenger_mobile/core/widgets/independent/images/ImageWithCorner.dart';
 import 'package:messenger_mobile/modules/chat/domain/entities/message.dart';
 import 'package:easy_localization/easy_localization.dart';

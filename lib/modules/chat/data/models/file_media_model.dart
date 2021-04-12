@@ -33,7 +33,7 @@ class FileMediaModel extends FileMedia{
     type: (json['type'] as String).getMediaType,
     userId: json['user_id'],
     maxDuration: json['duration'] != null ? Duration(seconds: json['duration']) : null,
-    imageUrl: json['preload_photo'] != null ? json['preload_photo']  : null,
+    imageUrl: json['full_preload'] != null ? json['full_preload']  : null,
    );
   }
 
