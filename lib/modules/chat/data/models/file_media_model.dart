@@ -8,8 +8,10 @@ class FileMediaModel extends FileMedia{
   final TypeMedia type;
   final int userId;
   final Duration maxDuration;
+  final String imageUrl;
 
   FileMediaModel({
+    this.imageUrl,
     this.id,
     this.maxDuration,
     this.type,
@@ -20,6 +22,7 @@ class FileMediaModel extends FileMedia{
     url: url,
     type: type,
     userId: userId,
+    imageUrl: imageUrl,
     maxDuration: maxDuration
   );
 
@@ -30,6 +33,7 @@ class FileMediaModel extends FileMedia{
     type: (json['type'] as String).getMediaType,
     userId: json['user_id'],
     maxDuration: json['duration'] != null ? Duration(seconds: json['duration']) : null,
+    imageUrl: json['preload_photo'] != null ? json['preload_photo']  : null,
    );
   }
 

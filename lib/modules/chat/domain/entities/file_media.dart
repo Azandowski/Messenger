@@ -7,6 +7,7 @@ import '../../presentation/chat_details/widgets/chat_media_block.dart';
 class FileMedia extends Equatable {
   final int id;
   final String url;
+  final String imageUrl;
   final TypeMedia type;
   final bool isLocal;
   final int userId;
@@ -15,6 +16,7 @@ class FileMedia extends Equatable {
 
   FileMedia(
     {
+      this.imageUrl,
       this.id,
       this.isLocal = false,
       this.url,

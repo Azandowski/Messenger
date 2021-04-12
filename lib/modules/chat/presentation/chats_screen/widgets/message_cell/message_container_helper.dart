@@ -73,6 +73,7 @@ extension MessageContainerExtension on MessageContainer {
             }else{
               return PreviewVideo(
                 url: e.url,
+                imageUrl: e.imageUrl,
                 centerWidget: PlayVideoButton(url: e.url),
               );
             }
