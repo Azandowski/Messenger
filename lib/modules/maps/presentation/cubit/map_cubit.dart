@@ -18,122 +18,101 @@ import '../pages/map_screen_helper.dart';
 part 'map_state.dart';
 
 class MapCubit extends Cubit<MapState> {
-  
   final GetCurrentLocation getCurrentLocation;
   final GetNearbyPlaces getNearbyPlaces;
   final SearchPlaces searchPlaces;
   final GeocodeCoordinate geocodeCoordinate;
 
-  MapCubit({
-    @required this.getCurrentLocation,
-    @required this.getNearbyPlaces,
-    @required this.searchPlaces,
-    @required this.geocodeCoordinate
-  }) : super(MapInitial());
+  MapCubit(
+      {@required this.getCurrentLocation,
+      @required this.getNearbyPlaces,
+      @required this.searchPlaces,
+      @required this.geocodeCoordinate})
+      : super(MapInitial());
 
   // MARK: - Requests
 
-  Future<void> getCurrentUserPosition ({
-    bool loadNearPlaces
-  }) async {
+  Future<void> getCurrentUserPosition({bool loadNearPlaces}) async {
     var response = await getCurrentLocation(NoParams());
-    response.fold((failure) => emit(
-      MapError(
-        locationFailure: failure.failure,
-        currentUserPosition: state.currentUserPosition,
-        places: state.places
-      )
-    ), (position) {
+    response.fold(
+        (failure) => emit(MapError(
+            locationFailure: failure.failure,
+            currentUserPosition: state.currentUserPosition,
+            places: state.places)), (position) {
       emit(MapInitial(
-        currentUserPosition: position,
-        selectedPlace: state.selectedPlace,
-        places: state.places
-      ));
+          currentUserPosition: position,
+          selectedPlace: state.selectedPlace,
+          places: state.places));
 
       if (loadNearPlaces) {
         getPlacesNear();
       }
-    }); 
+    });
   }
 
-
-  Future<void> getPlacesNear ({LatLng position}) async {
+  Future<void> getPlacesNear({LatLng position}) async {
     emit(MapLoading(
-      currentUserPosition: state.currentUserPosition,
-      selectedPlace: state.selectedPlace,
-      places: state.places,
-      isPlacesLoading: true
-    ));
-
-    var currentPosition = state.currentUserPosition;
-    var response = await getNearbyPlaces(position ?? LatLng(
-      currentPosition.latitude, currentPosition.longitude
-    ));
-
-    response.fold((failure) => emit(
-      MapError(
-        errorMessage: failure.message,
-        currentUserPosition: state.currentUserPosition,
-        places: state.places
-      )
-    ), (places) => emit(
-      MapInitial(
         currentUserPosition: state.currentUserPosition,
         selectedPlace: state.selectedPlace,
-        places: places
-      )
-    ));
+        places: state.places,
+        isPlacesLoading: true));
+
+    var currentPosition = state.currentUserPosition;
+    var response = await getNearbyPlaces(position ??
+        LatLng(currentPosition.latitude, currentPosition.longitude));
+
+    response.fold(
+        (failure) => emit(MapError(
+            errorMessage: failure.message,
+            currentUserPosition: state.currentUserPosition,
+            places: state.places)),
+        (places) => emit(MapInitial(
+            currentUserPosition: state.currentUserPosition,
+            selectedPlace: state.selectedPlace,
+            places: places)));
   }
 
-  Future<void> findPlaces (String queryText) async {
+  Future<void> findPlaces(String queryText) async {
     emit(MapLoading(
-      currentUserPosition: state.currentUserPosition,
-      selectedPlace: state.selectedPlace,
-      places: state.places,
-      isPlacesLoading: true
-    ));
+        currentUserPosition: state.currentUserPosition,
+        selectedPlace: state.selectedPlace,
+        places: state.places,
+        isPlacesLoading: true));
 
     var currentPosition = state.currentUserPosition;
     var response = await searchPlaces(SearchPlacesParams(
-      currentPosition: currentPosition != null ? 
-        LatLng(currentPosition.latitude, currentPosition.longitude) : null,
-      queryText: queryText
-    ));
+        currentPosition: currentPosition != null
+            ? LatLng(currentPosition.latitude, currentPosition.longitude)
+            : null,
+        queryText: queryText));
 
-    response.fold((failure) => emit(
-      MapError(
-        errorMessage: failure.message,
-        currentUserPosition: state.currentUserPosition,
-        places: state.places
-      )
-    ), (places) => emit(
-      MapInitial(
+    response.fold(
+        (failure) => emit(MapError(
+            errorMessage: failure.message,
+            currentUserPosition: state.currentUserPosition,
+            places: state.places)),
+        (places) => emit(MapInitial(
+            currentUserPosition: state.currentUserPosition,
+            selectedPlace: state.selectedPlace,
+            places: places)));
+  }
+
+  void showLoading() {
+    emit(MapLoading(
         currentUserPosition: state.currentUserPosition,
         selectedPlace: state.selectedPlace,
-        places: places
-      )
-    ));
+        places: state.places,
+        isPlacesLoading: true));
   }
 
-  void showLoading () {
-    emit(MapLoading(
-      currentUserPosition: state.currentUserPosition,
-      selectedPlace: state.selectedPlace,
-      places: state.places,
-      isPlacesLoading: true
-    ));
-  }
-
-  void didSelectPlace (Place selectedPlace) {
+  void didSelectPlace(Place selectedPlace) {
     emit(MapInitial(
-      places: state.places,
-      currentUserPosition: state.currentUserPosition,
-      selectedPlace: selectedPlace
-    ));
+        places: state.places,
+        currentUserPosition: state.currentUserPosition,
+        selectedPlace: selectedPlace));
   }
 
-  Future<void> didSelectPosition (LatLng position) async {
-    
+  Future<void> didSelectPosition(LatLng position) async {
     if (position == state.currentUserPosition?.getLatLng) {
       emit(MapInitial(
         places: state.places,
@@ -141,57 +120,49 @@ class MapCubit extends Cubit<MapState> {
       ));
     } else if (position != state.selectedPlace?.position) {
       emit(MapLoading(
-        currentUserPosition: state.currentUserPosition,
-        selectedPlace: state.selectedPlace,
-        places: state.places,
-        isPlacesLoading: false,
-        isProcessing: true
-      ));
+          currentUserPosition: state.currentUserPosition,
+          selectedPlace: state.selectedPlace,
+          places: state.places,
+          isPlacesLoading: false,
+          isProcessing: true));
 
       var response = await geocodeCoordinate(position);
-      response.fold((failure) => emit(
-        MapError(
-          errorMessage: failure.message,
-          currentUserPosition: state.currentUserPosition,
-          places: state.places
-        )
-      ), (placemarks) {
+      response.fold(
+          (failure) => emit(MapError(
+              errorMessage: failure.message,
+              currentUserPosition: state.currentUserPosition,
+              places: state.places)), (placemarks) {
         if (placemarks.length != 0) {
           var placemark = placemarks[0];
           Place place = Place(
-            title: placemark.name,
-            position: position,
-            street: placemark.name
-          );
+              title: placemark.name,
+              position: position,
+              street: placemark.name);
 
           getPlacesNear(position: position);
 
           emit(MapInitial(
-            places: state.places,
-            currentUserPosition: state.currentUserPosition,
-            selectedPlace: place
-          ));
+              places: state.places,
+              currentUserPosition: state.currentUserPosition,
+              selectedPlace: place));
         } else {
           emit(MapError(
-            errorMessage: 'Не удалось найти',
-            places: state.places,
-            currentUserPosition: state.currentUserPosition,
-            selectedPlace: state.selectedPlace
-          ));
+              errorMessage: 'Не удалось найти',
+              places: state.places,
+              currentUserPosition: state.currentUserPosition,
+              selectedPlace: state.selectedPlace));
         }
       });
     }
   }
 
-
-  Future<PositionAddress> getMapPosition (LatLng position) async {
+  Future<PositionAddress> getMapPosition(LatLng position) async {
     emit(MapLoading(
-      currentUserPosition: state.currentUserPosition,
-      selectedPlace: state.selectedPlace,
-      places: state.places,
-      isPlacesLoading: false,
-      isProcessing: true
-    ));
+        currentUserPosition: state.currentUserPosition,
+        selectedPlace: state.selectedPlace,
+        places: state.places,
+        isPlacesLoading: false,
+        isProcessing: true));
 
     var response = await geocodeCoordinate(position);
     emit(MapInitial(
@@ -199,31 +170,28 @@ class MapCubit extends Cubit<MapState> {
       selectedPlace: state.selectedPlace,
       places: state.places,
     ));
-    
+
     return response.fold((failure) {
-      emit(
-        MapError(
+      emit(MapError(
           errorMessage: failure.message,
           currentUserPosition: state.currentUserPosition,
-          places: state.places
-        )
-      );
+          places: state.places));
     }, (placemarks) {
       if (placemarks.length != 0) {
         var placemark = placemarks[0];
 
-        return PositionAddress(
-          position: position,
-          description: placemark.name
-        );
+        return PositionAddress(position: position, description: placemark.name);
       } else {
         emit(MapError(
-          errorMessage: 'Не удалось найти',
-          places: state.places,
-          currentUserPosition: state.currentUserPosition,
-          selectedPlace: state.selectedPlace
-        ));
+            errorMessage: 'Не удалось найти',
+            places: state.places,
+            currentUserPosition: state.currentUserPosition,
+            selectedPlace: state.selectedPlace));
       }
     });
+  }
+
+  setState(MapState state) {
+    emit(state);
   }
 }

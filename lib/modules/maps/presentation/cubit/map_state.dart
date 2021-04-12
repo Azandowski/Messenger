@@ -5,18 +5,11 @@ abstract class MapState extends Equatable {
   final Place selectedPlace;
   final List<Place> places;
 
-  const MapState({
-    @required this.currentUserPosition,
-    this.selectedPlace,
-    this.places
-  });
+  const MapState(
+      {@required this.currentUserPosition, this.selectedPlace, this.places});
 
   @override
-  List<Object> get props => [
-    currentUserPosition,
-    selectedPlace,
-    places
-  ];
+  List<Object> get props => [currentUserPosition, selectedPlace, places];
 }
 
 class MapInitial extends MapState {
@@ -24,24 +17,15 @@ class MapInitial extends MapState {
   final Place selectedPlace;
   final List<Place> places;
 
-  MapInitial({
-    this.currentUserPosition,
-    this.selectedPlace,
-    this.places
-  }) : super(
-    currentUserPosition: currentUserPosition,
-    selectedPlace: selectedPlace,
-    places: places
-  );
+  MapInitial({this.currentUserPosition, this.selectedPlace, this.places})
+      : super(
+            currentUserPosition: currentUserPosition,
+            selectedPlace: selectedPlace,
+            places: places);
 
   @override
-  List<Object> get props => [
-    currentUserPosition,
-    selectedPlace,
-    places
-  ];
+  List<Object> get props => [currentUserPosition, selectedPlace, places];
 }
-
 
 class MapLoading extends MapState {
   final bool isPlacesLoading;
@@ -50,53 +34,51 @@ class MapLoading extends MapState {
   final Place selectedPlace;
   final List<Place> places;
 
-  MapLoading({
-    this.currentUserPosition,
-    this.selectedPlace,
-    this.places,
-    this.isPlacesLoading,
-    this.isProcessing
-  }) : super(
-    currentUserPosition: currentUserPosition,
-    selectedPlace: selectedPlace,
-    places: places
-  );
+  MapLoading(
+      {this.currentUserPosition,
+      this.selectedPlace,
+      this.places,
+      this.isPlacesLoading,
+      this.isProcessing})
+      : super(
+            currentUserPosition: currentUserPosition,
+            selectedPlace: selectedPlace,
+            places: places);
 
   @override
   List<Object> get props => [
-    currentUserPosition,
-    selectedPlace,
-    places,
-    isPlacesLoading,
-    isProcessing
-  ];
+        currentUserPosition,
+        selectedPlace,
+        places,
+        isPlacesLoading,
+        isProcessing
+      ];
 }
 
 class MapError extends MapState {
   final Position currentUserPosition;
-  final LocationFailure locationFailure;  
+  final LocationFailure locationFailure;
   final Place selectedPlace;
   final List<Place> places;
   final String errorMessage;
 
-  MapError({
-    this.currentUserPosition,
-    this.locationFailure,
-    this.selectedPlace,
-    this.places,
-    this.errorMessage
-  }) : super(
-    currentUserPosition: currentUserPosition,
-    selectedPlace: selectedPlace,
-    places: places
-  );
+  MapError(
+      {this.currentUserPosition,
+      this.locationFailure,
+      this.selectedPlace,
+      this.places,
+      this.errorMessage})
+      : super(
+            currentUserPosition: currentUserPosition,
+            selectedPlace: selectedPlace,
+            places: places);
 
   @override
   List<Object> get props => [
-    currentUserPosition,
-    locationFailure,
-    selectedPlace,
-    places,
-    errorMessage
-  ];
+        currentUserPosition,
+        locationFailure,
+        selectedPlace,
+        places,
+        errorMessage
+      ];
 }

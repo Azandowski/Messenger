@@ -411,14 +411,32 @@ final tPosition = Position(
   speed: 0.0,
   speedAccuracy: 0.0,
 );
+final tPosition2 = Position(
+  longitude: 10.0,
+  latitude: 10.0,
+  timestamp: date1,
+  accuracy: 0.0,
+  altitude: 0.0,
+  heading: 0.0,
+  speed: 0.0,
+  speedAccuracy: 0.0,
+);
 
 final tLatLng = LatLng(0.0, 0.0);
+final tLatLng2 = LatLng(10.0, 10.0);
 
 final tPlace = Place(
   title: 'title',
   distance: 0.0,
   street: 'street',
   position: tLatLng,
+);
+
+final tPlace2 = Place(
+  title: 'title',
+  distance: 0.0,
+  street: 'street',
+  position: tLatLng2,
 );
 
 final tPlacemark = Placemark(
