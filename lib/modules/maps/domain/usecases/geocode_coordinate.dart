@@ -6,9 +6,7 @@ import '../../../../core/usecases/usecase.dart';
 import 'package:latlong/latlong.dart';
 import 'package:geocoding/geocoding.dart';
 
-
-class GeocodeCoordinate extends UseCase<List<Placemark>, LatLng>  {
-
+class GeocodeCoordinate extends UseCase<List<Placemark>, LatLng> {
   final MapRepository repository;
 
   GeocodeCoordinate({
@@ -16,7 +14,7 @@ class GeocodeCoordinate extends UseCase<List<Placemark>, LatLng>  {
   });
 
   @override
-  Future<Either<Failure, List<Placemark>>> call(LatLng params) {
+  Future<Either<Failure, List<Placemark>>> call(LatLng params) async {
     return repository.getPlaceMarksFromCoordinate(params);
   }
 }

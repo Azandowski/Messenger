@@ -9,33 +9,27 @@ import 'package:messenger_mobile/modules/maps/domain/entities/place.dart';
 import '../../../../core/utils/http_response_extension.dart';
 import 'here_endpoint.dart';
 
-
 abstract class RemoteMapDataSource {
-  Future<PlaceResponse> getNearbyPlaces (LatLng currentPosition);
-  Future<PlaceResponse> searchPlaces (String queryText, LatLng currentPosition);
+  Future<PlaceResponse> getNearbyPlaces(LatLng currentPosition);
+  Future<PlaceResponse> searchPlaces(String queryText, LatLng currentPosition);
 }
 
 class RemoteMapDataSourceImpl extends RemoteMapDataSource {
-  
   final http.Client client;
   final String _hereAPIKey = 'GLfkTqRAR2Sz2Wtrxyp5AhF4IarjNdHyFHlGvu1rMaU';
 
-  RemoteMapDataSourceImpl({
-    @required this.client
-  });
+  RemoteMapDataSourceImpl({@required this.client});
   //https://places.ls.hereapi.com/places/v1/discover/here?apiKey=GLfkTqRAR2Sz2Wtrxyp5AhF4IarjNdHyFHlGvu1rMaU&at52.28168879244234,76.98489305536721;
   @override
   Future<PlaceResponse> getNearbyPlaces(LatLng currentPosition) async {
     http.Response response = await client.get(
-      HereEndpoints.getNearbyPlaces.buildURL(
-        queryParameters: {
+        HereEndpoints.getNearbyPlaces.buildURL(queryParameters: {
           'apiKey': _hereAPIKey,
           'at': '${currentPosition.latitude},${currentPosition.longitude};',
           'pretty': '1'
-        }
-      ),
-      headers: new Map<String, String>.from(HereEndpoints.getNearbyPlaces.headers)
-    );
+        }),
+        headers: new Map<String, String>.from(
+            HereEndpoints.getNearbyPlaces.headers));
 
     if (response.isSuccess) {
       return PlaceResponse.fromJson(json.decode(response.body.toString()));
@@ -45,21 +39,20 @@ class RemoteMapDataSourceImpl extends RemoteMapDataSource {
   }
 
   @override
-  Future<PlaceResponse> searchPlaces(String queryText, LatLng currentPosition) async {
+  Future<PlaceResponse> searchPlaces(
+      String queryText, LatLng currentPosition) async {
     http.Response response = await client.get(
-      HereEndpoints.searchPlaces.buildURL(
-        queryParameters: {
+        HereEndpoints.searchPlaces.buildURL(queryParameters: {
           'apiKey': _hereAPIKey,
-          if (currentPosition != null)
-            ...{'at': '${currentPosition.latitude},${currentPosition.longitude};'},
-          if (currentPosition == null)
-            ...{'at': '43.239130,76.850774;'},
+          if (currentPosition != null) ...{
+            'at': '${currentPosition.latitude},${currentPosition.longitude};'
+          },
+          if (currentPosition == null) ...{'at': '43.239130,76.850774;'},
           'q': queryText,
           'pretty': '1'
-        }
-      ),
-      headers: new Map<String, String>.from(HereEndpoints.searchPlaces.headers)
-    );
+        }),
+        headers:
+            new Map<String, String>.from(HereEndpoints.searchPlaces.headers));
 
     if (response.isSuccess) {
       return PlaceResponse.fromJson(json.decode(response.body.toString()));

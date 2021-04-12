@@ -13,16 +13,16 @@ import 'package:messenger_mobile/modules/maps/domain/usecases/params.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class MapRepositoryImpl extends MapRepository {
-  
   final LocalMapDatasource datasource;
   final RemoteMapDataSource remoteMapDataSource;
   final NetworkInfo networkInfo;
+  final bool testMode;
 
-  MapRepositoryImpl({
-    @required this.datasource,
-    @required this.remoteMapDataSource,
-    @required this.networkInfo
-  });
+  MapRepositoryImpl(
+      {@required this.datasource,
+      @required this.remoteMapDataSource,
+      @required this.networkInfo,
+      this.testMode = false});
 
   @override
   Future<Either<GeolocationFailure, Position>> getCurrentPosition() async {
@@ -32,16 +32,14 @@ class MapRepositoryImpl extends MapRepository {
     //   return Left(GeolocationFailure(
     //     LocationFailure.locationDisabled
     //   ));
-    // } 
+    // }
 
     PermissionStatus permissionStatus = await datasource.checkPermission();
     if (permissionStatus == PermissionStatus.denied) {
       permissionStatus = await datasource.requestPermission();
       if (permissionStatus != PermissionStatus.granted) {
-        await Geolocator.openAppSettings();
-        return Left(GeolocationFailure(
-          LocationFailure.permissionDenied
-        ));
+        if (!testMode) await Geolocator.openAppSettings();
+        return Left(GeolocationFailure(LocationFailure.permissionDenied));
       }
     }
 
@@ -49,10 +47,12 @@ class MapRepositoryImpl extends MapRepository {
   }
 
   @override
-  Future<Either<Failure, List<Place>>> getNearbyPlaces(LatLng currentPosition) async {
+  Future<Either<Failure, List<Place>>> getNearbyPlaces(
+      LatLng currentPosition) async {
     if (await networkInfo.isConnected) {
       try {
-        var placesResponse = await remoteMapDataSource.getNearbyPlaces(currentPosition);
+        var placesResponse =
+            await remoteMapDataSource.getNearbyPlaces(currentPosition);
         return Right(placesResponse.items);
       } catch (e) {
         return Left(ServerFailure(message: e.toString()));
@@ -63,10 +63,12 @@ class MapRepositoryImpl extends MapRepository {
   }
 
   @override
-  Future<Either<Failure, List<Place>>> searchPlaces(SearchPlacesParams params) async {
+  Future<Either<Failure, List<Place>>> searchPlaces(
+      SearchPlacesParams params) async {
     if (await networkInfo.isConnected) {
       try {
-        var placesResponse = await remoteMapDataSource.searchPlaces(params.queryText, params.currentPosition);
+        var placesResponse = await remoteMapDataSource.searchPlaces(
+            params.queryText, params.currentPosition);
         return Right(placesResponse.items);
       } catch (e) {
         return Left(ServerFailure(message: e.toString()));
@@ -77,7 +79,8 @@ class MapRepositoryImpl extends MapRepository {
   }
 
   @override
-  Future<Either<Failure, List<Placemark>>> getPlaceMarksFromCoordinate(LatLng coordinate) async { 
+  Future<Either<Failure, List<Placemark>>> getPlaceMarksFromCoordinate(
+      LatLng coordinate) async {
     if (await networkInfo.isConnected) {
       try {
         var placemarks = await datasource.geocodeCoordinate(coordinate);

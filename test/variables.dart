@@ -1,3 +1,5 @@
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:messenger_mobile/core/services/network/config.dart';
 import 'package:messenger_mobile/core/services/network/paginatedResult.dart';
 import 'package:messenger_mobile/core/usecases/usecase.dart';
@@ -20,10 +22,14 @@ import 'package:messenger_mobile/modules/chats/domain/entities/category.dart';
 import 'package:messenger_mobile/modules/chats/domain/entities/chat_attachment_type.dart';
 import 'package:messenger_mobile/modules/creation_module/data/models/contact_model.dart';
 import 'package:messenger_mobile/modules/creation_module/domain/entities/contact.dart';
+import 'package:messenger_mobile/modules/maps/data/models/place_model.dart';
+import 'package:messenger_mobile/modules/maps/data/models/place_response.dart';
+import 'package:messenger_mobile/modules/maps/domain/entities/place.dart';
 import 'package:messenger_mobile/modules/profile/data/models/user_model.dart';
 import 'package:messenger_mobile/modules/profile/domain/entities/user.dart';
 import 'package:messenger_mobile/modules/social_media/data/models/social_media_model.dart';
 import 'package:messenger_mobile/modules/social_media/domain/entities/social_media.dart';
+import 'package:latlong/latlong.dart';
 
 final date1 = DateTime.parse('2021-01-01 00:00:01.860545');
 final date2 = DateTime.parse('2021-03-15 17:08:04.860545');
@@ -394,3 +400,46 @@ final tFileMediaModel = FileMediaModel(
   userId: 1,
   maxDuration: Duration(seconds: 1),
 );
+
+final tPosition = Position(
+  longitude: 0.0,
+  latitude: 0.0,
+  timestamp: date1,
+  accuracy: 0.0,
+  altitude: 0.0,
+  heading: 0.0,
+  speed: 0.0,
+  speedAccuracy: 0.0,
+);
+
+final tLatLng = LatLng(0.0, 0.0);
+
+final tPlace = Place(
+  title: 'title',
+  distance: 0.0,
+  street: 'street',
+  position: tLatLng,
+);
+
+final tPlacemark = Placemark(
+  administrativeArea: 'administrativeArea',
+  country: 'country',
+  isoCountryCode: 'isoCountryCode',
+  locality: 'locality',
+  name: 'name',
+  postalCode: 'postalCode',
+  street: 'street',
+  subAdministrativeArea: 'subAdministrativeArea',
+  subLocality: 'subLocality',
+  subThoroughfare: 'subThoroughfare',
+  thoroughfare: 'thoroughfare',
+);
+
+final tPlaceModel = PlaceModel(
+  title: 'title',
+  distance: 0.0,
+  street: 'street',
+  position: tLatLng,
+);
+
+final tPlaceResponse = PlaceResponse(items: [tPlaceModel]);
