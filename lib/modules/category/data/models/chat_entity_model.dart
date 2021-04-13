@@ -5,7 +5,6 @@ import '../../../chat/data/models/message_model.dart';
 import '../../../chats/data/model/category_model.dart';
 import '../../../chats/domain/entities/category.dart';
 import '../../domain/entities/chat_entity.dart';
-import '../../domain/entities/chat_permissions.dart';
 import 'chat_permission_model.dart';
 
 // ignore: must_be_immutable

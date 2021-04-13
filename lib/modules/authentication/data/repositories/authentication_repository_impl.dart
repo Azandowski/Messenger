@@ -151,7 +151,6 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
     List<RecordSnapshot> dbContacts =
         await localDataSource.getDatabaseContacts();
     var contactsShouldBeUpdated = [];
-
     deviceContacts.forEach((e) {
       if ((e['phones'] ?? []).length != 0) {
         e['displayName'] = e['displayName'] ?? '';
@@ -190,6 +189,7 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
     final String dir = (await getApplicationDocumentsDirectory()).path;
     final String path = '$dir/contacts.json';
     final File file = File(path);
+
     await file.writeAsString(newJson);
     print(file.path);
     return file;

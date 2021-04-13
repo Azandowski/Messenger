@@ -37,13 +37,13 @@ class _CreationModuleScreenState extends State<CreationModuleScreen> {
   NavigatorState get _navigator => sl<Application>().navKey.currentState;
   PaginatedScrollController _scrollController = PaginatedScrollController();
   OpenChatListener _openChatListener = OpenChatListener();
-
+  // ContactBloc _contactBloc;
   // MARK: - Life-Cycle
 
   @override
   void initState() {
     _scrollController.addListener(_onScroll);
-    context.read<ContactBloc>().add(ContactFetched());
+    BlocProvider.of<ContactBloc>(context).add(ContactFetched());
     super.initState();
   }
 
@@ -140,7 +140,7 @@ class _CreationModuleScreenState extends State<CreationModuleScreen> {
 
   void _onScroll() {
     if (_scrollController.isPaginated) {
-      var _contactBloc = context.read<ContactBloc>();
+      var _contactBloc = BlocProvider.of<ContactBloc>(context);
       
       if (_contactBloc.state.status != ContactStatus.loading) {
         _contactBloc.add(ContactFetched());

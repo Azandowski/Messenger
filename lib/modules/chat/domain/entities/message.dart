@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:latlong/latlong.dart';
 import 'package:messenger_mobile/modules/chat/domain/entities/file_media.dart';
 import 'package:messenger_mobile/modules/chats/domain/entities/chat_attachment_type.dart';
 import 'package:messenger_mobile/modules/maps/presentation/pages/map_screen.dart';

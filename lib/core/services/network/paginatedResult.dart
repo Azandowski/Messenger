@@ -21,7 +21,8 @@ class PaginatedResult <T> {
       paginationData: PaginationData(
         nextPageUrl: json['next_page_url'] != null ?
            Uri.parse(json['next_page_url']) : null,
-        isFirstPage: false
+        isFirstPage: false,
+        total: json['total'] ?? 0,
       ),
       data: jsonDataArray.map((e) => factory(e)).toList()
     );
