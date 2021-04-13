@@ -5,7 +5,6 @@ import '../../../chat/data/models/message_model.dart';
 import '../../../chats/data/model/category_model.dart';
 import '../../../chats/domain/entities/category.dart';
 import '../../domain/entities/chat_entity.dart';
-import '../../domain/entities/chat_permissions.dart';
 import 'chat_permission_model.dart';
 
 // ignore: must_be_immutable
@@ -68,7 +67,7 @@ class ChatEntityModel extends ChatEntity {
         ChatPermissionModel.fromJson(json['settings']) : ChatPermissionModel(),
       lastMessage: json['last_message'] != null ? MessageModel.fromJson(json['last_message']) : null,
       unreadCount: json['no_read_message'] ?? 0,
-      description: json['description'],
+      description: json['description'] != null && json['description'] != 'null' ? json['description'] : null,
       isPrivate: json['is_private'] == 1 ,
       isRead: json['is_read'] == 1,
       adminID: json['admin_id']
