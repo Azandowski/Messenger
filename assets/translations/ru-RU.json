@@ -172,5 +172,7 @@
     "chatCreated": "Чат создан",
     "no_contacts": "У вас еще нет контактов в AIO Messenger",
     "smart_bot": "Умный бот",
-    "calls": "Звонки"
+    "calls": "Звонки",
+    "no_cache": "Не кэшируются",
+    "can_delete_messages": "Позволяет удалять переписку по таймеру"
 }

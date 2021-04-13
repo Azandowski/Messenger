@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:messenger_mobile/core/utils/unavailable_dialog.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:messenger_mobile/core/widgets/independent/buttons/gradient_main_button.dart';
 import '../../../../../app/appTheme.dart';
 import '../../../../../app/application.dart';
 import '../../../../../core/widgets/independent/dialogs/dialog_action_button.dart';
@@ -89,15 +90,86 @@ class ChatScreenActions extends StatelessWidget {
                     iconData: Icons.timer,
                     buttonStyle: DialogActionButtonStyle.dangerous,
                     onPress: () {
-                      onTapChatAction(ChatAppBarActions.onOffSecretMode);
-                      Navigator.of(context).pop();
-                      // _navigator.push(TimePickerScreen.route(timePickerDelegate));
+                      showDialog(context: context, builder: (_) => showSecretModeDialog(
+                        onSelect: (bool isAgree) {
+                          if (isAgree) {
+                            onTapChatAction(ChatAppBarActions.onOffSecretMode);
+                          }
+                          Navigator.of(context).pop();
+                          Navigator.of(context).pop();
+                        }
+                      ));
                     }
                   ),
                 ],
               );
             });
           },
+        )
+      ],
+    );
+  }
+
+  Widget showSecretModeDialog ({
+    @required Function(bool) onSelect
+  }) {
+    return DialogsView(
+      dialogViewType: DialogViewType.alert,
+      imageProvider: AssetImage('assets/images/security_banner.png'),
+      title: "deletion_timer".tr(),
+      titleStyle: AppFontStyles.headingTextSyle,
+      buttonsLayout: DialogViewButtonsLayout.vertical,
+      customDescription: Column(
+        children: [
+          Row(
+            children: [
+              Icon(
+                Icons.privacy_tip_rounded,
+                color: AppColors.indicatorColor
+              ),
+              SizedBox(width: 8),
+              Expanded(child: 
+                Text(
+                  "no_cache".tr(),
+                  style: AppFontStyles.headerIndicatorMediumStyle
+                )
+              )
+            ],
+          ),
+          SizedBox(height: 4),
+          Row(
+            children: [
+              Icon(
+                Icons.privacy_tip_rounded,
+                color: AppColors.indicatorColor
+              ),
+              SizedBox(width: 8),
+              Expanded(child: 
+                Text(
+                  "can_delete_messages".tr(),
+                  style: AppFontStyles.headerIndicatorMediumStyle
+                )
+              )
+            ],
+          )
+        ],
+      ),
+      actionButton: [
+        DialogActionButton(
+          buttonStyle: DialogActionButtonStyle.custom,
+          customButton: ActionButton(
+            text: "ready".tr(),
+            onTap: () {
+              onSelect(true);
+            }
+          ),
+        ),
+        DialogActionButton(
+          buttonStyle: DialogActionButtonStyle.cancel,
+          title: "cancel".tr(),
+          onPress: () {
+            onSelect(false);
+          }
         )
       ],
     );

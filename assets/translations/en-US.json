@@ -172,5 +172,7 @@
     "chatCreated": "Chat was created",
     "no_contacts": "You don't have contacts in AIO Messenger yet",
     "smart_bot": "Smart bot",
-    "calls": "Calls"
+    "calls": "Calls",
+    "no_cache": "Not cached",
+    "can_delete_messages": "Allows you to delete correspondence by timer"
 }
