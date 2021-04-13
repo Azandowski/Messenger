@@ -55,6 +55,17 @@ class MessageDelete extends ChatEvent {
   List<Object> get props => [deleteMessageEntity];
 }
 
+class MessageDeleteOffline extends ChatEvent {
+  final List<int> ids;
+
+  MessageDeleteOffline({
+    @required this.ids
+  });
+
+  @override
+  List<Object> get props => [ids];
+}
+
 class MessageSend extends ChatEvent {
   final Message forwardMessage;
   final String message;

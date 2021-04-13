@@ -194,6 +194,14 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> implements TimePickerDelegate 
           currentTimerOption: event.newTimerOption
         );
       }
+    } else if (event is MessageDeleteOffline) {
+      var list = getCopyMessages(); 
+      event.ids.forEach((id) { 
+        list.removeWhere((message) => message.id == id);
+      });
+      yield getNewState<ChatInitial>(
+        messages: list,
+      );
     }
   }
 
@@ -426,17 +434,19 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> implements TimePickerDelegate 
   }
 
   Stream<ChatState> _messageDeleteToState(MessageDelete event) async* {
-    if(event.deleteMessageEntity.userId == sl<AuthConfig>().user.id && event.deleteMessageEntity.deleteActionType == DeleteActionType.deleteSelf){
+    if (event.deleteMessageEntity.userId == sl<AuthConfig>().user.id && 
+        event.deleteMessageEntity.deleteActionType == DeleteActionType.deleteSelf
+    ) {
       var list = getDeleteList(event.deleteMessageEntity);
       yield getNewState<ChatInitial>(
         messages: list,
       );
-    }else if (event.deleteMessageEntity.deleteActionType == DeleteActionType.deleteAll){
+    } else if (event.deleteMessageEntity.deleteActionType == DeleteActionType.deleteAll) {
       var list = getDeleteList(event.deleteMessageEntity);
       yield getNewState<ChatInitial>(
         messages: list,
       );
-    }else{
+    } else {
       yield getNewState<ChatInitial>();
     }
   }

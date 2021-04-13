@@ -98,6 +98,9 @@ class _CreationModuleScreenState extends State<CreationModuleScreen> {
                       didSelectContactToChat: (contact) {
                         context.read<OpenChatCubit>().createChatWithUser(contact.id);
                       },
+                      onTapContact: (contact) {
+                        context.read<OpenChatCubit>().createChatWithUser(contact.id);
+                      },
                     )
                   ],
                 )

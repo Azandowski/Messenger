@@ -90,15 +90,20 @@ class ChatScreenActions extends StatelessWidget {
                     iconData: Icons.timer,
                     buttonStyle: DialogActionButtonStyle.dangerous,
                     onPress: () {
-                      showDialog(context: context, builder: (_) => showSecretModeDialog(
-                        onSelect: (bool isAgree) {
-                          if (isAgree) {
-                            onTapChatAction(ChatAppBarActions.onOffSecretMode);
+                      if (!(isSecretModeOn ?? false)) {
+                        showDialog(context: context, builder: (_) => showSecretModeDialog(
+                          onSelect: (bool isAgree) {
+                            if (isAgree) {
+                              onTapChatAction(ChatAppBarActions.onOffSecretMode);
+                            }
+                            Navigator.of(context).pop();
+                            Navigator.of(context).pop();
                           }
-                          Navigator.of(context).pop();
-                          Navigator.of(context).pop();
-                        }
-                      ));
+                        ));
+                      } else {
+                        onTapChatAction(ChatAppBarActions.onOffSecretMode);
+                        Navigator.of(context).pop();
+                      }
                     }
                   ),
                 ],
@@ -115,42 +120,25 @@ class ChatScreenActions extends StatelessWidget {
   }) {
     return DialogsView(
       dialogViewType: DialogViewType.alert,
-      imageProvider: AssetImage('assets/images/security_banner.png'),
+      imageProvider: AssetImage('assets/images/privacy_logo.png'),
       title: "deletion_timer".tr(),
       titleStyle: AppFontStyles.headingTextSyle,
       buttonsLayout: DialogViewButtonsLayout.vertical,
       customDescription: Column(
         children: [
-          Row(
-            children: [
-              Icon(
-                Icons.privacy_tip_rounded,
-                color: AppColors.indicatorColor
-              ),
-              SizedBox(width: 8),
-              Expanded(child: 
-                Text(
-                  "no_cache".tr(),
-                  style: AppFontStyles.headerIndicatorMediumStyle
-                )
-              )
-            ],
+          _buildItem(
+            iconPath: 'assets/icons/fire.png', 
+            title: 'can_delete_messages'.tr()
           ),
-          SizedBox(height: 4),
-          Row(
-            children: [
-              Icon(
-                Icons.privacy_tip_rounded,
-                color: AppColors.indicatorColor
-              ),
-              SizedBox(width: 8),
-              Expanded(child: 
-                Text(
-                  "can_delete_messages".tr(),
-                  style: AppFontStyles.headerIndicatorMediumStyle
-                )
-              )
-            ],
+          SizedBox(height: 12),
+          _buildItem(
+            iconPath: 'assets/icons/lock.png', 
+            title: 'forward_lock'.tr()
+          ),
+          SizedBox(height: 12),
+          _buildItem(
+            iconPath: 'assets/icons/server.png', 
+            title: 'no_cache'.tr()
           )
         ],
       ),
@@ -170,6 +158,28 @@ class ChatScreenActions extends StatelessWidget {
           onPress: () {
             onSelect(false);
           }
+        )
+      ],
+    );
+  }
+
+  Widget _buildItem ({
+    @required String iconPath,
+    @required String title
+  }) {
+    return Row(
+      children: [
+        Image.asset(
+          iconPath,
+          width: 14,
+          height: 14,
+        ),
+        SizedBox(width: 8),
+        Expanded(child: 
+          Text(
+            title,
+            style: AppFontStyles.grey12w400
+          )
         )
       ],
     );

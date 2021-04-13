@@ -86,6 +86,11 @@ class _ContactsListState extends State<ContactsList> {
                           widget.didSelectContactToChat(state.contacts[index - 1]);
                         }
                       },
+                      onTap: () {
+                        if (widget.onTapContact != null) {
+                          widget.onTapContact(state.contacts[index - 1]);
+                        }
+                      }
                     );
               }
             }, 

@@ -194,11 +194,17 @@ class _ChatDetailScreenState extends State<ChatDetailScreen>
                                 ));
                               },
                               onTapItem: (item) {
-                                if (item.id != sl<AuthConfig>().user.id) {
-                                  _handleContactDeletionAlert(item);
-                                } else {
-                                  _openChatCubit.createChatWithUser(item.id);
-                                }
+                                var isAdmin = state.chatDetailed.chatMemberRole == ChatMember.admin && !(state.chatDetailed.chat.isPrivate ?? false);
+                                if (
+                                  item.id == sl<AuthConfig>().user.id || isAdmin) {
+                                    if (item.id == sl<AuthConfig>().user.id) {
+                                      _chatDetailsCubit.doLeaveChat(widget.id);
+                                    } else {
+                                      _handleContactDeletionAlert(item);
+                                    }
+                                  } else {
+                                    _openChatCubit.createChatWithUser(item.id);
+                                  }
                               }
                             );
                           },

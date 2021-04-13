@@ -32,7 +32,7 @@ class NameTimeBloc extends StatelessWidget {
             )
           ),
 
-        SizedBox(width: 80)
+        SizedBox(width: messageViewModel.isMine ? 40 : 80)
         // Text(
         //   messageViewModel.time,
         //   style: messageViewModel.isMine ? 

@@ -135,7 +135,9 @@ class _SearchContactPageState extends State<SearchContactPage> implements Search
                         },
                         onTap: widget.delegate != null ? () {
                           widget.delegate.didSelectContact(state.contacts.data[index]);
-                        } : null,
+                        } : () {
+                          context.read<OpenChatCubit>().createChatWithUser(state.contacts.data[index].id);
+                        },
                       );
                     }, 
                     separatorBuilder: (_, int index) => Divider(), 

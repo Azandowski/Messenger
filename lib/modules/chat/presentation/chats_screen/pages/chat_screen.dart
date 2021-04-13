@@ -260,8 +260,8 @@ class ChatScreenState extends State<ChatScreen> implements ChatChooseDelegate{
   }
 
   bool shouldShowBottomPin (ChatState state) {
-    return (state.unreadCount != null && state.unreadCount != 0) ||
-      (state.showBottomPin != null && state.showBottomPin) || 
+    return (state?.unreadCount != null && state.unreadCount != 0) ||
+      (state?.showBottomPin != null && state?.showBottomPin) || 
         !state.hasReachBottomMax;
   }
 

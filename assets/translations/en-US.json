@@ -173,6 +173,7 @@
     "no_contacts": "You don't have contacts in AIO Messenger yet",
     "smart_bot": "Smart bot",
     "calls": "Calls",
-    "no_cache": "Not cached",
-    "can_delete_messages": "Allows you to delete correspondence by timer"
+    "no_cache": "No traces on the server",
+    "can_delete_messages": "Messages are deleted by timer",
+    "forward_lock": "Lock forwarding messages and screenshot"
 }

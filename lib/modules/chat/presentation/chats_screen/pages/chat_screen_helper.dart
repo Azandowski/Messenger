@@ -3,6 +3,7 @@ import 'package:messenger_mobile/core/config/auth_config.dart';
 import 'package:messenger_mobile/core/utils/snackbar_util.dart';
 import 'package:messenger_mobile/modules/category/presentation/chooseChats/presentation/chat_choose_page.dart';
 import 'package:messenger_mobile/modules/chat/domain/entities/chat_actions.dart';
+import 'package:messenger_mobile/modules/chat/domain/entities/delete_messages.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chat_details/page/chat_detail_page.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chat_details/page/chat_detail_screen.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/cubit/time_cubit/timer_cubit.dart';
@@ -422,6 +423,14 @@ extension ChatScreenStateHelper on ChatScreenState {
             return oldState.timeLeft != newState.timeLeft;
           },
           builder: (context, timerState) {
+            if (timerState.timeLeft == null || timerState.timeLeft <= 0) {
+              chatBloc.add(MessageDeleteOffline(ids: [currentMessage.id]));
+              context.read<main_chat_cubit.ChatGlobalCubit>().updateLastMessage(
+                widget.chatEntity.chatId, 
+                state.messages.getItemAt(currentIndex + 1)
+              );
+            }
+
             return this._buildCellOfMessage(
               params: messageCellParams(
                 timeLeft: timerState.timeLeft

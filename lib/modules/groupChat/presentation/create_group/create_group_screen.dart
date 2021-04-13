@@ -121,9 +121,13 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> implements Contac
                                 physics: NeverScrollableScrollPhysics(),
                                 itemBuilder: (context, i){
                                   var contact = contacts[i].entity;
-                                  return ContactCell(contactItem: contact, cellType: ContactCellType.delete,onTrilinIconTapped: (){
-                                    _groupCubit.deleteContact(contact);
-                                  },);
+                                  return ContactCell(
+                                    contactItem: contact, 
+                                    cellType: ContactCellType.delete,
+                                    onTrilinIconTapped: () {
+                                      _groupCubit.deleteContact(contact);
+                                    }
+                                  );
                                 },
                                 itemCount: contacts.length,
                               ),

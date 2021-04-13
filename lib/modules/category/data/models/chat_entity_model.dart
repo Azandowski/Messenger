@@ -59,7 +59,8 @@ class ChatEntityModel extends ChatEntity {
   ) {
     return ChatEntityModel(
       chatId: json['id'],
-      title: json['name'],
+      title: json['name'] != 'null' ? 
+        json['name'] : null,
       imageUrl: json['avatar'],
       chatCategory: json['category_chat'] != null ? CategoryModel.fromJson(json['category_chat']) : null,
       date: json['created_at'] != null ? 
@@ -68,7 +69,8 @@ class ChatEntityModel extends ChatEntity {
         ChatPermissionModel.fromJson(json['settings']) : ChatPermissionModel(),
       lastMessage: json['last_message'] != null ? MessageModel.fromJson(json['last_message']) : null,
       unreadCount: json['no_read_message'] ?? 0,
-      description: json['description'],
+      description: json['description'] == 'null' ? 
+        null : json['description'],
       isPrivate: json['is_private'] == 1 ,
       isRead: json['is_read'] == 1,
       adminID: json['admin_id']
