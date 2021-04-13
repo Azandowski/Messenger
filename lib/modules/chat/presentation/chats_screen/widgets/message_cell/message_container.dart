@@ -36,28 +36,49 @@ class MessageContainer extends StatelessWidget {
         previousMessageUserID: widget.prevMessageUserID, 
         nextMessageUserID: widget.nextMessageUserID
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: widget.messageViewModel.isMine ? 
-          CrossAxisAlignment.end : CrossAxisAlignment.start,
+      child: Stack(
         children: [
-          NameTimeBloc(
-            messageViewModel: widget.messageViewModel
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: widget.messageViewModel.isMine ? 
+              CrossAxisAlignment.end : CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(
+                  top: 4.0, bottom: (widget.messageViewModel.isMine ? 4 : 2)
+                ),
+                child: NameTimeBloc(
+                  messageViewModel: widget.messageViewModel
+                ),
+              ),
+
+              if (widget.messageViewModel.message.transfer.isNotEmpty)
+                ...returnForwardColumn(
+                  widget.messageViewModel.message.transfer,
+                  onClickForwardMessage: onClickForwardMessage
+                ),
+
+              ...returnMessageCellBody(context),
+
+              if (widget.messageViewModel.message.text != null 
+                && widget.messageViewModel.message.text.isNotEmpty)
+                _buildTranslationBody()
+            ],
           ),
-
-          if (widget.messageViewModel.message.transfer.isNotEmpty)
-            ...returnForwardColumn(
-              widget.messageViewModel.message.transfer,
-              onClickForwardMessage: onClickForwardMessage
+          Positioned(
+            child: Text(
+              widget.messageViewModel.time,
+              style: widget.messageViewModel.isMine ? 
+                AppFontStyles.whiteGrey12w400 : AppFontStyles.grey12w400.copyWith(
+                  height: 0.75,
+                ), 
+              textAlign: TextAlign.right
             ),
-
-          ...returnMessageCellBody(context),
-
-          if (widget.messageViewModel.message.text != null 
-            && widget.messageViewModel.message.text.isNotEmpty)
-            _buildTranslationBody()
+            right: 0,
+            top: widget.messageViewModel.isMine ? 0 : 8.0,
+          )
         ],
-      ),
+      )
     );
   }
 
@@ -141,7 +162,10 @@ extension MessageContainerTranslationExtension on MessageContainer {
           listener: (context, state) {},
           builder: (context, state) {
             if (state is TranslatedState) {
-              return _buildTranslatedItem(state);
+              return Container(
+                padding: const EdgeInsets.only(top: 8),
+                child: _buildTranslatedItem(state)
+              );
             } else if (state is TranslatingState) {
               return Text(
                 'translating'.tr(),
@@ -150,7 +174,7 @@ extension MessageContainerTranslationExtension on MessageContainer {
               );
             }
 
-            return Container();
+            return SizedBox();
           },
         )
       ),

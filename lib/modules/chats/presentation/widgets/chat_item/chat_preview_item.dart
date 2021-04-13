@@ -55,7 +55,7 @@ class ChatPreviewItem extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      viewModel.title,
+                      viewModel.title ?? '',
                       style: viewModel.titleStyle,
                       overflow: TextOverflow.ellipsis, 
                     ),
