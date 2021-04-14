@@ -53,7 +53,7 @@ class AuthenticationRemoteDataSourceImpl
     }catch(e){
       print(e);
       throw ServerFailure(
-          message: ErrorHandler.getErrorMessage('no_connection'.tr()));
+          message: ErrorHandler.getErrorMessage('enterPhone'.tr()));
     }
   }
 

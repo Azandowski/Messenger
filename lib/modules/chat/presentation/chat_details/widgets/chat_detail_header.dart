@@ -81,7 +81,7 @@ class ChatDetailHeader extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            (chatDetailed?.user?.name ?? chatViewModel.title) ?? "",
+                            (chatDetailed?.user?.fullName ?? chatViewModel.title) ?? "",
                             style: TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.w500,

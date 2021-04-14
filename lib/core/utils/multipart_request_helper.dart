@@ -107,7 +107,7 @@ class MultipartRequestHelper {
 
     copyRequest.fields.addAll(request.fields);
     
-    if (files != null && files.length > 0) {
+    if (files != null && files.length > 0 && files[0].path != "empty") {
       copyRequest.files.addAll(await getFilesList(
         files, keyName
       ));

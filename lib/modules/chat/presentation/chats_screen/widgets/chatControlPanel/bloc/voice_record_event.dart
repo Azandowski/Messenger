@@ -13,7 +13,10 @@ class VoiceHoldRecoriding extends VoiceRecordEvent {}
 
 class VoiceSentImmideately extends VoiceRecordEvent {}
 
-class VoiceStopRecording extends VoiceRecordEvent {}
+class VoiceStopRecording extends VoiceRecordEvent {
+  final bool shouldSend;
+  VoiceStopRecording({this.shouldSend = false});
+}
 
 class VoiceStopHolding extends VoiceRecordEvent {}
 
