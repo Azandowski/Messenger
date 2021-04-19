@@ -40,11 +40,16 @@ abstract class ChatsDataSource {
 class ChatsDataSourceImpl implements ChatsDataSource {
   final http.Client client;
   final SocketService socketService;
+  final AuthConfig authConfig;
 
-  ChatsDataSourceImpl({@required this.client, @required this.socketService});
+  ChatsDataSourceImpl({
+    @required this.client,
+    @required this.socketService,
+    @required this.authConfig,
+  });
 
   void init() {
-    int userID = sl<AuthConfig>().user.id;
+    int userID = authConfig.user.id;
 
     socketService.echo
         .channel(SocketChannels.getChatsUpdates(userID))
@@ -97,8 +102,7 @@ class ChatsDataSourceImpl implements ChatsDataSource {
               'search': queryText,
               if (chatID != null) ...{'chat_id': '$chatID'}
             }),
-        headers:
-            Endpoints.searchChats.getHeaders(token: sl<AuthConfig>().token));
+        headers: Endpoints.searchChats.getHeaders(token: authConfig.token));
 
     if (response.isSuccess) {
       var responseJSON = json.decode(response.body);

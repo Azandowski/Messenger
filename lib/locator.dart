@@ -124,8 +124,8 @@ Future<void> init() async {
   sl.registerLazySingleton<ProfileDataSource>(
       () => ProfileDataSourceImpl(client: sl()));
 
-  sl.registerLazySingleton<ChatsDataSource>(
-      () => ChatsDataSourceImpl(client: sl(), socketService: sl()));
+  sl.registerLazySingleton<ChatsDataSource>(() =>
+      ChatsDataSourceImpl(client: sl(), socketService: sl(), authConfig: sl()));
 
   sl.registerLazySingleton<LocalChatsDataSource>(
       () => LocalChatsDataSourceImpl());

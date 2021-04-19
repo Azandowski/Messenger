@@ -18,6 +18,7 @@ import 'package:messenger_mobile/modules/chat/domain/entities/chat_detailed.dart
 import 'package:messenger_mobile/modules/chat/domain/entities/message.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chat_details/widgets/chat_media_block.dart';
 import 'package:messenger_mobile/modules/chats/data/model/category_model.dart';
+import 'package:messenger_mobile/modules/chats/data/model/chat_search_response_model.dart';
 import 'package:messenger_mobile/modules/chats/domain/entities/category.dart';
 import 'package:messenger_mobile/modules/chats/domain/entities/chat_attachment_type.dart';
 import 'package:messenger_mobile/modules/creation_module/data/models/contact_model.dart';
@@ -263,6 +264,12 @@ final tPaginatedResultViaLastItemMessage = PaginatedResultViaLastItem<Message>(
   data: [tMessage],
   hasReachMax: true,
 );
+final tPaginatedResultViaLastChatEntity =
+    PaginatedResultViaLastItem<ChatEntity>(
+  data: [tChatEntityModel],
+  hasReachMax: true,
+);
+
 final tPaginatedResultViaLastItemMessageModel =
     PaginatedResultViaLastItem<Message>(
   data: [tMessageModel],
@@ -461,3 +468,19 @@ final tPlaceModel = PlaceModel(
 );
 
 final tPlaceResponse = PlaceResponse(items: [tPlaceModel]);
+
+final tPaginatedResultMessage = PaginatedResult<Message>(
+  data: [tMessage],
+  paginationData: PaginationData(nextPageUrl: Uri(path: 'nextPageUrl')),
+);
+
+final tPaginatedResultMessageModel = PaginatedResult<Message>(
+  data: [tMessageModel],
+  paginationData:
+      PaginationData(nextPageUrl: Uri(path: 'nextPageUrl'), isFirstPage: true),
+);
+
+final tChatSearchResponseModel = ChatSearchResponseModel(
+  chats: [tChatEntityModel],
+  messages: tPaginatedResultMessageModel,
+);

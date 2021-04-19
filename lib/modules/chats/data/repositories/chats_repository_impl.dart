@@ -21,45 +21,40 @@ class ChatsRepositoryImpl extends ChatsRepository {
 
   bool hasInitialized = false;
 
-  ChatsRepositoryImpl({
-    @required this.chatsDataSource, 
-    @required this.localChatsDataSource,
-    @required this.networkInfo
-  });
+  ChatsRepositoryImpl(
+      {@required this.chatsDataSource,
+      @required this.localChatsDataSource,
+      @required this.networkInfo});
 
   // Screen mounted
-  void init () {
+  void init() {
     (chatsDataSource as ChatsDataSourceImpl).init();
   }
-
-
 
   // * * Methods
 
   @override
-  Future<Either<Failure, PaginatedResultViaLastItem<ChatEntity>>> getUserChats(GetChatsParams params) async {
-    List<ChatEntity> chatsFromLocal = await localChatsDataSource.getCategoryChats(null);
-    
-    if (
-      (chatsFromLocal.length != 0 && params.lastChatID == null && hasInitialized) || 
-      params.fromCache
-    ) {
+  Future<Either<Failure, PaginatedResultViaLastItem<ChatEntity>>> getUserChats(
+      GetChatsParams params) async {
+    List<ChatEntity> chatsFromLocal =
+        await localChatsDataSource.getCategoryChats(null);
+
+    if ((chatsFromLocal.length != 0 &&
+            params.lastChatID == null &&
+            hasInitialized) ||
+        params.fromCache) {
       return Right(PaginatedResultViaLastItem<ChatEntity>(
-        data: chatsFromLocal,
-        hasReachMax: false
-      ));
+          data: chatsFromLocal, hasReachMax: false));
     } else if (await networkInfo.isConnected) {
       try {
         final response = await chatsDataSource.getUserChats(
-          token: params.token, 
-          lastChatId: params.lastChatID
-        );
-        
+            token: params.token, lastChatId: params.lastChatID);
+
         if (params.lastChatID == null) {
           hasInitialized = true;
           await localChatsDataSource.resetAll();
         }
-        
+
         await localChatsDataSource.setCategoryChats(response.data);
         return Right(response);
       } catch (e) {
@@ -67,30 +62,26 @@ class ChatsRepositoryImpl extends ChatsRepository {
       }
     } else {
       return Right(PaginatedResultViaLastItem<ChatEntity>(
-        data: chatsFromLocal,
-        hasReachMax: false
-      ));
+          data: chatsFromLocal, hasReachMax: false));
     }
   }
 
-
   @override
-  Future<Either<Failure, PaginatedResultViaLastItem<ChatEntity>>> getCategoryChats(GetCategoryChatsParams params) async {
-    List<ChatEntity> chatsFromLocal = await localChatsDataSource.getCategoryChats(params.categoryID);
-    
+  Future<Either<Failure, PaginatedResultViaLastItem<ChatEntity>>>
+      getCategoryChats(GetCategoryChatsParams params) async {
+    List<ChatEntity> chatsFromLocal =
+        await localChatsDataSource.getCategoryChats(params.categoryID);
+
     if (chatsFromLocal.length != 0 && params.lastChatID == null) {
       return Right(PaginatedResultViaLastItem<ChatEntity>(
-        data: chatsFromLocal,
-        hasReachMax: false
-      ));
-    } else if (await networkInfo.isConnected) { 
+          data: chatsFromLocal, hasReachMax: false));
+    } else if (await networkInfo.isConnected) {
       try {
         final response = await chatsDataSource.getCategoryChat(
-          token: params.token, 
-          categoryID: params.categoryID,
-          lastChatId: params.lastChatID
-        );
-    
+            token: params.token,
+            categoryID: params.categoryID,
+            lastChatId: params.lastChatID);
+
         // Save chats in local storage
         await localChatsDataSource.setCategoryChats(response.data);
         return Right(response);
@@ -99,26 +90,17 @@ class ChatsRepositoryImpl extends ChatsRepository {
       }
     } else {
       return Right(PaginatedResultViaLastItem<ChatEntity>(
-        data: chatsFromLocal,
-        hasReachMax: false
-      ));
+          data: chatsFromLocal, hasReachMax: false));
     }
   }
-  
 
   @override
-  Future<Either<Failure, ChatMessageResponse>> searchChats({
-    Uri nextPageURL, 
-    String queryText,
-    int chatID
-  }) async {
+  Future<Either<Failure, ChatMessageResponse>> searchChats(
+      {Uri nextPageURL, String queryText, int chatID}) async {
     if (await networkInfo.isConnected) {
       try {
         final response = await chatsDataSource.searchChats(
-          nextPageURL: nextPageURL,
-          queryText: queryText,
-          chatID: chatID
-        );
+            nextPageURL: nextPageURL, queryText: queryText, chatID: chatID);
 
         return Right(response);
       } catch (e) {
@@ -132,7 +114,6 @@ class ChatsRepositoryImpl extends ChatsRepository {
       return Left(ConnectionFailure());
     }
   }
-
 
   @override
   Stream<ChatEntity> get chats async* {

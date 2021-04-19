@@ -12,10 +12,9 @@ class SearchChats extends UseCase<ChatMessageResponse, SearchChatParams> {
   SearchChats(this.repository);
 
   @override
-  Future<Either<Failure, ChatMessageResponse>> call(SearchChatParams params) async {
+  Future<Either<Failure, ChatMessageResponse>> call(
+      SearchChatParams params) async {
     return repository.searchChats(
-      nextPageURL: params.nextPageURL,
-      queryText: params.queryText
-    );
+        nextPageURL: params.nextPageURL, queryText: params.queryText);
   }
 }
