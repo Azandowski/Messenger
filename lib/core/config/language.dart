@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-enum ApplicationLanguage { kazakh, russian, english, chinese, turkish }
+enum ApplicationLanguage { kazakh, russian, english }
+//chinese, turkish
 
 extension ApplicationLanguageExtension on ApplicationLanguage {
   String get name {
@@ -11,10 +12,10 @@ extension ApplicationLanguageExtension on ApplicationLanguage {
         return 'Русский';
       case ApplicationLanguage.english:
         return 'English';
-      case ApplicationLanguage.chinese:
-        return '中文';
-      case ApplicationLanguage.turkish:
-        return "Türk";
+      // case ApplicationLanguage.chinese:
+      //   return '中文';
+      // case ApplicationLanguage.turkish:
+      //   return "Türk";
     }
   }
 
@@ -26,10 +27,10 @@ extension ApplicationLanguageExtension on ApplicationLanguage {
         return Locale('ru', 'RU');
       case ApplicationLanguage.english:
         return Locale('en', 'US');
-      case ApplicationLanguage.chinese:
-        return Locale('zh', 'CN');
-      case ApplicationLanguage.turkish:
-        return Locale('tr', 'TR');
+      // case ApplicationLanguage.chinese:
+      //   return Locale('zh', 'CN');
+      // case ApplicationLanguage.turkish:
+      //   return Locale('tr', 'TR');
     }
   }
 
@@ -41,10 +42,10 @@ extension ApplicationLanguageExtension on ApplicationLanguage {
         return 'ru';
       case ApplicationLanguage.english:
         return 'en';
-      case ApplicationLanguage.chinese:
-        return 'zh';
-      case ApplicationLanguage.turkish:
-        return "tr";
+      // case ApplicationLanguage.chinese:
+      //   return 'zh';
+      // case ApplicationLanguage.turkish:
+      //   return "tr";
       default:
         return '';
     }
@@ -58,10 +59,10 @@ extension ApplicationLanguageExtension on ApplicationLanguage {
         return 'ru-RU';
       case ApplicationLanguage.english:
         return 'en-US';
-      case ApplicationLanguage.chinese:
-        return 'zh-CN';
-      case ApplicationLanguage.turkish:
-        return "tr-TR";
+      // case ApplicationLanguage.chinese:
+      //   return 'zh-CN';
+      // case ApplicationLanguage.turkish:
+      //   return "tr-TR";
       default:
         return '';
     }

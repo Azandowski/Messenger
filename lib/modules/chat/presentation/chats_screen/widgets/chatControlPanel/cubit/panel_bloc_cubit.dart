@@ -28,33 +28,37 @@ class PanelBlocCubit extends Cubit<PanelBlocState> {
   final GetVideo getVideoUseCase;
   final GetAudios getAudios;
   final GetImage getImage;
+  
   PanelBlocCubit({
     @required this.getImagesFromGallery,
     @required this.chatBloc,
     @required this.getVideoUseCase,
     @required this.getAudios,
     @required this.getImage,
-  }) : super(PanelBlocInitial(showBottomPanel: false)) {
+  }) : super(PanelBlocInitial(
+    showBottomPanel: false,
+    showEmojies: false
+  )) {
     _textController.sink.addError("Invalid value entered!");
   }
 
   addMessage(MessageViewModel message){
     emit(PanelBlocReplyMessage(
       messageViewModel: message,
-      showBottomPanel: state.showBottomPanel
+      showBottomPanel: state.showBottomPanel,
+      showEmojies: state.showEmojies
     ));
   }
   
   detachMessage(){
     emit(PanelBlocInitial(
-      showBottomPanel: state.showBottomPanel
+      showBottomPanel: state.showBottomPanel,
+      showEmojies: state.showEmojies
     ));
   }
 
   toggleBottomPanel () {
-    emit(PanelBlocInitial(
-      showBottomPanel: !state.showBottomPanel
-    ));
+    emit(PanelBlocInitial(showBottomPanel: !state.showBottomPanel, showEmojies: this.state.showEmojies));
   }
 
   var _textController = StreamController<String>.broadcast();
@@ -66,7 +70,7 @@ class PanelBlocCubit extends Cubit<PanelBlocState> {
       : _textController.sink.add(text);
   }
 
-  clear(){
+  clear() {
     _textController.add(null);
     _textController.sink.addError("Invalid value entered!");
   }
@@ -88,12 +92,14 @@ class PanelBlocCubit extends Cubit<PanelBlocState> {
       }
     });
   }
+
   Future<List<Uint8List>> getUIint8List(List<Asset> assets) async {
     return Future.wait(assets.map( (e) async {
       var byteData = await e.getByteData();
       return byteData.buffer.asUint8List(byteData.offsetInBytes, byteData.lengthInBytes);
     }).toList());
   }
+
   getCameraPhoto() async {
     final result =  await getImage(ImageSource.camera);
     result.fold((l) => print('error'), (file){
@@ -106,7 +112,7 @@ class PanelBlocCubit extends Cubit<PanelBlocState> {
     });
   }
 
-   getAudio() async {
+  getAudio() async {
     final result =  await getAudios(NoParams());
     result.fold((l) => print('error'), (audios){
       if(audios != null){
@@ -120,13 +126,23 @@ class PanelBlocCubit extends Cubit<PanelBlocState> {
   getVideo()async{
     final result =  await getVideoUseCase(NoParams());
     result.fold((error) {
-      emit(PanelBlocError(showBottomPanel: this.state.showBottomPanel, errorMessage: error.message));
+      emit(PanelBlocError(
+        showBottomPanel: false, 
+        errorMessage: error.message,
+        showEmojies: state.showEmojies
+      ));
     }, (video){
-      if(video != null){
+      if (video != null) {
         chatBloc.add(MessageSend(
           fieldFiles: FieldFiles(files: [video], fieldKey: TypeMedia.video)
         ));
       }
     });
+  }
+  
+  void toggleEmojies ({ bool value }) {
+    emit(state.copyWith(
+      showEmojies: value ?? !state.showEmojies
+    ));
   }
 }

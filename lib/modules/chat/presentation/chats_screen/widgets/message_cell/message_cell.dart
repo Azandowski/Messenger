@@ -106,8 +106,8 @@ class _MessageCellState extends State<MessageCell> {
           mainAxisAlignment: widget.messageViewModel.isMine ?
             MainAxisAlignment.end : MainAxisAlignment.start,
           children: [
-            Container(
-              width: w * 0.8,
+            LimitedBox(
+              maxWidth: w * 0.8,
               child: FocusedMenuHolder(
                 blurSize: 5.0,
                 animateMenuItems: true,

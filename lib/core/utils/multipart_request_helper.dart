@@ -20,14 +20,14 @@ class MultipartRequestHelper {
   ) async {
     List<http.MultipartFile> _files = [];
 
-    for (int i = 0; i < files.length; i++) {
-      if (files[i] != null) {
-        var stream = new http.ByteStream((files[i].openRead()));
-        var length = await files[i].length();
+    for (var file in files) {
+      if (files != null) {
+        var stream = new http.ByteStream((file.openRead()));
+        var length = await file.length();
         var date = DateTime.now().millisecondsSinceEpoch.toString();
-        var filename = date + files[i].path;
+        var filename = date + file.path;
 
-        var multipartFile = new http.MultipartFile(keyName[i], stream, length,
+        var multipartFile = new http.MultipartFile(keyName[files.indexOf(file)], stream, length,
             filename: basename(filename));
         _files.add(multipartFile);
       }
@@ -49,7 +49,7 @@ class MultipartRequestHelper {
 
     for (int i = 0; i < assets.length; i++) {
       if (assets[i] != null) {
-        ByteData byteData = await assets[i].getByteData(quality: 10);
+        ByteData byteData = await assets[i].getByteData(quality: 40);
         List<int> imageData = byteData.buffer.asUint8List();
         http.MultipartFile multipartFile = MultipartFile.fromBytes(
           keyName[i],
@@ -107,7 +107,7 @@ class MultipartRequestHelper {
 
     copyRequest.fields.addAll(request.fields);
     
-    if (files != null && files.length > 0) {
+    if (files != null && files.length > 0 && files[0].path != "empty") {
       copyRequest.files.addAll(await getFilesList(
         files, keyName
       ));

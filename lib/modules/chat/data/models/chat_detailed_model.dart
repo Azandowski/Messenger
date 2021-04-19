@@ -43,7 +43,8 @@ class ChatDetailedModel extends ChatDetailed {
             socialMedia: socialMedia);
 
   factory ChatDetailedModel.fromJson(Map<String, dynamic> json) {
-    var profileModel = json['user'] ?? json['chat'];
+    var profileModel =
+        json['user'] ?? json['user_in_private_chat'] ?? json['chat'];
     bool hasSocialMedia = profileModel['youtube'] != null ||
         profileModel['instagram'] != null ||
         profileModel['facebook'] != null ||
@@ -64,17 +65,14 @@ class ChatDetailedModel extends ChatDetailed {
         settings: ChatPermissionModel.fromJson(json['settings']),
         chatMemberRole:
             json['role'] == 'member' ? ChatMember.member : ChatMember.admin,
-        user: json['user'] != null ? UserModel.fromJson(json['user']) : null,
+        user: json['user'] != null || json['user_in_private_chat'] != null
+            ? UserModel.fromJson(json['user'] ?? json['user_in_private_chat'])
+            : null,
         groups: ((json['equal_group'] ?? []) as List)
             .map((e) => ChatEntityModel.fromJson(e))
             .toList(),
         socialMedia:
             hasSocialMedia ? SocialMediaModel.fromJson(profileModel) : null);
-  }
-
-  @override
-  String toString() {
-    return "\nChatDetailedModel [user:$user chat:$chat media:$media settings:$settings members:$members membersCount:$membersCount chatMemberRole:$chatMemberRole groups:$groups socialMedia:$socialMedia]";
   }
 }
 

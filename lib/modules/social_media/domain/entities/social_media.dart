@@ -18,16 +18,6 @@ class SocialMedia extends Equatable {
   @override
   List<Object> get props =>
       [facebookLink, instagramLink, websiteLink, youtubeLink, whatsappNumber];
-
-  Map<String, dynamic> toJson() {
-    return {
-      'facebook': facebookLink,
-      'site': websiteLink,
-      'youtube': youtubeLink,
-      'instagram': instagramLink,
-      'whatsapp': whatsappNumber
-    };
-  }
 }
 
 enum SocialMediaType { website, instagram, facebook, youtube, whatsapp }

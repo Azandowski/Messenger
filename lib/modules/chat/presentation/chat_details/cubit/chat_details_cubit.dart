@@ -163,7 +163,7 @@ class ChatDetailsCubit extends Cubit<ChatDetailsState> {
 
   Future<void> blockUnblockUser(
       {@required int userID, @required bool isBlock}) async {
-    emit(ChatDetailsProccessing(chatDetailed: this.state.chatDetailed));
+    // emit(ChatDetailsProccessing(chatDetailed: this.state.chatDetailed));
 
     var response =
         await blockUser(BlockUserParams(isBloc: isBlock, userID: userID));

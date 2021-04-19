@@ -17,4 +17,12 @@ class MessageUserViewModel {
       return user.name;
     }
   }
+
+  String get username {
+    if (user?.name == null || user?.name == '') {
+      return 'user'.tr();
+    } else {
+      return user.name;
+    }
+  }
 }

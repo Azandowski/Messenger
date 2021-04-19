@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/chat_screen_import.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../../../../core/config/auth_config.dart';
@@ -96,13 +97,22 @@ class ChatsDataSourceImpl implements ChatsDataSource {
   @override
   Future<ChatMessageResponse> searchChats(
       {Uri nextPageURL, String queryText, int chatID}) async {
+    String nextPageLink;
+    if (nextPageURL != null) {
+      nextPageLink = nextPageURL.toString() +
+          "&search=${queryText}" +
+          (chatID != null ? '&chat_id=${chatID}' : '');
+    }
+
     http.Response response = await client.get(
-        nextPageURL ??
-            Endpoints.searchChats.buildURL(queryParameters: {
-              'search': queryText,
-              if (chatID != null) ...{'chat_id': '$chatID'}
-            }),
-        headers: Endpoints.searchChats.getHeaders(token: authConfig.token));
+        nextPageURL != null
+            ? nextPageLink
+            : Endpoints.searchChats.buildURL(queryParameters: {
+                'search': queryText,
+                if (chatID != null) ...{'chat_id': '$chatID'}
+              }),
+        headers:
+            Endpoints.searchChats.getHeaders(token: sl<AuthConfig>().token));
 
     if (response.isSuccess) {
       var responseJSON = json.decode(response.body);
@@ -147,7 +157,6 @@ class ChatsDataSourceImpl implements ChatsDataSource {
     String appDocumentsPath = appDocumentsDirectory.path;
     String filePath = '$appDocumentsPath/wallpaper.png';
     File output;
-
     try {
       output = File(filePath);
     } catch (e) {}
@@ -160,7 +169,12 @@ class ChatsDataSourceImpl implements ChatsDataSource {
     Directory appDocumentsDirectory = await getTemporaryDirectory();
     String appDocumentsPath = appDocumentsDirectory.path;
     String filePath = '$appDocumentsPath/wallpaper.png';
-    file.copy(filePath);
+    File oldImage = File(filePath);
+    if (await oldImage.exists()) {
+      await oldImage.delete();
+    }
+    await file.copy(filePath);
+    imageCache.clear();
   }
 
   @override

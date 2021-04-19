@@ -12,16 +12,13 @@ class PaginatedResult<T> extends Equatable {
     List jsonDataArray = (json['data'] ?? []) as List;
     return PaginatedResult(
         paginationData: PaginationData(
-            nextPageUrl: json['next_page_url'] != null
-                ? Uri.parse(json['next_page_url'])
-                : null,
-            isFirstPage: false),
+          nextPageUrl: json['next_page_url'] != null
+              ? Uri.parse(json['next_page_url'])
+              : null,
+          isFirstPage: false,
+          total: json['total'] ?? 0,
+        ),
         data: jsonDataArray.map((e) => factory(e)).toList());
-  }
-
-  @override
-  String toString() {
-    return "$data $paginationData";
   }
 
   @override

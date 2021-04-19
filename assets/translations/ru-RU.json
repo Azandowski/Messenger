@@ -162,11 +162,18 @@
     "copied": "Скопировано в буфер обмена",
     "file_should_not_more_than_100mb": "Размер файла не должен превышать 50 мб",
     "file_is_not_selected": "Файл не выбран",
-    "you_agree_by_continuing": "Продолжая вы соглашаетесь",
+    "you_agree_by_continuing": "Продолжая, вы соглашаетесь",
     "handle_personal_info": "с обработкой персональных данных",
     "whatsapp_number": "Номер WhatsApp",
     "link_to": "Ссылка на {service}",
     "website": "Веб-сайт",
-    "link_error": "Нужна прямая сылка на {service}",
-    "whatsapp_number_error": "Нужен прямой номер от WhatsApp"
+    "link_error": "Нужна прямая ссылка на {service}",
+    "whatsapp_number_error": "Нужен прямой номер от WhatsApp",
+    "chatCreated": "Чат создан",
+    "no_contacts": "У вас еще нет контактов в AIO Messenger",
+    "smart_bot": "Умный бот",
+    "calls": "Звонки",
+    "no_cache": "Никаких следов на сервере",
+    "can_delete_messages": "Сообщения удаляются по таймеру",
+    "forward_lock": "Запрет на пересылку сообщений и снимок экрана"
 }

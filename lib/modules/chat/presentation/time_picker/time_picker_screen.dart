@@ -34,36 +34,38 @@ class _TimePickerScreenState extends State<TimePickerScreen> {
       appBar: AppBar(
         title: Text('deletion_timer'.tr()),
       ),
-      body: Container(
-        height: MediaQuery.of(context).size.height,
-        child: Stack(
-          children: [
-            Container(
-              padding: const EdgeInsets.only(bottom: 50),
-              child: SingleChildScrollView(
-                child: DividerWrapper(
-                  children: TimeOptions.values.map(
-                    (e) => OptionView(
-                      isSelected: e.index == currentOption.index,
-                      text: e.title,
-                      onPressed: () {
-                        setState(() {
-                          currentOption = e;
-                        });
-                      }
-                    )
-                  ).toList()
+      body: SafeArea(
+        child: Container(
+          height: MediaQuery.of(context).size.height,
+          child: Stack(
+            children: [
+              Container(
+                padding: const EdgeInsets.only(bottom: 50),
+                child: SingleChildScrollView(
+                  child: DividerWrapper(
+                    children: TimeOptions.values.map(
+                      (e) => OptionView(
+                        isSelected: e.index == currentOption.index,
+                        text: e.title,
+                        onPressed: () {
+                          setState(() {
+                            currentOption = e;
+                          });
+                        }
+                      )
+                    ).toList()
+                  ),
                 ),
               ),
-            ),
-            BottomActionButtonContainer(
-              title: 'save'.tr(),
-              onTap: () {
-                widget.delegate.didSelectTimeOption(currentOption);
-                Navigator.of(context).pop();
-              }, 
-            )
-          ],
+              BottomActionButtonContainer(
+                title: 'save'.tr(),
+                onTap: () {
+                  widget.delegate.didSelectTimeOption(currentOption);
+                  Navigator.of(context).pop();
+                }, 
+              )
+            ],
+          ),
         ),
       )
     );
@@ -111,6 +113,33 @@ extension TimeRangesUIExtension on TimeOptions {
         return 86400;
       case TimeOptions.oneWeek:
         return 604800;
+    }
+  }
+
+  String get hint {
+    switch (this) {
+      case TimeOptions.off:
+        return '0s';
+      case TimeOptions.oneMinute:
+        return '1m';
+      case TimeOptions.tenMinutes:
+        return '10m';
+      case TimeOptions.thirtyMinutes:
+        return '30m';
+      case TimeOptions.oneHour:
+        return '1h';
+      case TimeOptions.oneDay:
+        return '1d';
+      case TimeOptions.oneWeek:
+        return '1w';
+    }
+  }
+
+  static TimeOptions getTimeOption (int seconds) {
+    if (seconds == null) {
+      return null;
+    } else {
+      return TimeOptions.values.firstWhere((e) => e.seconds == seconds, orElse: () => null);
     }
   }
 }

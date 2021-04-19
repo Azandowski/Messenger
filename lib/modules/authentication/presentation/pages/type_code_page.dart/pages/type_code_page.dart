@@ -66,7 +66,7 @@ class _TypeCodePageState extends State<TypeCodePage> {
             _pinPutController.clear();
             SnackUtil.showError(context: context, message: state.message);
           } else if (state is SuccessCode) {
-            SnackUtil.showInfo(context: context, message: 'success'.tr());
+            // SnackUtil.showInfo(context: context, message: 'success'.tr());
           }
         },
         builder: (context, state) {

@@ -2,7 +2,11 @@ import 'package:messenger_mobile/modules/chat/presentation/chats_screen/pages/ch
 import 'package:easy_localization/easy_localization.dart';
 
 class UnavailableScreen extends StatelessWidget {
-  
+
+  final String title;
+
+  UnavailableScreen(this.title);
+
   Widget _buildSeparator (BuildContext context) {
     return SizedBox(height: 8);
   } 
@@ -11,7 +15,7 @@ class UnavailableScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('profile').tr(),
+        title: Text(title),
       ),
       body: Container(
         child: Center(

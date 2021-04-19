@@ -7,7 +7,9 @@ enum ChatActions {
   kickUser,
   newDay,
   setSecret,
-  unsetSecret
+  unsetSecret,
+  chatCreated,
+  leaveChat
 }
 
 extension ChatActionsLogicExtension on ChatActions {
@@ -16,7 +18,9 @@ extension ChatActionsLogicExtension on ChatActions {
       this == ChatActions.addUser 
         || this == ChatActions.kickUser 
           || this == ChatActions.setSecret
-            || this == ChatActions.unsetSecret
+            || this == ChatActions.unsetSecret 
+              || this == ChatActions.chatCreated
+               || this == ChatActions.leaveChat
     ) {
       return ChatActionTypes.group;
     } else {
@@ -36,9 +40,25 @@ extension ChatActionsExtension on ChatActions {
         return 'SetSecretChat';
       case ChatActions.unsetSecret:
         return 'UnsetSecretChat';
+      case ChatActions.chatCreated:
+        return 'chatCreated';
+      case ChatActions.leaveChat:
+        return 'LeaveUserChat';
       default: 
         return null;
     }
+  }
+
+  bool get needsSecondUser {
+    if (this == ChatActions.setSecret || this == ChatActions.unsetSecret) {
+      return false;
+    } else if (this == ChatActions.chatCreated || this == ChatActions.leaveChat) {
+      return false;
+    } else if (this == ChatActions.addUser) {
+      return false;
+    }
+
+    return true;
   }
 
   String getHintText () {
@@ -51,6 +71,10 @@ extension ChatActionsExtension on ChatActions {
         return 'secret_mode_turned_on'.tr();
       case ChatActions.unsetSecret:
         return 'secret_mode_turned_off'.tr();
+      case ChatActions.chatCreated:
+        return 'chatCreated'.tr();
+      case ChatActions.leaveChat:
+        return 'deleted_user'.tr();
       default:
         return null;
     }
@@ -66,10 +90,16 @@ extension ChatActionsExtension on ChatActions {
         return 'user_deleted_v2'.tr(namedArgs: {
           'username': userName
         });
+      case ChatActions.leaveChat:
+        return 'user_deleted_v2'.tr(namedArgs: {
+          'username': userName
+        });
       case ChatActions.setSecret:
         return 'secret_mode_turned_on'.tr();
       case ChatActions.unsetSecret:
         return 'secret_mode_turned_off'.tr();
+      case ChatActions.chatCreated:
+        return 'chatCreated'.tr();
       default:
         return null;
     }
@@ -96,6 +126,10 @@ class GroupAction extends ChatAction {
   final ChatActions action;
   final MessageUser firstUser;
   final MessageUser secondUser;
+
+  bool get needsSecondUser => action.needsSecondUser;
+
+  bool get isAtLeft => action == ChatActions.leaveChat || action == ChatActions.addUser;
 
   GroupAction({
     @required this.action,

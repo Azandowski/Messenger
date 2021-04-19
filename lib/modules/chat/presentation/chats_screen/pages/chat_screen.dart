@@ -81,12 +81,11 @@ class ChatScreenState extends State<ChatScreen> implements ChatChooseDelegate {
       getMessagesContext: GetMessagesContext(repository: chatRepository),
       chatsRepository: sl(),
       setTimeDeleted: SetTimeDeleted(repository: chatRepository),
-      isSecretModeOn: widget.chatEntity.permissions?.isSecret ?? false,
+      isSecretModeOn: widget.chatEntity?.permissions?.isSecret ?? false,
       chatEntity: widget.chatEntity,
     )..add(LoadMessages(
-        isPagination: false,
-        messageID: widget.messageID,
-      ));
+        isPagination: false, messageID: widget.messageID, isInitial: true));
+
     _panelBlocCubit = PanelBlocCubit(
       getVideoUseCase: sl(),
       getImagesFromGallery: sl(),
@@ -141,7 +140,7 @@ class ChatScreenState extends State<ChatScreen> implements ChatChooseDelegate {
                         (ChatAppBarActions action) {
                       if (action == ChatAppBarActions.onOffSecretMode) {
                         _chatBloc.add(SetInitialTime(
-                            isOn: !(state.isSecretModeOn ?? false)));
+                            isOn: !(state?.isSecretModeOn ?? false)));
                       }
                     }),
                     floatingActionButton: shouldShowBottomPin(state)
@@ -197,33 +196,32 @@ class ChatScreenState extends State<ChatScreen> implements ChatChooseDelegate {
                                         // color: Colors.red
                                       ),
                                       child: ListView.separated(
-                                          key: PageStorageKey('feed'),
-                                          controller:
-                                              _chatBloc.scrollController,
-                                          itemBuilder: (context, int index) =>
-                                              this.buildMessageCell(
-                                                  index: index,
-                                                  state: state,
-                                                  cubit: cubit,
-                                                  panelBlocCubit:
-                                                      _panelBlocCubit,
-                                                  chatTodoCubit: _chatTodoCubit,
-                                                  chatBloc: _chatBloc,
-                                                  chatRepository:
-                                                      chatRepository),
-                                          cacheExtent: 40,
-                                          scrollDirection: Axis.vertical,
-                                          itemCount: getItemsCount(state),
-                                          reverse: true,
-                                          separatorBuilder: (_, int index) {
-                                            return buildSeparator(index, state);
-                                          }),
+                                        key: PageStorageKey('feed'),
+                                        controller: _chatBloc.scrollController,
+                                        itemBuilder: (context, int index) =>
+                                            this.buildMessageCell(
+                                                index: index,
+                                                state: state,
+                                                cubit: cubit,
+                                                panelBlocCubit: _panelBlocCubit,
+                                                chatTodoCubit: _chatTodoCubit,
+                                                chatBloc: _chatBloc,
+                                                chatRepository: chatRepository),
+                                      ),
                                     ),
                                   ),
                                   if (canSendMessage(state))
                                     this.buildChatBottom(
                                         cubit, _chatTodoCubit, width, height,
-                                        canSendMedia: canSendMedia(state))
+                                        canSendMedia: canSendMedia(state),
+                                        currentTimeOption:
+                                            state.currentTimerOption,
+                                        onLeadingIconTap: () {
+                                      if (state.currentTimerOption != null) {
+                                        _chatBloc.add(UpdateTimerOption(
+                                            newTimerOption: null));
+                                      }
+                                    })
                                 ],
                               );
                             },
@@ -242,8 +240,8 @@ class ChatScreenState extends State<ChatScreen> implements ChatChooseDelegate {
   }
 
   bool shouldShowBottomPin(ChatState state) {
-    return (state.unreadCount != null && state.unreadCount != 0) ||
-        (state.showBottomPin != null && state.showBottomPin) ||
+    return (state?.unreadCount != null && state.unreadCount != 0) ||
+        (state?.showBottomPin != null && state?.showBottomPin) ||
         !state.hasReachBottomMax;
   }
 

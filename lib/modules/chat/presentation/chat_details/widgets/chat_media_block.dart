@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:messenger_mobile/core/utils/unavailable_dialog.dart';
 import '../../../domain/entities/chat_detailed.dart';
 import 'divider_wrapper.dart';
 
@@ -15,23 +16,28 @@ class ChatMediaBlock extends StatelessWidget {
   Widget build(BuildContext context) {
     return DividerWrapper(
       children: [TypeMedia.media, TypeMedia.documents, TypeMedia.audio].map(
-        (e) => ListTile(
-          leading: Image(
-            image: AssetImage(e.imageAssetPath),
-            width: 35,
-            height: 35
-          ),
-          title: Text(e.title),
-          trailing: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                '${e.getCountFrom(media)}',
-                style: TextStyle(color: Colors.grey[400]),
-              ),
-              SizedBox(width: 8),
-              // Icon(Icons.chevron_right, color: Colors.grey[400])
-            ],
+        (e) => InkWell(
+          onTap: () {
+            UnavailableFeatureDialog.show(context);
+          },
+          child: ListTile(
+            leading: Image(
+              image: AssetImage(e.imageAssetPath),
+              width: 35,
+              height: 35
+            ),
+            title: Text(e.title),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  '${e.getCountFrom(media)}',
+                  style: TextStyle(color: Colors.grey[400]),
+                ),
+                SizedBox(width: 8),
+                // Icon(Icons.chevron_right, color: Colors.grey[400])
+              ],
+            ),
           ),
         )
       ).toList(),

@@ -26,17 +26,17 @@ class ChatPreviewItem extends StatelessWidget {
             children: [
               AvatarImage(
                 isFromAsset: false,
-                path: viewModel.imageURL,
+                path: viewModel?.imageURL,
                 width: 55,
                 height: 55,
                 borderRadius: BorderRadius.circular(28),
               ),
-              if (viewModel.isSecretModeOn)
+              if (viewModel?.isSecretModeOn)
                 Positioned(
                   bottom: -8,
                   right: -8,
                   child: Image.asset(
-                    viewModel.avatarBottomIconPath,
+                    viewModel?.avatarBottomIconPath,
                     width: 40,
                     height: 40,
                   ),
@@ -55,7 +55,7 @@ class ChatPreviewItem extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      viewModel.title,
+                      viewModel.title ?? '',
                       style: viewModel.titleStyle,
                       overflow: TextOverflow.ellipsis, 
                     ),

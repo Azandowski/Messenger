@@ -67,8 +67,9 @@ class _ProfilePageState extends State<ProfilePage> {
                   children: [
                     ProfileHeader(
                       imageURL: profileState.user.profileImage,
-                      name: profileState.user.name,
+                      name: profileState.user.fullName,
                       phoneNumber: profileState.user.phoneNumber,
+                      status: profileState.user.status,
                       onPress: () {
                         _handleEditScreenNavigation(context);
                       },
@@ -92,7 +93,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                       onTap: () async {
                         final PickedFile image = await ImagePicker().getImage(
-                          source: ImageSource.gallery
+                          source: ImageSource.gallery,imageQuality: 50
                         );
                         
                         final file = File(image.path);

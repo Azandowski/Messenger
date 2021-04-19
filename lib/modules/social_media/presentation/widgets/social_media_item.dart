@@ -57,7 +57,7 @@ class SocialMediaItem extends StatelessWidget {
   }
 
   bool isWebiteLinkValid (String value) {
-    var pattern = r"(https?|http)://([-A-Z0-9.]+)(/[-A-Z0-9+&@#/%=~_|!:,.;]*)?(\?[A-Z0-9+&@#/%=~_|!:‌​,.;]*)?";
+    var pattern = r"^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$";
     RegExp regExp = new RegExp(pattern, caseSensitive: false);
 
     return regExp.hasMatch(value);

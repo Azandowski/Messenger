@@ -168,5 +168,12 @@
     "link_to": "{service} - аккаунтының сілтемесі",
     "website": "Веб-сайт",
     "link_error": "{service} - аккаунтының тура сілтемесі қажет",
-    "whatsapp_number_error": "WhatsApp нөмір дұрыс болуы қажет"
+    "whatsapp_number_error": "WhatsApp нөмір дұрыс болуы қажет",
+    "chatCreated": "Чат жасалынды",
+    "no_contacts": "Сізде AIO Messenger-де контактілер жоқ",
+    "smart_bot": "Ақылды бот",
+    "calls": "Қоңыраулар",
+    "no_cache": "Серверлерде ешқайндай айғақсыз",
+    "can_delete_messages": "Хабарларды таймер арқылы жоюға мүмкіндік береді",
+    "forward_lock": "Хабарламаларды түсіру және бағыттау бұғатталады"
 }

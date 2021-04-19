@@ -9,23 +9,28 @@ class SendMessageTextField extends StatelessWidget {
     Key key,
     @required this.widget,
     @required PanelBlocCubit panelBloc,
+    @required this.textFieldFocusNode
   }) : _panelBloc = panelBloc, super(key: key);
 
   final ChatControlPanel widget;
   final PanelBlocCubit _panelBloc;
+  final FocusNode textFieldFocusNode;
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
       child: TextFormField(
-      controller: widget.messageTextController,
-      onChanged: (String text) => _panelBloc.updateText(text),
-      decoration: InputDecoration(
-        border: InputBorder.none,
-        contentPadding: EdgeInsets.symmetric(
-        horizontal: widget.width / (360 / 16), vertical: widget.height / (724 / 18)),
-      hintText: 'message'.tr(),
-      labelStyle: AppFontStyles.blueSmallStyle)),
+        controller: widget.messageTextController,
+        textCapitalization: TextCapitalization.sentences,
+        focusNode: textFieldFocusNode,
+        onChanged: (String text) => _panelBloc.updateText(text),
+        decoration: InputDecoration(
+          border: InputBorder.none,
+          contentPadding: EdgeInsets.symmetric(
+          horizontal: widget.width / (360 / 16), vertical: widget.height / (724 / 18)),
+        hintText: 'message'.tr(),
+        labelStyle: AppFontStyles.blueSmallStyle)
+      ),
     );
   }
 }

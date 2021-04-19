@@ -16,7 +16,9 @@ extension ChatBlocExtension on ChatBloc {
     RequestDirection direction,
     Message topMessage,
     T oldState,
-    bool isSecretModeOn
+    bool isSecretModeOn,
+    TimeOptions currentTimerOption,
+    bool isTimerDeleted = false
   }) {
     if (T == ChatInitial || oldState is ChatInitial) {
       return ChatInitial(
@@ -28,8 +30,9 @@ extension ChatBlocExtension on ChatBloc {
         unreadCount: unreadCount ?? state.unreadCount,
         showBottomPin: showBottomPin ?? state.showBottomPin,
         chatEntity: chatEntity ?? state.chatEntity,
-        isSecretModeOn: isSecretModeOn ?? state.isSecretModeOn,
+        isSecretModeOn: isSecretModeOn ?? state?.isSecretModeOn ?? false,
         topMessage: topMessage ?? state.topMessage,
+        currentTimerOption: isTimerDeleted ? null : currentTimerOption ?? state.currentTimerOption
       );
     } else if (T == ChatLoading || oldState is ChatLoading) {
       return ChatLoading(
@@ -41,9 +44,10 @@ extension ChatBlocExtension on ChatBloc {
         showBottomPin: showBottomPin ?? state.showBottomPin,
         isPagination: isPagination ?? false,
         chatEntity: chatEntity ?? state.chatEntity,
-        isSecretModeOn: state.isSecretModeOn,
+        isSecretModeOn: state?.isSecretModeOn ?? false,
         direction: direction,
-        topMessage: topMessage ?? state.topMessage
+        topMessage: topMessage ?? state.topMessage,
+        currentTimerOption: isTimerDeleted ? null : currentTimerOption ?? state.currentTimerOption
       );
     } else if (T == ChatLoadingSilently || oldState is ChatLoadingSilently) {
       return ChatLoadingSilently(
@@ -54,8 +58,9 @@ extension ChatBlocExtension on ChatBloc {
         unreadCount: unreadCount ?? state.unreadCount,
         showBottomPin: showBottomPin ?? state.showBottomPin,
         chatEntity: chatEntity ?? state.chatEntity,
-        isSecretModeOn: state.isSecretModeOn,
-        topMessage: topMessage ?? state.topMessage
+        isSecretModeOn: state?.isSecretModeOn ?? false,
+        topMessage: topMessage ?? state.topMessage,
+        currentTimerOption: isTimerDeleted ? null : currentTimerOption ?? state.currentTimerOption
       );
     } else if (T == ChatError || oldState is ChatError) {
       return ChatError(
@@ -67,8 +72,9 @@ extension ChatBlocExtension on ChatBloc {
         showBottomPin: showBottomPin ?? state.showBottomPin,
         message: message,
         chatEntity: chatEntity ?? state.chatEntity,
-        isSecretModeOn: state.isSecretModeOn,
-        topMessage: topMessage ?? state.topMessage
+        isSecretModeOn: state?.isSecretModeOn ?? false,
+        topMessage: topMessage ?? state.topMessage,
+        currentTimerOption: isTimerDeleted ? null : currentTimerOption ?? state.currentTimerOption
       );
     } 
 

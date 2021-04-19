@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:messenger_mobile/modules/creation_module/domain/entities/contact.dart';
 
 import 'choose_contacts_screen.dart';
 import 'cubit/choosecontact_cubit.dart';
@@ -7,17 +8,24 @@ import 'cubit/choosecontact_cubit.dart';
 class ChooseContactsPage extends StatefulWidget {
   final ContactChooseDelegate delegate;
   final bool isSingleSelect;
+  final List<int> excludeContactsIDS;
+
   static var id = 'choosecontactspage';
 
-  static Route route(ContactChooseDelegate delegate, { bool isSingleSelect }) {
+  static Route route(ContactChooseDelegate delegate, { 
+    bool isSingleSelect,
+    List<int> excludeContactsIDS
+  }) {
     return MaterialPageRoute<void>(builder: (_) => ChooseContactsPage(
       delegate: delegate,
-      isSingleSelect: isSingleSelect ?? false
+      isSingleSelect: isSingleSelect ?? false,
+      excludeContactsIDS: excludeContactsIDS ?? []
     ));
   }
 
   const ChooseContactsPage({
     @required this.delegate,
+    @required this.excludeContactsIDS,
     this.isSingleSelect = false
   });
   
@@ -34,7 +42,8 @@ class _ChooseContactsPageState extends State<ChooseContactsPage> {
       ],
       child: ChooseContactsScreen(
         delegate: widget.delegate,
-        isSingleSelect: widget.isSingleSelect
+        isSingleSelect: widget.isSingleSelect,
+        excludeContactsIDS: widget.excludeContactsIDS
       ),
     );
   }

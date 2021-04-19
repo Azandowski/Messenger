@@ -3,6 +3,7 @@ import 'package:messenger_mobile/core/config/auth_config.dart';
 import 'package:messenger_mobile/core/utils/snackbar_util.dart';
 import 'package:messenger_mobile/modules/category/presentation/chooseChats/presentation/chat_choose_page.dart';
 import 'package:messenger_mobile/modules/chat/domain/entities/chat_actions.dart';
+import 'package:messenger_mobile/modules/chat/domain/entities/delete_messages.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chat_details/page/chat_detail_page.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chat_details/page/chat_detail_screen.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chats_screen/cubit/time_cubit/timer_cubit.dart';
@@ -42,7 +43,7 @@ extension ChatScreenStateHelper on ChatScreenState {
       navigator: navigator, 
       widget: widget, 
       appBar: AppBar(),
-      isSecretModeOn: chatScreenState.isSecretModeOn,
+      isSecretModeOn: chatScreenState?.isSecretModeOn,
       onTapChatAction: onTapChatAction
     );
   }
@@ -61,7 +62,11 @@ extension ChatScreenStateHelper on ChatScreenState {
     ChatTodoCubit chatTodoCubit,
     double width, 
     double height,
-    { bool canSendMedia }
+    { 
+      bool canSendMedia,
+      TimeOptions currentTimeOption,
+      Function onLeadingIconTap
+    }
   ) {
     if (state is ChatTodoSelection || state is ChatToDoLoading) {
       return Container(
@@ -73,7 +78,7 @@ extension ChatScreenStateHelper on ChatScreenState {
           onTap: () {
             if (state.isDelete) {
               showDialog(context: context, builder: (ctx) {
-                return DeleteDialogView(onDelete: (forMe){
+                return DeleteDialogView(onDelete: (forMe) {
                   chatTodoCubit.deleteMessage(
                     chatID: widget.chatEntity.chatId,
                     forMe: forMe
@@ -91,7 +96,9 @@ extension ChatScreenStateHelper on ChatScreenState {
         messageTextController: messageTextController, 
         width: width,
         height: height,
-        canSendMedia: canSendMedia
+        canSendMedia: canSendMedia,
+        currentTimeOption: currentTimeOption,
+        onTapLeftIcon: onLeadingIconTap,
       );
     }
   }
@@ -131,7 +138,7 @@ extension ChatScreenStateHelper on ChatScreenState {
                   ),
                 ),
                 Container(
-                  child: Text(state.topMessage.text,
+                  child: Text(state.topMessage.text ?? '',
                     style: AppFontStyles.black14w400.copyWith(
                       height: 1.4,
                     ),
@@ -256,7 +263,7 @@ extension ChatScreenStateHelper on ChatScreenState {
 
       var chatGlobalCubit = context.read<main_chat_cubit.ChatGlobalCubit>();
       
-      chatGlobalCubit.setSecretMode(isOn: state.isSecretModeOn, chatId: widget.chatEntity.chatId);
+      chatGlobalCubit.setSecretMode(isOn: state?.isSecretModeOn, chatId: widget.chatEntity.chatId);
       
       var globalIndexOfChat = chatGlobalCubit.state.chats.indexWhere((e) => e.chatId == widget.chatEntity.chatId);
 
@@ -406,43 +413,48 @@ extension ChatScreenStateHelper on ChatScreenState {
         timeDeleted: timeLeft,
         chatRepository: chatRepository
       );
+      
+      var timerCubit = new TimerCubit(currentMessage);
+      
+      var timerBody = () { 
+        return isTimeDeletionEnabled ? BlocBuilder<TimerCubit, TimerState>(
+          bloc: timerCubit,
+          buildWhen: (oldState, newState) {
+            return oldState.timeLeft != newState.timeLeft;
+          },
+          builder: (context, timerState) {
+            if (timerState.timeLeft == null || timerState.timeLeft <= 0) {
+              chatBloc.add(MessageDeleteOffline(ids: [currentMessage.id]));
+              context.read<main_chat_cubit.ChatGlobalCubit>().updateLastMessage(
+                widget.chatEntity.chatId, 
+                state.messages.getItemAt(currentIndex + 1)
+              );
+            }
 
+            return this._buildCellOfMessage(
+              params: messageCellParams(
+                timeLeft: timerState.timeLeft
+              ),
+              chatBloc: chatBloc
+            );
+          }
+        ) : currentMessage.chatActions == null ? 
+          this._buildCellOfMessage(params: messageCellParams(), chatBloc: chatBloc) :
+            ChatActionView(
+              chatAction: buildChatAction(currentMessage)
+            );
+      };
+      
+      
       return AutoScrollTag(
         key: ValueKey(index),
         controller: chatBloc.scrollController,
         index: index,
-        child: isTimeDeletionEnabled ?
-          BlocProvider(
-            create: (context) => TimerCubit(currentMessage),
-            child: BlocConsumer<TimerCubit, TimerState> (
-              listener: (context, timerState) {
-                if (timerState.timeLeft == null || timerState.timeLeft == 0) {
-                  chatBloc.add(MessageDelete(ids: [currentMessage.id]));
-                  context.read<main_chat_cubit.ChatGlobalCubit>().updateLastMessage(
-                    widget.chatEntity.chatId, 
-                    state.messages.getItemAt(currentIndex + 1)
-                  );
-                }
-              },
-              builder: (context, timerState) {
-                return this._buildCellOfMessage(
-                  params: messageCellParams(
-                    timeLeft: timerState.timeLeft
-                  ),
-                  chatBloc: chatBloc
-                );
-              }, 
-            )
-          ) : currentMessage.chatActions == null ? 
-            this._buildCellOfMessage(params: messageCellParams(), chatBloc: chatBloc) :
-              ChatActionView(
-                chatAction: buildChatAction(currentMessage)
-              )
+        child: timerBody()
       );
     }
   }
-
-
+  
   Widget _buildCellOfMessage ({
     @required MessageCellParams params,
     @required ChatBloc chatBloc

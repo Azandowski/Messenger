@@ -15,7 +15,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 2.0.0+5
+version: 1.0.0+2
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -88,7 +88,8 @@ dependencies:
 
   # agora_rtc_engine: ^3.3.1
   # Media Dependencies
-  flutter_sound: ^8.0.0+6
+  #flutter_sound_lite: 8.0.0+6
+  flutter_sound:
   # Packages for maps
   geolocator: ^7.0.1
   flutter_map: 
@@ -96,6 +97,8 @@ dependencies:
   geocoding: ^2.0.0
 
   onesignal_flutter: ^2.6.2
+
+  emoji_picker:
 
 dev_dependencies:
   flutter_test:

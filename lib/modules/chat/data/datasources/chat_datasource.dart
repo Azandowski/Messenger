@@ -3,7 +3,9 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:messenger_mobile/modules/chat/data/models/delete_messages_model.dart';
 import 'package:messenger_mobile/modules/chat/data/models/translation_response.dart';
+import 'package:messenger_mobile/modules/chat/domain/entities/delete_messages.dart';
 import '../../../../core/config/auth_config.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/services/network/Endpoints.dart';
@@ -48,7 +50,7 @@ abstract class ChatDataSource {
   Future<ChatDetailed> addMembers(int id, List<int> userIDs);
   Future<ChatDetailed> kickMember(int id, int userID);
   Stream<Message> get messages;
-  Stream<List<int>> get deleteIds;
+  Stream<DeleteMessageEntity> get deleteIds;
   Future<Message> sendMessage(SendMessageParams params);
   Future<bool> deleteMessage(DeleteMessageParams params);
   Future<bool> attachMessage(Message message);
@@ -100,8 +102,9 @@ class ChatDataSourceImpl implements ChatDataSource {
     socketService.echo
         .channel(SocketChannels.getChatDeleteById(id))
         .listen('.deleted.message.$id', (deletions) {
-      List<int> data = ((deletions['messages_id'] ?? []) as List).cast<int>();
-      _deleteController.add(data);
+      print(deletions);
+      DeleteMessageModel model = DeleteMessageModel.fromJson(deletions);
+      _deleteController.add(model);
     });
   }
 
@@ -115,6 +118,8 @@ class ChatDataSourceImpl implements ChatDataSource {
         return MessageHandleType.unSetTopMessage;
       case 'StartTimerSecretMessage':
         return MessageHandleType.userReadSecretMessage;
+      case 'MessageRead':
+        return MessageHandleType.readMessage;
     }
   }
 
@@ -163,8 +168,8 @@ class ChatDataSourceImpl implements ChatDataSource {
   final StreamController<Message> _controller = StreamController<Message>();
 
   @override
-  final StreamController<List<int>> _deleteController =
-      StreamController<List<int>>();
+  final StreamController<DeleteMessageEntity> _deleteController =
+      StreamController<DeleteMessageEntity>();
 
   @override
   Stream<Message> get messages async* {
@@ -172,7 +177,7 @@ class ChatDataSourceImpl implements ChatDataSource {
   }
 
   @override
-  Stream<List<int>> get deleteIds async* {
+  Stream<DeleteMessageEntity> get deleteIds async* {
     yield* _deleteController.stream;
   }
 

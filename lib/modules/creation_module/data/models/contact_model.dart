@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:messenger_mobile/core/services/network/config.dart';
 
 import '../../domain/entities/contact.dart';
 
@@ -45,7 +46,8 @@ class ContactModel extends ContactEntity {
       patronym: json['patronym'] ?? '',
       surname: json['surname'] ?? '',
       lastVisit: lastVisit,
-      avatar: json['avatar'],
+      avatar: json['avatar'] != null ? 
+        ConfigExtension.buildURLHead() + json['avatar'] : null,
     );
   }
 

@@ -57,7 +57,11 @@ class ChooseContactCubit extends Cubit<List<ContactEntityViewModel>> {
   }
 
 
-  void injectUserContacts (List<ContactEntity> contacts) {
+  void injectUserContacts (
+    List<ContactEntity> contacts,
+    {List<int> excludeContactsIDS}
+  ) {
+    
     List<ContactEntityViewModel> newContactsList = state.map((e) => e.copyWith()).toList();
     contacts.forEach((contact) {
       var indexOfContact = newContactsList.indexWhere((e) => e.contactEntity.id == contact.id);
@@ -69,6 +73,11 @@ class ChooseContactCubit extends Cubit<List<ContactEntityViewModel>> {
       }
     });
 
-    emit(newContactsList);
+    emit(newContactsList
+      .where((e) => 
+        !(excludeContactsIDS ?? [])
+          .contains(e.contactEntity.id)
+      ).toList()
+    );
   }
 }

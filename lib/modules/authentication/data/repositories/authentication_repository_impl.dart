@@ -51,13 +51,10 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
       authConfig.token = token;
       if (token != null && token != '' && !isTestMode) {
         sl<SocketService>().init();
+        print(token);
+        await getCurrentUser(token);
+        getCategories(GetCategoriesParams(token: token));
       }
-      print(token);
-      // print(sl<AuthConfig>().user.id);
-
-      await getCurrentUser(token);
-
-      getCategories(GetCategoriesParams(token: token));
     } on StorageFailure {
       params.add(AuthParams(null, null));
     }
@@ -65,16 +62,11 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
 
   @override
   Future<Either<Failure, CodeEntity>> createCode(PhoneParams params) async {
-    if (await networkInfo.isConnected) {
-      try {
-        final codeEntity =
-            await remoteDataSource.createCode(params.phoneNumber);
-        return Right(codeEntity);
-      } on ServerFailure {
-        return Left(ServerFailure(message: FailureMessages.invalidPhone));
-      }
-    } else {
-      return Left(ServerFailure(message: FailureMessages.noConnection));
+    try {
+      final codeEntity = await remoteDataSource.createCode(params.phoneNumber);
+      return Right(codeEntity);
+    } on ServerFailure catch (e) {
+      return Left(e);
     }
   }
 
@@ -93,10 +85,11 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
     try {
       final token =
           await remoteDataSource.login(params.phoneNumber, params.code);
+      // getCurrentUser(token.token);
       localDataSource.saveToken(token.token);
       var status = await OneSignal.shared.getPermissionSubscriptionState();
       String playerID = status.subscriptionStatus.userId;
-      remoteDataSource.sendPlayerID(playerID);
+      remoteDataSource.sendPlayerID(playerID, token.token);
       getCategories(GetCategoriesParams(token: token.token));
       return Right(token);
     } on ServerFailure {
@@ -141,12 +134,12 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
   @override
   Future<Either<Failure, bool>> logout(NoParams params) async {
     try {
-      await localDataSource.deleteToken();
-      await localDataSource.deleteContacts();
-      initToken();
       var status = await OneSignal.shared.getPermissionSubscriptionState();
       String playerID = status.subscriptionStatus.userId;
       remoteDataSource.deletePlayerID(playerID, token);
+      await localDataSource.deleteToken();
+      await localDataSource.deleteContacts();
+      initToken();
       return Right(true);
     } on StorageFailure {
       return Left(StorageFailure());
@@ -159,25 +152,28 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
     List<RecordSnapshot> dbContacts =
         await localDataSource.getDatabaseContacts();
     var contactsShouldBeUpdated = [];
-
     deviceContacts.forEach((e) {
-      var foundContact = dbContacts.firstWhere((d) {
-        var allPhonesMatch = true;
+      if ((e['phones'] ?? []).length != 0) {
+        e['displayName'] = e['displayName'] ?? '';
 
-        ((d.value['phones'] ?? []) as List).forEach((phoneMap) {
-          var result = ((e['phones'] ?? []) as List).firstWhere(
-              (k) => k['mobile'] == phoneMap['mobile'],
-              orElse: () => null);
-          if (result == null) {
-            allPhonesMatch = false;
-          }
-        });
+        var foundContact = dbContacts.firstWhere((d) {
+          var allPhonesMatch = true;
 
-        return allPhonesMatch;
-      }, orElse: () => null);
+          ((d.value['phones'] ?? []) as List).forEach((phoneMap) {
+            var result = ((e['phones'] ?? []) as List).firstWhere(
+                (k) => k['mobile'] == phoneMap['mobile'],
+                orElse: () => null);
+            if (result == null) {
+              allPhonesMatch = false;
+            }
+          });
 
-      if (foundContact == null) {
-        contactsShouldBeUpdated.add(_updatedContactToSendToBackend(e));
+          return allPhonesMatch;
+        }, orElse: () => null);
+
+        if (foundContact == null) {
+          contactsShouldBeUpdated.add(_updatedContactToSendToBackend(e));
+        }
       }
     });
 
@@ -193,6 +189,7 @@ class AuthenticationRepositiryImpl implements AuthenticationRepository {
     final String dir = (await getApplicationDocumentsDirectory()).path;
     final String path = '$dir/contacts.json';
     final File file = File(path);
+
     await file.writeAsString(newJson);
     print(file.path);
     return file;

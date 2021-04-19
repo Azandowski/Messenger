@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class ContactEntity extends Equatable{
   final int id;
@@ -16,6 +17,14 @@ class ContactEntity extends Equatable{
     this.avatar,
     this.lastVisit
   });
+
+  String get fullName {
+    var fullname = [surname, name, patronym]
+      .where((e) => e != null && e != "")
+      .join(" ");
+
+    return fullname.trim() == '' ? 'anonymous'.tr() : fullname;
+  }
 
   @override
   List<Object> get props => [id,name,surname,patronym,avatar,lastVisit];

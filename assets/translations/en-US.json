@@ -168,5 +168,12 @@
     "link_to": "Link to {service}",
     "website": "Website",
     "link_error": "Need a direct link to {service}",
-    "whatsapp_number_error": "Need a direct number from WhatsApp"
+    "whatsapp_number_error": "Need a direct number from WhatsApp",
+    "chatCreated": "Chat was created",
+    "no_contacts": "You don't have contacts in AIO Messenger yet",
+    "smart_bot": "Smart bot",
+    "calls": "Calls",
+    "no_cache": "No traces on the server",
+    "can_delete_messages": "Messages are deleted by timer",
+    "forward_lock": "Lock forwarding messages and screenshot"
 }

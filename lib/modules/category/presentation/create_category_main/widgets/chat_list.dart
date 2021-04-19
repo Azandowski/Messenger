@@ -164,7 +164,7 @@ extension ChatItemActionUIExtension on ChatCellActionType {
       case ChatCellActionType.delete:
         return 'delete'.tr();
       case ChatCellActionType.move:
-        return 'move'.tr();
+        return 'move_chat'.tr();
       default:
         return null;
     }

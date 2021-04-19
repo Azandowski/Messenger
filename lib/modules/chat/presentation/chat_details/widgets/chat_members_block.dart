@@ -51,7 +51,8 @@ class ChatMembersBlock extends StatelessWidget {
         ),
         ...members.map((e) => ContactCell(
           contactItem: e,
-          cellType: currentUserID == e.id || memberRole != ChatMember.admin ? ContactCellType.write :
+          cellType: currentUserID != e.id && 
+              memberRole != ChatMember.admin ? ContactCellType.write :
             ContactCellType.delete,
           onTrilinIconTapped: () {
             onTapItem(e);

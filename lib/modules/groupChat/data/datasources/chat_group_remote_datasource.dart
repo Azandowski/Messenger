@@ -37,7 +37,7 @@ class ChatGroupRemoteDataSourceImpl implements ChatGroupRemoteDataSource {
   }) async {
     var url = groupParams.isCreate ? 
       Endpoints.createGroupChat.buildURL() : 
-        Endpoints.updateCategory.buildURL(urlParams: ['${groupParams.chatGroupId}']);
+        Endpoints.updateChatInfo.buildURL(urlParams: ['${groupParams.chatGroupId}']);
     
     multipartRequest = http.MultipartRequest('POST', url);
 

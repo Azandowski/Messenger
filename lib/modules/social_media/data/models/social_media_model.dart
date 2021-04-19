@@ -28,4 +28,14 @@ class SocialMediaModel extends SocialMedia {
         whatsappNumber: json['whatsapp'],
         instagramLink: json['instagram']);
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'facebook': facebookLink,
+      'site': websiteLink,
+      'youtube': youtubeLink,
+      'instagram': instagramLink,
+      'whatsapp': whatsappNumber
+    };
+  }
 }

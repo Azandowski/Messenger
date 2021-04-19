@@ -74,9 +74,14 @@ class SocialMediaView extends StatelessWidget {
       child: Column(
         children: [
           if (socialMedia?.websiteLink != null && socialMedia?.websiteLink != '')
-            _buildField(
-              assetPath: 'assets/icons/social_media/website.png',
-              value: socialMedia.websiteLink
+            InkWell(
+              onTap: () {
+                onTapSocialMedia(SocialMediaType.website);
+              },
+              child: _buildField(
+                assetPath: 'assets/icons/social_media/website.png',
+                value: socialMedia.websiteLink
+              ),
             ),
           _buildSocialMedia()
         ]

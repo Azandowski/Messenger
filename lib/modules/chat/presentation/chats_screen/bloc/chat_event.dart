@@ -14,6 +14,7 @@ class LoadMessages extends ChatEvent {
   final bool isPagination;
   final RequestDirection direction;
   final bool resetAll;
+  final bool isInitial;
 
   /// Non-Null if chat should load message's region
   final int messageID;
@@ -22,12 +23,13 @@ class LoadMessages extends ChatEvent {
     @required this.isPagination,
     this.direction,
     this.messageID,
-    this.resetAll = false
+    this.resetAll = false,
+    this.isInitial = false
   });
 
   @override
   List<Object> get props => [
-    isPagination, messageID, direction, resetAll
+    isPagination, messageID, direction, resetAll, isInitial
   ];
 }
 
@@ -43,10 +45,21 @@ class MessageAdded extends ChatEvent {
 }
 
 class MessageDelete extends ChatEvent {
-  final List<int> ids;
+  final DeleteMessageEntity deleteMessageEntity;
 
   MessageDelete({
-   @required this.ids
+   @required this.deleteMessageEntity
+  });
+
+  @override
+  List<Object> get props => [deleteMessageEntity];
+}
+
+class MessageDeleteOffline extends ChatEvent {
+  final List<int> ids;
+
+  MessageDeleteOffline({
+    @required this.ids
   });
 
   @override
@@ -58,7 +71,8 @@ class MessageSend extends ChatEvent {
   final String message;
   final FieldFiles fieldFiles;
   final FieldAssets fieldAssets;
-  final int timeDeleted;
+  final TimeOptions timeOption;
+  final bool selectedTimer;
   final LatLng location;
   final String address;
   final MessageUser contact;
@@ -69,34 +83,41 @@ class MessageSend extends ChatEvent {
     this.fieldAssets,
     this.fieldFiles,
     this.forwardMessage,
-    this.timeDeleted,
+    this.timeOption,
     this.location,
     this.address,
     this.contact,
     this.memoryPhotos,
+    this.selectedTimer = false
   });
 
   MessageSend copyWith ({
-    int timeDeleted,
-    Message forwardMessage
+    TimeOptions timeOption,
+    Message forwardMessage,
+    bool selectedTimer
   }) => MessageSend(
     message: message,
     location: location,
     forwardMessage: forwardMessage ?? this.forwardMessage,
-    timeDeleted: timeDeleted ?? this.timeDeleted,
+    timeOption: timeOption ?? this.timeOption,
     address: this.address,
-    contact: contact
+    contact: contact,
+    selectedTimer: selectedTimer ?? this.selectedTimer,
+    fieldAssets: fieldAssets,
+    fieldFiles: fieldFiles,
+    memoryPhotos: memoryPhotos
   );
 
   @override
   List<Object> get props => [
     message, 
     forwardMessage,
-    timeDeleted,
+    timeOption,
     location,
     fieldFiles,
     address,
-    contact
+    contact,
+    selectedTimer
   ];
 }
 
@@ -143,4 +164,18 @@ class PermissionsUpdated extends ChatEvent {
   List<Object> get props => [
     newPermissions
   ];
+}
+
+
+class UpdateTimerOption extends ChatEvent {
+  final TimeOptions newTimerOption;
+
+  UpdateTimerOption({
+    @required this.newTimerOption
+  });
+
+  @override
+  List<Object> get props => [
+    newTimerOption
+  ];  
 }

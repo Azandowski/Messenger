@@ -88,7 +88,11 @@ class AuthenticationLocalDataSourceImpl implements AuthenticationLocalDataSource
 
   @override
   Future<List<Map>> getDeviceContacts() async{
-    Iterable<Contact> contacts = await ContactsService.getContacts(withThumbnails: false);
+    Iterable<Contact> contacts = await ContactsService.getContacts(
+      withThumbnails: false,
+      androidLocalizedLabels: false,
+      iOSLocalizedLabels: false
+    );
     
     var items =  (contacts ?? []).map((e) {      
       Map object = e.toMap();

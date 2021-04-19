@@ -73,6 +73,7 @@ extension MessageContainerExtension on MessageContainer {
             }else{
               return PreviewVideo(
                 url: e.url,
+                imageUrl: e.imageUrl,
                 centerWidget: PlayVideoButton(url: e.url),
               );
             }
@@ -92,6 +93,7 @@ List<Widget> returnPhotoRow(files, width, Function onMore){
     case 1:
       return[
         PreviewPhotoLarge(
+          onTap: onMore,
           url: files[0].url ?? placeholderLink
         )
       ];
@@ -103,6 +105,7 @@ List<Widget> returnPhotoRow(files, width, Function onMore){
         Row(
           children: [
             PreviewPhotoWidget(
+              onTap: onMore,
               a: a, 
               url: files[0].url ?? placeholderLink, 
             ),
@@ -110,6 +113,7 @@ List<Widget> returnPhotoRow(files, width, Function onMore){
               width: 4
             ),
             PreviewPhotoWidget(
+              onTap: onMore,
               a: a, 
               url: files[1].url ?? placeholderLink
             ),
@@ -123,11 +127,13 @@ List<Widget> returnPhotoRow(files, width, Function onMore){
         Row(
           children: [
             PreviewPhotoWidget(
+              onTap: onMore,
               a: a, 
               url: files[0].url ?? placeholderLink
             ),
             SizedBox(width: 4,),
             PreviewPhotoWidget(
+              onTap: onMore,
               a: a, 
               url: files[1].url ?? placeholderLink
             ),
@@ -135,10 +141,12 @@ List<Widget> returnPhotoRow(files, width, Function onMore){
             files.length > 3 ? PreviewMorePhoto(
               url: files[2].url ?? placeholderLink,
               a: a,
+              isLocal: false,
               moreCount: files.length - 3,
               onMore: onMore,
             ) : 
             PreviewPhotoWidget(
+              onTap: onMore,
               a: a, 
               url: files[2].url ?? placeholderLink
             ),
@@ -154,6 +162,7 @@ List<Widget> returnLoadPhotoRow(List<Uint8List> data, width, Function onMore){
       return[
         PreviewPhotoLarge(
           url: data[0],
+          onTap: onMore,
           isLocal: true,
         )
       ];
@@ -165,6 +174,7 @@ List<Widget> returnLoadPhotoRow(List<Uint8List> data, width, Function onMore){
         Row(
           children: [
             PreviewPhotoWidget(
+              onTap: onMore,
               a: a, 
               isLocal: true,
               url: data[0], 
@@ -173,6 +183,7 @@ List<Widget> returnLoadPhotoRow(List<Uint8List> data, width, Function onMore){
               width: 4
             ),
             PreviewPhotoWidget(
+              onTap: onMore,
               a: a, 
               isLocal: true,
               url: data[1],
@@ -187,12 +198,14 @@ List<Widget> returnLoadPhotoRow(List<Uint8List> data, width, Function onMore){
         Row(
           children: [
             PreviewPhotoWidget(
+              onTap: onMore,
               a: a, 
               isLocal: true,
               url: data[0],
             ),
             SizedBox(width: 4,),
             PreviewPhotoWidget(
+              onTap: onMore,
               a: a, 
               isLocal: true,
               url: data[1],
@@ -206,6 +219,7 @@ List<Widget> returnLoadPhotoRow(List<Uint8List> data, width, Function onMore){
               onMore: onMore,
             ) : 
             PreviewPhotoWidget(
+              onTap: onMore,
               isLocal: true,
               a: a, 
               url: data[2]

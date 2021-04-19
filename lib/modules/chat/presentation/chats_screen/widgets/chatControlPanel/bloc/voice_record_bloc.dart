@@ -54,9 +54,12 @@ class VoiceRecordBloc extends Bloc<VoiceRecordEvent, VoiceRecordState> {
       yield VoiceRecording(isHold: false, path: this.state.path);
     }else if(event is VoiceHoldRecoriding){
       yield VoiceRecording(isHold: true, path: this.state.path);
-    }else if(event is VoiceStopRecording){
-      stopRecorder();
-      stopPlayer();
+    }else if(event is VoiceStopRecording)  {
+      await stopRecorder(); 
+      await stopPlayer();
+      if(event.shouldSend){
+        this.add(VoiceSendAudio());
+      }
       yield VoiceRecordEmpty(path: this.state.path);
     }else if(event is VoiceStopHolding){
       FeedbackEngine.showFeedback(FeedbackType.success);
@@ -122,7 +125,7 @@ class VoiceRecordBloc extends Bloc<VoiceRecordEvent, VoiceRecordState> {
     }
   }
 
-  void stopRecorder() async {
+  Future stopRecorder() async {
     try {
       await myRecorder.stopRecorder();
       cancelRecorderSubscriptions();
@@ -131,7 +134,7 @@ class VoiceRecordBloc extends Bloc<VoiceRecordEvent, VoiceRecordState> {
     }
   }
 
-  stopPlayer() async {
+  Future stopPlayer() async {
     audioPlayerBloc.add(StopPlayer());
   }
 

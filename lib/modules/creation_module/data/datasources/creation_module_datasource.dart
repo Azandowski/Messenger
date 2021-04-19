@@ -52,9 +52,15 @@ class CreationModuleDataSourceImpl implements CreationModuleDataSource {
 
   Future<PaginatedResult<ContactEntity>> searchContacts(
       String phoneNumber, Uri nextPageURL) async {
+    String nextPageLink;
+    if (nextPageURL != null) {
+      nextPageLink = nextPageURL.toString() + "&search=${phoneNumber}";
+    }
+
     http.Response response = await client.get(
-        nextPageURL ??
-            Endpoints.searchContacts
+        nextPageURL != null
+            ? Uri.parse(nextPageLink)
+            : Endpoints.searchContacts
                 .buildURL(queryParameters: {'search': phoneNumber}),
         headers:
             Endpoints.searchContacts.getHeaders(token: sl<AuthConfig>().token));

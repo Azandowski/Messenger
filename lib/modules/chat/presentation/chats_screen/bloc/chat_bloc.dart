@@ -6,6 +6,8 @@ import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:messenger_mobile/app/application.dart';
+import 'package:messenger_mobile/modules/chat/domain/entities/delete_messages.dart';
 import 'package:messenger_mobile/modules/chat/domain/entities/file_media.dart';
 import 'package:messenger_mobile/modules/chat/presentation/chat_details/widgets/chat_media_block.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
@@ -27,12 +29,12 @@ import '../../../domain/usecases/send_message.dart';
 import '../../../domain/usecases/set_time_deleted.dart';
 import '../pages/chat_screen_import.dart';
 import 'package:latlong/latlong.dart';
-
 part 'chat_event.dart';
 part 'chat_state.dart';
 part 'chat_bloc_extension.dart';
 
-class ChatBloc extends Bloc<ChatEvent, ChatState> {
+class ChatBloc extends Bloc<ChatEvent, ChatState> implements TimePickerDelegate {
+  
   // MARK: - Props
 
   final ChatsRepository chatsRepository;
@@ -45,6 +47,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   var _random = Random();
   AutoScrollController scrollController = AutoScrollController();
+
+  MessageSend _messageNeededToBeSentEvent;
 
   // MARK: - Constructor
 
@@ -73,17 +77,16 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         add(SetInitialTime(isOn: false));
       }
 
-      add(MessageAdded(message: message));
-    });
-
-    _chatDeleteSubscription = chatRepository.deleteIds.listen((ids) {
-      add(MessageDelete(ids: ids));
-    });
+    _chatDeleteSubscription = chatRepository.deleteIds.listen(
+      (deleteMessageEntity) {
+        add(MessageDelete(deleteMessageEntity: deleteMessageEntity));
+      }
+    );
   }
 
   StreamSubscription<Message> _chatSubscription;
 
-  StreamSubscription<List<int>> _chatDeleteSubscription;
+  StreamSubscription<DeleteMessageEntity> _chatDeleteSubscription;
 
   // * * Main
 
@@ -94,7 +97,13 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     } else if (event is MessageAdded) {
       yield* _messageAddedToState(event);
     } else if (event is MessageSend) {
-      yield* _messageSendToState(event);
+      if (state.isSecretModeOn && state.currentTimerOption == null) {
+        _messageNeededToBeSentEvent = event;
+        BuildContext context = sl<Application>().navKey.currentContext;
+        Navigator.push(context, TimePickerScreen.route(this));
+      } else {
+        yield* _messageSendToState(event);
+      }
     } else if (event is MessageDelete) {
       yield* _messageDeleteToState(event);
     } else if (event is LoadMessages) {
@@ -134,8 +143,14 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         }
 
         if (response != null) {
-          yield* _eitherMessagesOrErrorState(response, event.isPagination,
-              event.resetAll, event.direction, event.messageID);
+          yield* _eitherMessagesOrErrorState(
+            response, 
+            event.isPagination, 
+            event.resetAll,
+            event.direction,
+            event.messageID,
+            event.isInitial
+          );
         }
       }
     } else if (event is SetInitialTime) {
@@ -154,9 +169,27 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       );
     } else if (event is PermissionsUpdated) {
       yield getNewState(
+        oldState: state,
+        chatEntity: state.chatEntity.clone(permissions: event.newPermissions)
+      );
+    } else if (event is UpdateTimerOption) {
+      if (event.newTimerOption == null) {
+        BuildContext context = sl<Application>().navKey.currentContext;
+        Navigator.push(context, TimePickerScreen.route(this));
+      } else {
+        yield getNewState(
           oldState: state,
-          chatEntity:
-              state.chatEntity.clone(permissions: event.newPermissions));
+          currentTimerOption: event.newTimerOption
+        );
+      }
+    } else if (event is MessageDeleteOffline) {
+      var list = getCopyMessages(); 
+      event.ids.forEach((id) { 
+        list.removeWhere((message) => message.id == id);
+      });
+      yield getNewState<ChatInitial>(
+        messages: list,
+      );
     }
   }
 
@@ -185,13 +218,15 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       );
     });
   }
-
-  Stream<ChatState> _eitherMessagesOrErrorState(
-      Either<Failure, ChatMessageResponse> failureOrMessage,
-      bool isPagination,
-      bool isReset,
-      RequestDirection direction,
-      int focusMessageID) async* {
+  
+  Stream<ChatState> _eitherMessagesOrErrorState (
+    Either<Failure, ChatMessageResponse> failureOrMessage,
+    bool isPagination,
+    bool isReset,
+    RequestDirection direction,
+    int focusMessageID,
+    bool isInitial
+  ) async* {
     yield failureOrMessage.fold(
         (failure) => getNewState(
               message: failure.message,
@@ -211,10 +246,26 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         } else {
           hasReachBottom = result.result.hasReachMax;
         }
-      } else {
-        hasReachBottom = direction != RequestDirection.bottom
-            ? state.hasReachBottomMax
-            : result.result.hasReachMax;
+
+        Message myLastMessage;
+        
+        if (isInitial) {
+          myLastMessage = newMessages.firstWhere((e) => 
+            e.user?.id == sl<AuthConfig>().user.id, orElse: () => null
+          );
+        }
+
+        return getNewState<ChatInitial>(
+          topMessage: result.topMessage,
+          messages: newMessages,
+          unreadCount: hasReachBottom ? null : state.unreadCount,
+          focusMessageID: focusMessageID,
+          hasReachBottomMax: hasReachBottom,
+          hasReachedMax: isPagination && direction != RequestDirection.top ? 
+            state.hasReachedMax : result.result.hasReachMax,
+          currentTimerOption: isInitial ? 
+            TimeRangesUIExtension.getTimeOption(myLastMessage?.timeDeleted) : state.currentTimerOption
+        );
       }
 
       return getNewState<ChatInitial>(
@@ -264,14 +315,22 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
         break;
       case MessageHandleType.userReadSecretMessage:
-        if (state.hasReachBottomMax &&
-            event.message.user?.id != sl<AuthConfig>().user?.id) {
-          var list = getCopyMessages();
-          var i = list.indexWhere((e) => e.id == event.message.id);
-          if (i != -1) {
-            list[i] = list[i].copyWith(isRead: true);
-          }
+        if (state.hasReachBottomMax) { 
+          var list = state.messages.map(
+            (e) => e.copyWith(isRead: true)).toList();
+          
 
+          yield getNewState<ChatInitial>(
+            messages: list,
+          );
+        }
+
+        break;
+      case MessageHandleType.readMessage:
+        if (state.hasReachBottomMax) { 
+          var list = state.messages.map(
+            (e) => e.copyWith(isRead: true)).toList();
+          
           yield getNewState<ChatInitial>(
             messages: list,
           );
@@ -322,23 +381,27 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     }
 
     var newMessage = Message(
-        user: MessageUser(
-          id: sl<AuthConfig>().user.id,
-        ),
-        transfer: event.forwardMessage != null ? [event.forwardMessage] : [],
-        text: event.message,
-        files: localFiles,
-        identificator: randomID,
-        isRead: false,
-        messageStatus: MessageStatus.sending,
-        contacts: event.contact != null ? [event.contact] : [],
-        uploadController: controller,
-        dateTime: DateTime.now());
-
-    list.insert(0, newMessage);
+      user: MessageUser(
+        id: sl<AuthConfig>().user.id,
+      ),
+      transfer: event.forwardMessage!= null ? [event.forwardMessage] : [],
+      text: event.message,
+      files: localFiles,
+      identificator: randomID,
+      isRead: false,
+      messageStatus: MessageStatus.sending,
+      contacts: event.contact != null ? [
+        event.contact
+      ] : [],
+      uploadController: controller,
+      dateTime: DateTime.now(),
+    );
+    
+    list.insert(0, newMessage);    
 
     yield getNewState<ChatInitial>(
       messages: list,
+      currentTimerOption: event.timeOption ?? state.currentTimerOption
     );
 
     List<int> forwardArray = [];
@@ -347,48 +410,67 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     }
 
     final response = await sendMessage(SendMessageParams(
-        chatID: chatId,
-        text: event.message,
-        identificator: randomID,
-        forwardIds: forwardArray,
-        timeLeft: event.timeDeleted,
-        fieldFiles: event.fieldFiles,
-        uploadController: controller,
-        location: event.location,
-        locationAddress: event.address,
-        contactID: event.contact?.id,
-        fieldAssets: event.fieldAssets));
-
+      chatID: chatId,
+      text: event.message,
+      identificator: randomID,
+      forwardIds: forwardArray,
+      timeLeft: (event.timeOption ?? state.currentTimerOption)?.seconds,
+      fieldFiles: event.fieldFiles,
+      uploadController: controller,
+      location: event.location,
+      locationAddress: event.address,
+      contactID: event.contact?.id,
+      fieldAssets: event.fieldAssets,
+    ));
+    print("sent with timer ${(event.timeOption ?? state.currentTimerOption)?.seconds}");
     controller.close();
 
     yield* _eitherSentOrErrorState(response, randomID);
   }
 
   Stream<ChatState> _messageDeleteToState(MessageDelete event) async* {
-    var list = getCopyMessages();
-
-    event.ids.forEach((id) {
-      list.removeWhere((message) => message.id == id);
-    });
-
-    yield getNewState<ChatInitial>(
-      messages: list,
-    );
+    if (event.deleteMessageEntity.userId == sl<AuthConfig>().user.id && 
+        event.deleteMessageEntity.deleteActionType == DeleteActionType.deleteSelf
+    ) {
+      var list = getDeleteList(event.deleteMessageEntity);
+      yield getNewState<ChatInitial>(
+        messages: list,
+      );
+    } else if (event.deleteMessageEntity.deleteActionType == DeleteActionType.deleteAll) {
+      var list = getDeleteList(event.deleteMessageEntity);
+      yield getNewState<ChatInitial>(
+        messages: list,
+      );
+    } else {
+      yield getNewState<ChatInitial>();
+    }
   }
 
+  List<Message> getDeleteList(DeleteMessageEntity entity){
+    var list = getCopyMessages();  
+    entity.messagesIds.forEach((id) { 
+      list.removeWhere((message) => message.id == id);
+    });
+    return list;
+  }
   // * * Time Deletion
 
   Stream<ChatState> _eitherSentWithTimerOrFailure(
       Either<Failure, ChatPermissions> failureOrNoParams,
       SetInitialTime event) async* {
     yield failureOrNoParams.fold(
-        (failure) => getNewState<ChatError>(
-              message: failure.message,
-            ), (response) {
-      return getNewState<ChatInitial>(
-        isSecretModeOn: response.isSecret,
-      );
-    });
+      (failure) => getNewState<ChatError>(
+        message: failure.message,
+      ),
+      (response) {
+        return getNewState<ChatInitial>(
+          isSecretModeOn: response.isSecret,
+          currentTimerOption: response.isSecret ? 
+            state.currentTimerOption : null,
+          isTimerDeleted: true
+        );
+      }
+    );
   }
 
   getLoadFiles(MessageSend event) {
@@ -423,6 +505,23 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     ];
   }
 
-  List<Message> getCopyMessages() =>
-      state.messages.map((e) => e.copyWith()).toList();
+
+  List<Message> getCopyMessages() => state.messages.map((e) => e.copyWith()).toList();
+
+  @override
+  void didSelectTimeOption(TimeOptions option) {
+    if (state.isSecretModeOn && state.currentTimerOption == null) { 
+      if (_messageNeededToBeSentEvent != null) {
+        var newEvent = _messageNeededToBeSentEvent.copyWith(
+          timeOption: option,
+          selectedTimer: true
+        );
+
+        this.add(UpdateTimerOption(newTimerOption: option));
+        this.add(newEvent);
+      }
+    } else {
+      this.add(UpdateTimerOption(newTimerOption: option));
+    }
+  }
 }

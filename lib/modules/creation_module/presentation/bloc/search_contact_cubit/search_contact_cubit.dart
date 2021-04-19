@@ -45,7 +45,10 @@ class SearchContactCubit extends Cubit<SearchContactState> {
       )
     ), (result) => emit(
       SearchContactsLoaded(
-        contacts: result
+        contacts: isPagination ? PaginatedResult(
+          paginationData: result.paginationData,
+          data: state.contacts.data + result.data
+        ) : result
       )
     ));
   }

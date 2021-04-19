@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
-
+import 'package:easy_localization/easy_localization.dart';
 import '../../../../core/config/auth_config.dart';
 import '../../../../core/config/settings.dart';
 import '../../../../core/error/failures.dart';
@@ -23,7 +23,7 @@ abstract class AuthenticationRemoteDataSource {
   Future<TokenEntity> login(String number, String code);
   Future<User> getCurrentUser(String token);
   Future<bool> sendContacts(File contacts);
-  Future<bool> sendPlayerID(String playerID);
+  Future<bool> sendPlayerID(String playerID, String token);
   Future<bool> deletePlayerID(String playerID, token);
 }
 
@@ -37,38 +37,49 @@ class AuthenticationRemoteDataSourceImpl
 
   @override
   Future<CodeModel> createCode(String number) async {
-    http.Response response = await client.post(
-      Endpoints.createCode.buildURL(),
-      body: jsonEncode({'phone': number}),
-      headers: Endpoints.createCode.getHeaders(),
-    );
-    if (response.statusCode >= 200 && response.statusCode <= 299) {
-      var jsonMap = json.decode(response.body);
-      return CodeModel.fromJson(jsonMap);
-    } else {
+    try {
+      http.Response response = await client.post(
+        Endpoints.createCode.buildURL(),
+        body: jsonEncode({'phone': number}),
+        headers: Endpoints.createCode.getHeaders(),
+      );
+      if (response.statusCode >= 200 && response.statusCode <= 299) {
+        var jsonMap = json.decode(response.body);
+        return CodeModel.fromJson(jsonMap);
+      } else {
+        throw ServerFailure(
+            message: ErrorHandler.getErrorMessage(response.body.toString()));
+      }
+    }catch(e){
+      print(e);
       throw ServerFailure(
-          message: ErrorHandler.getErrorMessage(response.body.toString()));
+          message: ErrorHandler.getErrorMessage('enterPhone'.tr()));
     }
   }
 
   @override
   Future<TokenEntity> login(String number, String code) async {
-    var url = Endpoints.login.buildURL();
-    var headers = Endpoints.login.getHeaders();
-    final response = await client.post(url,
-        body: json.encode({
-          'phone': number,
-          'code': code,
-          'application_id': APP_ID,
-        }),
-        headers: headers);
+    try {
+      var url = Endpoints.login.buildURL();
+      var headers = Endpoints.login.getHeaders();
+      final response = await client.post(url,
+          body: json.encode({
+            'phone': number,
+            'code': code,
+            'application_id': APP_ID,
+          }),
+          headers: headers);
 
-    if (response.statusCode >= 200 && response.statusCode <= 299) {
-      var jsonMap = json.decode(response.body);
-      return TokenModel.fromJson(jsonMap);
-    } else {
-      throw ServerFailure(message: 'invalid code');
+      if (response.statusCode >= 200 && response.statusCode <= 299) {
+        var jsonMap = json.decode(response.body);
+        return TokenModel.fromJson(jsonMap);
+      } else {
+        throw ServerFailure(message: 'invalid code');
+      }
+    }catch (e){
+        throw ServerFailure(message: 'no_connection'.tr());
     }
+    
   }
 
   void returnUrlBodyHeaders(Endpoints endpoint) {}
@@ -112,9 +123,9 @@ class AuthenticationRemoteDataSourceImpl
   }
 
   @override
-  Future<bool> sendPlayerID(String playerID) async{
+  Future<bool> sendPlayerID(String playerID, String token) async{
     var url = Endpoints.sendTokenOneSignal.buildURL();
-    var headers = Endpoints.sendTokenOneSignal.getHeaders();
+    var headers = Endpoints.sendTokenOneSignal.getHeaders(token: token);
     final response = await client.post(url,
       body: json.encode({
         "application_id": APP_ID,
@@ -122,9 +133,10 @@ class AuthenticationRemoteDataSourceImpl
       }),
       headers: headers
     );
+
     if (response.statusCode >= 200 && response.statusCode <= 299) {
       return true;
-    }else{
+    } else {
       throw ServerFailure(message: 'Not able to send player id');
     }
   }
@@ -134,10 +146,10 @@ class AuthenticationRemoteDataSourceImpl
     var url = Endpoints.deleteTokenOneSignal.buildURL();
     var headers = Endpoints.getCurrentUser.getHeaders(token: token);
     final response = await client.post(url,
-      body: {
+      body: json.encode({
         "application_id": APP_ID,
         "player_id": playerID,
-      },
+      }),
       headers: headers
     );
     if (response.statusCode >= 200 && response.statusCode <= 299) {

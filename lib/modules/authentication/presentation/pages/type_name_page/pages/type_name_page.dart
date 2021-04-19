@@ -3,8 +3,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
-import 'package:image_picker/image_picker.dart';
-
+import 'package:messenger_mobile/core/widgets/independent/pickers/photo_picker.dart';
 import '../../../../../../app/appTheme.dart';
 import '../../../../../../core/services/network/Endpoints.dart';
 import '../../../../../../core/utils/snackbar_util.dart';
@@ -102,9 +101,13 @@ class _TypeNamePageState extends State<TypeNamePage> {
 
                     return PhotoPickerView(
                       defaultPhotoProvider: _image != null ? 
-                        FileImage(_image) : widget.user?.profileImage != null ? NetworkImage(widget.user?.profileImage) : null,
+                        FileImage(_image) : widget.user?.profileImage != null ? 
+                          NetworkImage(widget.user?.profileImage) : null,
                       onSelectPhoto: () {
-                        context.read<TypeNameCubit>().getImage(ImageSource.camera);
+                        PhotoPicker().showImageSourceSelectionDialog(context,
+                            (imageSource) {
+                              context.read<TypeNameCubit>().getImage(imageSource);
+                        });
                       },
                     );
                   },
@@ -117,6 +120,12 @@ class _TypeNamePageState extends State<TypeNamePage> {
                     focusNode: focusNode,
                     textEditingController: cubit.nameCtrl,
                     width: width,
+                    validator: (text){
+                      if (text == null || text.isEmpty) {
+                        return 'Text is empty';
+                      }
+                      return null;
+                    },
                     height: height),
                 SizedBox(
                   height: height * 0.05,
@@ -126,6 +135,7 @@ class _TypeNamePageState extends State<TypeNamePage> {
                   text: 'continue'.tr(),
                   onTap: () {
                     if (!(state is UpdatingUser)) {
+                      if(cubit.nameCtrl.text != null && cubit.nameCtrl.text != '')
                       cubit.updateProfile(_image);
                     }
                   },

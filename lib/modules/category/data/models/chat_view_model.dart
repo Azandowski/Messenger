@@ -15,7 +15,7 @@ class ChatViewModel {
   // * * Getters
 
   String get title {
-    return entity.title;
+    return entity?.title;
   }
 
   String get imageURL {
@@ -71,7 +71,7 @@ class ChatViewModel {
         var userViewModel = MessageUserViewModel(entity.lastMessage.toUser);
         
         return entity.lastMessage.chatActions.getDescription(
-          userViewModel.name
+          userViewModel.username
         );
       }
 

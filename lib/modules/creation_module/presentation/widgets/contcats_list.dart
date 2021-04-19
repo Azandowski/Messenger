@@ -38,7 +38,7 @@ class _ContactsListState extends State<ContactsList> {
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
-    _contactBloc = context.read<ContactBloc>();
+    _contactBloc = BlocProvider.of<ContactBloc>(context);
   }
 
   // * * UI
@@ -69,7 +69,7 @@ class _ContactsListState extends State<ContactsList> {
                 return CellHeaderView(
                   title: widget.mode == ContactsMode.showMyContacts ?
                     'contacts_count'.tr(namedArgs: {
-                      'count': '${state.contacts.length}'
+                      'count': '${state.maxTotal}'
                     }) : 'your_contacts_count'.tr(
                       namedArgs: {
                         'count': '${state.contacts.length}'
@@ -86,6 +86,11 @@ class _ContactsListState extends State<ContactsList> {
                           widget.didSelectContactToChat(state.contacts[index - 1]);
                         }
                       },
+                      onTap: () {
+                        if (widget.onTapContact != null) {
+                          widget.onTapContact(state.contacts[index - 1]);
+                        }
+                      }
                     );
               }
             }, 

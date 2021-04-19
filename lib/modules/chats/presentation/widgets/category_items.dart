@@ -80,7 +80,8 @@ class CategoryItemsScroll extends StatelessWidget {
                 id: 0, totalChats: 0,
                 avatar: 'assets/images/logo.png',
                 name: 'all'.tr(),
-                noReadCount: 0
+                noReadCount: 0,
+                appChatID: 1
               ),
               onSelect: () {
                 onItemSelect(0);

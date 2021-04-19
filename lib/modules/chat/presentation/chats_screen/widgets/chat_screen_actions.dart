@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:messenger_mobile/core/utils/unavailable_dialog.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:messenger_mobile/core/widgets/independent/buttons/gradient_main_button.dart';
 import '../../../../../app/appTheme.dart';
 import '../../../../../app/application.dart';
 import '../../../../../core/widgets/independent/dialogs/dialog_action_button.dart';
@@ -89,15 +90,96 @@ class ChatScreenActions extends StatelessWidget {
                     iconData: Icons.timer,
                     buttonStyle: DialogActionButtonStyle.dangerous,
                     onPress: () {
-                      onTapChatAction(ChatAppBarActions.onOffSecretMode);
-                      Navigator.of(context).pop();
-                      // _navigator.push(TimePickerScreen.route(timePickerDelegate));
+                      if (!(isSecretModeOn ?? false)) {
+                        showDialog(context: context, builder: (_) => showSecretModeDialog(
+                          onSelect: (bool isAgree) {
+                            if (isAgree) {
+                              onTapChatAction(ChatAppBarActions.onOffSecretMode);
+                            }
+                            Navigator.of(context).pop();
+                            Navigator.of(context).pop();
+                          }
+                        ));
+                      } else {
+                        onTapChatAction(ChatAppBarActions.onOffSecretMode);
+                        Navigator.of(context).pop();
+                      }
                     }
                   ),
                 ],
               );
             });
           },
+        )
+      ],
+    );
+  }
+
+  Widget showSecretModeDialog ({
+    @required Function(bool) onSelect
+  }) {
+    return DialogsView(
+      dialogViewType: DialogViewType.alert,
+      imageProvider: AssetImage('assets/images/privacy_logo.png'),
+      title: "deletion_timer".tr(),
+      titleStyle: AppFontStyles.headingTextSyle,
+      buttonsLayout: DialogViewButtonsLayout.vertical,
+      customDescription: Column(
+        children: [
+          _buildItem(
+            iconPath: 'assets/icons/fire.png', 
+            title: 'can_delete_messages'.tr()
+          ),
+          SizedBox(height: 12),
+          _buildItem(
+            iconPath: 'assets/icons/lock.png', 
+            title: 'forward_lock'.tr()
+          ),
+          SizedBox(height: 12),
+          _buildItem(
+            iconPath: 'assets/icons/server.png', 
+            title: 'no_cache'.tr()
+          )
+        ],
+      ),
+      actionButton: [
+        DialogActionButton(
+          buttonStyle: DialogActionButtonStyle.custom,
+          customButton: ActionButton(
+            text: "ready".tr(),
+            onTap: () {
+              onSelect(true);
+            }
+          ),
+        ),
+        DialogActionButton(
+          buttonStyle: DialogActionButtonStyle.cancel,
+          title: "cancel".tr(),
+          onPress: () {
+            onSelect(false);
+          }
+        )
+      ],
+    );
+  }
+
+  Widget _buildItem ({
+    @required String iconPath,
+    @required String title
+  }) {
+    return Row(
+      children: [
+        Image.asset(
+          iconPath,
+          width: 14,
+          height: 14,
+        ),
+        SizedBox(width: 8),
+        Expanded(child: 
+          Text(
+            title,
+            style: AppFontStyles.grey12w400
+          )
         )
       ],
     );

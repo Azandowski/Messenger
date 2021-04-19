@@ -19,7 +19,6 @@ class NameTimeBloc extends StatelessWidget {
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w500,
-              height: 1.4,
               color: messageViewModel.color,
             ),
             textAlign: TextAlign.left,
@@ -32,18 +31,16 @@ class NameTimeBloc extends StatelessWidget {
               messageViewModel.readImageName, width: 20, height: 8
             )
           ),
-          
-        if (!messageViewModel.isMine)
-          Spacer(),
 
-        Text(
-          messageViewModel.time,
-          style: messageViewModel.isMine ? 
-            AppFontStyles.whiteGrey12w400 : AppFontStyles.grey12w400.copyWith(
-              height: 0.75,
-            ), 
-          textAlign: TextAlign.right
-        )
+        SizedBox(width: messageViewModel.isMine ? 40 : 80)
+        // Text(
+        //   messageViewModel.time,
+        //   style: messageViewModel.isMine ? 
+        //     AppFontStyles.whiteGrey12w400 : AppFontStyles.grey12w400.copyWith(
+        //       height: 0.75,
+        //     ), 
+        //   textAlign: TextAlign.right
+        // )
       ],
       mainAxisSize:  MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,

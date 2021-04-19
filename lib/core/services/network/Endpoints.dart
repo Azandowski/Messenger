@@ -15,6 +15,7 @@ enum Endpoints {
   getCategories,
   createCategory,
   updateCategory,
+  updateChatInfo,
   getAllUserChats,
   getCategoryChats,
   deleteCategory,
@@ -59,6 +60,7 @@ extension EndpointsExtension on Endpoints {
 
   Map<String, String> getHeaders({String token, Map defaultHeaders}) {
     return {
+      ...{'accept': 'application/json'},
       if (defaultHeaders != null) ...defaultHeaders,
       if (token != null && token != "") ...{"Authorization": "Bearer $token"},
       if (defaultHeaders == null && this != Endpoints.updateCurrentUser) ...{
@@ -90,6 +92,8 @@ extension EndpointsExtension on Endpoints {
         return '${Config.baseAPIpath.value}/messenger/category/${params[0]}';
       case Endpoints.updateCategory:
         return '${Config.baseAPIpath.value}/messenger/category/${params[0]}/';
+      case Endpoints.updateChatInfo:
+        return '${Config.baseAPIpath.value}/messenger/chat/${params[0]}/';
       case Endpoints.categoryChats:
         return '${Config.baseAPIpath.value}/messenger/category/${params[0]}';
       case Endpoints.transferChats:

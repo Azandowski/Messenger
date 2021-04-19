@@ -52,23 +52,34 @@ class ChatActionView extends StatelessWidget {
           ),
           SizedBox(width: 8)
         ],
-      if (groupAction.secondUser != null)
+      if (groupAction.needsSecondUser || (groupAction.isAtLeft && !groupAction.needsSecondUser))
         Text(
-          secondUser.name,
-          style: AppFontStyles.black14w400
+          (secondUser ?? firstUser).name,
+          style: AppFontStyles.black14w400,
+          overflow: TextOverflow.ellipsis,
+          textAlign: TextAlign.start,
         ),
       SizedBox(width: 4),
       Text(
         groupAction.action.getHintText(),
         style: AppFontStyles.grey12w400.copyWith(
           fontSize: 13.0
-        )
+        ),
+        overflow: TextOverflow.ellipsis,
+        textAlign: TextAlign.start,
       ),
       SizedBox(width: 4),
-      if (groupAction.firstUser != null)
-        Text(
-          '(${firstUser?.user?.id == sl<AuthConfig>().user?.id ? "you".tr() : firstUser.name})',
-          style: AppFontStyles.black14w400
+      if (
+        groupAction.firstUser != null && 
+          groupAction.needsSecondUser && 
+            !groupAction.isAtLeft
+      )
+        Flexible(
+          child: Text(
+            '(${firstUser?.user?.id == sl<AuthConfig>().user?.id ? "you".tr() : firstUser.name})',
+            style: AppFontStyles.black14w400,
+            overflow: TextOverflow.ellipsis,
+          ),
         ),
     ];
   }

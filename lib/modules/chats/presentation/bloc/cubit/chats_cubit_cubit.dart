@@ -32,11 +32,9 @@ class ChatsCubit extends Cubit<ChatsCubitState> {
     (repository as ChatsRepositoryImpl).init();
 
     if (wallpaperFile != null) {
-      emit(
-        ChatsCubitStateNormal(
-          currentTabIndex: this.state.currentTabIndex,
-        )
-      );
+      emit(ChatsCubitStateNormal(
+        currentTabIndex: this.state.currentTabIndex,
+      ));
     } 
   }
 

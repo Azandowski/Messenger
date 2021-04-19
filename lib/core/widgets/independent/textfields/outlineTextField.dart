@@ -10,11 +10,13 @@ class OutlineTextField extends StatelessWidget {
     @required this.width,
     @required this.height,
     @required this.labelText,
+    this.validator,
     this.prefixText = '',
     this.textInputType = TextInputType.text,
   }) : super(key: key);
 
   final FocusNode focusNode;
+  final Function(String) validator;
   final TextEditingController textEditingController;
   final double width;
   final double height;
@@ -28,6 +30,7 @@ class OutlineTextField extends StatelessWidget {
       focusNode: focusNode,
       controller: textEditingController,
       keyboardType: textInputType,
+      validator: validator,
       cursorColor: AppColors.accentBlueColor,
       decoration: InputDecoration(
           prefix: Text(prefixText, style: AppFontStyles.mediumStyle),

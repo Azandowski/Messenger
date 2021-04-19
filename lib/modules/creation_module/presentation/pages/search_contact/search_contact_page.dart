@@ -51,19 +51,20 @@ class _SearchContactPageState extends State<SearchContactPage>
   void initState() {
     searchEngine = SearchEngine(delegate: this);
     searchBar = new SearchBar(
-        inBar: true,
-        closeOnSubmit: false,
-        clearOnSubmit: false,
-        setState: print,
-        onSubmitted: (String text) {
-          _searchContactCubit.showLoading(isPagination: false);
-          searchEngine.onTextChanged(text);
-        },
-        buildDefaultAppBar: buildAppBar,
-        onChanged: (String newStr) {
-          _searchContactCubit.showLoading(isPagination: false);
-          searchEngine.onTextChanged(newStr);
-        });
+      inBar: true,
+      closeOnSubmit: false,
+      clearOnSubmit: false,
+      setState: setState,
+      onSubmitted: (String text) {
+        _searchContactCubit.showLoading(isPagination: false);
+        searchEngine.onTextChanged(text);
+      },
+      buildDefaultAppBar: buildAppBar,
+      onChanged: (String newStr) {
+        _searchContactCubit.showLoading(isPagination: false);
+        searchEngine.onTextChanged(newStr);
+      }
+    );
 
     searchBar.isSearching.value = true;
 
@@ -131,14 +132,22 @@ class _SearchContactPageState extends State<SearchContactPage>
                                 : null,
                           );
                         },
-                        separatorBuilder: (_, int index) => Divider(),
-                        itemCount: state.contacts.data.length +
-                            (state is SearchContactsLoading ? 3 : 0));
-                  },
-                ),
-              );
-            },
-          )),
+                        onTap: widget.delegate != null ? () {
+                          widget.delegate.didSelectContact(state.contacts.data[index]);
+                        } : () {
+                          context.read<OpenChatCubit>().createChatWithUser(state.contacts.data[index].id);
+                        },
+                      );
+                    }, 
+                    separatorBuilder: (_, int index) => Divider(), 
+                    itemCount: state.contacts.data.length + (state is SearchContactsLoading ? 3 : 0)
+                  );
+                },
+              ),
+            );
+          }, 
+        )
+      ),
     );
   }
 

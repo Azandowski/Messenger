@@ -28,7 +28,7 @@ class TypeNameCubit extends Cubit<TypeNameState> {
         TextEditingController(text: sl<AuthConfig>().user.fullName ?? '');
   }
   void getImage(ImageSource source) async {
-    var imageOrError = await getImageUseCase(ImageSource.camera);
+    var imageOrError = await getImageUseCase(source);
     imageOrError.fold((l) => emit(ErrorSelecting()),
         (image) => emit(FileSelected(imageFile: image)));
   }
@@ -39,9 +39,7 @@ class TypeNameCubit extends Cubit<TypeNameState> {
     var response = await editUserUseCase(EditUserParams(
         token: sl<AuthConfig>().token,
         image: image,
-        name: fullNameArr[1],
-        surname: fullNameArr[0],
-        patronym: fullNameArr[2]));
+        name: fullNameArr[0]));
 
     response.fold((l) => emit(ErrorUploading()), (r) {
       print('started');

@@ -99,8 +99,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen>
                     _buildHeaders(state),
                     if (isAdmin || state.chatDetailed.socialMedia != null)
                       SocialMediaBlock(
-                        canEdit: state.chatDetailed?.chatMemberRole == ChatMember.admin && 
-                          state.chatDetailed.chat != null,
+                        canEdit: canEdit && state.chatDetailed.chat != null,
                         socialMedia: state.chatDetailed.socialMedia,
                         onAddPressed: () {
                           _navigator.push(SocialMediaScreen.route(
@@ -165,7 +164,12 @@ class _ChatDetailScreenState extends State<ChatDetailScreen>
                           IconTextButton(
                             imageAssetPath: 'assets/icons/create.png',
                             onPress: () {
-                              _navigator.push(ChooseContactsPage.route(this));
+                              _navigator.push(ChooseContactsPage.route(
+                                this,
+                                excludeContactsIDS: (state.chatDetailed.members ?? []).map(
+                                  (e) => e.id
+                                ).toList()
+                              ));
                             },
                             title: 'add_users'.tr(),
                           ),
@@ -190,11 +194,17 @@ class _ChatDetailScreenState extends State<ChatDetailScreen>
                                 ));
                               },
                               onTapItem: (item) {
-                                if (item.id != sl<AuthConfig>().user.id) {
-                                  _handleContactDeletionAlert(item);
-                                } else {
-                                  _openChatCubit.createChatWithUser(item.id);
-                                }
+                                var isAdmin = state.chatDetailed.chatMemberRole == ChatMember.admin && !(state.chatDetailed.chat.isPrivate ?? false);
+                                if (
+                                  item.id == sl<AuthConfig>().user.id || isAdmin) {
+                                    if (item.id == sl<AuthConfig>().user.id) {
+                                      _chatDetailsCubit.doLeaveChat(widget.id);
+                                    } else {
+                                      _handleContactDeletionAlert(item);
+                                    }
+                                  } else {
+                                    _openChatCubit.createChatWithUser(item.id);
+                                  }
                               }
                             );
                           },
@@ -232,7 +242,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen>
                 ),
               ),
               ChildDetailAppBar(
-                canEdit: state.chatDetailed.chatMemberRole == ChatMember.admin && state.chatDetailed.chat != null,
+                canEdit: canEdit && state.chatDetailed.chat != null,
                 onPressRightIcon: () {
                   _navigator.push(CreateGroupPage.route(
                     mode: CreateGroupScreenMode.edit,
@@ -354,21 +364,37 @@ class _ChatDetailScreenState extends State<ChatDetailScreen>
     ));
   }
 
+  bool get canEdit {
+    var isPrivate = _chatDetailsCubit.state.chatDetailed.chat?.isPrivate ?? false;
+    return !isPrivate;
+  }
+
+  // bool get isJustUser {
+  //   var isPrivate = _chatDetailsCubit.state.chatDetailed.chat?.isPrivate ?? false;
+  //   var membersCount = _chatDetailsCubit.state.chatDetailed.membersCount;
+
+  //   return membersCount <= 2 && isPrivate
+  // }
+
   bool get isMe {
-    return widget.mode == ProfileMode.user && 
+    return _chatDetailsCubit.state.chatDetailed.user != null && 
       _chatDetailsCubit.state.chatDetailed?.user?.id == sl<AuthConfig>().user.id;
   }
 
   bool get isAdmin {
+    if (_chatDetailsCubit.state.chatDetailed.user != null) {
+      return isMe;
+    }
+
     return _chatDetailsCubit.state.chatDetailed?.chatMemberRole == ChatMember.admin && 
       _chatDetailsCubit.state.chatDetailed.chat != null;
   }
 
   String _getSocialMediaURL (SocialMediaType type, String value) {
     if (type == SocialMediaType.whatsapp) {
-      return 'wa.me/$value';
+      return 'https://wa.me/$value';
     } else {
-      return value;
+      return value.contains('http') ? value : 'https://' + value;
     }
   }
 

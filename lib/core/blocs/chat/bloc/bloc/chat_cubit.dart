@@ -56,6 +56,8 @@ class ChatGlobalCubit extends Cubit<ChatState> {
               hasReachedMax: this.state.hasReachedMax,
               chats: newChats
             ));
+          } else if (chat.chatUpdateType == ChatUpdateType.readMessage) {
+            _handleMessageRead(chat);
           }
         } else {
           var newChats = this.state.chats.map((e) => e.clone()).toList();
@@ -75,21 +77,26 @@ class ChatGlobalCubit extends Cubit<ChatState> {
         }
       }
 
-      var _chatIndex = this.state.chats.indexWhere((e) => e.chatId == chat.chatId);
-      
-      if (_chatIndex != -1) {
-        /// Если до этого количество непрочитанных был [0]
-        /// Значит нам нужно увеличить количество непрочитанных чатов в
-        /// [CategoryBloc]
+      if (chat.chatUpdateType == ChatUpdateType.newLastMessage) {
+        var _chatIndex = this.state.chats.indexWhere((e) => e.chatId == chat.chatId);
+        
+        if (_chatIndex != -1) {
+          /// Если до этого количество непрочитанных был [0]
+          /// Значит нам нужно увеличить количество непрочитанных чатов в
+          /// [CategoryBloc]
 
-        if (this.state.chats[_chatIndex].unreadCount == 0) {
-          emit(ChatCategoryReadCountChanged(
-            chats: this.state.chats,
-            currentCategory: this.state.currentCategory,
-            hasReachedMax: this.state.hasReachedMax,
-            categoryID: this.state.chats[_chatIndex].chatCategory?.id, 
-            newReadCount: (this.state.chats[_chatIndex].chatCategory?.noReadCount ?? 0) + 1)
-          );
+          if (this.state.chats[_chatIndex].unreadCount == 0) {
+            var userID = this.state.chats[_chatIndex]?.lastMessage?.user?.id;
+            if (userID == null || userID != sl<AuthConfig>().user.id) {
+              emit(ChatCategoryReadCountChanged(
+                chats: this.state.chats,
+                currentCategory: this.state.currentCategory,
+                hasReachedMax: this.state.hasReachedMax,
+                categoryID: this.state.chats[_chatIndex].chatCategory?.id, 
+                newReadCount: (this.state.chats[_chatIndex].chatCategory?.noReadCount ?? 0) + 1)
+              );
+            }
+          }
         }
       }
     });
@@ -262,6 +269,21 @@ class ChatGlobalCubit extends Cubit<ChatState> {
       ));
     }
   }
+
+  void _handleMessageRead (ChatEntity chat) {
+    var chatIndex = this.state.chats.indexWhere((e) => e.chatId == chat.chatId);
+
+    if (chatIndex != -1) {
+      var chats = this.state.chats.map(
+        (e) => e.chatId == chat.chatId ? chat : e.clone()).toList();
+      emit(ChatsLoaded(
+        currentCategory: this.state.currentCategory,
+        hasReachedMax: this.state.hasReachedMax,
+        chats: chats
+      ));
+    }
+  }
+
 
   Future<void> getChatsFromCache () async {
     emit(ChatLoading(
